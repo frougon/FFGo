@@ -1,0 +1,24 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Exec=fgo
+Icon=fgo
+StartupNotify=false
+Categories=Game;Simulation;Other;
+Name=FGo!
+GenericName=Front-end for FlightGear
+GenericName[de]=Front-End für FlightGear
+GenericName[es]=Lanzador para FlightGear
+GenericName[fr]=Front-end pour FlightGear
+GenericName[it]=Front-end per FlightGear
+GenericName[ja]=FlightGearのフロントエンド
+GenericName[nl]=Frontend voor FlightGear
+GenericName[pl]=Front-end dla FlightGear
+Comment=A simple and fast front-end for FlightGear Flight Simulator
+Comment[de]=Einfaches und schnelles Front-End für FlightGear Flight Simulator
+Comment[es]=Un simple y rápido lanzador para FlightGear Flight Simulator
+Comment[fr]=Front-end simple et rapide pour FlightGear Flight Simulator
+Comment[it]=Un front-end semplice e veloce per FlightGear Flight Simulator
+Comment[ja]=シンプルで高速なFlightGear フライトシミュレータのフロントエンド
+Comment[nl]=Een eenvoudige en snelle frontend voor FlightGear Flight Simulator
+Comment[pl]=Prosty i szybki front-end dla FlightGear Flight Simulator

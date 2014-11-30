@@ -1,0 +1,36 @@
+## List of command line options. Enable options you want to use by removing
+## hash symbol at the beginning of appropriate line.
+
+## NETWORK OPTIONS
+## Start FlightGear with multiplayer enabled. Replace MPSERVER_ADDRESS with
+## valid server address. For list of available servers and more information
+## about the subject, check http://wiki.flightgear.org/Howto:Multiplayer
+# --multiplay=out,10,MPSERVER_ADDRESS,5000
+
+## Enter your callsign. Note that it's currently limited to seven characters.
+## Check this page http://fgfs.i-net.hu/modules/fgtracker/ to see whether
+## your callsign is already in use or not.
+# --callsign=
+
+## ENVIRONMENT OPTIONS
+## Fetch weather information from the web.
+# --enable-real-weather-fetch
+
+## RENDERING OPTIONS
+## Specify FlightGear's window geometry.
+# --geometry=800x600
+
+## Enable fullscreen mode.
+# --enable-fullscreen
+
+## OTHER
+## Limit fps to specified number.
+# --prop:/sim/frame-rate-throttle-hz=35
+
+## Use custom scenery data. Useful if e.g. airport data source is set to scenery.
+# --prop:/sim/paths/use-custom-scenery-data=true
+
+
+## More information about command line options
+## can be found in the FlightGear documentation, or at
+## http://wiki.flightgear.org/index.php/Command_Line_Options

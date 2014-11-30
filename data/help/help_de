@@ -1,0 +1,160 @@
+FGo! - Ein einfacher GUI Starter für FlightGear.
+
+-------------------------------------------------------------------------------
+
+SYSTEMVORAUSSETZUNGEN
+
+- Betriebssystem GNU/Linux
+- FlightGear
+- Python 2.7.8 *
+- TKinter
+- Python Imaging Library (PIL) 1.1.7 oder Pillow (PIL fork) 2.5.1
+  mit ImageTk Modul **
+- Tcl/Tk 8.6
+
+*  FGo! ist nur mit Python Serie 2.x kompatibel.
+** Diese Bibliothek ist nicht unbedingt notwendig um FGo! zu starten
+   aber die Flugzeug-Vorschau wird ohne sie nicht angezeigt.
+
+Diese Versionsnummern stellen die Versionen der verwendeten Softwaredar, die
+zur Entwicklung genutzt wurden. Es ist durchaus möglich, daß FGo! auch mit
+älteren (oder neueren) Versionen funktioniert, aber das Programm wurde damit
+nicht getestet.
+
+-------------------------------------------------------------------------------
+
+INSTALLATION
+
+FGo! braucht nicht installiert zu werden, man braucht nur das Archiv
+zu entpacken und sicherzustellen, daß die Anforderungen erfüllt wurden.
+
+In Debian und Debian-basierten Distributionen werden die folgenden Pakete
+gebraucht: python, python-tk, tcl8.x and tk8.x; optional python-imaging-tk
+oder python-pil.imagetk, abhängig davon, welches Paket verfügbar ist auf der
+jeweiligen Distribution. Für eine einfache Installation wähle
+python-imaging-tk oder python-pil.imagetk im bevorzugten Paketmanager, und alle
+anderen benötigten Abhängigkeiten sollten automatisch mit installiert werden.
+
+Für Slackware-basierte Systeme steht ein SlackBuild Paket zu Verfügung. Das
+enthaltene Skript generiert ein kompatibles Slackware Paket, das eine saubere,
+systemweite Installation von FGo! ermöglicht. Das SlackBuild kann von
+der Website http://www.slackbuilds.org heruntergeladen werden. Für standard
+Slackware Installationen (full) ist kein zusätzliches Paket nötig.
+
+-------------------------------------------------------------------------------
+
+GESTARTET
+
+Klicke auf die Datei "fgo" im Hauptverzeichnis des Programms, oder starte es
+aus einer Konsole mit entweder "./fgo" oder "python fgo".
+
+Es wird empfohlen FGo! aus einer Konsole zu starten, da man sonst die Ausgaben
+von Flightgear und TerraSync nicht sehen kann.
+
+-------------------------------------------------------------------------------
+
+KONFIGURATION
+
+Um FGo! benutzen zu können, muss man es erst einrichten. Öffnen Sie das
+Einstellungsfenster (im Menü: Einstellungen => Eigenschaften) und füllen Sie
+die leeren Felder aus.
+Das Ausfüllen der ersten drei Felder ist notwendig für die korrekte Ausführung
+des Programmes - der Rest ist optional.
+
+Hinweis: Um eine Beschreibung der jeweiligen Option zu sehen, halten sie die
+Maus kurz über dem entsprechenden Feld.
+
+Veränderungen in den Einstellungen werden nach "Einstellungen speichern"
+sofort angewendet, allerdings benötigen Veränderungen in den  TerraSync-
+Einstellungen und Spracheinstellungen einen Neustart von FGo!.
+
+-------------------------------------------------------------------------------
+
+HAUPTMENÜ EINTRÄGE
+
+Datei:
+
+    Laden - Lade eine vorhandene Konfigurations-Datei
+
+    Speichern unter... - Speichere Einstellungen in eine Konfigurations-Datei
+
+    Speichern und beenden - Speichere Einstellungen und beende die Anwendung
+
+    Beenden - Beende die Anwendung ohne zu speichern
+
+Einstellungen:
+
+    Nur installierte Flughäfen anzeigen - Es werden nur die tatsächlich auf
+        der Festplatte vorhandene Flughäfen angezeigt.
+
+    Liste der Flughäfen auffrischen - Durchsuche die Festplatte nach
+        installierter Szenerie und baue eine neue Flughafen-Liste. Das
+        funktioniert nur wenn "Nur installierte Flughäfen anzeigen" angewählt
+        ist.
+
+    Eigenschaften - öffne das Eigenschaften-Fenster.
+
+Werkzeuge:
+
+    METAR - zeige METAR Report für den gewählten (oder nahesten) Flughafen.
+        Dieser wird von http://weather.noaa.gov/ heruntergeladen.
+
+Hilfe:
+
+    Hilfe - Öffne dieses Hilfe-Fenster.
+
+    Über - Öffne das "Über"-Fenster.
+
+-------------------------------------------------------------------------------
+
+KOMMANDOZEILEN OPTIONEN FENSTER
+
+Im Text-Fenster am unteren Ende des FGo!-Fensters kann man Kommandozeilen-
+Optionen angeben, die an FlightGear weitergereicht werden.
+
+Es werden vorerst nur wenige Optionen angezeigt. Für mehr Informationen und
+Beispiele bemühen Sie bitte die FlightGear-Dokumentation, prüfen Sie im
+Terminal "fgfs --help --verbose" oder sehen Sie im Wiki nach:
+http://wiki.flightgear.org/index.php/Command_Line_Options
+
+-------------------------------------------------------------------------------
+
+TIPS&TRICKS
+
+* Wenn die Flughafen-Datenquelle auf "Szenerie" gesetzt ist, können
+  Informationen über Parkpositionen solange nicht verfügbar sein, bis die
+  entsprechende Szenerie installiert ist.
+
+* Man kann auch von einem Flugzeugträger starten. Klicken Sie im mittleren
+  Abschnitt auf den ICAO-Code des zuletzt gewählten Flughafens (direkt unter
+  dem Flugzeugbild) und wählen Sie eins der verfügbaren Schiffe. Der ICAO-Code
+  wird daraufhin durch den Namen des gewählten Flugzeugträgers ersetzt und
+  blau hervorgehoben, um anzuzeigen dass Sie sich jetzt im "Flugzeugträger-
+  Modus" befinden. Das entsprechende Szenario wird automatisch gewählt.
+  Um wieder auf die Flughäfen zugreifen zu können müssen Sie nur auf den
+  Flugzeugträgernamen klicken und "keine" auswählen.
+
+* In der Liste "Szenario auswählen" können Sie sich, mit einem Rechtsklick auf
+  ein Szenario, die Beschreibung dessen ansehen (falls verfügbar).
+
+* Die Fenstergröße wird gespeichert, wenn "Speichern und beenden" betätigt
+  wird.
+
+-------------------------------------------------------------------------------
+
+BEKANNTE FEHLER UND GRENZEN
+
+* FGo! weiß nicht, ob TerraSync tatsächlich beendet wurde, bevor eine neue
+  Instanz gestartet wird. Wenn das "TerraSync" Ankreuzfeld geleert und gleich
+  wieder angekreuzt wird, kann die Meldung "error binding to port 5501" im
+  Terminalfenster erscheinen. Dies zeigt an, dass eine alte Instanz von
+  TerraSync noch nicht fertig ist mit dem Herunterladen der Daten. Warten Sie
+  in diesem Fall bis das Herunterladen beendet wurde und kreuzen Sie das
+  "TerraSync"-Feld danach wieder an.
+
+* Sehr lange Parkplatznamen passen nicht in den Parkplatz-Knopf.
+
+-------------------------------------------------------------------------------
+
+                                 Vielen Dank, dass Sie diese Software benutzen,
+                                             Robert 'erobo' Leda  <erobo@wp.pl>

@@ -1,0 +1,39 @@
+## Liste der Kommandozeilen-Optionen. Man aktiviert die Optionen indem man
+## das Raute-Zeichen (#) am Anfang der Zeile entfernt.
+
+## NETZWERK-OPTIONEN
+## Startet FlightGear mit aktiviertem MultiPlayer-Modus. MPSERVER_ADDRESS muss
+## mit gültiger Server-Addresse erstzt werden. Eine Liste der verfügbaren
+## Server und mehr Informationen findet man unter:
+## http://wiki.flightgear.org/Howto:Multiplayer
+# --multiplay=out,10,MPSERVER_ADDRESS,5000
+
+## Geben Sie ihr Rufzeichen an. Bis jetzt ist es auf 7 Zeichen begrenzt.
+## Sehen Sie im Web nach, ob ihr Rufzeichen schon in Benutzung ist:
+## http://fgfs.i-net.hu/modules/fgtracker/
+# --callsign=
+
+## UMWELT OPTIONEN
+## Hole die aktuellen Wetter-Daten aus dem Web.
+# --enable-real-weather-fetch
+
+## DARSTELLUNGS OPTIONEN
+## Die Fenstergröße von FlightGear angeben.
+# --geometry=800x600
+
+## FlightGear im Vollbild-Modus benutzen.
+# --enable-fullscreen
+
+## ANDERES
+## Begrenze fps auf angegebene Anzahl.
+# --prop:/sim/frame-rate-throttle-hz=35
+
+## Benutze eine spezielle Szenerie-Datenquelle. Sinnvoll, falls z.Bsp.
+## die Flughafen-Datenquelle auf Szenerie gesetzt ist.
+# --prop:/sim/paths/use-custom-scenery-data=true
+
+
+## Mehr Informationen über die Kommandozeilen-Optionen
+## findet man in der FlightGear-Dokumentation oder im Web:
+## http://wiki.flightgear.org/index.php/Command_Line_Options
+

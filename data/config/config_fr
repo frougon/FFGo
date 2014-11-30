@@ -1,0 +1,38 @@
+## Liste des options de ligne de commande. Activez les options que vous
+## souhaitez utiliser en supprimant le symbole # au début de la ligne concernée.
+
+## OPTIONS RESEAU
+## Démarre FlightGear avec le mode multijoueurs activé. Remplacez
+## MPSERVER_ADDRESS avec une adresse de serveur valide. Pour une liste
+## des serveurs disponibles et des informations complémentaires sur le sujet,
+## consultez http://wiki.flightgear.org/Howto:Multiplayer
+# --multiplay=out,10,MPSERVER_ADDRESS,5000
+
+## Entrez votre indicatif. Notez qu'il est actuellement limité à sept
+## caractères. Vérifiez cette page http://fgfs.i-net.hu/modules/fgtracker/
+## pour savoir si votre indicatif est déjà utilisé ou non.
+# --callsign=
+
+## OPTIONS D'ENVIRONNEMENT
+## Récupère l'information météo à partir d'Internet.
+# --enable-real-weather-fetch
+
+## OPTIONS DE RENDU
+## Précise la géométrie de la fenêtre de FlightGear.
+# --geometry=800x600
+
+## Active le mode plein écran.
+# --enable-fullscreen
+
+## AUTRES
+## Limite le nombre d'images par seconde à un nombre fixe.
+# --prop:/sim/frame-rate-throttle-hz=35
+
+## Utilise des données de scènes personnalisées. Intéressant si, par exemple,
+## la source des données des aéroports est positionnée à "Scènes".
+# --prop:/sim/paths/use-custom-scenery-data=true
+
+
+## Des informations complémentaires à propos des options de ligne de commande
+## peuvent être obtenues dans la documentation FlightGear, ou à l'adresse
+## http://wiki.flightgear.org/index.php/Command_Line_Options

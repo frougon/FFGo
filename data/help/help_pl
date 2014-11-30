@@ -1,0 +1,156 @@
+FGo! - Prosty program do uruchamiania symulatora FlightGear.
+
+-------------------------------------------------------------------------------
+
+WYMAGANIA
+
+- System operacyjny GNU/Linux
+- FlightGear
+- Python 2.7.8 *
+- TKinter
+- Python Imaging Library (PIL) 1.1.7 lub Pillow (fork PIL-a) 2.5.1
+  z modułem ImageTk **
+- Tcl/Tk 8.6
+
+*  FGo! jest kompatybilne tylko z Pythonem 2.x.
+** Biblioteka ta nie jest wymagana do uruchomienia programu, jednak bez niej
+   nie będą wyświetlane miniatury samolotów.
+
+Podane tutaj numery wersji oprogramowania odpowiadają wersjom użytym przy
+tworzeniu programu, jest możliwe, że FGo! będzie działał ze starszymi
+(lub nowszymi) wydaniami, nie został jednak z nimi przetestowany.
+
+-------------------------------------------------------------------------------
+
+INSTALACJA
+
+Program nie wymaga instalacji, przed pierwszym uruchomieniem należy się jednak
+upewnić się, że wszystkie wymagane zależności zostały zainstalowane.
+
+W Debianie, oraz dystrybucjach na nim opartych wymagane są następujące pakiety:
+python, python-tk, tcl8.x i tk8.x; oraz opcjonalnie (w zależności od
+dystrybucji): python-pil.imagetk lub python-imaging-tk. W menadżerze pakietów 
+wystarczy wybrać pakiet python-pil.imagetk lub python-imaging-tk, reszta 
+zależności powinna zostać zainstalowana automatycznie razem z nim.
+
+Dla Slackware i kompatybilnych systemów dostępny jest SlackBuild dla FGo!.
+Skrypt ten generuje pakiet, który pozwala na instalację programu dla całego
+systemu. Można go pobrać na oficjalnej stronie: http://www.slackbuilds.org.
+W standardowym systemie Slackware (full) nie ma potrzeby instalowania
+dodatkowych paczek.
+
+-------------------------------------------------------------------------------
+
+URUCHAMIANIE
+
+Kliknij plik "fgo" w katalogu głównym programu, lub uruchom w konsoli 
+poleceniem "./fgo" lub "python fgo".
+
+Uruchamianie FGo! w konsoli jest zalecane, gdyż daje dostęp do komunikatów
+wyświetlanych przez FlightGear i TerraSync.
+
+-------------------------------------------------------------------------------
+
+KONFIGURACJA
+
+Zanim będziesz mógł korzystać z programu, powinieneś go skonfigurować. Otwórz
+okno preferencji (Menu Ustawienia => Preferencje) i wypełnij puste pola.
+Do poprawnego działania programu potrzebne jest wypełnienie pierwszych trzech
+pól w zakładce "Ustawienia FlightGear", reszta ustawień jest opcjonalna.
+
+Podpowiedź: Umieść kursor myszy nad elementem aby zobaczyć jego opis.
+
+Zmiany ustawień w zakładce "Ustawienia FlightGear" są uwzględniane przez FGo!
+natychmiast po kliknięciu przycisku "Zapisz ustawienia", zmiany w pozostałych
+zakładkach mogą jednak wymagać ponownego uruchomienia programu.
+
+-------------------------------------------------------------------------------
+
+ELEMENTY GŁÓWNEGO MENU
+
+Plik:
+
+    Wczytaj - wczytaj zapisany wcześniej plik konfiguracyjny.
+
+    Zapisz jako... - zapisz aktualne ustawienia do pliku.
+
+    Zapisz i Wyjdź - zapisz ustawienia i zamknij program.
+
+    Zakończ - zamknij program.
+
+Ustawienia:
+
+    Pokaż tylko zainstalowane lotniska - na liście lotnisk będą pokazywane
+        tylko lotniska zainstalowane na twardym dysku.
+
+    Odśwież listę zainstalowanych lotnisk - przeskanuj twardy dysk w
+        poszukiwaniu zainstalowanej scenerii i odśwież listę lotnisk.
+        Opcja ta działa tylko w przypadku, gdy opcja "Pokaż tylko zainstalowane
+        lotniska" jest aktywna.
+
+    Preferencje - otwórz okno preferencji.
+
+Narzędzia:
+
+    METAR - pokaż raport pogodowy dla wybranego (lub pobliskiego) lotniska.
+        Raporty te są pobierana ze strony http://weather.noaa.gov/
+
+Pomoc:
+
+    Pomoc - otwórz okno pomocy.
+
+    O programie - otwórz okno z informacjami o programie.
+
+-------------------------------------------------------------------------------
+
+OKNO LINII POLECEŃ
+
+W oknie tekstowym umieszczonym na dole głównego okna aplikacji można wpisywać
+opcje, z którymi zostanie uruchomiony FlightGear.
+
+Parę opcji jest tam umieszczonych już przy pierwszym starcie programu. Więcej
+przykładów można znaleźć w dokumentacji FlightGear, lub na wiki, pod adresem:
+http://wiki.flightgear.org/index.php/Command_Line_Options
+
+-------------------------------------------------------------------------------
+
+TIPS&TRICKS
+
+* Jeżeli źródłem danych o lotniskach jest sceneria, to informacje o pozycjach
+  parkingowych mogą być niedostępne dla wybranego lotniska do czasu
+  zainstalowania odpowiedniej scenerii.
+
+* Możesz wystartować na pokładzie lotniskowca. Kliknij na kodzie lotniska
+  znajdującym się na środkowym panelu (zaraz pod obrazkiem przedstawiającym
+  wybrany samolot) i wybierz któryś z dostępnych okrętów. Kod lotniska
+  zostanie zastąpiony nazwą wybranej jednostki i zmieni kolor na niebieski,
+  by zaznaczyć, że program znajduje się teraz w trybie wyboru lotniskowca.
+  Dodatkowo, FGo! automatycznie wybierze odpowiedni dla danego okrętu
+  scenariusz.
+  Aby móc z powrotem startować z lotnisk, należy kliknąć nazwę lotniskowca
+  i z listy która się ukaże, wybrać opcję "Żaden".
+
+* Na liście scenariuszy można kliknąć prawym przyciskiem myszki na
+  każdym z nich, aby zobaczyć jego opis (o ile opis ten jest dostępny).
+
+* Gdy zostanie użyta opcja "Zapisz i Wyjdź", FGo! zapamięta rozmiar swojego
+  okna.
+
+-------------------------------------------------------------------------------
+
+ZNANE BŁĘDY I OGRANICZENIA
+
+* FGo! nie śledzi czy sesja TerraSync została zakończona. Gdy TerraSync
+  zostanie w krótkim odstępie czasu wyłączony i ponownie wyłączony, w
+  konsoli może pojawić się następujący komunikat: error binding to port 5501.
+  Wskazuje on na to, że nowa sesja TerraSync nie może zostać uruchomiona
+  ponieważ poprzednia sesja nie zakończyła jeszcze ściągania scenerii z
+  internetu. W takiej sytuacji należy poczekać, aż download dobiegnie końca
+  i ponownie zaznaczyć pole TerraSync.
+
+* Długie nazwy pozycji parkingowych nie mieszczą się w przycisku Parking.
+
+-------------------------------------------------------------------------------
+
+                                            Dziękuję za używanie tego programu,
+                                             Robert 'erobo' Leda  <erobo@wp.pl>

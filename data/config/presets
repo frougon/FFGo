@@ -1,0 +1,63 @@
+# You can define list of options that will be passed to application in case if
+# ~/.fgo/config can't be found. That is in most situations at program's
+# first start. Write every option from a new line. 
+#
+#
+# Options shared with FlightGear:
+# --aircraft=name               - Defaults to c172p if not set.
+# --airport=ID                  - Defaults to KSFO if not set.
+# --carrier=[name|ID]           - Works the same as in FG.
+# --fg-root=path                - Works the same as in FG.
+# --fg-scenery=path             - Works the same as in FG.
+# --parkpos=name                - Works the same as in FG.
+# --runway=rwy_no               - Works the same as in FG.
+#
+# Other FlightGear's options can be added, but unlike the ones mentioned above,
+# will not be filtered out and will be visible in the FGo! text window.
+#
+#
+# FGo! specific options:
+# AI_SCENARIOS=scenario_name    - List of scenario names (without xml 
+#                                 extension) separated by spaces.
+# APT_DATA_SOURCE=boolean       - 0 or 1 (defaults to 0). Select data source 
+#                                 where FGo! will be looking for information 
+#                                 about runways or parking positions. 0 means
+#                                 default, and 1 means scenery. Remember that
+#                                 you may need to also add
+#                                 --prop:/sim/paths/use-custom-scenery-data=true
+#                                 argument to tell FlightGear to use 
+#                                 the same data if scenery source is selected.
+# AUTO_UPDATE_APT=boolean       - 0 or 1 (defaults to 0). Keep track of 
+#                                 changes of FG_ROOT/Airports/apt.dat.gz file, 
+#                                 and rebuild its own airport database 
+#                                 automatically when it is needed.
+# BASE_FONT_SIZE=size           - Font size in points. Should be in the range 
+#                                 from MIN_BASE_FONT_SIZE to MAX_BASE_FONT_SIZE
+#                                 defined in src/constants.py; or 0, which is 
+#                                 platform-dependent default size.
+# FG_AIRCRAFT=path              - Path to additional aircraft directory. 
+#                                 Multiple paths, separated by a colon can be
+#                                 provided.
+# FG_BIN=path                   - Path to fgfs executable.
+# FG_WORKING_DIR=path           - Use this option if you want to set different
+#                                 than user's home folder as working directory
+#                                 for FlightGear.
+# FILTER_APT_LIST=boolean       - 0 or 1 (defaults to 0). Show only installed 
+#                                 airports in the airport list.
+# LANG=lang_code                - Use short language code, e.g.: en, de, fr, es
+#                                 FGo! will try to use system system language
+#                                 if not set.
+# TERRASYNC=boolean             - 0 or 1 (defaults to 0). Run TerraSync.
+# TERRASYNC_BIN=path            - Path to terrasync executable.
+# TERRASYNC_PORT=port_number    - Defaults to 5501
+# TERRASYNC_SCENERY=path        - Scenery path that TerraSync is updating.
+# WINDOW_GEOMETRY=widthxheight  - Specific window geometry. Use only if you
+#                                 are not satisfied with default window size.
+#
+#
+# Any number of options can be selected, but to get FGo! ready to work
+# you only need:
+# --fg-root=
+# --fg-scenery=
+# FG_BIN=
+

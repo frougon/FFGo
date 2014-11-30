@@ -1,0 +1,152 @@
+FGo! - A simple GUI launcher for FlightGear.
+
+-------------------------------------------------------------------------------
+
+REQUIREMENTS
+
+- Operating system GNU/Linux
+- FlightGear
+- Python 2.7.8 *
+- TKinter
+- Python Imaging Library (PIL) 1.1.7 or Pillow (PIL fork) 2.5.1 
+  with ImageTk module **
+- Tcl/Tk 8.6
+
+*  FGo! is compatible only with Python 2.x.
+** This library is not mandatory to run FGo! but aircraft thumbnails
+   will not be displayed without it.
+
+Numbers given here correspond to versions of the software used in development
+process. It's quite likely for FGo! to work with older (or newer) versions, but
+the program was not tested with them.
+
+-------------------------------------------------------------------------------
+
+INSTALLATION
+
+This program requires no installation, just unpack the archive anywhere
+and make sure that all software requirements are met before the first start.
+
+In Debian and Debian based distributions the following packages are required:
+python, python-tk, tcl8.x and tk8.x; optionally python-imaging-tk or
+python-pil.imagetk, depending on which is available on particular distribution,
+may be installed. For easy installation choose python-imaging-tk or
+python-pil.imagetk in your favorite package manager, and all other required
+dependencies should be installed automatically.
+
+For Slackware and compatible systems a SlackBuild for FGo! is available. The
+included script will generate a package that allows for a clean, system-wide
+installation of the program. The SlackBuild can be downloaded from the official
+website: http://www.slackbuilds.org. On default Slackware systems (full) no
+additional packages are required.
+
+-------------------------------------------------------------------------------
+
+RUNNING
+
+Click "fgo" file in the main directory of the program, or run it in a console
+with the "./fgo" or "python fgo" command. 
+
+Running FGo! in a console is recommended as it gives access to FlightGear and 
+TerraSync output messages.
+
+-------------------------------------------------------------------------------
+
+CONFIGURATION
+
+In order to use FGo! you need to first set it up. Open preferences window
+(in menu choose: Settings => Preferences) and fill in empty entry fields.
+Filling the first three entries in "FlightGear settings" tab is necessary for
+proper operation of the program - the rest is optional.
+
+Tip: Hover mouse cursor over any option to see its description.
+
+Changes in "FlightGear settings" tab are applied immediately after clicking on
+"Save Settings" button, however changes in other tabs may require restarting
+FGo! for them to be applied.
+
+-------------------------------------------------------------------------------
+
+MAIN MENU ITEMS
+
+File:
+
+    Load - load specified config file.
+
+    Save as... - save settings to specified config file.
+
+    Save & Quit - save settings and quit the application.
+
+    Quit - quit the application.
+
+Settings:
+
+    Show installed airports only - only airports present in scenery actually
+        installed on the hard drive will be shown on the airport list.
+
+    Update list of installed airports - scan hard drive for installed scenery
+        and update the airport list. It works only if "Show installed airports
+        only" is selected.
+
+    Preferences - open preferences window.
+
+Tools:
+
+    METAR - show METAR report for selected (or nearest) airport. These reports
+        are downloaded from http://weather.noaa.gov/
+
+Help:
+
+    Help - open "Help" window.
+
+    About - open "About" window.
+
+-------------------------------------------------------------------------------
+
+COMMAND LINE OPTIONS WINDOW
+
+In text window at the bottom, you can write command line options that will be
+passed to FlightGear.
+
+Few options are provided by default, for more examples consult FlightGear
+documentation or check Wiki at:
+http://wiki.flightgear.org/index.php/Command_Line_Options
+
+-------------------------------------------------------------------------------
+
+TIPS&TRICKS
+
+* If airport data source was set to "Scenery", then information about
+  airport's park positions may not be available until corresponding scenery
+  is installed.
+
+* You can start a flight from an aircraft carrier. In the middle panel click on
+  current airport ICAO code (right under aircraft picture) and choose one from
+  available ships. ICAO code will then change to selected ship's name,
+  and will be highlighted blue to indicate that you're now in "carrier mode".
+  Corresponding scenario will be selected automatically.
+  To be able to choose airports again, you need to click on carrier name,
+  and from pop-up list select "None".
+
+* In "Select Scenario" list, you can right click on any scenario to see its
+  description (if available).
+
+* Window resolution is saved when "Save&Quit" button is clicked.
+
+-------------------------------------------------------------------------------
+
+KNOWN BUGS AND LIMITATIONS
+
+* FGo! does not track if TerraSync has been actually closed before starting
+  a new instance of it. If "TerraSync" checkbutton is unchecked and checked
+  again in short period of time, "error binding to port 5501" message may be
+  shown in a console. It indicates that old instance of TerraSync does not
+  finished downloading data yet. In that case, wait until download is finished
+  and check "TerraSync" checkbutton again.
+
+* Very long parking places names does not fit in parking button.
+
+-------------------------------------------------------------------------------
+
+                                             Thank you for using this software,
+                                             Robert 'erobo' Leda  <erobo@wp.pl>

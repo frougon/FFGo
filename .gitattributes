@@ -1,0 +1,19 @@
+# Set default behaviour, in case users don't have core.autocrlf set.
+* text=auto
+
+.gitattributes                 text export-ignore
+.gitignore                     text export-ignore
+*.py                           text
+*.txt                          text
+*.rst                          text
+*.xml                          text
+*.desktop                      text
+*.svg                          text
+*.jpg                          binary
+*.png                          binary
+*.ppm                          binary
+/docs/*                        text
+AUTHORS                        text
+COPYING                        text
+COPYING.*                      text
+README.*                       text

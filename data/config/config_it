@@ -1,0 +1,39 @@
+## Elenco di opzioni a linea di comando. Abilitare le opzioni che si desidera
+## utilizzare eliminando il simbolo '#' all'inizio della riga corrispondente.
+
+## OPZIONI DI RETE
+## Avviare FlighGear con la funzione multiplayer. Sostituire MPSERVER_ADDRESS
+## con l'indirizzo valido di un server. Per una lista dei server disponibili e
+## per altre informazioni sul tema consultare la pagina:
+## http://wiki.flightgear.org/Howto:Multiplayer
+# --multiplay=out,10,MPSERVER_ADDRESS,5000
+
+## Inserire il proprio indicativo di chiamata (call sign); attualmente questo
+## è limitato a sette caratteri. Per verificare se il proprio identificativo è
+## già utilizzato visitare il sito http://fgfs.i-net.hu/modules/fgtracker/
+# --callsign=
+
+## OPZIONI AMBIENTE
+## Scaricare automaticamente dalla rete le informazioni meteo.
+# --enable-real-weather-fetch
+
+## OPZIONI DI RENDERING
+## Specificare le dimensioni della finestra di FlightGear.
+# --geometry=800x600
+
+## Abilitare la modalità a schermo intero.
+# --enable-fullscreen
+
+## ALTRO
+## Limitare la frequenza dei fotogrammi (fps) a uno specifico valore.
+# --prop:/sim/frame-rate-throttle-hz=35
+
+## Utilizzare scenari personalizzati. Opzione utile nel caso in cui la sorgente
+## dei dati degli aeroporti è impostata su "Scenario".
+# --prop:/sim/paths/use-custom-scenery-data=true
+
+
+## Maggiori informazioni sulle opzioni a linea di comando si possono trovare
+## nella documentazione di FlightGear, oppure consultando il sito:
+## http://wiki.flightgear.org/index.php/Command_Line_Options
+

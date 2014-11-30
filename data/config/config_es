@@ -1,0 +1,36 @@
+## Lista de opciones de comandos en línea. Activa las opciones que quieras usar
+## quitando o poniendo el símbolo '#' al principio de la línea correspondiente.
+
+## OPCIONES MULTIJUGADOR
+## Ejecuta FlightGear con multijugador habilitado. Reemplaza MPSERVER_ADDRESS
+## con una dirección de servidor válida. Una lista de los servidores disponibles
+## y más información en: http://wiki.flightgear.org/Howto:Multiplayer
+# --multiplay=out,10,MPSERVER_ADDRESS,5000
+
+## Escribe tu apodo; limitado a siete carácteres. Para saber si tu apodo está 
+## en uso o no visita: http://fgfs.i-net.hu/modules/fgtracker/ 
+# --callsign=
+
+## OPCIONES METEOROLÓGICAS
+## Extraer información meteorológica de la web.
+# --enable-real-weather-fetch
+
+## OPCIONES DE RENDERIZADO
+## Especifica la resolución para FlightGear.
+# --geometry=800x600
+
+## Activa la pantalla completa.
+# --enable-fullscreen
+
+## OTROS
+## Limita los fps a un número específico.
+# --prop:/sim/frame-rate-throttle-hz=35
+
+## Usar datos de escenarios personalizados. Útil si, por ejemplo, la fuente de
+## datos de aeropuertos esta definida como Escenario.
+# --prop:/sim/paths/use-custom-scenery-data=true
+
+## Más información sobre opciones de comandos en línea en los documentos de
+## FlightGear, o en:
+## http://wiki.flightgear.org/index.php/Command_Line_Options
+

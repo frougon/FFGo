@@ -1,0 +1,39 @@
+INFORMATION FOR PACKAGERS
+
+= Location =
+The FGo! release package can be extracted anywhere and the program can be run
+from that location without having to move files around. For example, FGo! can
+be installed to a specific user's home directory, and that user will be able
+to run it right away, provided that the needed dependencies are installed.
+For system-wide installations of FGo! it is recommended to copy the main fgo/
+directory, with its entire content, to /opt, then create a symlink to the
+application's executable in a location included in the PATH environment
+variable, most likely /usr/bin. Optionally, a symlink to the configuration
+file can be created as well in /etc.
+
+= Documentation =
+The program's documentation is stored in fgo/docs and can be either symlinked
+from /usr/doc/fgo-x.y.z, or copied there.
+
+= Icons =
+Icons are stored in fgo/share/icons and can be either symlinked from or copied
+to the proper directories in /usr/share/icons.
+
+= Desktop =
+A desktop file, fgo.desktop, is available in fgo/share. It creates a menu entry
+for FGo! and simplifies the creation of application launchers. It can be either
+symlinked from or copied to /usr/share/applications and expects the FGo!
+executable to be available through $PATH, as well as icons to be in the right
+place.
+
+= Presets =
+The default FGo! settings are quite minimal and the user is required to perform
+a few minor tasks, like setting the needed paths for FlightGear executables and
+directories. However, a presets file is available in fgo/data/config, which can
+be used to specify settings that the packager wants to be enabled by default.
+For example, in a system-wide installation this will allow every user to run
+FGo! without having to bother with its basic setup; other FGo! and FlightGear
+options can also be specified. The presets file is well commented and will be
+used by FGo! every time a local ~/.fgo/config cannot be found: for instance,
+this is the case when FGo! is run by the user for the first time.
+

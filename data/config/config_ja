@@ -1,0 +1,38 @@
+## コマンドラインのオプションの一覧です。 
+## 使用したいオプションが書いてある行の先頭の#を削除し、有効化してください。
+
+## ネットワークオプション
+## FlightGear をマルチプレイヤーを有効にして起動します。
+## MPSERVER_ADDRESS を有効なサーバーのアドレスに書き換えてください。
+## 利用可能なサーバーの一覧と、この件に関する追加の情報は
+##  http://wiki.flightgear.org/Howto:Multiplayer をチェックしてください。
+# --multiplay=out,10,MPSERVER_ADDRESS,5000
+
+## コールサインを記入してください。
+## 注意:現在は最大7文字に制限されています。
+## あなたが使いたいコールサインが既に使われていないかどうか確認のため、
+## http://fgfs.i-net.hu/modules/fgtracker/ を参照してください。
+# --callsign=
+
+## 環境オプション
+## Webから天候情報を取得することができます。
+# --enable-real-weather-fetch
+
+## レンダリングオプション
+## FlightGear のウインドウのサイズを指定してください。
+# --geometry=800x600
+
+## フルスクリーンモードを有効にします。
+# --enable-fullscreen
+
+## その他
+## フレームレートを指示した値に制限します。
+# --prop:/sim/frame-rate-throttle-hz=35
+
+## カスタムシーナリーデータを使用します。
+## 便利な使い方の例: 空港のデータのソースをシーナリーにセットする。
+# --prop:/sim/paths/use-custom-scenery-data=true
+
+
+## 更に詳しいコマンドラインオプションの情報は FlightGear のドキュメントと、
+## http://wiki.flightgear.org/index.php/Command_Line_Options にあります。

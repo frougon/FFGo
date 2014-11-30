@@ -1,0 +1,483 @@
+# Italian translations for FGo! package.
+# Copyright (C) 2010-2014 THE Fgo!'s COPYRIGHT HOLDER
+# This file is distributed under the same license as the FGo! package.
+# Philip Lacroix <philnx AT posteo DOT de>, 2013-2014.
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.5.4\n"
+"POT-Creation-Date: 2014-11-06 18:44+CET\n"
+"PO-Revision-Date: 2014-11-11 18:30+0200\n"
+"Last-Translator: Philip Lacroix <philnx AT posteo DOT de>\n"
+"Language-Team: \n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: ENCODING\n"
+"Generated-By: pygettext.py 1.5\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Lokalize 1.4\n"
+
+#: src/config.py:633
+msgid "Modification of apt.dat.gz detected."
+msgstr "Sono state rilevate delle modifiche a apt.dat.gz."
+
+#: src/config.py:666
+msgid ""
+"Generating airport database,\n"
+"this can take a while..."
+msgstr ""
+"Generazione del database degli aeroporti in corso:\n"
+"ciò potrebbe richiedere un po' di tempo..."
+
+#: src/config.py:855
+msgid ""
+"Cannot read version number of apt.dat database.\n"
+"\n"
+"FGo! expects a proper header information at the beginning of apt.dat. For "
+"details about data format see http://data.x-plane.com/designers.html#Formats"
+msgstr ""
+"Impossibile leggere il numero di versione del database apt.dat.\n"
+"\n"
+"FGo! si aspetta di trovare un'intestazione corretta all'inizio di apt.dat."
+"Per dettagli sui formati vedi http://data.x-plane.com/designers.html#Formats"
+
+#: src/config.py:859 src/config.py:863 src/config.py:867
+#: src/gui/mainwindow.py:825
+msgid "Error"
+msgstr "Errore"
+
+#: src/config.py:862
+msgid "Cannot read apt.dat database."
+msgstr "Impossibile leggere il database apt.dat."
+
+#: src/config.py:866
+msgid "Cannot find apt.dat database."
+msgstr "Impossibile trovare il database apt.dat."
+
+#: src/gui/configwindow.py:33 src/gui/configwindow.py:302
+#: src/gui/configwindow.py:629
+msgid "Scenery"
+msgstr "Scenario"
+
+#: src/gui/configwindow.py:35 src/gui/configwindow.py:562
+#: src/gui/configwindow.py:611 src/gui/configwindow.py:629
+#: src/gui/mainwindow.py:38 src/gui/mainwindow.py:529
+msgid "Default"
+msgstr "Default"
+
+#: src/gui/configwindow.py:38 src/gui/configwindow.py:307
+#: src/gui/configwindow.py:646
+msgid "Automatic"
+msgstr "Automatico"
+
+#: src/gui/configwindow.py:40 src/gui/configwindow.py:646
+msgid "Manual"
+msgstr "Manuale"
+
+#: src/gui/configwindow.py:65 src/gui/mainwindow.py:59
+msgid "Preferences"
+msgstr "Preferenze"
+
+#: src/gui/configwindow.py:77 src/gui/configwindow.py:380
+msgid "FlightGear settings"
+msgstr "Impostazioni di FlightGear"
+
+#: src/gui/configwindow.py:82 src/gui/configwindow.py:498
+msgid "TerraSync settings"
+msgstr "Impostazioni di TerraSync"
+
+#: src/gui/configwindow.py:87 src/gui/configwindow.py:572
+msgid "Miscellaneous"
+msgstr "Altre impostazioni"
+
+#: src/gui/configwindow.py:102
+msgid "Save settings"
+msgstr "Salva impostazioni"
+
+#: src/gui/configwindow.py:109
+msgid "Cancel"
+msgstr "Annulla"
+
+#: src/gui/configwindow.py:139 src/gui/configwindow.py:199
+#: src/gui/configwindow.py:391 src/gui/configwindow.py:509
+msgid "Path to executable file:"
+msgstr "Percorso del file eseguibile:"
+
+#: src/gui/configwindow.py:175 src/gui/configwindow.py:456
+msgid "Additional aircraft path:"
+msgstr "Percorso aggiuntivo per gli aerei:"
+
+#: src/gui/configwindow.py:187 src/gui/configwindow.py:478
+msgid "Working directory (optional):"
+msgstr "Directory di lavoro (facoltativa):"
+
+#: src/gui/configwindow.py:211 src/gui/configwindow.py:530
+msgid "Scenery path:"
+msgstr "Percorso dello scenario:"
+
+#: src/gui/configwindow.py:238
+msgid ""
+"Enter the path to \"fgfs\" file, or \"run_fgfs.sh\", if you are using\n"
+"download_and_compile.sh scripts."
+msgstr ""
+"Inserire il percorso del file \"fgfs\", oppure di \"run_fgfs.sh\" se\n"
+"si stanno utilizzando gli script \"download_and_compile.sh\"."
+
+#: src/gui/configwindow.py:240
+msgid "Path to FlightGear's main directory."
+msgstr "Percorso della directory principale di FlightGear."
+
+#: src/gui/configwindow.py:241
+msgid ""
+"Path to scenery. You can specify more than one path (separated by a colon)\n"
+"in order from highest to lowest layer."
+msgstr ""
+"Percorso dello scenario. È possibile specificare più percorsi,\n"
+"separandoli tra loro col carattere \":\" e ordinandoli dal livello\n"
+"più alto a quello più basso."
+
+#: src/gui/configwindow.py:243
+msgid ""
+"Path to additional aircraft directory. Multiple directories separated by\n"
+"a colon can be included. Leave it empty if you are not using additional\n"
+"aircraft directories."
+msgstr ""
+"Percorso aggiuntivo per gli aerei. È possibile specificare più directory\n"
+"separandole tra loro col carattere \":\". Lasciare il campo vuoto se non\n"
+"si utilizzano percorsi aggiuntivi."
+
+#: src/gui/configwindow.py:246
+msgid ""
+"Optional parameter specifying FlightGear's working directory.\n"
+"That is the directory where logs or screen-shots will be saved. If left "
+"blank,\n"
+"the working directory is the user's home directory."
+msgstr ""
+"Parametri facoltativi per specificare la directory di lavoro di FlightGear:\n"
+"in questa directory verranno salvati i file di log e gli screenshot. Se il\n"
+"campo è vuoto verrà utilizzata la directory dell'utente."
+
+#: src/gui/configwindow.py:249
+msgid ""
+"Enter the path to \"terrasync\" file, or \"run_terrasync.sh\", if you are "
+"using\n"
+"download_and_compile.sh scripts."
+msgstr ""
+"Inserire il percorso del file \"terrasync\", oppure di \"run_terrasync.sh\"\n"
+"se si stanno utilizzando gli script \"download_and_compile.sh\"."
+
+#: src/gui/configwindow.py:251
+msgid "Directory where TerraSync saves downloaded scenery."
+msgstr "Directory in cui TerraSync salva gli scenari scaricati."
+
+#: src/gui/configwindow.py:253
+msgid "Port address used by TerraSync."
+msgstr "Porta utilizzata da TerraSync."
+
+#: src/gui/configwindow.py:254
+msgid ""
+"Choose other language. If not selected,\n"
+"FGo! will try to choose the system language."
+msgstr ""
+"Scegliere un'altra lingua. Se nessuna lingua è stata\n"
+"selezionata verrà utilizzata quella del sistema."
+
+#: src/gui/configwindow.py:256
+msgid ""
+"Select data source where FGo! will be looking for information about runways "
+"or\n"
+"parking positions. There are two options:\n"
+"\n"
+"Default - FGo! will show runway numbers based on ~/.fgo/apt file,\n"
+"    which is generated from FG_ROOT/Airports/apt.dat.gz database.\n"
+"    Parking names will be taken from FG_ROOT/AI/Airports directory.\n"
+"\n"
+"Scenery - FGo! will show runway numbers based on ~/.fgo/apt file,\n"
+"    which is generated from FG_ROOT/Airports/apt.dat.gz database.\n"
+"    Parking names will be taken from FG_SCENERY/Airports folder\n"
+"    - or folders - if multiple scenery paths are provided.\n"
+"\n"
+"Generally speaking: \"Default\" option will tell FGo! to show the same\n"
+"data that FlightGear uses by default when selecting starting location,\n"
+"while \"Scenery\" option will tell FGo! to look for that data\n"
+"directly in scenery folder. In that latter case, you may add\n"
+"--prop:/sim/paths/use-custom-scenery-data=true argument into command\n"
+"line options window to tell FlightGear to use the same data.\n"
+"\n"
+"If not sure which option you should choose, the best is to stick\n"
+"with the default setting."
+msgstr ""
+"Selezionare la fonte in cui FGo! cercherà le informazioni sulla posizione\n"
+"delle piste e dei parcheggi. Sono disponibili due opzioni:\n"
+"\n"
+"Default - FGo! mostrerà i numeri delle piste basandosi sul file ~/.fgo/apt,\n"
+"   generato a partire dal database FG_ROOT/Airports/apt.dat.gz. I numeri\n"
+"   dei parcheggi verranno prelevati dalla directory FG_ROOT/Airports.\n"
+"\n"
+"Scenery - FGo! mostrerà i numeri delle piste basandosi sul file ~/.fgo/apt,\n"
+"   generato dal database FG_ROOT/Airports/apt.dat.gz, mentre i numeri\n"
+"   dei parcheggi verranno prelevati dalla directory (o dalle directory, se\n"
+"   sono stati definiti più percorsi) FG_SCENERY/Airports. \n"
+"\n"
+"In generale, con l'opzione \"Default\" FGo! mostra gli stessi dati usati\n"
+"da FlightGear quando viene selezionata la località di partenza, mentre\n"
+"scegliendo \"Scenery\" FGo! cerca i dati nella directory dello scenario.\n"
+"In quest'ultimo caso si può aggiungere, nella finestra delle opzioni,\n"
+"l'argomento '--prop:/sim/paths/use-custom-scenery-data=true', per far\n"
+"sì che FlightGear utilizzi gli stessi dati.\n"
+"\n"
+"Se non si è sicuri su quale opzione scegliere è preferibile attenersi alle\n"
+"impostazioni predefinite."
+
+#: src/gui/configwindow.py:277
+msgid ""
+"Automatic - FGo! will try to keep track of changes of\n"
+"    FG_ROOT/Airports/apt.dat.gz file, and will rebuild its airport database\n"
+"    when need it.\n"
+"\n"
+"Manual - \"Rebuild Airport Database\" button needs to be used every time\n"
+"    FG_ROOT/Airports/apt.dat.gz is changed."
+msgstr ""
+"Automatico - FGo! proverà a tenere conto delle modifiche apportate\n"
+"  al file FG_ROOT/Airports/apt.dat.gz, ricostruendo quando necessario\n"
+"  il database degli aeroporti.\n"
+"\n"
+"Manuale - Ogni volta che il file FG_ROOT/Airports/apt.dat.gz è stato\n"
+"  modificato bisogna utilizzare il pulsante \"Ricostruisci il database\n"
+"  degli aeroporti\"."
+
+#: src/gui/configwindow.py:283
+msgid ""
+"Build new airport database from current FG_ROOT/Airports/apt.dat.gz.\n"
+"Useful in case when apt.dat.gz file has been updated."
+msgstr ""
+"Ricostruire il database degli aeroporti a partire dal file\n"
+"FG_ROOT/Airports/apt.dat.gz corrente. Utile nel caso in\n"
+"cui il file sia stato aggiornato."
+
+#: src/gui/configwindow.py:285
+msgid ""
+"Set the base font size in the range from {0} to {1}. Zero is a special\n"
+"value that sets font to a platform-dependent default size."
+msgstr ""
+"Impostare la dimensione di base del carattere, compresa nell'intervallo tra {0}\n"
+"e {1}. Il valore speciale zero assegna al carattere una dimensione predefinita\n"
+"dipendente dalla piattaforma."
+
+#: src/gui/configwindow.py:402 src/gui/configwindow.py:423
+#: src/gui/configwindow.py:444 src/gui/configwindow.py:467
+#: src/gui/configwindow.py:489 src/gui/configwindow.py:520
+#: src/gui/configwindow.py:541
+msgid "Find"
+msgstr "Cerca"
+
+#: src/gui/configwindow.py:551
+msgid "Port:"
+msgstr "Porta:"
+
+#: src/gui/configwindow.py:581
+msgid "Change language:"
+msgstr "Selezione lingua:"
+
+#: src/gui/configwindow.py:593
+msgid "Font size:"
+msgstr "Dimensione del carattere:"
+
+#: src/gui/configwindow.py:624
+msgid "Airport data source:"
+msgstr "Sorgente dati degli aeroporti:"
+
+#: src/gui/configwindow.py:641
+msgid "Airport database update:"
+msgstr "Aggiornamento database degli aeroporti:"
+
+#: src/gui/configwindow.py:658
+msgid "Rebuild Airport Database"
+msgstr "Ricostruire database degli aeroporti"
+
+#: src/gui/fglauncher.py:43
+msgid "FlightGear is running..."
+msgstr "FlightGear è stato avviato..."
+
+#: src/gui/mainwindow.py:37 src/gui/mainwindow.py:492
+#: src/gui/mainwindow.py:503
+msgid "None"
+msgstr "-"
+
+#: src/gui/mainwindow.py:43
+msgid "Load"
+msgstr "Carica"
+
+#: src/gui/mainwindow.py:44
+msgid "Save as..."
+msgstr "Salva come..."
+
+#: src/gui/mainwindow.py:47 src/gui/mainwindow.py:214
+msgid "Save & Quit"
+msgstr "Salva ed esci"
+
+#: src/gui/mainwindow.py:49
+msgid "Quit"
+msgstr "Esci"
+
+#: src/gui/mainwindow.py:50
+msgid "File"
+msgstr "File"
+
+#: src/gui/mainwindow.py:53
+msgid "Show installed airports only"
+msgstr "Mostra solo gli aeroporti installati"
+
+#: src/gui/mainwindow.py:56
+msgid "Update list of installed airports"
+msgstr "Aggiorna la lista degli aeroporti installati"
+
+#: src/gui/mainwindow.py:61
+msgid "Settings"
+msgstr "Impostazioni"
+
+#: src/gui/mainwindow.py:66
+msgid "Tools"
+msgstr "Strumenti"
+
+#: src/gui/mainwindow.py:69 src/gui/mainwindow.py:72 src/gui/mainwindow.py:988
+msgid "Help"
+msgstr "Aiuto"
+
+#: src/gui/mainwindow.py:71 src/gui/mainwindow.py:269
+msgid "About"
+msgstr "Informazioni su FGo!"
+
+#: src/gui/mainwindow.py:106 src/gui/mainwindow.py:193
+msgid "Clear"
+msgstr "Cancella"
+
+#: src/gui/mainwindow.py:130 src/gui/mainwindow.py:739
+msgid "Airport:"
+msgstr "Aeroporto:"
+
+#: src/gui/mainwindow.py:133
+msgid "Rwy:"
+msgstr "Pista:"
+
+#: src/gui/mainwindow.py:136
+msgid "Parking:"
+msgstr "Parcheggio:"
+
+#: src/gui/mainwindow.py:163
+msgid "Select Scenario"
+msgstr "Seleziona situazione "
+
+#: src/gui/mainwindow.py:207
+msgid "Scenery Prefetch"
+msgstr "Scarica preventivamente lo scenario"
+
+#: src/gui/mainwindow.py:218
+msgid "Reset"
+msgstr "Ripristina"
+
+#: src/gui/mainwindow.py:222
+msgid "Run FG"
+msgstr "Avvia FG"
+
+#. A list of translators that will be displayed in "About" window.
+#. Suggested format for this entry is:
+#.
+#. Translation:
+#. Name or nickname of first translator
+#. Name or nickname of second translator
+#. etc.
+#.
+#. This entry is optional. Don't edit it if you prefer to stay anonymous. 
+#: src/gui/mainwindow.py:257 src/gui/mainwindow.py:260
+msgid "Translation:"
+msgstr "Traduzione italiana: Philip Lacroix"
+
+#: src/gui/mainwindow.py:264
+msgid "Authors:"
+msgstr "Autori:"
+
+#: src/gui/mainwindow.py:284
+msgid "License"
+msgstr "Licenza"
+
+#: src/gui/mainwindow.py:287
+msgid "Close"
+msgstr "Chiudi"
+
+#: src/gui/mainwindow.py:392 src/gui/mainwindow.py:401
+msgid "Config Files"
+msgstr "File di configurazione"
+
+#: src/gui/mainwindow.py:561
+msgid "OK"
+msgstr "OK"
+
+#: src/gui/mainwindow.py:614
+msgid "[FGo! Warning] Scenery prefetch was unsuccessful."
+msgstr "[Avviso di FG0!] Non è stato possibile scaricare lo scenario."
+
+#: src/gui/mainwindow.py:806
+msgid "Starting %s with following options:"
+msgstr "Avvio di %s con le opzioni seguenti:"
+
+#: src/gui/mainwindow.py:821
+msgid "Unable to run FlightGear!"
+msgstr "Impossibile avviare FlightGear!"
+
+#: src/gui/mainwindow.py:822
+msgid ""
+"Please make sure that paths: FG_BIN and FG_ROOT\n"
+"in \"Preferences\" window are pointing to right directories."
+msgstr ""
+"Assicurarsi che i percorsi FG_BIN e FG_ROOT\n"
+"nella finestra \"Preferenze\" siano corretti."
+
+#: src/gui/mainwindow.py:844
+msgid "Starting TerraSync with following command:"
+msgstr "Avvio di TerraSync con il comando seguente:"
+
+#: src/gui/mainwindow.py:851
+msgid "Stopping TerraSync"
+msgstr "Arresto di TerraSync"
+
+#: src/gui/mainwindow.py:939
+msgid "Carrier:"
+msgstr "Portaerei:"
+
+#: src/gui/metar.py:52
+msgid "Decoded"
+msgstr "Decodificato"
+
+#: src/gui/metar.py:69
+msgid "Fetching report..."
+msgstr "Scaricamento del rapporto..."
+
+#: src/gui/metar.py:118 src/gui/metar.py:120
+msgid "Unable to download data."
+msgstr "Impossibile scaricare i dati."
+
+#: src/gui/metar.py:187
+msgid ""
+"Click here to download the METAR report\n"
+"for selected (or nearest) airport."
+msgstr ""
+"Fare clic qui per scaricare il rapporto METAR per\n"
+"l'aeroporto selezionato (o per quello più vicino)."
+
+#~ msgid ""
+#~ "Usage: fgo\n"
+#~ "This program does not use command line options. Edit fgo/data/config/"
+#~ "presets\n"
+#~ "file if you need to run FGo! with some pre-configurations."
+#~ msgstr ""
+#~ "Utilizzo: fgo\n"
+#~ "Questo programma non prevede opzioni a linea di comando. Se\n"
+#~ "si desidera utilizzare FGo! con delle pre-configurazioni particolari,\n"
+#~ "modificare il file fgo/data/config/presets."
+
+#~ msgid "Search"
+#~ msgstr "Cerca"
+
+#~ msgid "Selected Scenarios:"
+#~ msgstr "Selezionate:"
