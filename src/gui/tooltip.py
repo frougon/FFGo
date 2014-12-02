@@ -1,7 +1,7 @@
 """Tooltip widget"""
 
 
-from Tkinter import *
+from tkinter import *
 
 from ..constants import MESSAGE_BG_COL, TOOLTIP_DELAY
 

@@ -6,12 +6,12 @@ FGo! - シンプルなFlightGearのGUIランチャー
 
 OS GNU/Linux
 FlightGear
-Python 2.7.8 *
+Python 3.4.2 *
 TKinter
 Python Imaging Library (PIL) 1.1.7、 もしくはPillow (PILからの派生) 2.5.1 と ImageTk モジュール **
 Tcl/Tk 8.6
 
-*  FGo! は Python 2.x 系とのみ互換性があります。
+*  FGo! は Python 3.x 系とのみ互換性があります。
 ** 本ライブラリはFGo! を走らせるのに必須ではありませんが、これがないと航空機のサムネイルが表示されません。
 
 ここで提示したソフトウェアのバージョンは開発プロセス中で使用されたものです。FGo!は以前の(もしくは、もっと新しい)バージョンのソフトウェアでも動くかもしれませんが、それらではテストしていません。
@@ -23,8 +23,8 @@ Tcl/Tk 8.6
 このプログラムはインストールを必要とせず、単にアーカイブを任意の場所に展開してから、初めて起動する前に全てのソフトウェア要件が満たされているか確認してください。
 
 Debian と Debian ベースのディストリビューションでは、以下のパッケージが必要になります:
-python, python-tk, tcl8.x and tk8.x; オプションで python-imaging-tk もしくは python-pil.imagetk が特定のディストリビューションで利用可能であり、インストールできるでしょう。 
-簡単にインストールするには、お気に入りのパッケージマネージャで python-imaging-tk か python-pil.imagetk を選択すると、他の必要な物も自動でインストールされます。
+python3, python3-tk, tcl8.x and tk8.x; オプションで python3-imaging-tk もしくは python3-pil.imagetk が特定のディストリビューションで利用可能であり、インストールできるでしょう。 
+簡単にインストールするには、お気に入りのパッケージマネージャで python3-imaging-tk か python3-pil.imagetk を選択すると、他の必要な物も自動でインストールされます。
 
 Slackware とその互換システムでは、 FGo! のSlackBuild スクリプトが利用可能です。
 プログラムをシステムワイドでクリーンにインストールするためにパッケージを生成するためのスクリプトが含まれています。
@@ -36,7 +36,7 @@ SlackBuild公式webサイト: http://www.slackbuilds.org からダウンロー�
 
 実行
 
-プログラムのメインディレクトリにある "fgo" ファイルをクリックするか、コンソールで "./fgo" もしくは"python fgo"コマンドを実行してください。 
+プログラムのメインディレクトリにある "fgo" ファイルをクリックするか、コンソールで "./fgo" もしくは"python3 fgo"コマンドを実行してください。 
 
 FlightGearとTerrasyncの出力メッセージにアクセスするために、FGo!をコンソールで実行することを推奨します。
 

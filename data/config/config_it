@@ -9,8 +9,8 @@
 # --multiplay=out,10,MPSERVER_ADDRESS,5000
 
 ## Inserire il proprio indicativo di chiamata (call sign); attualmente questo
-## è limitato a sette caratteri. Per verificare se il proprio identificativo è
-## già utilizzato visitare il sito http://fgfs.i-net.hu/modules/fgtracker/
+## è limitato a sette caratteri. Per verificare se il proprio indicativo è già
+## utilizzato visitare il sito http://fgfs.i-net.hu/modules/fgtracker/
 # --callsign=
 
 ## OPZIONI AMBIENTE

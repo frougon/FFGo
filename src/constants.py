@@ -6,8 +6,8 @@ from os.path import expanduser, join, pardir
 
 # FGo! related constants.
 
-NAME = 'FGo! 1.5.5'
-USER_AGENT = 'FGo!/1.5.5 (+http://sites.google.com/site/erobosprojects/flightgear/add-ons/fgo)'
+NAME = 'FGo! 1.6.0 Alpha'
+USER_AGENT = 'FGo!/1.6.0 (+http://sites.google.com/site/erobosprojects/flightgear/add-ons/fgo)'
 COPYRIGHT = "Copyright 2009-2014 by\nRobert 'erobo' Leda  <erobo@wp.pl>"
 AUTHORS = 'Robert Leda\nFlorent Rougon'
 LICENSE = \

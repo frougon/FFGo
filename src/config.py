@@ -1,16 +1,17 @@
 """This module process data from ~/.fgo folder."""
 
+import sys
 import os
 import gzip
 import gettext
-import codecs
 import traceback
-from Tkinter import IntVar, StringVar
-from tkMessageBox import showerror
-import tkFont
+from xml.etree.ElementTree import ElementTree
+from tkinter import IntVar, StringVar
+from tkinter.messagebox import showerror
+import tkinter.font
 
-from gui.infowindow import InfoWindow
-from constants import *
+from .gui.infowindow import InfoWindow
+from .constants import *
 
 
 class Config:
@@ -94,7 +95,7 @@ class Config:
 
     def setTkDefaultFontSize(self):
         """Save unaltered TkDefaultFont size."""
-        size = tkFont.nametofont("TkDefaultFont").actual()["size"]
+        size = tkinter.font.nametofont("TkDefaultFont").actual()["size"]
         self.TkDefaultFontSize.set(size)
 
     def setupFonts(self, init=False):
@@ -123,7 +124,7 @@ class Config:
             return int(round(baseSize * factor))
 
         def configFontSize(style, factor):
-            font = tkFont.nametofont("Tk%sFont" % style)
+            font = tkinter.font.nametofont("Tk%sFont" % style)
             font.configure(size=scale(factor))
 
         # Configure built-in fonts
@@ -137,18 +138,16 @@ class Config:
         # Create or configure custom fonts, depending on 'init'
         aboutTitleFontSize = scale(42 / 18.)
         if init:
-            self.aboutTitleFont = tkFont.Font(
+            self.aboutTitleFont = tkinter.font.Font(
                 family="Helvetica", weight="bold", size=aboutTitleFontSize)
         else:
             self.aboutTitleFont.configure(size=aboutTitleFontSize)
 
     def makeInstalledAptList(self):
-        airports = self._findInstalledApt()
-
+        airports = sorted(self._findInstalledApt())
         s = '\n'.join(airports)
-        fout = open(INSTALLED_APT, 'w')
-        fout.writelines(s)
-        fout.close()
+        with open(INSTALLED_APT, 'w') as fout:
+            fout.writelines(s)
 
     def readCoord(self):
         """Read coordinates list (makes new one if non exists).
@@ -162,17 +161,14 @@ class Config:
                 self._makeApt()
 
             res = {}
-            fin = open(APT)
-
-            for line in fin:
-                line = line.strip().split('=')
-                icao = line[0]
-                # Read coordinates.
-                coords_line = line[-1].split(';')
-                coords = (float(coords_line[0]), float(coords_line[1]))
-                res[icao] = coords
-
-            fin.close()
+            with open(APT, encoding='utf-8') as fin:
+                for line in fin:
+                    line = line.strip().split('=')
+                    icao = line[0]
+                    # Read coordinates.
+                    coords_line = line[-1].split(';')
+                    coords = (float(coords_line[0]), float(coords_line[1]))
+                    res[icao] = coords
             return res
 
         except IOError:
@@ -181,7 +177,7 @@ class Config:
     def readMetarDat(self):
         """Fetch METAR station list from metar.dat.gz file"""
         try:
-            fin = gzip.open(self.metar_path)
+            fin = gzip.open(self.metar_path, mode='rt', encoding='utf-8')
             res = []
             for line in fin:
                 if not line.startswith('#'):
@@ -285,14 +281,14 @@ class Config:
     def write(self, text, path=None):
         """Write options to a file.
 
-        text argument should be a content of text window
+        text argument should be the content of text window
         path is a path to different than default config file.
 
         """
         if not path:
             path = CONFIG
         options = []
-        keys = self.keywords.keys()
+        keys = list(self.keywords.keys())
         keys.sort()
         # Text
         processed_text = []
@@ -319,14 +315,13 @@ class Config:
         for k in keys:
             v = self.keywords[k]
             if v.get() not in ('Default', 'None'):
-                options.append(k + unicode(v.get()))
+                options.append(k + str(v.get()))
 
         s = '\n'.join(options)
 
-        config_out = codecs.open(path, 'w', 'utf-8')
-        config_out.write(s + '\n' + CUT_LINE + '\n')
-        config_out.write(processed_text)
-        config_out.close()
+        with open(path, mode='w', encoding='utf-8') as config_out:
+            config_out.write(s + '\n' + CUT_LINE + '\n')
+            config_out.write(processed_text)
 
     def _findInstalledApt(self):
         """Walk thru all scenery and find installed airports.
@@ -359,7 +354,6 @@ class Config:
                     res[k] = None
 
         res = res.keys()
-        res.sort()
         return res
 
     def _calculateRange(self, coordinates):
@@ -419,22 +413,20 @@ class Config:
                 path = os.path.join(DEFAULT_CONFIG_DIR, 'config_' + lang_code)
             # Load presets if exists.
             try:
-                presets = codecs.open(PRESETS, encoding='utf-8')
-                for line in presets:
-                    line = line.strip()
-                    if not line.startswith('#'):
-                        res.append(line)
-                presets.close()
+                with open(PRESETS, encoding='utf-8') as presets:
+                    for line in presets:
+                        line = line.strip()
+                        if not line.startswith('#'):
+                            res.append(line)
             except IOError:
                 pass
 
         try:
-            config_in = codecs.open(path, encoding='utf-8')
-            for line in config_in:
-                line = line.strip()
-                if line != CUT_LINE:
-                    res.append(line)
-            config_in.close()
+            with open(path, encoding='utf-8') as config_in:
+                for line in config_in:
+                    line = line.strip()
+                    if line != CUT_LINE:
+                        res.append(line)
             return res
         except IOError:
             return ['']
@@ -494,31 +486,31 @@ class Config:
                 self._makeApt()
 
             icao, name, rwy = [], [], []
-            fin = open(APT)
+            with open(APT, encoding='utf-8') as fin:
 
-            if self.filtredAptList.get():
-                installed_apt = self._readInstalledAptList()
-                for line in fin:
-                    line = line.strip().split('=')
-                    if line[0] in installed_apt:
-                        installed_apt.remove(line[0])
+                if self.filtredAptList.get():
+                    installed_apt = self._readInstalledAptList()
+                    for line in fin:
+                        line = line.strip().split('=')
+                        if line[0] in installed_apt:
+                            installed_apt.remove(line[0])
+                            icao.append(line[0])
+                            name.append(line[1])
+                            rwy_list = []
+                            for i in line[2:-1]:
+                                rwy_list.append(i)
+                            rwy_list.sort()
+                            rwy.append(rwy_list)
+
+                else:
+                    for line in fin:
+                        line = line.strip().split('=')
                         icao.append(line[0])
                         name.append(line[1])
                         rwy_list = []
                         for i in line[2:-1]:
                             rwy_list.append(i)
-                        rwy_list.sort()
                         rwy.append(rwy_list)
-
-            else:
-                for line in fin:
-                    line = line.strip().split('=')
-                    icao.append(line[0])
-                    name.append(line[1])
-                    rwy_list = []
-                    for i in line[2:-1]:
-                        rwy_list.append(i)
-                    rwy.append(rwy_list)
 
             fin.close()
             return icao, name, rwy
@@ -536,57 +528,71 @@ class Config:
             self.makeInstalledAptList()
 
         res = []
-        fin = open(INSTALLED_APT)
-        for line in fin:
-            icao = line.strip()
-            res.append(icao)
-        fin.close()
+        with open(INSTALLED_APT, encoding='utf-8') as fin:
+            for line in fin:
+                icao = line.strip()
+                res.append(icao)
 
         return res
 
     def _readScenarios(self):
         """Walk through AI scenarios and read carrier data.
 
-        Return list of all scenarios and carrier data list
-
+        Return two lists:
+            scenarios: [scenario name, ...]
+            carrier data: [[name, parkking pos, ..., scenario name], ...]
+        Return two empty lists if no scenario is found.
         """
         try:
             carriers = []
             scenarios = []
-            L = []
-            is_carrier = False
-
             for f in os.listdir(self.ai_path):
                 path = os.path.join(self.ai_path, f)
 
                 if os.path.isfile(path):
                     if f.lower().endswith('xml'):
-                        scenarios.append(f[:-4])
-                        fin = open(path)
-
-                        for line in fin:
-                            line = line.strip()
-                            if '<type>' in line.lower():
-                                typ = line[6:-7]
-                                if typ.lower() == 'carrier':
-                                    is_carrier = True
-                                    L = []
-                            if '</entry>' in line.lower():
-                                if L:
-                                    L.append(f[:-4])
-                                    carriers.append(L)
-                                L = []
-                                is_carrier = False
-                            if is_carrier:
-                                if '<name>' in line.lower():
-                                    L.append(line[6:-7])
-                        fin.close()
+                        scenario_name = f[:-4]
+                        scenarios.append(scenario_name)
+                        carriers = self._append_carrier_data(carriers, path,
+                                                             scenario_name)
             carriers.sort()
             scenarios.sort()
             return scenarios, carriers
 
         except OSError:
             return [], []
+
+    def _append_carrier_data(self, list_, path, scenario_name):
+        with open(path) as xml:
+            try:
+                list_copy = list_[:]
+                root = self._get_root(xml)
+                scenario = root.find('scenario')
+                entries = scenario.findall('entry')
+                for e in entries:
+                    name = e.find('type')
+                    if name.text == 'carrier':
+                        data = self._get_carrier_data(e, scenario_name)
+                        list_copy.append(data)
+                return list_copy
+            except (AttributeError, OSError):
+                return list_
+
+    def _get_root(self, xml):
+        tree = ElementTree()
+        tree.parse(xml)
+        return tree.getroot()
+
+    def _get_carrier_data(self, e, scenario_name):
+        data = []
+        for child in e:
+            if child.tag == 'name':
+                data.append(child.text)
+            if child.tag == 'parking-pos':
+                parking_name = child.find('name')
+                data.append(parking_name.text)
+        data.append(scenario_name)
+        return data
 
     def _setLanguage(self, lang):
         # Initialize provided language...
@@ -654,7 +660,7 @@ class _ProcessApt:
                 self.close_window()
                 return
             except:
-                print traceback.format_exc()
+                print(traceback.format_exc(), file=sys.stderr)
                 self.show_aptdat_general_error()
                 self.close_window()
                 return
@@ -694,9 +700,10 @@ class _ProcessApt:
             return number
 
     def read_header(self, fin):
-        data = fin.read(24).split()
+        data = fin.read(24).decode('utf-8')
+        d = data.split()
         try:
-            origin, number, version = data[0], data[1], data[2]
+            origin, number, version = d[0], d[1], d[2]
             return origin, number, version
         except:
             raise AptdatHeaderError
@@ -711,9 +718,8 @@ class _ProcessApt:
     def process_atp(self, version):
         with gzip.open(self.apt_path) as fin:
             for line in fin:
-                # apt.dat is apparently using iso-8859-1 coding,
-                # so we need to decode it to utf-8.
-                line = line.decode('iso-8859-1').encode('utf-8')
+                # The apt.dat is using iso-8859-1 encoding.
+                line = line.decode('iso-8859-1')
                 e = line.strip().split()
 
                 self.process_airport_data(version, e)
@@ -842,7 +848,8 @@ class _ProcessApt:
             self.lon /= self.runway_count
 
     def set_coordinates(self):
-        coords = ';'.join([str(self.lat), str(self.lon)])
+        coords = ';'.join(['{0:.8f}'.format(round(self.lat, 8)),
+                           '{0:.8f}'.format(round(self.lon, 8))])
         self.entry = '='.join([self.entry, coords])
         self.data.append(self.entry)
 

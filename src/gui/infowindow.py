@@ -1,16 +1,17 @@
-"""Generic message window with close button deactivated"""
+"""Generic message window with the close button deactivated"""
 
 
 from string import punctuation
 
-from Tkinter import Toplevel, Label
+from tkinter import Toplevel, Label
 
-import tkFont
+import tkinter.font
+
 
 class InfoWindow(Toplevel):
 
     def __init__(self, master=None, text=None,
-                 font=tkFont.nametofont("TkHeadingFont"), cnf={}, **kw):
+                 font=tkinter.font.nametofont("TkHeadingFont"), cnf={}, **kw):
         Toplevel.__init__(self, master, cnf, **kw)
         self._window(master, text, font)
 

@@ -3,9 +3,10 @@
 
 from math import sqrt
 from socket import setdefaulttimeout, timeout
-from urllib2 import Request, URLError, build_opener, HTTPHandler
-from thread import start_new_thread
-from Tkinter import *
+from urllib.request import Request, build_opener, HTTPHandler
+from urllib.error import URLError
+from _thread import start_new_thread
+from tkinter import *
 
 from ..constants import USER_AGENT
 
@@ -50,7 +51,7 @@ class Metar:
         self.frame1.pack(side='top', fill='x')
 #------ Decoded check button --------------------------------------------------
         self.decoded_cb = Checkbutton(self.frame1, text=_('Decoded'),
-                                     variable=self.decoded)
+                                      variable=self.decoded)
         self.decoded_cb.pack(side='left')
 
         self.frame2 = Frame(self.top, borderwidth=2, relief='sunken')
@@ -102,18 +103,15 @@ class Metar:
         if self._isOnMetarList(icao):
             decoded = self._getDecoded()
             url = \
-            ('http://weather.noaa.gov/pub/data/observations/metar/%s/%s.TXT' %
-                                                               (decoded, icao))
+                ('http://weather.noaa.gov/pub/data/observations/metar/%s/%s.TXT' %
+                 (decoded, icao))
             try:
                 request = Request(url)
                 request.add_header('User-Agent', USER_AGENT)
                 opener = build_opener(HTTPHandler(debuglevel=DEBUG_LEVEL))
                 report = opener.open(request).read()
+                report = report.decode('ascii')
                 report = report.strip()
-            # FIXME
-            # The timeout exception seems not to be caught on my machine (with
-            # Debian Squeeze and Python 2.5 or 2.6) if internet connection is
-            # disabled. Have no idea what is wrong.
             except timeout:
                 report = _('Unable to download data.')
             except URLError:
@@ -166,11 +164,8 @@ class Metar:
     def _setLabelSize(self):
         """Adjust label dimensions according to text size."""
         report = self.report.get()
-        report = report.split('\n')
-        width = -1
-        for line in report:
-            if len(line) > width:
-                width = len(line)
+        report = report.splitlines()
+        width = max(len(n) for n in report)
         height = len(report) + 2
         try:
             self.text.configure(width=width, height=height)

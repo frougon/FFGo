@@ -6,13 +6,13 @@ REQUISITI
 
 - Sistema operativo GNU/Linux
 - FlightGear
-- Python 2.7.8 *
+- Python 3.4.2 *
 - TKinter
 - Python Imaging Library (PIL) 1.1.7 o Pillow (fork di PIL) 2.5.1 con il
   modulo ImageTk **
 - Tcl/Tk 8.6
 
-*  FGo! è compatibile solo con Python 2.x.
+*  FGo! è compatibile solo con Python 3.x.
 ** Non è obbligatorio avere questa libreria per utilizzare FGo!, tuttavia
    senza di essa le miniature degli aerei non verranno visualizzate.
 
@@ -29,11 +29,12 @@ dove si desidera, assicurandosi che il software necessario sia stato installato
 prima che FGo! venga avviato per la prima volta.
 
 In Debian e nelle distribuzioni basate su Debian è necessario che i seguenti
-pacchetti siano installati: python, python-tk, tcl8.x e tk8.x; a seconda della
-distribuzione in uso è inoltre possibile installare python-imaging-tk, oppure
-python-pil.imagetk. Per un'installazione semplice, scegliere python-imaging-tk
-o python-pil.imagetk mediante il proprio gestore dei pacchetti preferito; tutte
-le dipendenze necessarie dovrebbero venire aggiunte automaticamente.
+pacchetti siano installati: python3, python3-tk, tcl8.x e tk8.x; a seconda
+della distribuzione in uso è inoltre possibile installare python3-imaging-tk,
+oppure python3-pil.imagetk. Per un'installazione semplice, scegliere
+python3-imaging-tk o python3-pil.imagetk mediante il proprio gestore dei
+pacchetti preferito; tutte le dipendenze necessarie dovrebbero venire aggiunte
+automaticamente.
 
 Per Slackware e i sistemi compatibili è disponibile uno SlackBuild, con cui è
 possibile generare, a partire dall'archivio originale di FGo!, un pacchetto che
@@ -46,7 +47,7 @@ scaricabile dal sito http://www.slackbuilds.org. Sui sistemi Slackware standard
 UTILIZZO
 
 Cliccare sul file "fgo" che si trova nella directory principale del programma,
-oppure avviarlo da terminale con il comando "./fgo" o "python fgo".
+oppure avviarlo da terminale con il comando "./fgo" o "python3 fgo".
 
 L'avvio da terminale è consigliato, poiché rende visibili i messaggi di
 FlightGear e di TerraSync.

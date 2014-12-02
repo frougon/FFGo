@@ -2,15 +2,15 @@
 
 
 import os
+import sys
 import subprocess
-import codecs
 import socket
 from gettext import translation
-from Tkinter import *
-import tkFileDialog as fd
-from ScrolledText import ScrolledText
+from tkinter import *
+import tkinter.filedialog as fd
+from tkinter.scrolledtext import ScrolledText
 from xml.etree.ElementTree import ElementTree
-from tkMessageBox import showerror
+from tkinter.messagebox import showerror
 
 try:
     from PIL import Image, ImageTk
@@ -18,11 +18,11 @@ try:
 except ImportError:
     PIL = False
     print ('[FGo! Warning] PIL library not found. Aircraft thumbnails '
-           'will not be displayed.')
+           'will not be displayed.', file=sys.stderr)
 
-from metar import Metar
-from configwindow import ConfigWindow
-from fglauncher import FGLauncher
+from .metar import Metar
+from .configwindow import ConfigWindow
+from .fglauncher import FGLauncher
 from ..constants import *
 
 
@@ -62,7 +62,7 @@ class App:
 
         self.toolsmenu = Menu(self.menubar, tearoff=0)
         self.toolsmenu.add_command(label='METAR',
-                                  command=self.showMETARWindow)
+                                   command=self.showMETARWindow)
         self.menubar.add_cascade(label=_('Tools'), menu=self.toolsmenu)
 
         self.helpmenu = Menu(self.menubar, tearoff=0)
@@ -212,7 +212,7 @@ class App:
         self.frame42.pack(side='right')
         # Buttons
         self.sq_button = Button(self.frame42, text=_('Save & Quit'),
-                                   command=self.saveAndQuit)
+                                command=self.saveAndQuit)
         self.sq_button.pack(side='left')
 
         self.reset_button = Button(self.frame42, text=_('Reset'), width=10,
@@ -248,7 +248,6 @@ class App:
         self.reset(first_run=True)
         self.startLoops()
         self.runTS()
-
 
     def about(self):
         """Create 'About' window"""
@@ -348,7 +347,7 @@ class App:
             self.aircraftList.insert('end', i)
 
     def buildAirportList(self):
-        L = zip(self.config.airport_icao, self.config.airport_name)
+        L = list(zip(self.config.airport_icao, self.config.airport_name))
         if self.airportList:
             self.airportList.delete(0, 'end')
 
@@ -407,7 +406,6 @@ class App:
                 pass
             t = self.text.get('0.0', 'end')
             self.config.write(text=t, path=p)
-
 
     def filterAirports(self):
         """Update airportList.
@@ -487,7 +485,8 @@ class App:
 
     def popupCarrier(self, event):
         """Make pop up menu."""
-        self.master.focus()  # Take focus out of search entry to stop search loop.
+        # Take focus out of search entry to stop search loop.
+        self.master.focus()
         popup = Menu(tearoff=0)
         popup.add_command(label=_('None'), command=self.resetCarrier)
         for i in self.config.carrier_list:
@@ -497,7 +496,8 @@ class App:
 
     def popupPark(self, event):
         """Make pop up menu."""
-        self.master.focus()  # Take focus out of search entry to stop search loop.
+        # Take focus out of search entry to stop search loop.
+        self.master.focus()
         popup = Menu(tearoff=0)
         if self.config.airport.get() != 'None':
             popup.add_command(label=_('None'),
@@ -507,11 +507,12 @@ class App:
                 #  Cut menu
                 if count % 20:
                     popup.add_command(label=i,
-                                   command=lambda i=i: self.config.park.set(i))
+                                      command=lambda i=i: self.config.park.set(i))
                 else:
                     popup.add_command(label=i,
-                                   command=lambda i=i: self.config.park.set(i),
-                                   columnbreak=1)
+                                      command=lambda i=i: self.config.park.set(
+                                          i),
+                                      columnbreak=1)
                 count += 1
         else:
             L = self.currentCarrier[1:-1]
@@ -523,7 +524,8 @@ class App:
 
     def popupRwy(self, event):
         """Make pop up menu."""
-        self.master.focus()  # Take focus out of search entry to stop search loop.
+        # Take focus out of search entry to stop search loop.
+        self.master.focus()
         if self.config.airport.get() != 'None':
             popup = Menu(tearoff=0)
             popup.add_command(label=_('Default'),
@@ -536,7 +538,8 @@ class App:
     def popupScenarios(self, event):
         """Make pop up list."""
         if not self.scenarioListOpen:
-            self.master.focus()  # Take focus out of search entry to stop search loop.
+            # Take focus out of search entry to stop search loop.
+            self.master.focus()
             self.scenarioListOpen = True
             self.scenarioList = Toplevel(borderwidth=1, relief='raised')
             self.scenarioList.overrideredirect(True)
@@ -611,7 +614,8 @@ class App:
             s.send(message)
             s.close()
         except:
-            print _('[FGo! Warning] Scenery prefetch was unsuccessful.')
+            print(_('[FGo! Warning] Scenery prefetch was unsuccessful.'),
+                  file=sys.stderr)
 
     def quit(self):
         """Quit application."""
@@ -673,9 +677,7 @@ class App:
         """Read parking positions from XML file."""
         res = []
         with open(xml_file) as xml:
-            tree = ElementTree()
-            tree.parse(xml)
-            root = tree.getroot()
+            root = self._get_root(xml)
             parking_list = root.find('parkingList')
             if parking_list is None:
                 parking_list = root.find('parkinglist')
@@ -689,26 +691,29 @@ class App:
         return res
 
     def read_scenario(self, scenario):
-        """Read description from given scenario."""
-        L = []
-        flag = False
+        """Read description from a scenario."""
+        text = ''
         file_name = scenario + '.xml'
         path = os.path.join(self.config.ai_path, file_name)
-        fin = codecs.open(path, encoding='utf-8')
+        with open(path) as xml:
+            root = self._get_root(xml)
+            # There is no consistency along scenario files where
+            # the <description> tag can be found in the root tree,
+            # therefore we are making a list of all occurrences
+            # of the tag and return the first element (if any).
+            descriptions = root.findall('.//description')
+            if descriptions:
+                text = self._rstrip_text_block(descriptions[0].text)
+        return text
 
-        for line in fin:
-            line = line.strip()
+    def _get_root(self, xml):
+        tree = ElementTree()
+        tree.parse(xml)
+        return tree.getroot()
 
-            if '<description>' in line.lower():
-                L.append(line[13:])
-                flag = True
-            elif '</description>' in line.lower():
-                L.append(line[:-14])
-                flag = False
-            elif flag:
-                L.append(line)
-
-        return '\n'.join(L)
+    def _rstrip_text_block(self, text):
+        rstripped_text = '\n'.join(line.lstrip() for line in text.splitlines())
+        return rstripped_text
 
     def reset(self, event=None, path=None, first_run=False):
         """Reset data"""
@@ -753,7 +758,8 @@ class App:
             pass
 
     def resetLists(self):
-        self.master.focus()  # Take focus out of search entry to stop search loop.
+        # Take focus out of search entry to stop search loop.
+        self.master.focus()
         self.buildAircraftList()
         self.buildAirportList()
         self.aircraftList.select_set(self.getIndex('a'))
@@ -802,12 +808,13 @@ class App:
                 options[0] = line[7:]
 
         config_in.close()
-        print '\n' + '=' * 80 + '\n'
-        print _('Starting %s with following options:') % options[0]
+        print('\n' + '=' * 80 + '\n', file=sys.stdout)
+        print(_('Starting %s with following options:') % options[0],
+              file=sys.stdout)
 
         for i in options[1:]:
-            print '\t%s' % i
-        print '\n' + '-' * 80 + '\n'
+            print('\t%s' % i)
+        print('\n' + '-' * 80 + '\n', file=sys.stdout)
 
         try:
             launcher = FGLauncher(self.master, options, FG_working_dir)
@@ -840,16 +847,17 @@ class App:
                                              self.config.TS_scenery.get())
             self.TerraSync = subprocess.Popen(options.split())
             self.TerraSync.poll()
-            print '-' * 80
-            print _('Starting TerraSync with following command:')
-            print options
-            print '-' * 80
+            print('-' * 80, file=sys.stdout)
+            print(_('Starting TerraSync with following command:'),
+                  file=sys.stdout)
+            print(options, file=sys.stdout)
+            print('-' * 80, file=sys.stdout)
         else:
             try:
                 os.kill(self.TerraSync.pid, 15)
-                print '-' * 80
-                print _('Stopping TerraSync')
-                print '-' * 80
+                print('-' * 80, file=sys.stdout)
+                print(_('Stopping TerraSync'), file=sys.stdout)
+                print('-' * 80, file=sys.stdout)
             except AttributeError:
                 return
 
@@ -974,15 +982,13 @@ class App:
         if language:
             lang_code = language
         else:
-            try:
-                lang_code = translation(
-                    MESSAGES, LOCALE_DIR).info()['language']
-            except IOError:
-                # Fall back to default.
-                lang_code = 'en'
+            lang_code = translation(MESSAGES, LOCALE_DIR).info()['language']
         path = os.path.join(HELP_DIR, 'help_' + lang_code)
+        if not os.path.isfile(path):
+            lang_code = 'en'
+            path = os.path.join(HELP_DIR, 'help_' + lang_code)
 
-        readme_in = codecs.open(path, encoding='utf-8')
+        readme_in = open(path, encoding='utf-8')
         text = readme_in.read()
         readme_in.close()
 

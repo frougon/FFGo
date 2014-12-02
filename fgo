@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 
 """FGo! - a simple GUI launcher for FlightGear Flight Simulator."""

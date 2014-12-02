@@ -242,3 +242,8 @@
 [BUGFIX]  Help window would not open if language in "Preferences" window was
           not set and no default system language was detected. (Philip Lacroix)
 [BUGFIX]  Fixed typo in "help_pl" file.
+
+1.6.0
+[FEATURE] Code ported to Python 3.
+[FEATURE] Installation instructions in help files updated.
+[BUGFIX]  Fixed typo in "help_it" file. (Philip Lacroix)

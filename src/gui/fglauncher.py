@@ -2,9 +2,9 @@
 
 
 import subprocess
-from Tkinter import *
+from tkinter import *
 
-from infowindow import InfoWindow
+from .infowindow import InfoWindow
 
 
 class FGLauncher:
@@ -26,7 +26,7 @@ class FGLauncher:
 
     def _checkIfFGHasQuit(self):
         if self.process.poll() is None:
-            self.master.after(1000, self._checkIfFGHasQuit)
+            self.master.after(100, self._checkIfFGHasQuit)
         else:
             self.quit()
 

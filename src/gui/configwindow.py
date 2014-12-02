@@ -2,10 +2,10 @@
 
 
 import os
-from Tkinter import *
-import tkFileDialog as fd
+from tkinter import *
+import tkinter.filedialog as fd
 
-from tooltip import ToolTip
+from .tooltip import ToolTip
 from ..constants import *
 
 
@@ -299,12 +299,12 @@ value that sets font to a platform-dependent default size.""").format(MIN_BASE_F
         self.tabMisc.configure(borderwidth=2, relief='ridge')
 
     def saveAndQuit(self):
-        if self.apt_data_source.get() == _('Scenery').decode('utf-8'):
+        if self.apt_data_source.get() == _('Scenery'):
             self.config.apt_data_source.set(1)
         else:
             self.config.apt_data_source.set(0)
 
-        if self.auto_update_apt.get() == _('Automatic').decode('utf-8'):
+        if self.auto_update_apt.get() == _('Automatic'):
             self.config.auto_update_apt.set(1)
         else:
             self.config.auto_update_apt.set(0)

@@ -6,13 +6,13 @@ WYMAGANIA
 
 - System operacyjny GNU/Linux
 - FlightGear
-- Python 2.7.8 *
+- Python 3.4.2 *
 - TKinter
-- Python Imaging Library (PIL) 1.1.7 lub Pillow (fork PIL-a) 2.5.1
+- Python Imaging Library (PIL) 1.1.7 lub Pillow (fork PIL'a) 2.5.1
   z modułem ImageTk **
 - Tcl/Tk 8.6
 
-*  FGo! jest kompatybilne tylko z Pythonem 2.x.
+*  FGo! jest kompatybilne tylko z Pythonem 3.x.
 ** Biblioteka ta nie jest wymagana do uruchomienia programu, jednak bez niej
    nie będą wyświetlane miniatury samolotów.
 
@@ -28,9 +28,9 @@ Program nie wymaga instalacji, przed pierwszym uruchomieniem należy się jednak
 upewnić się, że wszystkie wymagane zależności zostały zainstalowane.
 
 W Debianie, oraz dystrybucjach na nim opartych wymagane są następujące pakiety:
-python, python-tk, tcl8.x i tk8.x; oraz opcjonalnie (w zależności od
-dystrybucji): python-pil.imagetk lub python-imaging-tk. W menadżerze pakietów 
-wystarczy wybrać pakiet python-pil.imagetk lub python-imaging-tk, reszta 
+python3, python3-tk, tcl8.x i tk8.x; oraz opcjonalnie (w zależności od
+dystrybucji): python3-pil.imagetk lub python3-imaging-tk. W menadżerze pakietów 
+wystarczy wybrać pakiet python3-pil.imagetk lub python3-imaging-tk, reszta 
 zależności powinna zostać zainstalowana automatycznie razem z nim.
 
 Dla Slackware i kompatybilnych systemów dostępny jest SlackBuild dla FGo!.
@@ -44,7 +44,7 @@ dodatkowych paczek.
 URUCHAMIANIE
 
 Kliknij plik "fgo" w katalogu głównym programu, lub uruchom w konsoli 
-poleceniem "./fgo" lub "python fgo".
+poleceniem "./fgo" lub "python3 fgo".
 
 Uruchamianie FGo! w konsoli jest zalecane, gdyż daje dostęp do komunikatów
 wyświetlanych przez FlightGear i TerraSync.

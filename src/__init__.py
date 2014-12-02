@@ -7,7 +7,7 @@
 import gettext
 from sys import argv
 from os import chdir
-from Tkinter import Tk
+from tkinter import Tk
 
 
 def early_tk_init():
@@ -20,12 +20,12 @@ def early_tk_init():
 # definition time) because of the constructor's
 # 'font=tkFont.nametofont("TkTextFont")' optional argument.
 root = early_tk_init()
-from config import Config
-from gui.mainwindow import App
-from constants import LOCALE_DIR
+from .config import Config
+from .gui.mainwindow import App
+from .constants import LOCALE_DIR
 
 
-gettext.install('fgo', LOCALE_DIR, unicode=True)
+gettext.install('fgo', LOCALE_DIR)
 
 
 CLI_MESSAGE = """Usage: fgo
@@ -65,7 +65,7 @@ del root, early_tk_init
 
 def promptToNotUseCli():
     if len(argv) > 1:
-        print _(CLI_MESSAGE)
+        print(_(CLI_MESSAGE))
 
 if __name__ == '__main__':
     from sys import path
