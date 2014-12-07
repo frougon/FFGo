@@ -39,7 +39,7 @@ class Config:
         # ["ship name", "parking position"... , "scenario name"]
         self.carrier_list = []
 
-        self.settings = []  # List of all settings read from config file.
+        self.settings = []  # List of basic settings read from config file.
         self.text = ''  # String to be shown in command line options window.
 
         self.aircraft = StringVar()
@@ -237,8 +237,7 @@ class Config:
             self.TS.set(0)
             self.filtredAptList.set(0)
 
-        self.settings = self._read(path)
-        self.text = self._makeText()
+        self.settings, self.text = self._read(path)
 
         for line in self.settings:
             cut = line.find('=') + 1
@@ -290,27 +289,6 @@ class Config:
         options = []
         keys = list(self.keywords.keys())
         keys.sort()
-        # Text
-        processed_text = []
-        text = text.split('\n')
-
-        for line in text:
-            line = line.strip()
-            cut = line.find('=') + 1
-
-            if cut:
-                name = line[:cut]
-                value = line[cut:]
-            else:
-                name = ''
-
-            if name in keys:
-                self.keywords[name].set(value)
-            else:
-                if line != CUT_LINE:
-                    processed_text.append(line)
-
-        processed_text = '\n'.join(processed_text)
 
         for k in keys:
             v = self.keywords[k]
@@ -321,7 +299,12 @@ class Config:
 
         with open(path, mode='w', encoding='utf-8') as config_out:
             config_out.write(s + '\n' + CUT_LINE + '\n')
-            config_out.write(processed_text)
+            # Make sure the config file has exactly one newline at the end
+            while text.endswith('\n\n'):
+                text = text[:-1]
+            if not text.endswith('\n'):
+                text += '\n'
+            config_out.write(text)
 
     def _findInstalledApt(self):
         """Walk thru all scenery and find installed airports.
@@ -375,28 +358,14 @@ class Config:
         if self.FG_root.get():
             _ProcessApt(self.master, self.apt_path, head)
 
-    def _makeText(self):
-        """Filter config file entries to be shown in text window."""
-        L = []
-
-        for line in self.settings:
-            cut = line.find('=') + 1
-
-            if cut:
-                name = line[:cut]
-                value = line[cut:]
-
-                if name not in self.keywords:
-                    L.append(name + value)
-
-            else:
-                L.append(line)
-
-        return '\n'.join(L)
-
     def _read(self, path=None):
         """Read config file"""
-        res = []
+        # Data before the CUT_LINE in the config file, destined to
+        # self.settings
+        settings = []
+        # Data after the CUT_LINE in the config file, destined to
+        # self.text and to be parsed by CondConfigParser
+        condConfLines = []
         if not path:
             path = CONFIG
         # Use default config if no regular config exists.
@@ -417,19 +386,28 @@ class Config:
                     for line in presets:
                         line = line.strip()
                         if not line.startswith('#'):
-                            res.append(line)
+                            settings.append(line)
             except IOError:
                 pass
 
         try:
             with open(path, encoding='utf-8') as config_in:
+                beforeCutLine = True
                 for line in config_in:
-                    line = line.strip()
+                    if beforeCutLine:
+                        line = line.strip()
+
                     if line != CUT_LINE:
-                        res.append(line)
-            return res
+                        if beforeCutLine:
+                            settings.append(line)
+                        else:
+                            condConfLines.append(line)
+                    else:
+                        beforeCutLine = False
+
+            return (settings, ''.join(condConfLines))
         except IOError:
-            return ['']
+            return ([''], '')
 
     def _readAircraft(self):
         """Walk through Aircraft directories and return two sorted lists:

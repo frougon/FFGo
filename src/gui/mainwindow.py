@@ -5,6 +5,9 @@ import os
 import sys
 import subprocess
 import socket
+import re
+import functools
+import operator
 from gettext import translation
 from tkinter import *
 import tkinter.filedialog as fd
@@ -24,6 +27,7 @@ from .metar import Metar
 from .configwindow import ConfigWindow
 from .fglauncher import FGLauncher
 from ..constants import *
+from .. import condconfigparser
 
 
 class App:
@@ -772,11 +776,142 @@ class App:
         t.delete('1.0', 'end')
         t.insert('end', self.config.text)
 
+    _rawCfgLineComment_cre = re.compile(r"[ \t]*#")
+
+    def processRawConfigLines(self, rawConfigLines):
+        r"""Handle backslash escape sequences and remove comments in fgfs opts.
+
+        Comments start with '#' and end at the end of the line. Spaces
+        and tabs right before a comment are ignored (except if a space
+        is part of a \<space> escape sequence).
+
+        Outside comments, the following escape sequences are recognized
+        (the expansion of each escape sequence is given in the second
+        column):
+
+          \\          \ (produces a single backslash)
+          \[          [ (useful at the beginning of a line to avoid
+                         confusion with the start of a predicate)
+          \]          ] (for symmetry with '\[')
+          \#          # (literal '#' character, doesn't start a comment)
+          \t          tab character
+          \n          newline character (doesn't start a new option)
+          \<space>    space character (useful to include a space at the
+                      end of an option, which would be ignored without
+                      the backslash)
+          \<newline>  continuation line (i.e., make as if the next line
+                      were really the continuation of the current line,
+                      with the \<newline> escape sequence removed)
+
+        """
+        res = []                # list of strings: the output lines
+        # After escape sequences processing: stores the characters forming each
+        # output line as it is being constructed from one or more input lines
+        # (continuation lines are started with a backslash at the end of the
+        # previous input line)
+        chars = []
+        # i: input line number; j: column number in this line
+        i = j = 0
+
+        while i < len(rawConfigLines):
+            if j >= len(rawConfigLines[i]):
+                res.append(''.join(chars)) # finish the output line
+                del chars[:]
+                i += 1          # next input line
+                j = 0
+                continue
+
+            mo = self._rawCfgLineComment_cre.match(
+                rawConfigLines[i][j:])
+            if mo:
+                res.append(''.join(chars)) # finish the output line
+                del chars[:]
+                i += 1          # next input line
+                j = 0
+                continue
+
+            c = rawConfigLines[i][j]
+
+            if c == "\\":
+                if j + 1 == len(rawConfigLines[i]): # end of input line
+                    if i + 1 == len(rawConfigLines):
+                        res.append(''.join(chars)) # finish the output line
+                    else:
+                        j = -1  # continuation line
+
+                    i += 1      # next input line
+                else:
+                    j += 1      # next char of input line
+                    c = rawConfigLines[i][j]
+
+                    if c == "\\":
+                        chars.append("\\")
+                    elif c == "n":
+                        chars.append("\n")
+                    elif c == "t":
+                        chars.append("\t")
+                    elif c == '#':
+                        chars.append('#')
+                    elif c == ' ':
+                        chars.append(' ')
+                    elif c == '[':
+                        chars.append('[')
+                    elif c == ']':
+                        chars.append(']')
+                    else:
+                        title = _('Error in configuration file!')
+                        msg = _('Invalid escape sequence in option line: '
+                                '\\{}').format(c)
+                        message = '{0}\n\n{1}'.format(title, msg)
+                        self.error_message = showerror(_('Error'), message)
+            elif c == '#':
+                assert False, "Comment char # should have been handled " \
+                    "earlier (by regexp)"
+            else:
+                chars.append(c)
+
+            j += 1              # next input char
+
+        return res
+
+    def mergeFGOptions(self, mergedOptions, optionList):
+        """Merge identical options in 'optionList'.
+
+        Return a new list containing all options from 'optionList',
+        except that the elements of 'optionList' that start with an
+        element of 'mergedOptions' are merged together.
+
+        More precisely, for a given element e (a string) of
+        'mergedOptions', the first element of 'optionList' that starts
+        with e is replaced by the last element of 'optionList' that
+        starts with e and all other such elements of 'optionList' are
+        omitted from the result. In other words, the last element of
+        'optionList' that starts with e "wins", replaces the first one,
+        and other occurrences are ignored.
+
+        """
+        d = {}
+        l = []
+
+        for opt in optionList:
+            for prefix in mergedOptions:
+                if opt.startswith(prefix):
+                    if prefix not in d: # first time we encounter this prefix?
+                        l.append( (False, prefix) )
+                    d[prefix] = opt # overwrites previous ones
+                    break
+            else:
+                l.append( (True, opt) )  # non-merged option
+
+        # If isOpt is False, s is a prefix and d[s] the last element of
+        # optionList starting with that prefix.
+        return [ s if isOpt else d[s] for isOpt, s in l ]
+
     def runFG(self):
         t = self.text.get('0.0', 'end')
         self.config.write(text=t)
-        path = self.config.FG_bin.get()
-        options = [path]
+        program = self.config.FG_bin.get()
+        options = []
         FG_working_dir = HOME_DIR
         # Add TerraSync protocol.
         if self.config.TS.get():
@@ -784,40 +919,86 @@ class App:
                    self.config.TS_port.get())
             options.append(arg)
 
-        config_in = open(CONFIG)
-        # Parse config file.
-        for line in config_in:
-            line = line.strip()
+        with open(CONFIG, mode='r', encoding='utf-8') as config_in:
+            # Parse config file.
+            for line in config_in:
+                line = line.strip()
+                if line == CUT_LINE:
+                    # Options after CUT_LINE are handled by CondConfigParser
+                    break
 
-            if line.startswith('--'):
-                options.append(line)
+                if line.startswith('--'):
+                    options.append(line)
 
-            if line.startswith('AI_SCENARIOS='):
-                L = line[13:].split()
-                for scenario in L:
-                    options.append('--ai-scenario=' + scenario)
-            elif line.startswith('FG_AIRCRAFT='):
-                L = line[12:].split(':')
-                for dir_ in L:
-                    if dir_:
-                        options.append('--fg-aircraft=' + dir_)
-            elif line[:15] == 'FG_WORKING_DIR=':
-                if os.path.exists(line[15:]):
-                    FG_working_dir = line[15:]
-            elif line[:7] == 'FG_BIN=':
-                options[0] = line[7:]
-
-        config_in.close()
-        print('\n' + '=' * 80 + '\n', file=sys.stdout)
-        print(_('Starting %s with following options:') % options[0],
-              file=sys.stdout)
-
-        for i in options[1:]:
-            print('\t%s' % i)
-        print('\n' + '-' * 80 + '\n', file=sys.stdout)
+                if line.startswith('AI_SCENARIOS='):
+                    L = line[13:].split()
+                    for scenario in L:
+                        options.append('--ai-scenario=' + scenario)
+                elif line.startswith('FG_AIRCRAFT='):
+                    L = line[12:].split(':')
+                    for dir_ in L:
+                        if dir_:
+                            options.append('--fg-aircraft=' + dir_)
+                elif line[:15] == 'FG_WORKING_DIR=':
+                    if os.path.exists(line[15:]):
+                        FG_working_dir = line[15:]
+                elif line[:7] == 'FG_BIN=':
+                    program = line[7:]
 
         try:
-            launcher = FGLauncher(self.master, options, FG_working_dir)
+            condConfig = condconfigparser.ConditionalConfig(
+                t, extvars=("aircraft", "airport", "parking", "runway",
+                            "carrier", "scenarios"))
+            context = {"aircraft": self.config.aircraft.get(),
+                       "airport": self.config.airport.get(),
+                       "parking": self.config.park.get(),
+                       "runway": self.config.rwy.get(),
+                       "carrier": self.config.carrier.get(),
+                       "scenarios": self.config.scenario.get().split()}
+
+            # List of lists of strings which are fgfs options. The first list
+            # corresponds to the "default", unconditional section of the config
+            # file; the other lists come from the conditional sections whose
+            # predicate is true according to 'context'.
+            optionLineGroups = [ self.processRawConfigLines(lines) for lines in
+                                 condConfig.applicableConfigLines(context) ]
+            # Concatenate all lists together
+            additionalLines = functools.reduce(operator.add, optionLineGroups,
+                                               [])
+            options.extend(additionalLines)
+
+            # Merge options starting with an element of MERGED_OPTIONS
+            configVars = condConfig.computeVars(context)
+            # The default for MERGED_OPTIONS is the empty list.
+            mergedOptions = configVars.get("MERGED_OPTIONS", [])
+            options = self.mergeFGOptions(mergedOptions, options)
+        except condconfigparser.error as e:
+            title = _('Error in configuration file!')
+            msg = _('Error: {}').format(e) # str(e) not translated...
+            message = '{0}\n\n{1}'.format(title, msg)
+            self.error_message = showerror(_('Error'), message)
+            return
+
+        # XXX debug code
+        if False:
+            from pprint import pprint
+            pprint(context)
+            print("\n")
+            pprint(options)
+            program = "/bin/true"
+
+        if True:               # XXX debug
+            print('\n' + '=' * 80 + '\n', file=sys.stdout)
+            print(_('Starting %s with following options:') % program,
+                  file=sys.stdout)
+
+            for i in options:
+                print('\t%s' % i)
+            print('\n' + '-' * 80 + '\n', file=sys.stdout)
+
+        try:
+            launcher = FGLauncher(self.master, [program] + options,
+                                  FG_working_dir)
             self.stopLoops()
             self.frame.wait_window(launcher.top)
             self.startLoops()
