@@ -394,9 +394,7 @@ class App:
         p = fd.askopenfilename(initialdir=USER_DATA_DIR,
                                filetypes=[(_('Config Files'), '*.fgo')])
         if p:
-            text = self.text.get('0.0', 'end')
             self.reset(path=p)
-            self.config.write(text=text)
 
     def configSave(self):
         asf = fd.asksaveasfilename
