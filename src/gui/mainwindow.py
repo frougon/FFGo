@@ -981,22 +981,12 @@ class App:
             self.error_message = showerror(_('Error'), message)
             return
 
-        # XXX debug code
-        if False:
-            from pprint import pprint
-            pprint(context)
-            print("\n")
-            pprint(options)
-            program = "/bin/true"
+        print('\n' + '=' * 80 + '\n')
+        print(_('Starting %s with following options:') % program)
 
-        if True:               # XXX debug
-            print('\n' + '=' * 80 + '\n', file=sys.stdout)
-            print(_('Starting %s with following options:') % program,
-                  file=sys.stdout)
-
-            for i in options:
-                print('\t%s' % i)
-            print('\n' + '-' * 80 + '\n', file=sys.stdout)
+        for i in options:
+            print('\t%s' % i)
+        print('\n' + '-' * 80 + '\n')
 
         try:
             launcher = FGLauncher(self.master, [program] + options,
