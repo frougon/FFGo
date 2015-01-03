@@ -27,7 +27,7 @@ from .metar import Metar
 from .configwindow import ConfigWindow
 from .fglauncher import FGLauncher
 from ..constants import *
-from .. import condconfigparser
+import condconfigparser
 
 
 class App:
@@ -944,7 +944,7 @@ class App:
                     program = line[7:]
 
         try:
-            condConfig = condconfigparser.ConditionalConfig(
+            condConfig = condconfigparser.RawConditionalConfig(
                 t, extvars=("aircraft", "airport", "parking", "runway",
                             "carrier", "scenarios"))
             context = {"aircraft": self.config.aircraft.get(),
@@ -954,19 +954,23 @@ class App:
                        "carrier": self.config.carrier.get(),
                        "scenarios": self.config.scenario.get().split()}
 
-            # List of lists of strings which are fgfs options. The first list
-            # corresponds to the "default", unconditional section of the config
-            # file; the other lists come from the conditional sections whose
-            # predicate is true according to 'context'.
+            # configVars:
+            #   external and non-external (assigned in the cfg file) variables
+            #
+            # rawConfigSections:
+            #   list of lists of strings which are fgfs options. The first list
+            #   corresponds to the "default", unconditional section of the
+            #   config file; the other lists come from the conditional sections
+            #   whose predicate is true according to 'context'.
+            configVars, rawConfigSections = condConfig.eval(context)
             optionLineGroups = [ self.processRawConfigLines(lines) for lines in
-                                 condConfig.applicableConfigLines(context) ]
+                                 rawConfigSections ]
             # Concatenate all lists together
             additionalLines = functools.reduce(operator.add, optionLineGroups,
                                                [])
             options.extend(additionalLines)
 
             # Merge options starting with an element of MERGED_OPTIONS
-            configVars = condConfig.computeVars(context)
             # The default for MERGED_OPTIONS is the empty list.
             mergedOptions = configVars.get("MERGED_OPTIONS", [])
             options = self.mergeFGOptions(mergedOptions, options)
