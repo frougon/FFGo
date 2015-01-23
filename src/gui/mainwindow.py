@@ -212,6 +212,13 @@ class App:
                                   command=self.prefetchScenery)
         self.ts_prefetch.pack(side='left')
 
+        # FlightGear process status
+        self.fgStatusText = StringVar()
+        self.fgStatusText.set(_('Ready'))
+        self.fgStatusLabel = Label(self.frame4, textvariable=self.fgStatusText,
+                                   background="#88ff88")
+        self.fgStatusLabel.pack(side='left', fill='both', expand=True)
+
         self.frame42 = Frame(self.frame4, borderwidth=4)
         self.frame42.pack(side='right')
         # Buttons
@@ -912,8 +919,11 @@ class App:
         return [ s if isOpt else d[s] for isOpt, s in l ]
 
     def runFG(self, event=None):
+        self.run_button.config(state=DISABLED)
+
         t = self.text.get('0.0', 'end')
         self.config.write(text=t)
+
         program = self.config.FG_bin.get()
         options = []
         FG_working_dir = HOME_DIR
@@ -994,20 +1004,38 @@ class App:
             print('\t%s' % i)
         print('\n' + '-' * 80 + '\n')
 
+        self.stopLoops()
+        launcher = FGLauncher(self.master, [program] + options,
+                              FG_working_dir)
         try:
-            launcher = FGLauncher(self.master, [program] + options,
-                                  FG_working_dir)
-            self.stopLoops()
-            self.frame.wait_window(launcher.top)
-            self.startLoops()
-        except OSError:
-            self.runFGErrorMessage()
+            launcher.run()
+        except OSError as e:
+            self.runFGErrorMessage(e)
+        else:
+            self.fgStatusText.set(_("FlightGear is running..."))
+            self.fgStatusLabel.config(background="#ff8888")
 
-    def runFGErrorMessage(self):
+            # Wait until FlightGear is terminated
+            self.master.wait_variable(launcher.exitStatus)
+            exitStatus = launcher.exitStatus.get()
+
+            if exitStatus >= 0:
+                complement = _("FG's last exit status: {}").format(exitStatus)
+            else:
+                complement = _("FG last killed by signal {}").format(
+                    -exitStatus)
+
+            self.fgStatusText.set(_('Ready ({})').format(complement))
+            self.fgStatusLabel.config(background="#88ff88")
+
+        self.startLoops()
+        self.run_button.config(state=NORMAL)
+
+    def runFGErrorMessage(self, exc):
         title = _('Unable to run FlightGear!')
         msg = _('Please make sure that paths: FG_BIN and FG_ROOT\n'
                 'in "Preferences" window are pointing to right directories.')
-        message = '{0}\n\n{1}'.format(title, msg)
+        message = '{0}\n\n{1}\n\n{2}'.format(title, exc, msg)
         self.error_message = showerror(_('Error'), message)
 
     def runTS(self):

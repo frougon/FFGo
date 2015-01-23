@@ -1,44 +1,40 @@
-"""Launch FG and create new window indicating that FG is running."""
+"""Launch FG in a separate process."""
 
 
 import subprocess
 from tkinter import *
 
-from .infowindow import InfoWindow
-
 
 class FGLauncher:
 
-    def __init__(self, master, options, FG_working_dir):
+    def __init__(self, master, FG_args, FG_working_dir):
         self.master = master
-        self.options = options
+        self.FG_args = FG_args
         self.FG_working_dir = FG_working_dir
+        self.exitStatus = IntVar()
 
-        self._window()
-        self.master.update()
-        self._runFG()
-
-    def quit(self):
-        """Clean up data and destroy the window."""
+    def quit(self, exitStatus):
+        """Clean up data and set self.exitStatus."""
         del self.master
-        del self.options
-        self.top.destroy()
+        del self.FG_args
+        del self.FG_working_dir
+        self.exitStatus.set(exitStatus)
 
     def _checkIfFGHasQuit(self):
-        if self.process.poll() is None:
+        exitStatus = self.process.poll()
+
+        if exitStatus is None:
             self.master.after(100, self._checkIfFGHasQuit)
         else:
-            self.quit()
+            self.quit(exitStatus)
 
-    def _runFG(self):
+    def run(self):
         try:
-            self.process = subprocess.Popen(self.options,
+            self.process = subprocess.Popen(self.FG_args,
                                             cwd=self.FG_working_dir)
-            self._checkIfFGHasQuit()
         except OSError:
-            self.quit()
-            raise OSError
+            # Same code as for "command not found" in Bash and Zsh...
+            self.quit(127)
+            raise
 
-    def _window(self):
-        message = _('FlightGear is running...')
-        self.top = InfoWindow(self.master, message)
+        self._checkIfFGHasQuit()
