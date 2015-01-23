@@ -48,7 +48,7 @@ class App:
         self.filemenu.add_command(label=_('Save as...'),
                                   command=self.configSave)
         self.filemenu.add_separator()
-        self.filemenu.add_command(label=_('Save & Quit'),
+        self.filemenu.add_command(label=_('Save & Quit (Ctrl-Q)'),
                                   command=self.saveAndQuit)
         self.filemenu.add_command(label=_('Quit'), command=self.quit)
         self.menubar.add_cascade(label=_('File'), menu=self.filemenu)
@@ -250,8 +250,14 @@ class App:
         self.old_aircraft_search = ''
         self.old_airport_search = ''
         self.reset(first_run=True)
+        self.setupKeyboardShortcuts()
         self.startLoops()
         self.runTS()
+
+    def setupKeyboardShortcuts(self):
+        self.master.bind('<Control-KeyPress-f>', self.runFG)
+        self.master.bind('<Control-KeyPress-r>', self.reset)
+        self.master.bind_all('<Control-KeyPress-q>', self.saveAndQuit)
 
     def about(self):
         """Create 'About' window"""
@@ -905,7 +911,7 @@ class App:
         # optionList starting with that prefix.
         return [ s if isOpt else d[s] for isOpt, s in l ]
 
-    def runFG(self):
+    def runFG(self, event=None):
         t = self.text.get('0.0', 'end')
         self.config.write(text=t)
         program = self.config.FG_bin.get()
@@ -1034,7 +1040,7 @@ class App:
             except AttributeError:
                 return
 
-    def saveAndQuit(self):
+    def saveAndQuit(self, event=None):
         """Save options to file and quit."""
         try:
             os.kill(self.TerraSync.pid, 9)
