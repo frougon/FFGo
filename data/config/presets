@@ -47,10 +47,6 @@
 # LANG=lang_code                - Use short language code, e.g.: en, de, fr, es
 #                                 FGo! will try to use system system language
 #                                 if not set.
-# TERRASYNC=boolean             - 0 or 1 (defaults to 0). Run TerraSync.
-# TERRASYNC_BIN=path            - Path to terrasync executable.
-# TERRASYNC_PORT=port_number    - Defaults to 5501
-# TERRASYNC_SCENERY=path        - Scenery path that TerraSync is updating.
 # WINDOW_GEOMETRY=widthxheight  - Specific window geometry. Use only if you
 #                                 are not satisfied with default window size.
 #

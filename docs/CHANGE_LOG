@@ -245,5 +245,7 @@
 
 1.6.0
 [FEATURE] Code ported to Python 3.
-[FEATURE] Installation instructions in help files updated.
+[FEATURE] Updated installation instructions in help files updated.
 [BUGFIX]  Fixed typo in "help_it" file. (Philip Lacroix)
+[FEATURE] Added Conditional config. (Florent Rougon)
+[FEATURE] Added FlightGear output window and log saving.

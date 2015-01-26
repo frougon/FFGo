@@ -9,11 +9,13 @@ import re
 import functools
 import operator
 from gettext import translation
+from _thread import start_new_thread
 from tkinter import *
 import tkinter.filedialog as fd
 from tkinter.scrolledtext import ScrolledText
 from xml.etree.ElementTree import ElementTree
 from tkinter.messagebox import showerror
+import configparser
 
 try:
     from PIL import Image, ImageTk
@@ -25,10 +27,10 @@ except ImportError:
 
 from .metar import Metar
 from .configwindow import ConfigWindow
-from .fglauncher import FGLauncher
 from ..constants import *
-import condconfigparser
+from .. import condconfigparser
 
+print(condconfigparser.__version__)
 
 class App:
 
@@ -38,8 +40,10 @@ class App:
 
         self.translatedPark = StringVar()
         self.translatedRwy = StringVar()
+        self.options = StringVar()
         self.translatedPark.set(_('None'))
         self.translatedRwy.set(_('Default'))
+        self.options.set('')
 #------ Menu ------------------------------------------------------------------
         self.menubar = Menu(self.master)
 
@@ -202,39 +206,95 @@ class App:
         self.frame4.pack(side='top', fill='x')
 
         self.frame41 = Frame(self.frame4, borderwidth=4)
-        self.frame41.pack(side='left', fill='x')
-        # TerraSync
-        self.ts = Checkbutton(self.frame41, text="TerraSync",
-                              variable=self.config.TS, command=self.runTS)
-        self.ts.pack(side='left')
-
-        self.ts_prefetch = Button(self.frame41, text=_('Scenery Prefetch'),
-                                  command=self.prefetchScenery)
-        self.ts_prefetch.pack(side='left')
-
-        self.frame42 = Frame(self.frame4, borderwidth=4)
-        self.frame42.pack(side='right')
+        self.frame41.pack(side='right')
         # Buttons
-        self.sq_button = Button(self.frame42, text=_('Save & Quit'),
+        self.sq_button = Button(self.frame41, text=_('Save & Quit'),
                                 command=self.saveAndQuit)
         self.sq_button.pack(side='left')
 
-        self.reset_button = Button(self.frame42, text=_('Reset'), width=10,
+        self.reset_button = Button(self.frame41, text=_('Reset'), width=10,
                                    command=self.reset)
         self.reset_button.pack(side='left')
 
-        self.run_button = Button(self.frame42, text=_('Run FG'), width=10,
+        self.run_button = Button(self.frame41, text=_('Run FG'), width=10,
                                  command=self.runFG)
         self.run_button.pack(side='left')
-#------ Text window -----------------------------------------------------------
+#------ Text windows ----------------------------------------------------------
         self.frame5 = Frame(self.frame)
         self.frame5.pack(side='top', fill='both', expand=True)
 
-        self.frame51 = Frame(self.frame5)
+        self.frame5top = Frame(self.frame5)
+        self.frame5top.pack(side='top', fill='both', expand=True)
+
+        self.frame51 = Frame(self.frame5top)
         self.frame51.pack(side='left', fill='both', expand=True)
 
-        self.text = ScrolledText(self.frame51, bg=TEXT_BG_COL, wrap='none')
-        self.text.pack(side='left', fill='both', expand=True)
+        option_window_sv = Scrollbar(self.frame51, orient='vertical')
+        option_window_sh = Scrollbar(self.frame51, orient='horizontal')
+        self.option_window = Text(self.frame51, bg=TEXT_BG_COL, wrap='none',
+                                  yscrollcommand=option_window_sv.set,
+                                  xscrollcommand=option_window_sh.set)
+        option_window_sv.config(command=self.option_window.yview, takefocus=0)
+        option_window_sh.config(command=self.option_window.xview, takefocus=0)
+        self.option_window.bind('<<Modified>>', self.updateOptions)
+        option_window_sh.pack(side='bottom', fill='x')
+        self.option_window.pack(side='left', fill='both', expand=True)
+        option_window_sv.pack(side='left', fill='y')
+        # Elements of 52-th frame are defined in reverse order to make sure
+        # that bottom buttons are always visible when resizing.
+        self.frame52 = Frame(self.frame5top)
+        self.frame52.pack(side='left', fill='both', expand=True)
+
+        self.frame521 = Frame(self.frame52)
+        self.frame521.pack(side='bottom', fill='y')
+
+        self.save_output_button = Button(self.frame521, text=_('Save Log'),
+                                         command=self.saveLog)
+        self.save_output_button.pack(side='left')
+
+        self.open_log_dir_button = Button(self.frame521,
+                                          text=_('Open Log Directory'),
+                                          command=self.openLogDir)
+        self.open_log_dir_button.pack(side='left')
+
+        self.frame522 = Frame(self.frame52)
+        self.frame522.pack(side='bottom', fill='both', expand=True)
+
+        output_window_sv = Scrollbar(self.frame522, orient='vertical')
+        output_window_sh = Scrollbar(self.frame522, orient='horizontal')
+        self.output_window = Text(self.frame522, foreground=COMMENT_COL,
+                                  bg=MESSAGE_BG_COL, wrap='none',
+                                  yscrollcommand=output_window_sv.set,
+                                  xscrollcommand=output_window_sh.set,
+                                  state='disabled')
+        output_window_sv.config(command=self.output_window.yview, takefocus=0)
+        output_window_sh.config(command=self.output_window.xview, takefocus=0)
+        output_window_sh.pack(side='bottom', fill='x')
+        self.output_window.pack(side='left', fill='both', expand=True)
+        output_window_sv.pack(side='left', fill='y')
+
+        self.frame5bottom = Frame(self.frame5, relief='groove', borderwidth=2)
+        self.frame5bottom.pack(side='top', fill='x')
+
+        command_window_label = Label(self.frame5bottom,
+                   text=_('FlightGear will be started with following options:'))
+        command_window_label.pack(side='top', fill='y', anchor='nw')
+
+        self.frame53 = Frame(self.frame5bottom)
+        self.frame53.pack(side='bottom', fill='x', expand=True)
+
+        command_window_sv = Scrollbar(self.frame53, orient='vertical')
+        command_window_sh = Scrollbar(self.frame53, orient='horizontal')
+        self.command_window = Text(self.frame53, wrap='none', height=10,
+                                   relief='flat', bg=GRAYED_OUT_COL,
+                                   yscrollcommand=command_window_sv.set,
+                                   xscrollcommand=command_window_sh.set,
+                                   state='disabled')
+        command_window_sv.config(command=self.command_window.yview, takefocus=0)
+        command_window_sh.config(command=self.command_window.xview, takefocus=0)
+        command_window_sh.pack(side='bottom', fill='x')
+        self.command_window.pack(side='left', fill='x', expand=True)
+        command_window_sv.pack(side='left', fill='y')
 
 #------------------------------------------------------------------------------
 
@@ -250,8 +310,8 @@ class App:
         self.old_aircraft_search = ''
         self.old_airport_search = ''
         self.reset(first_run=True)
+        self.registerTracedVariables()
         self.startLoops()
-        self.runTS()
 
     def about(self):
         """Create 'About' window"""
@@ -367,7 +427,7 @@ class App:
 
     def commentText(self):
         """Highlight comments in text window."""
-        t = self.text
+        t = self.option_window
         index = '1.0'
         used_index = [None]
         t.tag_delete('#')
@@ -406,7 +466,7 @@ class App:
                     p += '.fgo'
             except TypeError:
                 pass
-            t = self.text.get('0.0', 'end')
+            t = self.options.get()
             self.config.write(text=t, path=p)
 
     def filterAirports(self):
@@ -485,6 +545,11 @@ class App:
                 except ValueError:
                     return 0
 
+    def openLogDir(self):
+        command = 'exo-open --launch FileManager'
+        c = command.split()
+        subprocess.Popen(c+[LOG_DIR])
+
     def popupCarrier(self, event):
         """Make pop up menu."""
         # Take focus out of search entry to stop search loop.
@@ -509,12 +574,11 @@ class App:
                 #  Cut menu
                 if count % 20:
                     popup.add_command(label=i,
-                                      command=lambda i=i: self.config.park.set(i))
+                                    command=lambda i=i: self.config.park.set(i))
                 else:
                     popup.add_command(label=i,
-                                      command=lambda i=i: self.config.park.set(
-                                          i),
-                                      columnbreak=1)
+                                    command=lambda i=i: self.config.park.set(i),
+                                    columnbreak=1)
                 count += 1
         else:
             L = self.currentCarrier[1:-1]
@@ -609,22 +673,8 @@ class App:
             direction = directions[1]
         return direction
 
-    def _connect_TS(self, message):
-        try:
-            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            s.connect(('localhost', int(self.config.TS_port.get())))
-            s.send(message)
-            s.close()
-        except:
-            print(_('[FGo! Warning] Scenery prefetch was unsuccessful.'),
-                  file=sys.stderr)
-
     def quit(self):
         """Quit application."""
-        try:
-            os.kill(self.TerraSync.pid, 9)
-        except AttributeError:
-            pass
         self.master.quit()
 
     def read_airport_data(self, icao, type_):
@@ -717,6 +767,17 @@ class App:
         rstripped_text = '\n'.join(line.lstrip() for line in text.splitlines())
         return rstripped_text
 
+    def registerTracedVariables(self):
+        self.options.trace('w', self.updateCommand)
+        self.config.aircraft.trace('w', self.updateCommand)
+        self.config.airport.trace('w', self.updateCommand)
+        self.config.scenario.trace('w', self.updateCommand)
+        self.config.carrier.trace('w', self.updateCommand)
+        self.config.FG_root.trace('w', self.updateCommand)
+        self.config.FG_scenery.trace('w', self.updateCommand)
+        self.config.park.trace('w', self.updateCommand)
+        self.config.rwy.trace('w', self.updateCommand)
+
     def reset(self, event=None, path=None, first_run=False):
         """Reset data"""
         # Don't call config.update() at application initialization
@@ -738,6 +799,7 @@ class App:
             self.setCarrier(self.currentCarrier)
         else:
             self.resetCarrier()
+        self.updateCommand()
 
     def resetCarrier(self):
         if self.config.carrier.get() != 'None':
@@ -770,7 +832,7 @@ class App:
         self.airportList.see(self.getIndex('p'))
 
     def resetText(self):
-        t = self.text
+        t = self.option_window
         t.delete('1.0', 'end')
         t.insert('end', self.config.text)
 
@@ -906,16 +968,11 @@ class App:
         return [ s if isOpt else d[s] for isOpt, s in l ]
 
     def runFG(self):
-        t = self.text.get('0.0', 'end')
+        t = self.options.get()
         self.config.write(text=t)
         program = self.config.FG_bin.get()
         options = []
         FG_working_dir = HOME_DIR
-        # Add TerraSync protocol.
-        if self.config.TS.get():
-            arg = ('--atlas=socket,out,5,localhost,%s,udp' %
-                   self.config.TS_port.get())
-            options.append(arg)
 
         with open(CONFIG, mode='r', encoding='utf-8') as config_in:
             # Parse config file.
@@ -989,11 +1046,11 @@ class App:
         print('\n' + '-' * 80 + '\n')
 
         try:
-            launcher = FGLauncher(self.master, [program] + options,
-                                  FG_working_dir)
-            self.stopLoops()
-            self.frame.wait_window(launcher.top)
-            self.startLoops()
+            self._newSubprocess([program] + options, FG_working_dir)
+            self.output_window.config(state='normal')
+            self.output_window.delete('1.0', 'end')
+            self.output_window.config(state='disabled')
+            self.run_button.configure(state='disabled')
         except OSError:
             self.runFGErrorMessage()
 
@@ -1004,49 +1061,44 @@ class App:
         message = '{0}\n\n{1}'.format(title, msg)
         self.error_message = showerror(_('Error'), message)
 
-    def runTS(self):
-        if self.config.TS_port.get()\
-           and self.config.TS_scenery.get()\
-           and os.path.exists(self.config.TS_bin.get()):
-            self.ts.configure(state='normal')
-            self.ts_prefetch.configure(state='normal')
-        else:
-            self.ts.configure(state='disabled')
-            self.ts_prefetch.configure(state='disabled')
+    def _newSubprocess(self, options, working_dir):
+        new_subprocess = subprocess.Popen(options, cwd=working_dir,
+                                          stdout=subprocess.PIPE,
+                                          stderr=subprocess.STDOUT)
+        start_new_thread(self._updateProcessOutput, (new_subprocess, ))
 
-        if self.config.TS.get() and self.ts.cget('state') == 'normal':
-            options = '%s -p %s -S -d %s' % (self.config.TS_bin.get(),
-                                             self.config.TS_port.get(),
-                                             self.config.TS_scenery.get())
-            self.TerraSync = subprocess.Popen(options.split())
-            self.TerraSync.poll()
-            print('-' * 80, file=sys.stdout)
-            print(_('Starting TerraSync with following command:'),
-                  file=sys.stdout)
-            print(options, file=sys.stdout)
-            print('-' * 80, file=sys.stdout)
-        else:
-            try:
-                os.kill(self.TerraSync.pid, 15)
-                print('-' * 80, file=sys.stdout)
-                print(_('Stopping TerraSync'), file=sys.stdout)
-                print('-' * 80, file=sys.stdout)
-            except AttributeError:
-                return
+    def _updateProcessOutput(self, new_subprocess):
+        while True:
+            line = new_subprocess.stdout.readline()
+            if line == b'' and new_subprocess.poll() is not None:
+                self.run_button.configure(state='normal')
+                break
+            self.output_window.config(state='normal')
+            self.output_window.insert('end', line.decode('utf-8',
+                                                         errors='replace'))
+            self.output_window.config(state='disabled')
+            self.output_window.see('end')
+            sys.stdout.flush()
 
     def saveAndQuit(self):
         """Save options to file and quit."""
-        try:
-            os.kill(self.TerraSync.pid, 9)
-        except AttributeError:
-            pass
         # Save window resolution.
         geometry = self.master.geometry().split('+')[0]
         self.config.window_geometry.set(geometry)
 
-        t = self.text.get('0.0', 'end')
+        t = self.options.get()
         self.config.write(text=t)
         self.master.quit()
+
+    def saveLog(self):
+        p = fd.asksaveasfilename(initialdir=LOG_DIR,
+                                 initialfile=DEFAULT_LOG_NAME)
+        if p:
+            with open(p, mode='w', encoding='utf-8') as logfile:
+                text = self.output_window.get('0.0', 'end')
+                # Cutoff trailing new line that tk always adds at the end.
+                text = text[:-1]
+                logfile.write(text)
 
     def scenarioDescription(self, event):
         """Make pop up window showing AI scenario description."""
@@ -1137,7 +1189,7 @@ class App:
             self.config.scenario.set(' '.join(c))
 
     def showConfigWindow(self):
-        text = self.text.get('0.0', 'end')
+        text = self.options.get()
         self.configWindow = ConfigWindow(self.master, self.config, text)
         # Wait for window to close and reset data if Save&Quit button was used.
         self.frame.wait_window(self.configWindow.top)
@@ -1192,7 +1244,6 @@ class App:
         self.commentText()
         self.updateAircraft()
         self.updateAirport()
-        self.updatePrefetchButton()
 
     def stopLoops(self):
         """Stop all loops."""
@@ -1246,6 +1297,77 @@ class App:
         else:
             return
 
+    def updateCommand(self, *args):
+        t = self.options.get()
+#         program = self.config.FG_bin.get()
+        options = self._getOptions()
+#         FG_working_dir = HOME_DIR
+
+        try:
+            condConfig = condconfigparser.RawConditionalConfig(
+                t, extvars=("aircraft", "airport", "parking", "runway",
+                            "carrier", "scenarios"))
+            context = {"aircraft": self.config.aircraft.get(),
+                       "airport": self.config.airport.get(),
+                       "parking": self.config.park.get(),
+                       "runway": self.config.rwy.get(),
+                       "carrier": self.config.carrier.get(),
+                       "scenarios": self.config.scenario.get().split()}
+
+            # configVars:
+            #   external and non-external (assigned in the cfg file) variables
+            #
+            # rawConfigSections:
+            #   list of lists of strings which are fgfs options. The first list
+            #   corresponds to the "default", unconditional section of the
+            #   config file; the other lists come from the conditional sections
+            #   whose predicate is true according to 'context'.
+            configVars, rawConfigSections = condConfig.eval(context)
+            optionLineGroups = [ self.processRawConfigLines(lines) for lines in
+                                 rawConfigSections ]
+            # Concatenate all lists together
+            additionalLines = functools.reduce(operator.add, optionLineGroups,
+                                               [])
+            options.extend(additionalLines)
+
+            # Merge options starting with an element of MERGED_OPTIONS
+            # The default for MERGED_OPTIONS is the empty list.
+            mergedOptions = configVars.get("MERGED_OPTIONS", [])
+            options = self.mergeFGOptions(mergedOptions, options)
+            options = '\n'.join(options)
+
+            self.command_window.config(state='normal')
+            self.command_window.delete('1.0', 'end')
+            self.command_window.insert('end', options)
+            self.command_window.config(state='disabled')
+            
+        except condconfigparser.error as e:
+            title = _('Error in configuration file!')
+            msg = _('Error: {}').format(e) # str(e) not translated...
+            message = '{0}\n\n{1}'.format(title, msg)
+            self.error_message = showerror(_('Error'), message)
+            return
+
+    def _getOptions(self):
+        options = []
+        options.append('--fg-root=' + self.config.FG_root.get())
+        options.append('--aircraft=' + self.config.aircraft.get())
+        if self.config.carrier.get() != 'None':
+            options.append('--carrier=' + self.config.carrier.get())
+        if self.config.airport.get() != 'None':
+            options.append('--airport=' + self.config.airport.get())
+        if self.config.park.get() != 'None':
+            options.append('--parkpos=' + self.config.park.get())
+        if self.config.rwy.get() != 'Default':
+            options.append('--runway=' + self.config.rwy.get())
+        if self.config.scenario.get() != '':
+            options.append('--ai-scenario=' + self.config.scenario.get())
+        if self.config.FG_aircraft.get() != '':
+            options.append('--fg-aircraft=' + self.config.FG_aircraft.get())
+        if self.config.FG_scenery.get() != 'None':
+            options.append('--fg-scenery=' + self.config.FG_scenery.get())
+        return options
+
     def updateImage(self):
         self.image = self.getImage()
         self.thumbnail.config(image=self.image)
@@ -1256,12 +1378,6 @@ class App:
             self.config.makeInstalledAptList()
             self.filterAirports()
 
-    def updatePrefetchButton(self):
-        if self.config.TS.get():
-            self.ts_prefetch.configure(state='normal')
-        else:
-            self.ts_prefetch.configure(state='disabled')
-        if self.mainLoopIsRuning:
-            self.master.after(1000, self.updatePrefetchButton)
-        else:
-            return
+    def updateOptions(self, event=None):
+        self.options.set(self.option_window.get('1.0', 'end'))
+        self.option_window.edit_modified(False)

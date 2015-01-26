@@ -24,9 +24,6 @@ class ConfigWindow:
         self.FG_aircraft = StringVar()
         self.FG_working_dir = StringVar()
         self.language = StringVar()
-        self.TS_bin = StringVar()
-        self.TS_port = StringVar()
-        self.TS_scenery = StringVar()
         self.baseFontSize = StringVar()
 
         if self.config.apt_data_source.get():
@@ -47,12 +44,6 @@ class ConfigWindow:
             self.language.set(self.config.language.get())
         else:
             self.language.set('-')
-        self.TS_bin.set(self.config.TS_bin.get())
-        if self.config.TS_port.get():
-            self.TS_port.set(self.config.TS_port.get())
-        else:
-            self.defaultPort()
-        self.TS_scenery.set(self.config.TS_scenery.get())
         self.baseFontSize.set(self.config.baseFontSize.get())
 
         self.reset_flag = False
@@ -78,11 +69,6 @@ class ConfigWindow:
                             borderwidth=1, relief='ridge',
                             command=self.showFGSettings)
         self.tabFG.pack(side='left')
-
-        self.tabTS = Button(self.tabs, text=_('TerraSync settings'),
-                            borderwidth=1, relief='ridge',
-                            command=self.showTSSettings)
-        self.tabTS.pack(side='left')
 
         self.tabMisc = Button(self.tabs, text=_('Miscellaneous'),
                               borderwidth=1, relief='ridge',
@@ -127,9 +113,6 @@ class ConfigWindow:
             self.frame_misc.destroy()
         except AttributeError:
             pass
-
-    def defaultPort(self):
-        self.TS_port.set(DEFAULT_PORT)
 
     def findFG_bin(self):
         try:
@@ -187,30 +170,6 @@ class ConfigWindow:
                                 title=_('Working directory (optional):'))
             if p:
                 self.FG_working_dir.set(p)
-
-        except TclError:
-            return
-
-    def findTS_bin(self):
-        try:
-            p = fd.askopenfilename(parent=self.top,
-                                   initialdir=self.getInitialDir(
-                                       self.TS_bin.get()),
-                                   title=_('Path to executable file:'))
-            if p:
-                self.TS_bin.set(p)
-
-        except TclError:
-            return
-
-    def findTS_scenery(self):
-        try:
-            p = fd.askdirectory(parent=self.top,
-                                initialdir=self.getInitialDir(
-                                    self.TS_scenery.get()),
-                                title=_('Scenery path:'))
-            if p:
-                self.TS_scenery.set(p)
 
         except TclError:
             return
@@ -295,7 +254,6 @@ value that sets font to a platform-dependent default size.""").format(MIN_BASE_F
     def resetTabs(self):
         """Reset tabs."""
         self.tabFG.configure(borderwidth=2, relief='ridge')
-        self.tabTS.configure(borderwidth=2, relief='ridge')
         self.tabMisc.configure(borderwidth=2, relief='ridge')
 
     def saveAndQuit(self):
@@ -318,9 +276,6 @@ value that sets font to a platform-dependent default size.""").format(MIN_BASE_F
             self.config.language.set('')
         else:
             self.config.language.set(self.language.get())
-        self.config.TS_bin.set(self.TS_bin.get())
-        self.config.TS_port.set(self.TS_port.get())
-        self.config.TS_scenery.set(self.TS_scenery.get())
         self.saveBaseFontSize()
 
         self.config.write(text=self.text)
@@ -357,13 +312,6 @@ value that sets font to a platform-dependent default size.""").format(MIN_BASE_F
             self.tabFG.configure(borderwidth=1, relief='raised')
             self.cleanUpWidgets()
             self.widgetFG()
-
-    def showTSSettings(self):
-        if self.tabTS.cget('relief') != 'raised':
-            self.resetTabs()
-            self.tabTS.configure(borderwidth=1, relief='raised')
-            self.cleanUpWidgets()
-            self.widgetTS()
 
     def showMiscSettings(self):
         if self.tabMisc.cget('relief') != 'raised':
@@ -489,80 +437,6 @@ value that sets font to a platform-dependent default size.""").format(MIN_BASE_F
         self.FG_working_dirFind = Button(self.frame_FG_52, text=_('Find'),
                                          command=self.findFgWorkingDir)
         self.FG_working_dirFind.pack(side='left')
-
-    def widgetTS(self):
-        """TerraSync settings widget."""
-        self.frame_TS = Frame(self.frame, borderwidth=8)
-        self.frame_TS.pack(side='top', fill='x', expand=True)
-
-        self.TS_label = Label(self.frame_TS, text=_('TerraSync settings'))
-        self.TS_label.pack(side='top')
-
-        # TS_BIN
-        self.frame_TS_1 = Frame(self.frame_TS, borderwidth=4)
-        self.frame_TS_1.pack(side='top', fill='x', expand=True)
-
-        self.frame_TS_11 = Frame(self.frame_TS_1)
-        self.frame_TS_11.pack(side='top', fill='x', expand=True)
-
-        self.TS_binLabel = Label(self.frame_TS_11,
-                                 text=_('Path to executable file:'))
-        self.TS_binLabel.pack(side='left')
-
-        self.frame_TS_12 = Frame(self.frame_TS_1)
-        self.frame_TS_12.pack(side='top', fill='x', expand=True)
-
-        self.TS_binEntry = Entry(self.frame_TS_12, bg=TEXT_BG_COL,
-                                 width=50, textvariable=self.TS_bin)
-        ToolTip(self.TS_binEntry, self.tooltip_TS_bin)
-        self.TS_binEntry.pack(side='left', fill='x', expand=True)
-
-        self.TS_binFind = Button(self.frame_TS_12, text=_('Find'),
-                                 command=self.findTS_bin)
-        self.TS_binFind.pack(side='left')
-        # TS scenery
-        self.frame_TS_2 = Frame(self.frame_TS, borderwidth=4)
-        self.frame_TS_2.pack(side='top', fill='x', expand=True)
-
-        self.frame_TS_21 = Frame(self.frame_TS_2)
-        self.frame_TS_21.pack(side='top', fill='x', expand=True)
-
-        self.TS_sceneryLabel = Label(self.frame_TS_21, text=_('Scenery path:'))
-        self.TS_sceneryLabel.pack(side='left')
-
-        self.frame_TS_22 = Frame(self.frame_TS_2)
-        self.frame_TS_22.pack(side='top', fill='x', expand=True)
-
-        self.TS_sceneryEntry = Entry(self.frame_TS_22, bg=TEXT_BG_COL,
-                                     width=50, textvariable=self.TS_scenery)
-        ToolTip(self.TS_sceneryEntry, self.tooltip_TS_scenery)
-        self.TS_sceneryEntry.pack(side='left', fill='x', expand=True)
-
-        self.TS_sceneryFind = Button(self.frame_TS_22, text=_('Find'),
-                                     command=self.findTS_scenery)
-        self.TS_sceneryFind.pack(side='left')
-        # TS port
-        self.frame_TS_3 = Frame(self.frame_TS, borderwidth=4)
-        self.frame_TS_3.pack(side='top', fill='x', expand=True)
-
-        self.frame_TS_31 = Frame(self.frame_TS_3)
-        self.frame_TS_31.pack(side='top', fill='x', expand=True)
-
-        self.TS_portLabel = Label(self.frame_TS_31, text=_('Port:'))
-        self.TS_portLabel.pack(side='left')
-
-        self.frame_TS_32 = Frame(self.frame_TS_3)
-        self.frame_TS_32.pack(side='top', fill='x', expand=True)
-
-        self.TS_portEntry = Entry(self.frame_TS_32, bg=TEXT_BG_COL,
-                                  width=6, textvariable=self.TS_port)
-        ToolTip(self.TS_portEntry, self.tooltip_TS_portEntry)
-        self.TS_portEntry.pack(side='left')
-
-        self.TS_portDefault = Button(self.frame_TS_32, text=_('Default'),
-                                     command=self.defaultPort)
-        ToolTip(self.TS_portDefault, self.tooltip_TS_portEntry)
-        self.TS_portDefault.pack(side='left')
 
     def widgetMisc(self):
         """Miscellaneous settings widget."""
