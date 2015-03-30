@@ -918,6 +918,23 @@ class App:
         # optionList starting with that prefix.
         return [ s if isOpt else d[s] for isOpt, s in l ]
 
+    def monitorFlightGearProcess(self, launcher):
+        self.fgStatusText.set(_("FlightGear is running..."))
+        self.fgStatusLabel.config(background="#ff8888")
+
+        # Wait until FlightGear is terminated
+        self.master.wait_variable(launcher.exitStatus)
+        exitStatus = launcher.exitStatus.get()
+
+        if exitStatus >= 0:
+            complement = _("FG's last exit status: {}").format(exitStatus)
+        else:
+            complement = _("FG last killed by signal {}").format(
+                -exitStatus)
+
+        self.fgStatusText.set(_('Ready ({})').format(complement))
+        self.fgStatusLabel.config(background="#88ff88")
+
     def runFG(self, event=None):
         self.run_button.config(state=DISABLED)
 
@@ -995,40 +1012,25 @@ class App:
             msg = _('Error: {}').format(e) # str(e) not translated...
             message = '{0}\n\n{1}'.format(title, msg)
             self.error_message = showerror(_('Error'), message)
-            return
-
-        print('\n' + '=' * 80 + '\n')
-        print(_('Starting %s with following options:') % program)
-
-        for i in options:
-            print('\t%s' % i)
-        print('\n' + '-' * 80 + '\n')
-
-        self.stopLoops()
-        launcher = FGLauncher(self.master, [program] + options,
-                              FG_working_dir)
-        try:
-            launcher.run()
-        except OSError as e:
-            self.runFGErrorMessage(e)
         else:
-            self.fgStatusText.set(_("FlightGear is running..."))
-            self.fgStatusLabel.config(background="#ff8888")
+            print('\n' + '=' * 80 + '\n')
+            print(_('Starting %s with following options:') % program)
 
-            # Wait until FlightGear is terminated
-            self.master.wait_variable(launcher.exitStatus)
-            exitStatus = launcher.exitStatus.get()
+            for i in options:
+                print('\t%s' % i)
+            print('\n' + '-' * 80 + '\n')
 
-            if exitStatus >= 0:
-                complement = _("FG's last exit status: {}").format(exitStatus)
+            self.stopLoops()
+            launcher = FGLauncher(self.master, [program] + options,
+                                  FG_working_dir)
+            try:
+                launcher.run()
+            except OSError as e:
+                self.runFGErrorMessage(e)
             else:
-                complement = _("FG last killed by signal {}").format(
-                    -exitStatus)
+                self.monitorFlightGearProcess(launcher)
+            self.startLoops()
 
-            self.fgStatusText.set(_('Ready ({})').format(complement))
-            self.fgStatusLabel.config(background="#88ff88")
-
-        self.startLoops()
         self.run_button.config(state=NORMAL)
 
     def runFGErrorMessage(self, exc):
