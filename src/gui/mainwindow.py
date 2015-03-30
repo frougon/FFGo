@@ -4,6 +4,7 @@
 import os
 import sys
 import subprocess
+import threading
 import socket
 import re
 import functools
@@ -257,6 +258,10 @@ class App:
         self.old_aircraft_search = ''
         self.old_airport_search = ''
         self.reset(first_run=True)
+        # Lock used to prevent concurent calls of self._runFG()
+        # (disabling the "Run FG" button is not enough, as self.runFG()
+        # can be invoked through a keyboard shortcut).
+        self.runFGLock = threading.Lock()
         self.setupKeyboardShortcuts()
         self.startLoops()
         self.runTS()
@@ -935,7 +940,26 @@ class App:
         self.fgStatusText.set(_('Ready ({})').format(complement))
         self.fgStatusLabel.config(background="#88ff88")
 
-    def runFG(self, event=None):
+    def runFG(self, *args, **kwargs):
+        """Wrapper around self._runFG() to prevent concurrent calls.
+
+        If self._runFG() is already running, display an error message,
+        otherwise call it, passing all arguments as is. The "already
+        running" check is performed with a threading.Lock instance in
+        order to avoid any kind of race condition.
+
+        """
+        if self.runFGLock.acquire(blocking=False):
+            self._runFG(*args, **kwargs)
+            self.runFGLock.release()
+        else:
+            title = _('Sorry!')
+            msg = _("FlightGear is already running and we'd rather "
+                    "not run two instances simultaneously.")
+            message = '{0}\n\n{1}'.format(title, msg)
+            self.error_message = showerror(_('FGo!'), message)
+
+    def _runFG(self, event=None):
         self.run_button.config(state=DISABLED)
 
         t = self.text.get('0.0', 'end')
