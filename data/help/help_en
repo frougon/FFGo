@@ -4,50 +4,35 @@ FGo! - A simple GUI launcher for FlightGear.
 
 REQUIREMENTS
 
-- Operating system GNU/Linux
-- FlightGear
-- Python 3.4.2 *
-- TKinter
-- Python Imaging Library (PIL) 1.1.7 or Pillow (PIL fork) 2.5.1 
-  with ImageTk module **
-- Tcl/Tk 8.6
+- Unix-like operating system (e.g, GNU/Linux)
+- FlightGear          <http://www.flightgear.org>
+- Python 3.4 or later <https://www.python.org>
+- Tkinter (often known as python-tk or python3-tk in Linux package managers)
+                      <https://docs.python.org/3/library/tkinter.html>
+- Pillow (PIL fork)*  <http://python-pillow.github.io/>
+- CondConfigParser    <http://people.via.ecp.fr/~flo/projects/CondConfigParser/>
 
-*  FGo! is compatible only with Python 3.x.
-** This library is not mandatory to run FGo! but aircraft thumbnails
-   will not be displayed without it.
-
-Numbers given here correspond to versions of the software used in development
-process. It's quite likely for FGo! to work with older (or newer) versions, but
-the program was not tested with them.
+* This library is not mandatory to run FGo! but aircraft thumbnails
+  will not be displayed without it.
 
 -------------------------------------------------------------------------------
 
 INSTALLATION
 
-This program requires no installation, just unpack the archive anywhere
-and make sure that all software requirements are met before the first start.
-
-In Debian and Debian based distributions the following packages are required:
-python3, python3-tk, tcl8.x and tk8.x; optionally python3-imaging-tk or
-python3-pil.imagetk, depending on which is available on particular
-distribution, may be installed. For easy installation choose python3-imaging-tk
-or python3-pil.imagetk in your favorite package manager, and all other required
-dependencies should be installed automatically.
-
-For Slackware and compatible systems a SlackBuild for FGo! is available. The
-included script will generate a package that allows for a clean, system-wide
-installation of the program. The SlackBuild can be downloaded from the official
-website: http://www.slackbuilds.org. On default Slackware systems (full) no
-additional packages are required.
+This program requires no installation, just unpack the archive anywhere and
+make sure that all software requirements are met before the first start. If
+you need help for installing these dependencies, you may consult the guide in
+docs/INSTALL. You have to make sure the dependencies are installed for the
+Python interpreter that you are going to use to run FGo!.
 
 -------------------------------------------------------------------------------
 
 RUNNING
 
 Click "fgo" file in the main directory of the program, or run it in a console
-with the "./fgo" or "python3 fgo" command. 
+with the "./fgo" or "python3 fgo" command.
 
-Running FGo! in a console is recommended as it gives access to FlightGear and 
+Running FGo! in a console is recommended as it gives access to FlightGear and
 TerraSync output messages.
 
 -------------------------------------------------------------------------------
@@ -131,7 +116,7 @@ TIPS&TRICKS
 * In "Select Scenario" list, you can right click on any scenario to see its
   description (if available).
 
-* Window resolution is saved when "Save&Quit" button is clicked.
+* Window dimensions are saved when "Save&Quit" button is clicked.
 
 -------------------------------------------------------------------------------
 
@@ -143,6 +128,10 @@ KNOWN BUGS AND LIMITATIONS
   shown in a console. It indicates that old instance of TerraSync does not
   finished downloading data yet. In that case, wait until download is finished
   and check "TerraSync" checkbutton again.
+
+  Note: TerraSync is already well integrated into reasonably recent FlightGear
+        versions; therefore, you don't have to use this specific FGo! feature
+        anymore in order to use TerraSync.
 
 * Very long parking places names does not fit in parking button.
 
