@@ -57,10 +57,6 @@ class Config:
         self.park = StringVar()
         self.rwy = StringVar()
         self.scenario = StringVar()
-        self.TS = IntVar()
-        self.TS_bin = StringVar()
-        self.TS_port = StringVar()
-        self.TS_scenery = StringVar()
         self.window_geometry = StringVar()
         self.baseFontSize = StringVar()
         self.TkDefaultFontSize = IntVar()
@@ -80,14 +76,10 @@ class Config:
                          'FG_WORKING_DIR=': self.FG_working_dir,
                          'FILTER_APT_LIST=': self.filtredAptList,
                          'LANG=': self.language,
-                         'TERRASYNC=': self.TS,
-                         'TERRASYNC_BIN=': self.TS_bin,
-                         'TERRASYNC_PORT=': self.TS_port,
-                         'TERRASYNC_SCENERY=': self.TS_scenery,
                          'WINDOW_GEOMETRY=': self.window_geometry,
                          'BASE_FONT_SIZE=': self.baseFontSize}
 
-        self._createConfDirectory()
+        self._createUserDirectories()
         self.update(first_run=True)
 
         self.setTkDefaultFontSize()
@@ -196,8 +188,7 @@ class Config:
         """Read config file and update variables.
 
         path is a path to different than default config file
-        first_run specifies if TS_checkbutton and filtered airports list
-        will be updated.
+        first_run specifies if filtered airports list will be updated.
 
         """
         del self.settings
@@ -230,11 +221,7 @@ class Config:
         self.park.set('None')
         self.rwy.set('Default')
         self.scenario.set('')
-        self.TS_bin.set('')
-        self.TS_port.set('')
-        self.TS_scenery.set('')
         if first_run:
-            self.TS.set(0)
             self.filtredAptList.set(0)
 
         self.settings, self.text = self._read(path)
@@ -249,8 +236,6 @@ class Config:
                 if value:
                     if name in self.keywords:
                         if name == 'FILTER_APT_LIST=' and not first_run:
-                            pass
-                        elif name == 'TERRASYNC=' and not first_run:
                             pass
                         else:
                             var = self.keywords[name]
@@ -348,10 +333,12 @@ class Config:
             c = int(c[1:])
             return c, c + 1
 
-    def _createConfDirectory(self):
+    def _createUserDirectories(self):
         """Create config directory if non exists."""
         if not os.path.exists(USER_DATA_DIR):
             os.mkdir(USER_DATA_DIR)
+        if not os.path.exists(LOG_DIR):
+            os.mkdir(LOG_DIR)
 
     def _makeApt(self, head=None):
         """Build apt database from apt.dat.gz"""

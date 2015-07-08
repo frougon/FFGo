@@ -274,16 +274,18 @@
     indication in green.
 
     * This new behaviour allows to interact with FGo! while FlightGear is
-    running, except for the things that rely on stuff started in
-    App.startLoops(). Among others, it makes it possible to modify the
-    configuration before the fgfs process is completely terminated. It would
-    be possible to keep the loops running even after FlightGear has been
-    started, but that would sacrifice a small amount of performance, for IMHO
-    very little benefit. I prefer freeing the CPU as much as possible for
-    FlightGear.
+    running. Among others, it makes it possible to modify the configuration
+    before the fgfs process is completely terminated.
 
     * As a bonus, the new Label widget indicates the exit status of the last
     FlightGear run, or the signal number in case the fgfs process was
     terminated by a signal.
 
     * While FlightGear is running, the "Run FG" button is now greyed out.
+
+[FEATURE] Added preview of FlightGear command. (Robert)
+[FEATURE] Added FlightGear output window and log saving. (Robert)
+[USABILITY] Remove everything related to running a standalone TerraSync
+          program in the background. As TerraSync has been integrated into
+          FlightGear several years ago, this feature was probably more
+          confusing than useful to users nowadays. (Robert)

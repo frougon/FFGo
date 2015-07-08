@@ -6,9 +6,9 @@ from os.path import expanduser, join, pardir
 
 # FGo! related constants.
 
-NAME = 'FGo! 1.6.0 Alpha'
+NAME = 'FGo! 1.6.0 Alpha_log_and_command_window_test'
 USER_AGENT = 'FGo!/1.6.0 (+http://sites.google.com/site/erobosprojects/flightgear/add-ons/fgo)'
-COPYRIGHT = "Copyright 2009-2014 by\nRobert 'erobo' Leda  <erobo@wp.pl>"
+COPYRIGHT = "Copyright 2009-2015 by\nRobert 'erobo' Leda  <erobo@wp.pl>"
 AUTHORS = 'Robert Leda\nFlorent Rougon'
 LICENSE = \
     """This program is free software. It comes without any warranty, to
@@ -21,6 +21,8 @@ http://sam.zoy.org/wtfpl/COPYING for more details.
 HOME_DIR = expanduser('~')
 # Default directory for user data files.
 USER_DATA_DIR = join(HOME_DIR, '.fgo')
+# Place to store FG output logs.
+LOG_DIR = join(USER_DATA_DIR, 'Logs')
 # Path to airport data file.
 APT = join(USER_DATA_DIR, 'apt')
 # Path to locally installed airport list.
@@ -31,6 +33,8 @@ CONFIG = join(USER_DATA_DIR, 'config')
 APT_TIMESTAMP = join(USER_DATA_DIR, 'timestamp')
 # Path to default config directory.
 DATA_DIR = join(pardir, 'data')
+
+DEFAULT_LOG_NAME = 'FlightGear.log'
 
 DEFAULT_CONFIG_DIR = join(DATA_DIR, 'config')
 # Path to config file with predefined settings.
@@ -51,8 +55,6 @@ CUT_LINE = ' INTERNAL OPTIONS ABOVE. EDIT CAREFULLY! '.center(80, 'x')
 DEFAULT_AIRCRAFT = 'c172p'
 # Default airport.
 DEFAULT_AIRPORT = 'KSFO'
-# Default port for TerraSync.
-DEFAULT_PORT = '5501'
 # Tooltip delay in milliseconds.
 TOOLTIP_DELAY = '600'
 # Default value for the base font size in points. Should be 0, or in the range
