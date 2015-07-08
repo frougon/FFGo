@@ -244,6 +244,46 @@
 [BUGFIX]  Fixed typo in "help_pl" file.
 
 1.6.0
-[FEATURE] Code ported to Python 3.
-[FEATURE] Installation instructions in help files updated.
+[FEATURE] Imported the code from FGo! 1.5.5 onwards (Python 2 at that time)
+          into a Git repository and added Makefiles to generate the needed
+          files (fgo.png in various sizes and l10n *.mo files) from their
+          sources. (Florent Rougon)
+[FEATURE] Code ported to Python 3. (Robert)
+[FEATURE] Updated installation instructions in help files. (Robert)
+[FEATURE] Added file docs/INSTALL/INSTALL_en to guide users through the
+          process of installing the dependencies. (Florent Rougon)
 [BUGFIX]  Fixed typo in "help_it" file. (Philip Lacroix)
+[FEATURE] Added conditional config based on CondConfigParser. This is
+          documented for FGo! users in docs/README.conditional-config/.
+          (Florent Rougon)
+[BUGFIX]  Fixed logic behind the Reset button. (Robert)
+[FEATURE] Added keyboard shortcuts for "Run FG" (Ctrl-f), "Reset" (Ctrl-r) and
+          "Save & Quit" (Ctrl-q). (Florent Rougon)
+[FEATURE] Moved the "FG is running..." message from the separate "info" window
+          to the main window. (Florent Rougon)
+
+    * The separate window was annoying, because when switching from a
+    workspace with FlightGear on top and FGo! below, to another workspace and
+    back to the initial workspace, the "FG is running..." little window
+    appeared on top of FlightGear, which prevented the user from controlling
+    it until he explicitely switched to FlightGear's window.
+
+    * The "FG is running..." message is now displayed in red in FGo!'s main
+    window (in a Label widget) instead of the separate InfoWindow. When
+    FlightGear is not running, this message is replaced by a "Ready"
+    indication in green.
+
+    * This new behaviour allows to interact with FGo! while FlightGear is
+    running, except for the things that rely on stuff started in
+    App.startLoops(). Among others, it makes it possible to modify the
+    configuration before the fgfs process is completely terminated. It would
+    be possible to keep the loops running even after FlightGear has been
+    started, but that would sacrifice a small amount of performance, for IMHO
+    very little benefit. I prefer freeing the CPU as much as possible for
+    FlightGear.
+
+    * As a bonus, the new Label widget indicates the exit status of the last
+    FlightGear run, or the signal number in case the fgfs process was
+    terminated by a signal.
+
+    * While FlightGear is running, the "Run FG" button is now greyed out.
