@@ -1140,8 +1140,9 @@ class App:
         if p:
             with open(p, mode='w', encoding='utf-8') as logfile:
                 text = self.output_window.get('0.0', 'end')
-                # Cutoff trailing new line that tk always adds at the end.
-                text = text[:-1]
+                # Cutoff trailing new line that Tk always adds at the end.
+                if text.endswith('\n'):
+                    text = text[:-1]
                 logfile.write(text)
 
     def scenarioDescription(self, event):
