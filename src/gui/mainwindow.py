@@ -10,7 +10,8 @@ import re
 import functools
 import operator
 from gettext import translation
-from _thread import start_new_thread
+import threading
+import queue as queue_mod       # keep 'queue' available for variable bindings
 from tkinter import *
 import tkinter.filedialog as fd
 from tkinter.scrolledtext import ScrolledText
@@ -983,17 +984,31 @@ class App:
 
         """
         if self.runFGLock.acquire(blocking=False):
-            self._runFG(*args, **kwargs)
-            self.runFGLock.release()
+            self.run_button.config(state=DISABLED)
+
+            if not self._runFG(*args, **kwargs):
+                # The fgfs process could not be started, release the lock.
+                self.run_button.config(state=NORMAL)
+                self.runFGLock.release()
         else:
             title = _('Sorry!')
-            msg = _("FlightGear is already running and we'd rather "
-                    "not run two instances simultaneously.")
+            msg = _("FlightGear is already running and we'd rather not run "
+                    "two instances simultaneously under the same account.")
             message = '{0}\n\n{1}'.format(title, msg)
             self.error_message = showerror(_('FGo!'), message)
 
     def _runFG(self, event=None):
-        self.run_button.config(state=DISABLED)
+        """Run FlightGear.
+
+        Run FlightGear in a child process and start a new thread to
+        monitor it (read its stdout and stderr, wait for the process to
+        exit). This way, this won't freeze the GUI during the blocking
+        calls.
+
+        Return a boolean indicating whether FlightGear could actually be
+        started.
+
+        """
         t = self.options.get()
         self.config.write(text=t)
 
@@ -1063,7 +1078,7 @@ class App:
             msg = _('Error: {}').format(e) # str(e) not translated...
             message = '{0}\n\n{1}'.format(title, msg)
             self.error_message = showerror(_('Error'), message)
-            return
+            return False
 
         print('\n' + '=' * 80 + '\n')
         print(_('Starting %s with following options:') % program)
@@ -1073,18 +1088,42 @@ class App:
         print('\n' + '-' * 80 + '\n')
 
         try:
-            self._newSubprocess([program] + options, FG_working_dir)
+            process = subprocess.Popen([program] + options,
+                                       cwd=FG_working_dir,
+                                       stdout=subprocess.PIPE,
+                                       stderr=subprocess.STDOUT,
+                                       universal_newlines=True,
+                                       bufsize=1) # Use line buffering
         except OSError as e:
             self.runFGErrorMessage(e)
-            self.run_button.config(state=NORMAL)
-        else:
-            self.stopLoops()
-            self.fgStatusText.set(_("FlightGear is running..."))
-            self.fgStatusLabel.config(background="#ff8888")
+            return False
 
-            self.output_window.config(state='normal')
-            self.output_window.delete('1.0', 'end')
-            self.output_window.config(state='disabled')
+        self.stopLoops()
+        self.output_window.config(state='normal')
+        self.output_window.delete('1.0', 'end')
+        self.output_window.config(state='disabled')
+
+        # One queue for fgfs' stdout and stderr, the other for its exit
+        # status (or killing signal)
+        outputQueue, statusQueue = queue_mod.Queue(), queue_mod.Queue()
+
+        self.master.bind("<<FGoNewFgfsOutputQueued>>",
+                         functools.partial(self._updateFgfsProcessOutput,
+                                           queue=outputQueue))
+        self.master.bind("<<FGoFgfsProcessTerminated>>",
+                         functools.partial(self._onFgfsProcessTerminated,
+                                           queue=statusQueue))
+        t = threading.Thread(name="FG_monitor",
+                             target=self._monitorFgfsProcessThreadFunc,
+                             args=(process, outputQueue, statusQueue),
+                             daemon=True)
+        t.start()           # start reading fgfs' stdout and stderr
+
+        # Done here to avoid delaying the preceding 't.start()'...
+        self.fgStatusText.set(_("FlightGear is running..."))
+        self.fgStatusLabel.config(background="#ff8888")
+
+        return True
 
     def runFGErrorMessage(self, exc):
         title = _('Unable to run FlightGear!')
@@ -1093,36 +1132,64 @@ class App:
         message = '{0}\n\n{1}\n\n{2}'.format(title, exc, msg)
         self.error_message = showerror(_('Error'), message)
 
-    def _newSubprocess(self, options, working_dir):
-        new_subprocess = subprocess.Popen(options, cwd=working_dir,
-                                          stdout=subprocess.PIPE,
-                                          stderr=subprocess.STDOUT)
-        start_new_thread(self._updateProcessOutput, (new_subprocess, ))
+    def _monitorFgfsProcessThreadFunc(self, process, outputQueue, statusQueue):
+        # We are using Tk.event_generate() to notify the main thread. This
+        # particular method, when passed 'when="tail"', is supposed to be safe
+        # to call from other threads than the Tk GUI thread
+        # (cf. <http://stackoverflow.com/questions/7141509/tkinter-wait-for-item-in-queue#comment34432041_14809246>
+        # and
+        # <https://mail.python.org/pipermail/tkinter-discuss/2013-November/003519.html>).
+        # Other Tk functions are usually considered unsafe to call from these
+        # other threads.
+        for line in iter(process.stdout.readline, ''):
+            print(line, end='')
+            outputQueue.put(line)
+            try:
+                self.master.event_generate("<<FGoNewFgfsOutputQueued>>",
+                                           when="tail")
+                # In case Tk is not here anymore
+            except TclError:
+                return
 
-    def _updateProcessOutput(self, new_subprocess):
-        while True:
-            line = new_subprocess.stdout.readline()
-            exitStatus = new_subprocess.poll()
-            if line == b'' and exitStatus is not None:
-                # FlightGear is terminated and all its output has been read
-                if exitStatus >= 0:
-                    complement = _("FG's last exit status: {}").format(
-                        exitStatus)
-                else:
-                    complement = _("FG last killed by signal {}").format(
-                        -exitStatus)
+        exitStatus = process.wait()
+        # FlightGear is terminated and all its output has been read
+        statusQueue.put(exitStatus)
+        try:
+            self.master.event_generate("<<FGoFgfsProcessTerminated>>",
+                                       when="tail")
+        except TclError:
+            return
 
-                self.fgStatusText.set(_('Ready ({})').format(complement))
-                self.fgStatusLabel.config(background="#88ff88")
-                self.run_button.configure(state='normal')
-                self.startLoops()
+    def _updateFgfsProcessOutput(self, event, queue=None):
+        self.output_window.config(state='normal')
+        while True:             # Pop all elements present in the queue
+            try:
+                line = queue.get_nowait()
+            except queue_mod.Empty:
                 break
-            self.output_window.config(state='normal')
-            self.output_window.insert('end', line.decode('utf-8',
-                                                         errors='replace'))
-            self.output_window.config(state='disabled')
-            self.output_window.see('end')
-            sys.stdout.flush()
+
+            self.output_window.insert('end', line)
+
+        self.output_window.config(state='disabled')
+        self.output_window.see('end')
+
+    def _onFgfsProcessTerminated(self, event, queue=None):
+        # There should be exactly one item in the queue now. Get it.
+        exitStatus = queue.get()
+        if exitStatus >= 0:
+            complement = _("FG's last exit status: {0}").format(exitStatus)
+            shortComplement = _("exit status: {0}").format(exitStatus)
+        else:
+            complement = _("FG last killed by signal {0}").format(-exitStatus)
+            shortComplement = _("killed by signal {0}").format(-exitStatus)
+
+        print("fgfs process terminated ({0})".format(shortComplement))
+
+        self.fgStatusText.set(_('Ready ({0})').format(complement))
+        self.fgStatusLabel.config(background="#88ff88")
+        self.run_button.configure(state='normal')
+        self.startLoops()
+        self.runFGLock.release()
 
     def saveAndQuit(self, event=None):
         """Save options to file and quit."""
