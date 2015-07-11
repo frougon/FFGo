@@ -1078,6 +1078,7 @@ class App:
             self.runFGErrorMessage(e)
             self.run_button.config(state=NORMAL)
         else:
+            self.stopLoops()
             self.fgStatusText.set(_("FlightGear is running..."))
             self.fgStatusLabel.config(background="#ff8888")
 
@@ -1114,6 +1115,7 @@ class App:
                 self.fgStatusText.set(_('Ready ({})').format(complement))
                 self.fgStatusLabel.config(background="#88ff88")
                 self.run_button.configure(state='normal')
+                self.startLoops()
                 break
             self.output_window.config(state='normal')
             self.output_window.insert('end', line.decode('utf-8',

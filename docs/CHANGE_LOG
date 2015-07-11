@@ -274,8 +274,13 @@
     indication in green.
 
     * This new behaviour allows to interact with FGo! while FlightGear is
-    running. Among others, it makes it possible to modify the configuration
-    before the fgfs process is completely terminated.
+    running, except for the things that rely on stuff started in
+    App.startLoops(). Among others, it makes it possible to modify the
+    configuration before the fgfs process is completely terminated. It would
+    be possible to keep the loops running even after FlightGear has been
+    started, but that would sacrifice a small amount of performance, for IMHO
+    very little benefit. I prefer freeing the CPU as much as possible for
+    FlightGear.
 
     * As a bonus, the new Label widget indicates the exit status of the last
     FlightGear run, or the signal number in case the fgfs process was
