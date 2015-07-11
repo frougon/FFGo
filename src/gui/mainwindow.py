@@ -322,7 +322,7 @@ class App:
         self.old_park = self.config.park.get()
         self.old_aircraft_search = ''
         self.old_airport_search = ''
-        self.reset(first_run=True)
+        self.reset(first_run=True) # will set self.fgfsArgList appropriately
         self.registerTracedVariables()
         # Lock used to prevent concurent calls of self._runFG()
         # (disabling the "Run FG" button is not enough, as self.runFG()
@@ -1015,82 +1015,29 @@ class App:
         self.config.write(text=t)
 
         program = self.config.FG_bin.get()
-        options = []
-        FG_working_dir = HOME_DIR
+        FG_working_dir = self.config.FG_working_dir.get()
+        if not FG_working_dir:
+            FG_working_dir = HOME_DIR
 
-        with open(CONFIG, mode='r', encoding='utf-8') as config_in:
-            # Parse config file.
-            for line in config_in:
-                line = line.strip()
-                if line == CUT_LINE:
-                    # Options after CUT_LINE are handled by CondConfigParser
-                    break
-
-                if line.startswith('--'):
-                    options.append(line)
-
-                if line.startswith('AI_SCENARIOS='):
-                    L = line[13:].split()
-                    for scenario in L:
-                        options.append('--ai-scenario=' + scenario)
-                elif line.startswith('FG_AIRCRAFT='):
-                    L = line[12:].split(':')
-                    for dir_ in L:
-                        if dir_:
-                            options.append('--fg-aircraft=' + dir_)
-                elif line[:15] == 'FG_WORKING_DIR=':
-                    if os.path.exists(line[15:]):
-                        FG_working_dir = line[15:]
-                elif line[:7] == 'FG_BIN=':
-                    program = line[7:]
-
-        try:
-            condConfig = condconfigparser.RawConditionalConfig(
-                t, extvars=("aircraft", "airport", "parking", "runway",
-                            "carrier", "scenarios"))
-            context = {"aircraft": self.config.aircraft.get(),
-                       "airport": self.config.airport.get(),
-                       "parking": self.config.park.get(),
-                       "runway": self.config.rwy.get(),
-                       "carrier": self.config.carrier.get(),
-                       "scenarios": self.config.scenario.get().split()}
-
-            # configVars:
-            #   external and non-external (assigned in the cfg file) variables
-            #
-            # rawConfigSections:
-            #   list of lists of strings which are fgfs options. The first list
-            #   corresponds to the "default", unconditional section of the
-            #   config file; the other lists come from the conditional sections
-            #   whose predicate is true according to 'context'.
-            configVars, rawConfigSections = condConfig.eval(context)
-            optionLineGroups = [ self.processRawConfigLines(lines) for lines in
-                                 rawConfigSections ]
-            # Concatenate all lists together
-            additionalLines = functools.reduce(operator.add, optionLineGroups,
-                                               [])
-            options.extend(additionalLines)
-
-            # Merge options starting with an element of MERGED_OPTIONS
-            # The default for MERGED_OPTIONS is the empty list.
-            mergedOptions = configVars.get("MERGED_OPTIONS", [])
-            options = self.mergeFGOptions(mergedOptions, options)
-        except condconfigparser.error as e:
-            title = _('Error in configuration file!')
-            msg = _('Error: {}').format(e) # str(e) not translated...
+        if self.fgfsArgList is None:
+            title = _('Cannot start FlightGear now.')
+            msg = _("The configuration in the main text field has an "
+                    "invalid syntax. Please fix it before trying to run "
+                    "FlightGear.")
             message = '{0}\n\n{1}'.format(title, msg)
-            self.error_message = showerror(_('Error'), message)
+            self.error_message = showerror(_('{prg}').format(prg=PROGNAME),
+                                           message)
             return False
 
         print('\n' + '=' * 80 + '\n')
         print(_('Starting %s with following options:') % program)
 
-        for i in options:
+        for i in self.fgfsArgList:
             print('\t%s' % i)
         print('\n' + '-' * 80 + '\n')
 
         try:
-            process = subprocess.Popen([program] + options,
+            process = subprocess.Popen([program] + self.fgfsArgList,
                                        cwd=FG_working_dir,
                                        stdout=subprocess.PIPE,
                                        stderr=subprocess.STDOUT,
@@ -1445,19 +1392,20 @@ class App:
             # Merge options starting with an element of MERGED_OPTIONS
             # The default for MERGED_OPTIONS is the empty list.
             mergedOptions = configVars.get("MERGED_OPTIONS", [])
-            options = self.mergeFGOptions(mergedOptions, options)
-            options = '\n'.join(options)
-
-            self.command_window.config(state='normal')
-            self.command_window.delete('1.0', 'end')
-            self.command_window.insert('end', options)
-            self.command_window.config(state='disabled')
+            # Will be available for self._runFG()
+            self.fgfsArgList = self.mergeFGOptions(mergedOptions, options)
         except condconfigparser.error as e:
+            self.fgfsArgList = None
             title = _('Error in configuration file!')
             msg = _('Error: {}').format(e) # str(e) not translated...
             message = '{0}\n\n{1}'.format(title, msg)
             self.error_message = showerror(_('Error'), message)
-            return
+
+        self.command_window.config(state='normal')
+        self.command_window.delete('1.0', 'end')
+        if self.fgfsArgList is not None:
+            self.command_window.insert('end', '\n'.join(self.fgfsArgList))
+        self.command_window.config(state='disabled')
 
     def _getOptions(self):
         options = []
@@ -1472,8 +1420,12 @@ class App:
         if self.config.rwy.get() != 'Default':
             options.append('--runway=' + self.config.rwy.get())
         if self.config.scenario.get() != '':
-            options.append('--ai-scenario=' + self.config.scenario.get())
+            for scenario in self.config.scenario.get().split():
+                options.append('--ai-scenario=' + scenario)
         if self.config.FG_aircraft.get() != '':
+            # This one may be split into several options, as for --ai-scenario,
+            # but that doesn't seem to be necessary (tested with FG 3.5
+            # 2496bdecfad733bf69c58474939d4a831cc16d46).
             options.append('--fg-aircraft=' + self.config.FG_aircraft.get())
         if self.config.FG_scenery.get() != 'None':
             options.append('--fg-scenery=' + self.config.FG_scenery.get())
