@@ -358,7 +358,8 @@ class App:
         self.aboutWindow.bind('<Escape>', self._destroyAboutWindow)
 
         self.aboutTitle = Label(self.aboutWindow,
-                                font=self.config.aboutTitleFont, text=NAME)
+                                font=self.config.aboutTitleFont,
+                                text=NAME_WITH_VERSION)
         self.aboutTitle.pack()
         self.aboutFrame1 = Frame(self.aboutWindow, borderwidth=1,
                                  relief='sunken', padx=8, pady=12)
