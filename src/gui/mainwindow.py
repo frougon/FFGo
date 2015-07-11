@@ -23,8 +23,8 @@ try:
     PIL = True
 except ImportError:
     PIL = False
-    print ('[FGo! Warning] PIL library not found. Aircraft thumbnails '
-           'will not be displayed.', file=sys.stderr)
+    print ('[{prg} Warning] PIL library not found. Aircraft thumbnails '
+           'will not be displayed.'.format(prg=PROGNAME), file=sys.stderr)
 
 import condconfigparser
 print("Using CondConfigParser version {}".format(condconfigparser.__version__))
@@ -996,7 +996,8 @@ class App:
             msg = _("FlightGear is already running and we'd rather not run "
                     "two instances simultaneously under the same account.")
             message = '{0}\n\n{1}'.format(title, msg)
-            self.error_message = showerror(_('FGo!'), message)
+            self.error_message = showerror(_('{prg}').format(prg=PROGNAME),
+                                           message)
 
     def _runFG(self, event=None):
         """Run FlightGear.

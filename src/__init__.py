@@ -4,6 +4,7 @@
 """FGo! - a simple GUI launcher for FlightGear Flight Simulator."""
 
 
+from .constants import PROGNAME, LOCALE_DIR
 import gettext
 from sys import argv
 from os import chdir
@@ -12,7 +13,7 @@ from tkinter import Tk
 
 def early_tk_init():
     root = Tk()
-    root.title('FGo!')
+    root.title(PROGNAME)
     return root
 
 # When importing 'config', the 'infowindow' module is itself imported, which
@@ -22,7 +23,6 @@ def early_tk_init():
 root = early_tk_init()
 from .config import Config
 from .gui.mainwindow import App
-from .constants import LOCALE_DIR
 
 
 gettext.install('fgo', LOCALE_DIR)
@@ -30,7 +30,8 @@ gettext.install('fgo', LOCALE_DIR)
 
 CLI_MESSAGE = """Usage: fgo
 This program does not use command line options. Edit fgo/data/config/presets
-file if you need to run FGo! with some pre-configuration."""
+file if you need to run {prg} with some pre-configuration.""".format(
+    prg=PROGNAME)
 
 
 def run(working_dir, root=root):

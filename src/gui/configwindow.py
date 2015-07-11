@@ -202,34 +202,34 @@ aircraft directories.""")
 That is the directory where logs or screen-shots will be saved. If left blank,
 the working directory is the user's home directory.""")
         self.tooltip_langMenu = _("""Choose other language. If not selected,
-FGo! will try to choose the system language.""")
-        self.tooltip_aptMenu = _("""Select data source where FGo! will be looking for information about runways or
+{prg} will try to choose the system language.""").format(prg=PROGNAME)
+        self.tooltip_aptMenu = _("""Select data source where {prg} will be looking for information about runways or
 parking positions. There are two options:
 
-Default - FGo! will show runway numbers based on ~/.fgo/apt file,
+Default - {prg} will show runway numbers based on ~/.fgo/apt file,
     which is generated from FG_ROOT/Airports/apt.dat.gz database.
     Parking names will be taken from FG_ROOT/AI/Airports directory.
 
-Scenery - FGo! will show runway numbers based on ~/.fgo/apt file,
+Scenery - {prg} will show runway numbers based on ~/.fgo/apt file,
     which is generated from FG_ROOT/Airports/apt.dat.gz database.
     Parking names will be taken from FG_SCENERY/Airports folder
     - or folders - if multiple scenery paths are provided.
 
-Generally speaking: "Default" option will tell FGo! to show the same
+Generally speaking: "Default" option will tell {prg} to show the same
 data that FlightGear uses by default when selecting starting location,
-while "Scenery" option will tell FGo! to look for that data
+while "Scenery" option will tell {prg} to look for that data
 directly in scenery folder. In that latter case, you may add
 --prop:/sim/paths/use-custom-scenery-data=true argument into command
 line options window to tell FlightGear to use the same data.
 
 If not sure which option you should choose, the best is to stick
-with the default setting.""")
-        self.tooltip_autoAptMenu = _("""Automatic - FGo! will try to keep track of changes of
+with the default setting.""").format(prg=PROGNAME)
+        self.tooltip_autoAptMenu = _("""Automatic - {prg} will try to keep track of changes of
     FG_ROOT/Airports/apt.dat.gz file, and will rebuild its airport database
     when need it.
 
 Manual - "Rebuild Airport Database" button needs to be used every time
-    FG_ROOT/Airports/apt.dat.gz is changed.""")
+    FG_ROOT/Airports/apt.dat.gz is changed.""").format(prg=PROGNAME)
         self.tooltip_rebuildApt = _("""Build new airport database from current FG_ROOT/Airports/apt.dat.gz.
 Useful in case when apt.dat.gz file has been updated.""")
         self.tooltip_fontSize = _("""Set the base font size in the range from {0} to {1}. Zero is a special

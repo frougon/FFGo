@@ -825,9 +825,10 @@ class _ProcessApt:
 
     def show_aptdat_header_error(self):
         message = _('Cannot read version number of apt.dat database.\n\n'
-                    'FGo! expects a proper header information at the '
+                    '{prg} expects a proper header information at the '
                     'beginning of apt.dat. For details about data format see '
-                    'http://data.x-plane.com/designers.html#Formats')
+                    'http://data.x-plane.com/designers.html#Formats').format(
+                        prg=PROGNAME)
         showerror(_('Error'), message)
 
     def show_aptdat_general_error(self):
