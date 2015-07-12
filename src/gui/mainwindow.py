@@ -679,22 +679,6 @@ class App:
             if i in self.config.scenario_list:
                 self.popup.selection_set(self.config.scenario_list.index(i))
 
-    def prefetchScenery(self):
-        if not self.config.TS.get():
-            return
-        message = '$GPGGA,000000,{0},{1},{2},{3},1,,,0,F,,,,*25'
-        lat, lon = self.config.readCoord()[self.getAirport()]
-        lat, lon = lat * 100, lon * 100
-        ns = self._getDirection(lat, 'NS')
-        ew = self._getDirection(lon, 'EW')
-        self._connect_TS(message.format(abs(lat), ns, abs(lon), ew))
-
-    def _getDirection(self, coord, directions):
-        direction = directions[0]
-        if coord < 0:
-            direction = directions[1]
-        return direction
-
     def quit(self):
         """Quit application."""
         self.master.quit()

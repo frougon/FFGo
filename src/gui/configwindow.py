@@ -106,10 +106,6 @@ class ConfigWindow:
         except AttributeError:
             pass
         try:
-            self.frame_TS.destroy()
-        except AttributeError:
-            pass
-        try:
             self.frame_misc.destroy()
         except AttributeError:
             pass
@@ -205,11 +201,6 @@ aircraft directories.""")
         self.tooltip_working_dir = _("""Optional parameter specifying FlightGear's working directory.
 That is the directory where logs or screen-shots will be saved. If left blank,
 the working directory is the user's home directory.""")
-        self.tooltip_TS_bin = _("""Enter the path to "terrasync" file, or "run_terrasync.sh", if you are using
-download_and_compile.sh scripts.""")
-        self.tooltip_TS_scenery = _(
-            """Directory where TerraSync saves downloaded scenery.""")
-        self.tooltip_TS_portEntry = _("""Port address used by TerraSync.""")
         self.tooltip_langMenu = _("""Choose other language. If not selected,
 FGo! will try to choose the system language.""")
         self.tooltip_aptMenu = _("""Select data source where FGo! will be looking for information about runways or

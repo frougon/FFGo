@@ -54,8 +54,8 @@ def run(working_dir, root=root):
     if window_geometry:
         root.geometry(window_geometry)
 
-    # Override window close button, so TerraSync
-    # can be stopped before closing the program.
+    # Override the window close button in order to allow a controlled, clean
+    # shutdown.
     root.protocol("WM_DELETE_WINDOW", app.quit)
 
     root.mainloop()
