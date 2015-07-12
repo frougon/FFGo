@@ -37,7 +37,7 @@ installation simple, choisissez python3-imaging-tk ou python3-pil.imagetk dans
 votre gestionnaire de paquets préféré et toutes les autres dépendances
 devraient être installées automatiquement.
 
-Pour Slackware et systèmes compatibles, un SlackBuild pour FGo! est disponible. 
+Pour Slackware et systèmes compatibles, un SlackBuild pour FGo! est disponible.
 Ceci va générer un paquet qui permet une installation de FGo! intégrée dans
 le système. Le SlackBuild peut être téléchargé sur le site officiel du projet:
 http://www.slackbuilds.org. Pour les systèmes Slackware standard (full) aucun
@@ -48,10 +48,7 @@ paquet supplémentaire n'est nécessaire.
 LANCEMENT
 
 Cliquez sur le fichier "fgo" dans le répertoire principal du programme, ou
-lancez-le dans une console avec la commande "./fgo" ou "python3 fgo". 
-
-Lancer FGo! dans une console est recommandé, car cela donne accès aux messages
-d'évènement de FlightGear et TerraSync.
+lancez-le dans une console avec la commande "./fgo" ou "python3 fgo".
 
 -------------------------------------------------------------------------------
 
@@ -148,14 +145,6 @@ TRUCS & ASTUCES
 -------------------------------------------------------------------------------
 
 ANOMALIES CONNUES ET LIMITATIONS
-
-* FGo! ne sait pas si TerraSync a été effectivement fermé avant qu'une nouvelle
-  instance n'en soit lancée. Si la case à cocher "TerraSync" est décochée puis
-  à nouveau cochée sur une courte période de temps, le message "error binding
-  to port 5501" peut s'afficher dans une console. Il indique qu'une ancienne
-  instance de TerraSync n'a pas encore fini de télécharger les données. Dans ce
-  cas, attendez jusqu'à ce que le téléchargement soit terminé et cochez
-  à nouveau la case "TerraSync".
 
 * Les noms de places de parking très longs ne rentrent pas dans le bouton
   parking.

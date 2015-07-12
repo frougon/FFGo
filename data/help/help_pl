@@ -29,8 +29,8 @@ upewnić się, że wszystkie wymagane zależności zostały zainstalowane.
 
 W Debianie, oraz dystrybucjach na nim opartych wymagane są następujące pakiety:
 python3, python3-tk, tcl8.x i tk8.x; oraz opcjonalnie (w zależności od
-dystrybucji): python3-pil.imagetk lub python3-imaging-tk. W menadżerze pakietów 
-wystarczy wybrać pakiet python3-pil.imagetk lub python3-imaging-tk, reszta 
+dystrybucji): python3-pil.imagetk lub python3-imaging-tk. W menadżerze pakietów
+wystarczy wybrać pakiet python3-pil.imagetk lub python3-imaging-tk, reszta
 zależności powinna zostać zainstalowana automatycznie razem z nim.
 
 Dla Slackware i kompatybilnych systemów dostępny jest SlackBuild dla FGo!.
@@ -43,11 +43,8 @@ dodatkowych paczek.
 
 URUCHAMIANIE
 
-Kliknij plik "fgo" w katalogu głównym programu, lub uruchom w konsoli 
+Kliknij plik "fgo" w katalogu głównym programu, lub uruchom w konsoli
 poleceniem "./fgo" lub "python3 fgo".
-
-Uruchamianie FGo! w konsoli jest zalecane, gdyż daje dostęp do komunikatów
-wyświetlanych przez FlightGear i TerraSync.
 
 -------------------------------------------------------------------------------
 
@@ -139,14 +136,6 @@ TIPS&TRICKS
 -------------------------------------------------------------------------------
 
 ZNANE BŁĘDY I OGRANICZENIA
-
-* FGo! nie śledzi czy sesja TerraSync została zakończona. Gdy TerraSync
-  zostanie w krótkim odstępie czasu wyłączony i ponownie wyłączony, w
-  konsoli może pojawić się następujący komunikat: error binding to port 5501.
-  Wskazuje on na to, że nowa sesja TerraSync nie może zostać uruchomiona
-  ponieważ poprzednia sesja nie zakończyła jeszcze ściągania scenerii z
-  internetu. W takiej sytuacji należy poczekać, aż download dobiegnie końca
-  i ponownie zaznaczyć pole TerraSync.
 
 * Długie nazwy pozycji parkingowych nie mieszczą się w przycisku Parking.
 

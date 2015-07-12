@@ -44,9 +44,6 @@ EJECUCION
 Navega al directorio donde FGo! fue descomprimido y clic en el fichero "fgo", o
 escribe "python3 fgo" o "./fgo" en la teminal.
 
-El mejor método para ejecutar la aplicación es hacerlo a través de una
-terminale, por ver los mensajes de FlightGear y de TerraSync. 
-
 -------------------------------------------------------------------------------
 
 CONFIGURACIÓN
@@ -56,11 +53,11 @@ Para poder usar FGo! primero necesitas configurarlo. Selecciona "Ajustes" =>
 entradas en "Ajustes de FlightGear" es necesario para el correcto
 funcionamiento del programa; el resto es opcional.
 
-Truco: mover el cursor en las opciones para leer las descripciones. 
+Truco: mover el cursor en las opciones para leer las descripciones.
 
 Los cambios en los ajustes de FlightGear son inmediatamente aplicados después
-de pulsar "Guardar ajustes", pero los cambios en "Ajustes de TerraSync" y
-"Miscelaneo" pueden requerir cerrar y abrir de nuevo FGo!.
+de pulsar "Guardar ajustes", pero los cambios en "Miscelaneo" pueden requerir
+cerrar y abrir de nuevo FGo!.
 
 -------------------------------------------------------------------------------
 
@@ -79,7 +76,7 @@ Archivo:
 Ajustes:
 
     Muestra solo aeropuertos instalados - solo aeropuertos presentes en el
-	  directorio scenery actualmente instalados en el disco duro, se 
+	  directorio scenery actualmente instalados en el disco duro, se
 	  mostraran en la lista de aeropuertos.
 
     Actualizar lista de aeropuertos instalados - escanea el disco duro en busca
@@ -117,14 +114,14 @@ TRUCOS Y CONSEJOS
 
 * Si el origen de datos de aeropuertos fue configurado como "Escenarios", la
   información acerca de las posiciones de parking no estarán disponibles hasta
-  que el correspondiente escenario sea instalado  
+  que el correspondiente escenario sea instalado
 
 * Puedes empezar a volar desde un portaaviones. Pulsa la opción que esta debajo
   de la imagen del avión seleccionado y escoge uno de los portaaviones
   disponibles. El código ICAO cambiara el nombre del portaaviones y aparecerá
   de color azul para indicar que estas en "Modo Portaaviones".
   El escenario correspondiente sera selecciona automáticamente.
-  Para poder elegir un aeropuerto de nuevo, necesitas pulsar en el nombre del 
+  Para poder elegir un aeropuerto de nuevo, necesitas pulsar en el nombre del
   portaaviones y seleccionar "Ninguno".
 
 * En la lista "Seleccionar Escenario" puedes pulsar el botón derecho para ver
@@ -135,14 +132,6 @@ TRUCOS Y CONSEJOS
 -------------------------------------------------------------------------------
 
 ERRORES CONOCIDOS Y LIMITACIONES
-
-* FGo! no vigila si TerraSync ha sido cerrado antes de empezar una nueva
-  sesión.
-  Si la casilla de verificación "TerraSync" no esta seleccionada y se vuelva
-  a seleccionar en un corto espacio de tiempo, el mensaje "error binding to
-  port 5501" aparecerá en la terminal. Indica que la instancia anterior de
-  TerraSync no acabo de descargar los datos. En este caso, espera a que acabe
-  de descargar y selecciona "Terrasync" de nuevo.
 
 * Nombres de parking demasiados largos no caben en el botón parking.
 

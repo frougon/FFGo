@@ -18,7 +18,7 @@ REQUISITI
 
 I numeri di versione qui specificati corrispondono al software utilizzato per
 lo sviluppo del programma. È molto probabile che FGo! funzioni anche con
-versioni precedenti (o successive) ma con esse non è stato testato. 
+versioni precedenti (o successive) ma con esse non è stato testato.
 
 -------------------------------------------------------------------------------
 
@@ -48,9 +48,6 @@ UTILIZZO
 
 Cliccare sul file "fgo" che si trova nella directory principale del programma,
 oppure avviarlo da terminale con il comando "./fgo" o "python3 fgo".
-
-L'avvio da terminale è consigliato, poiché rende visibili i messaggi di
-FlightGear e di TerraSync.
 
 -------------------------------------------------------------------------------
 
@@ -142,13 +139,6 @@ SUGGERIMENTI
 -------------------------------------------------------------------------------
 
 DIFETTI CONOSCIUTI E LIMITI
-
-* FGo! non verifica se TerraSync è stato realmente chiuso prima di avviarne una
-  nuova istanza. Se la casella "TerraSync" è stata deselezionata e selezionata
-  nuovamente entro breve tempo, nel terminale può apparire il messaggio "error
-  binding to port 5501". Ciò sta a indicare che la vecchia istanza di TerraSync
-  non ha ancora finito di scaricare i dati. In tal caso attendere fino a quando
-  i dati sono stati scaricati e selezionare di nuovo la casella "TerraSync".
 
 * I nomi di parcheggio molto lunghi fuoriescono dai limiti del pulsante.
 

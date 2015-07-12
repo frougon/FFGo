@@ -32,9 +32,6 @@ RUNNING
 Click "fgo" file in the main directory of the program, or run it in a console
 with the "./fgo" or "python3 fgo" command.
 
-Running FGo! in a console is recommended as it gives access to FlightGear and
-TerraSync output messages.
-
 -------------------------------------------------------------------------------
 
 CONFIGURATION
@@ -122,18 +119,7 @@ TIPS&TRICKS
 
 KNOWN BUGS AND LIMITATIONS
 
-* FGo! does not track if TerraSync has been actually closed before starting
-  a new instance of it. If "TerraSync" checkbutton is unchecked and checked
-  again in short period of time, "error binding to port 5501" message may be
-  shown in a console. It indicates that old instance of TerraSync does not
-  finished downloading data yet. In that case, wait until download is finished
-  and check "TerraSync" checkbutton again.
-
-  Note: TerraSync is already well integrated into reasonably recent FlightGear
-        versions; therefore, you don't have to use this specific FGo! feature
-        anymore in order to use TerraSync.
-
-* Very long parking places names does not fit in parking button.
+* Very long parking places names don't fit in the parking button.
 
 -------------------------------------------------------------------------------
 
