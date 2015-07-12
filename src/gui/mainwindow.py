@@ -322,7 +322,8 @@ class App:
         self.old_park = self.config.park.get()
         self.old_aircraft_search = ''
         self.old_airport_search = ''
-        self.reset(first_run=True) # will set self.fgfsArgList appropriately
+        # Will set self.fgfsArgList and self.lastConfigParsingExc appropriately
+        self.reset(first_run=True)
         self.registerTracedVariables()
         # Lock used to prevent concurent calls of self._runFG()
         # (disabling the "Run FG" button is not enough, as self.runFG()
@@ -1021,9 +1022,13 @@ class App:
 
         if self.fgfsArgList is None:
             title = _('Cannot start FlightGear now.')
+            # str(self.lastConfigParsingExc) is not translated...
             msg = _("The configuration in the main text field has an "
-                    "invalid syntax. Please fix it before trying to run "
-                    "FlightGear.")
+                    "invalid syntax:\n\n{errmsg}\n\n"
+                    "See docs/README.conditional-config or the "
+                    "CondConfigParser Manual for a description of the "
+                    "syntax rules.").format(
+                        errmsg=self.lastConfigParsingExc)
             message = '{0}\n\n{1}'.format(title, msg)
             self.error_message = showerror(_('{prg}').format(prg=PROGNAME),
                                            message)
@@ -1396,10 +1401,9 @@ class App:
             self.fgfsArgList = self.mergeFGOptions(mergedOptions, options)
         except condconfigparser.error as e:
             self.fgfsArgList = None
-            title = _('Error in configuration file!')
-            msg = _('Error: {}').format(e) # str(e) not translated...
-            message = '{0}\n\n{1}'.format(title, msg)
-            self.error_message = showerror(_('Error'), message)
+            self.lastConfigParsingExc = e
+        else:
+            self.lastConfigParsingExc = None
 
         self.command_window.config(state='normal')
         self.command_window.delete('1.0', 'end')
