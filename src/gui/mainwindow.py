@@ -34,6 +34,50 @@ from .configwindow import ConfigWindow
 from ..constants import *
 
 
+class PassShortcutsToApp:
+    """Mixin class to override some bindings of standard Tkinter widgets.
+
+    For now, the class ensures that Ctrl-F will trigger
+    App.onControlF_KeyPress(), which is the central place where this
+    shortcut is handled.
+
+    This class is used to customize Text and Entry widgets of FGo!'s
+    main window. In other windows (e.g., Preferences), one should use
+    standard Tkinter widgets, since Ctrl-F is only supposed to run
+    FlightGear when the main window is active.
+
+    """
+    def __init__(self, app):
+        self.FGoApp = app
+        self.bind('<Control-KeyPress-f>', self.onControlF_KeyPress)
+
+    def onControlF_KeyPress(self, event):
+        self.FGoApp.onControlF_KeyPress(event)
+        return "break"
+
+class MyText(Text, PassShortcutsToApp):
+    """As the Text widget, but passes Ctrl-F to App.onControlF_KeyPress().
+
+    Note: the first argument to the constructor must be the application
+          instance! Other arguments are passed as is to the Text widget.
+
+    """
+    def __init__(self, app, *args, **kwargs):
+        Text.__init__(self, *args, **kwargs)
+        PassShortcutsToApp.__init__(self, app)
+
+class MyEntry(Entry, PassShortcutsToApp):
+    """As the Entry widget, but passes Ctrl-F to App.onControlF_KeyPress().
+
+    Note: the first argument to the constructor must be the application
+          instance! Other arguments are passed as is to the Entry widget.
+
+    """
+    def __init__(self, app, *args, **kwargs):
+        Entry.__init__(self, *args, **kwargs)
+        PassShortcutsToApp.__init__(self, app)
+
+
 class App:
 
     def __init__(self, master, config):
@@ -109,7 +153,7 @@ class App:
         self.frame12 = Frame(self.frame1, borderwidth=1)
         self.frame12.pack(side='top', fill='x')
 
-        self.aircraftSearch = Entry(self.frame12, bg=TEXT_BG_COL)
+        self.aircraftSearch = MyEntry(self, self.frame12, bg=TEXT_BG_COL)
         self.aircraftSearch.pack(side='left', fill='x', expand=True)
         self.aircraftSearch.bind('<FocusIn>', self.aircraftSearchStart)
         self.aircraftSearch.bind('<FocusOut>', self.aircraftSearchStop)
@@ -196,7 +240,7 @@ class App:
         self.frame32 = Frame(self.frame3, borderwidth=1)
         self.frame32.pack(side='top', fill='x')
 
-        self.airportSearch = Entry(self.frame32, bg=TEXT_BG_COL)
+        self.airportSearch = MyEntry(self, self.frame32, bg=TEXT_BG_COL)
         self.airportSearch.pack(side='left', fill='x', expand=True)
         self.airportSearch.bind('<FocusIn>', self.airportSearchStart)
         self.airportSearch.bind('<FocusOut>', self.airportSearchStop)
@@ -244,9 +288,10 @@ class App:
 
         option_window_sv = Scrollbar(self.frame51, orient='vertical')
         option_window_sh = Scrollbar(self.frame51, orient='horizontal')
-        self.option_window = Text(self.frame51, bg=TEXT_BG_COL, wrap='none',
-                                  yscrollcommand=option_window_sv.set,
-                                  xscrollcommand=option_window_sh.set)
+        self.option_window = MyText(self,
+                                    self.frame51, bg=TEXT_BG_COL, wrap='none',
+                                    yscrollcommand=option_window_sv.set,
+                                    xscrollcommand=option_window_sh.set)
         option_window_sv.config(command=self.option_window.yview, takefocus=0)
         option_window_sh.config(command=self.option_window.xview, takefocus=0)
         self.option_window.bind('<<Modified>>', self.updateOptions)
@@ -275,11 +320,12 @@ class App:
 
         output_window_sv = Scrollbar(self.frame522, orient='vertical')
         output_window_sh = Scrollbar(self.frame522, orient='horizontal')
-        self.output_window = Text(self.frame522, foreground=COMMENT_COL,
-                                  bg=MESSAGE_BG_COL, wrap='none',
-                                  yscrollcommand=output_window_sv.set,
-                                  xscrollcommand=output_window_sh.set,
-                                  state='disabled')
+        self.output_window = MyText(self,
+                                    self.frame522, foreground=COMMENT_COL,
+                                    bg=MESSAGE_BG_COL, wrap='none',
+                                    yscrollcommand=output_window_sv.set,
+                                    xscrollcommand=output_window_sh.set,
+                                    state='disabled')
         output_window_sv.config(command=self.output_window.yview, takefocus=0)
         output_window_sh.config(command=self.output_window.xview, takefocus=0)
         output_window_sh.pack(side='bottom', fill='x')
@@ -298,11 +344,12 @@ class App:
 
         command_window_sv = Scrollbar(self.frame53, orient='vertical')
         command_window_sh = Scrollbar(self.frame53, orient='horizontal')
-        self.command_window = Text(self.frame53, wrap='none', height=10,
-                                   relief='flat', bg=GRAYED_OUT_COL,
-                                   yscrollcommand=command_window_sv.set,
-                                   xscrollcommand=command_window_sh.set,
-                                   state='disabled')
+        self.command_window = MyText(self,
+                                     self.frame53, wrap='none', height=10,
+                                     relief='flat', bg=GRAYED_OUT_COL,
+                                     yscrollcommand=command_window_sv.set,
+                                     xscrollcommand=command_window_sh.set,
+                                     state='disabled')
         command_window_sv.config(command=self.command_window.yview, takefocus=0)
         command_window_sh.config(command=self.command_window.xview, takefocus=0)
         command_window_sh.pack(side='bottom', fill='x')
@@ -332,8 +379,12 @@ class App:
         self.setupKeyboardShortcuts()
         self.startLoops()
 
+    def onControlF_KeyPress(self, event):
+        self.runFG(event)
+        return "break"
+
     def setupKeyboardShortcuts(self):
-        self.master.bind('<Control-KeyPress-f>', self.runFG)
+        self.master.bind('<Control-KeyPress-f>', self.onControlF_KeyPress)
         self.master.bind('<Control-KeyPress-r>', self.reset)
         self.master.bind_all('<Control-KeyPress-q>', self.saveAndQuit)
 
