@@ -622,9 +622,32 @@ class App:
                     return 0
 
     def openLogDir(self):
-        command = 'exo-open --launch FileManager'
-        c = command.split()
-        subprocess.Popen(c+[LOG_DIR])
+        program = "xdg-open"
+        try:
+            process = subprocess.Popen([program, LOG_DIR])
+        except OSError as exc:
+            title = _("Unable to start the file manager with '{}'.").format(
+                program)
+            message = '{}\n\nProblem: {}'.format(title, exc)
+            self.error_message = showerror(_('{prg}').format(prg=PROGNAME),
+                                           message)
+        else:
+            # xdg-open normally doesn't return immediately (cf.
+            # <http://unix.stackexchange.com/a/74631>). The thread will wait()
+            # for it in order to avoid leaving a zombie.
+            threading.Thread(name="FileManager_monitor",
+                             target=self._monitorFileManagerProcessThreadFunc,
+                             args=(process,),
+                             daemon=True).start()
+
+    def _monitorFileManagerProcessThreadFunc(self, process):
+        exitStatus = process.wait()
+        if exitStatus >= 0:
+            complement = _("exit status: {}").format(exitStatus)
+        else:
+            complement = _("killed by signal {}").format(-exitStatus)
+
+        print("File manager process terminated ({})".format(complement))
 
     def popupCarrier(self, event):
         """Make pop up menu."""
