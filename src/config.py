@@ -61,6 +61,15 @@ class Config:
         self.baseFontSize = StringVar()
         self.TkDefaultFontSize = IntVar()
 
+        # tkinter.BooleanVar feels kind of messy. Sometimes, it prints out as
+        # 'True', other times as '1'... IntVar seems more predictable.
+        self.showFGCommand = IntVar()
+        self.showFGCommandInSeparateWindow = IntVar()
+        self.FGCommandGeometry = StringVar()
+        self.showFGOutput = IntVar()
+        self.showFGOutputInSeparateWindow = IntVar()
+        self.FGOutputGeometry = StringVar()
+
         self.keywords = {'--aircraft=': self.aircraft,
                          '--airport=': self.airport,
                          '--fg-root=': self.FG_root,
@@ -77,7 +86,15 @@ class Config:
                          'FILTER_APT_LIST=': self.filtredAptList,
                          'LANG=': self.language,
                          'WINDOW_GEOMETRY=': self.window_geometry,
-                         'BASE_FONT_SIZE=': self.baseFontSize}
+                         'BASE_FONT_SIZE=': self.baseFontSize,
+                         'SHOW_FG_COMMAND=': self.showFGCommand,
+                         'SHOW_FG_COMMAND_IN_SEPARATE_WINDOW=':
+                         self.showFGCommandInSeparateWindow,
+                         'FG_COMMAND_GEOMETRY=': self.FGCommandGeometry,
+                         'SHOW_FG_OUTPUT=': self.showFGOutput,
+                         'SHOW_FG_OUTPUT_IN_SEPARATE_WINDOW=':
+                         self.showFGOutputInSeparateWindow,
+                         'FG_OUTPUT_GEOMETRY=': self.FGOutputGeometry}
 
         self._createUserDirectories()
         self.update(first_run=True)

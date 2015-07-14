@@ -7,8 +7,9 @@ import subprocess
 import threading
 import socket
 import re
+import abc
 import functools
-import operator
+import collections
 from gettext import translation
 import threading
 import queue as queue_mod       # keep 'queue' available for variable bindings
@@ -17,6 +18,7 @@ import tkinter.filedialog as fd
 from tkinter.scrolledtext import ScrolledText
 from xml.etree.ElementTree import ElementTree
 from tkinter.messagebox import showerror
+import condconfigparser
 
 try:
     from PIL import Image, ImageTk
@@ -26,12 +28,10 @@ except ImportError:
     print ('[{prg} Warning] PIL library not found. Aircraft thumbnails '
            'will not be displayed.'.format(prg=PROGNAME), file=sys.stderr)
 
-import condconfigparser
-print("Using CondConfigParser version {}".format(condconfigparser.__version__))
-
 from .metar import Metar
 from .configwindow import ConfigWindow
 from ..constants import *
+from .. import fgcmdbuilder
 
 
 class PassShortcutsToApp:
@@ -81,6 +81,8 @@ class MyEntry(Entry, PassShortcutsToApp):
 class App:
 
     def __init__(self, master, config):
+        print(_("Using CondConfigParser version {0}").format(
+            condconfigparser.__version__))
         self.master = master
         self.config = config
 
@@ -109,6 +111,23 @@ class App:
                                       command=self.filterAirports)
         self.settmenu.add_command(label=_('Update list of installed airports'),
                                   command=self.updateInstalledAptList)
+        self.settmenu.add_separator()
+        self.settmenu.add_checkbutton(
+            label=_('Show FlightGear arguments'),
+            variable=self.config.showFGCommand,
+            command=self.changeFGCommandConfig)
+        self.settmenu.add_checkbutton(
+            label=_('Show FlightGear arguments in separate window'),
+            variable=self.config.showFGCommandInSeparateWindow,
+            command=self.changeFGCommandConfig)
+        self.settmenu.add_checkbutton(
+            label=_('Show FlightGear output'),
+            variable=self.config.showFGOutput,
+            command=self.changeFGOutputConfig)
+        self.settmenu.add_checkbutton(
+            label=_('Show FlightGear output in separate window'),
+            variable=self.config.showFGOutputInSeparateWindow,
+            command=self.changeFGOutputConfig)
         self.settmenu.add_separator()
         self.settmenu.add_command(label=_('Preferences'),
                                   command=self.showConfigWindow)
@@ -298,63 +317,17 @@ class App:
         option_window_sh.pack(side='bottom', fill='x')
         self.option_window.pack(side='left', fill='both', expand=True)
         option_window_sv.pack(side='left', fill='y')
-        # Elements of 52-th frame are defined in reverse order to make sure
-        # that bottom buttons are always visible when resizing.
-        self.frame52 = Frame(self.frame5top)
-        self.frame52.pack(side='left', fill='both', expand=True)
 
-        self.frame521 = Frame(self.frame52)
-        self.frame521.pack(side='bottom', fill='y')
-
-        self.save_output_button = Button(self.frame521, text=_('Save Log'),
-                                         command=self.saveLog)
-        self.save_output_button.pack(side='left')
-
-        self.open_log_dir_button = Button(self.frame521,
-                                          text=_('Open Log Directory'),
-                                          command=self.openLogDir)
-        self.open_log_dir_button.pack(side='left')
-
-        self.frame522 = Frame(self.frame52)
-        self.frame522.pack(side='bottom', fill='both', expand=True)
-
-        output_window_sv = Scrollbar(self.frame522, orient='vertical')
-        output_window_sh = Scrollbar(self.frame522, orient='horizontal')
-        self.output_window = MyText(self,
-                                    self.frame522, foreground=COMMENT_COL,
-                                    bg=MESSAGE_BG_COL, wrap='none',
-                                    yscrollcommand=output_window_sv.set,
-                                    xscrollcommand=output_window_sh.set,
-                                    state='disabled')
-        output_window_sv.config(command=self.output_window.yview, takefocus=0)
-        output_window_sh.config(command=self.output_window.xview, takefocus=0)
-        output_window_sh.pack(side='bottom', fill='x')
-        self.output_window.pack(side='left', fill='both', expand=True)
-        output_window_sv.pack(side='left', fill='y')
-
-        self.frame5bottom = Frame(self.frame5, relief='groove', borderwidth=2)
-        self.frame5bottom.pack(side='top', fill='x')
-
-        command_window_label = Label(self.frame5bottom,
-                   text=_('FlightGear will be started with following options:'))
-        command_window_label.pack(side='top', fill='y', anchor='nw')
-
-        self.frame53 = Frame(self.frame5bottom)
-        self.frame53.pack(side='bottom', fill='x', expand=True)
-
-        command_window_sv = Scrollbar(self.frame53, orient='vertical')
-        command_window_sh = Scrollbar(self.frame53, orient='horizontal')
-        self.command_window = MyText(self,
-                                     self.frame53, wrap='none', height=10,
-                                     relief='flat', bg=GRAYED_OUT_COL,
-                                     yscrollcommand=command_window_sv.set,
-                                     xscrollcommand=command_window_sh.set,
-                                     state='disabled')
-        command_window_sv.config(command=self.command_window.yview, takefocus=0)
-        command_window_sh.config(command=self.command_window.xview, takefocus=0)
-        command_window_sh.pack(side='bottom', fill='x')
-        self.command_window.pack(side='left', fill='x', expand=True)
-        command_window_sv.pack(side='left', fill='y')
+        self.FGOutput = FGOutput(
+            self, self.config.showFGOutput, parent=self.frame5top,
+            show=self.config.showFGOutput.get(),
+            windowDetached=self.config.showFGOutputInSeparateWindow.get(),
+            geomVariable=self.config.FGOutputGeometry)
+        self.FGCommand = FGCommand(
+            self, self.config.showFGCommand, parent=self.frame,
+            show=self.config.showFGCommand.get(),
+            windowDetached=self.config.showFGCommandInSeparateWindow.get(),
+            geomVariable=self.config.FGCommandGeometry)
 
 #------------------------------------------------------------------------------
 
@@ -369,7 +342,8 @@ class App:
         self.old_park = self.config.park.get()
         self.old_aircraft_search = ''
         self.old_airport_search = ''
-        # Will set self.fgfsArgList and self.lastConfigParsingExc appropriately
+        # Will set self.FGCommand.{argList,lastConfigParsingExc}
+        # appropriately (actually, self.FGCommand.builder.*).
         self.reset(first_run=True)
         self.registerTracedVariables()
         # Lock used to prevent concurent calls of self._runFG()
@@ -383,9 +357,13 @@ class App:
         self.runFG(event)
         return "break"
 
+    def onControlR_KeyPress(self, event):
+        self.reset(event)
+        return "break"
+
     def setupKeyboardShortcuts(self):
         self.master.bind('<Control-KeyPress-f>', self.onControlF_KeyPress)
-        self.master.bind('<Control-KeyPress-r>', self.reset)
+        self.master.bind('<Control-KeyPress-r>', self.onControlR_KeyPress)
         self.master.bind_all('<Control-KeyPress-q>', self.saveAndQuit)
 
     def about(self):
@@ -621,34 +599,6 @@ class App:
                 except ValueError:
                     return 0
 
-    def openLogDir(self):
-        program = "xdg-open"
-        try:
-            process = subprocess.Popen([program, LOG_DIR])
-        except OSError as exc:
-            title = _("Unable to start the file manager with '{}'.").format(
-                program)
-            message = '{}\n\nProblem: {}'.format(title, exc)
-            self.error_message = showerror(_('{prg}').format(prg=PROGNAME),
-                                           message)
-        else:
-            # xdg-open normally doesn't return immediately (cf.
-            # <http://unix.stackexchange.com/a/74631>). The thread will wait()
-            # for it in order to avoid leaving a zombie.
-            threading.Thread(name="FileManager_monitor",
-                             target=self._monitorFileManagerProcessThreadFunc,
-                             args=(process,),
-                             daemon=True).start()
-
-    def _monitorFileManagerProcessThreadFunc(self, process):
-        exitStatus = process.wait()
-        if exitStatus >= 0:
-            complement = _("exit status: {}").format(exitStatus)
-        else:
-            complement = _("killed by signal {}").format(-exitStatus)
-
-        print("File manager process terminated ({})".format(complement))
-
     def popupCarrier(self, event):
         """Make pop up menu."""
         # Take focus out of search entry to stop search loop.
@@ -851,15 +801,15 @@ class App:
         return rstripped_text
 
     def registerTracedVariables(self):
-        self.options.trace('w', self.updateCommand)
-        self.config.aircraft.trace('w', self.updateCommand)
-        self.config.airport.trace('w', self.updateCommand)
-        self.config.scenario.trace('w', self.updateCommand)
-        self.config.carrier.trace('w', self.updateCommand)
-        self.config.FG_root.trace('w', self.updateCommand)
-        self.config.FG_scenery.trace('w', self.updateCommand)
-        self.config.park.trace('w', self.updateCommand)
-        self.config.rwy.trace('w', self.updateCommand)
+        self.options.trace('w', self.FGCommand.update)
+        self.config.aircraft.trace('w', self.FGCommand.update)
+        self.config.airport.trace('w', self.FGCommand.update)
+        self.config.scenario.trace('w', self.FGCommand.update)
+        self.config.carrier.trace('w', self.FGCommand.update)
+        self.config.FG_root.trace('w', self.FGCommand.update)
+        self.config.FG_scenery.trace('w', self.FGCommand.update)
+        self.config.park.trace('w', self.FGCommand.update)
+        self.config.rwy.trace('w', self.FGCommand.update)
 
     def reset(self, event=None, path=None, first_run=False):
         """Reset data"""
@@ -882,7 +832,17 @@ class App:
             self.setCarrier(self.currentCarrier)
         else:
             self.resetCarrier()
-        self.updateCommand()
+
+        for manager, meth in ((self.FGOutput, self.changeFGOutputConfig),
+                              (self.FGCommand, self.changeFGCommandConfig)):
+            # Show/hidden and detached/integrated state of FGOutput and
+            # FGCommand
+            meth(event)
+            # Geometry if applicable
+            if manager.visible and manager.windowDetached:
+                manager.restoreGeometry()
+        # Update the fgfs argument list preview (“Command window”)
+        self.FGCommand.update()
 
     def resetCarrier(self):
         if self.config.carrier.get() != 'None':
@@ -918,137 +878,6 @@ class App:
         t = self.option_window
         t.delete('1.0', 'end')
         t.insert('end', self.config.text)
-
-    _rawCfgLineComment_cre = re.compile(r"[ \t]*#")
-
-    def processRawConfigLines(self, rawConfigLines):
-        r"""Handle backslash escape sequences and remove comments in fgfs opts.
-
-        Comments start with '#' and end at the end of the line. Spaces
-        and tabs right before a comment are ignored (except if a space
-        is part of a \<space> escape sequence).
-
-        Outside comments, the following escape sequences are recognized
-        (the expansion of each escape sequence is given in the second
-        column):
-
-          \\          \ (produces a single backslash)
-          \[          [ (useful at the beginning of a line to avoid
-                         confusion with the start of a predicate)
-          \]          ] (for symmetry with '\[')
-          \#          # (literal '#' character, doesn't start a comment)
-          \t          tab character
-          \n          newline character (doesn't start a new option)
-          \<space>    space character (useful to include a space at the
-                      end of an option, which would be ignored without
-                      the backslash)
-          \<newline>  continuation line (i.e., make as if the next line
-                      were really the continuation of the current line,
-                      with the \<newline> escape sequence removed)
-
-        """
-        res = []                # list of strings: the output lines
-        # After escape sequences processing: stores the characters forming each
-        # output line as it is being constructed from one or more input lines
-        # (continuation lines are started with a backslash at the end of the
-        # previous input line)
-        chars = []
-        # i: input line number; j: column number in this line
-        i = j = 0
-
-        while i < len(rawConfigLines):
-            if j >= len(rawConfigLines[i]):
-                res.append(''.join(chars)) # finish the output line
-                del chars[:]
-                i += 1          # next input line
-                j = 0
-                continue
-
-            mo = self._rawCfgLineComment_cre.match(
-                rawConfigLines[i][j:])
-            if mo:
-                res.append(''.join(chars)) # finish the output line
-                del chars[:]
-                i += 1          # next input line
-                j = 0
-                continue
-
-            c = rawConfigLines[i][j]
-
-            if c == "\\":
-                if j + 1 == len(rawConfigLines[i]): # end of input line
-                    if i + 1 == len(rawConfigLines):
-                        res.append(''.join(chars)) # finish the output line
-                    else:
-                        j = -1  # continuation line
-
-                    i += 1      # next input line
-                else:
-                    j += 1      # next char of input line
-                    c = rawConfigLines[i][j]
-
-                    if c == "\\":
-                        chars.append("\\")
-                    elif c == "n":
-                        chars.append("\n")
-                    elif c == "t":
-                        chars.append("\t")
-                    elif c == '#':
-                        chars.append('#')
-                    elif c == ' ':
-                        chars.append(' ')
-                    elif c == '[':
-                        chars.append('[')
-                    elif c == ']':
-                        chars.append(']')
-                    else:
-                        title = _('Error in configuration file!')
-                        msg = _('Invalid escape sequence in option line: '
-                                '\\{}').format(c)
-                        message = '{0}\n\n{1}'.format(title, msg)
-                        self.error_message = showerror(_('Error'), message)
-            elif c == '#':
-                assert False, "Comment char # should have been handled " \
-                    "earlier (by regexp)"
-            else:
-                chars.append(c)
-
-            j += 1              # next input char
-
-        return res
-
-    def mergeFGOptions(self, mergedOptions, optionList):
-        """Merge identical options in 'optionList'.
-
-        Return a new list containing all options from 'optionList',
-        except that the elements of 'optionList' that start with an
-        element of 'mergedOptions' are merged together.
-
-        More precisely, for a given element e (a string) of
-        'mergedOptions', the first element of 'optionList' that starts
-        with e is replaced by the last element of 'optionList' that
-        starts with e and all other such elements of 'optionList' are
-        omitted from the result. In other words, the last element of
-        'optionList' that starts with e "wins", replaces the first one,
-        and other occurrences are ignored.
-
-        """
-        d = {}
-        l = []
-
-        for opt in optionList:
-            for prefix in mergedOptions:
-                if opt.startswith(prefix):
-                    if prefix not in d: # first time we encounter this prefix?
-                        l.append( (False, prefix) )
-                    d[prefix] = opt # overwrites previous ones
-                    break
-            else:
-                l.append( (True, opt) )  # non-merged option
-
-        # If isOpt is False, s is a prefix and d[s] the last element of
-        # optionList starting with that prefix.
-        return [ s if isOpt else d[s] for isOpt, s in l ]
 
     def runFG(self, *args, **kwargs):
         """Wrapper around self._runFG() to prevent concurrent calls.
@@ -1094,29 +923,27 @@ class App:
         if not FG_working_dir:
             FG_working_dir = HOME_DIR
 
-        if self.fgfsArgList is None:
-            title = _('Cannot start FlightGear now.')
+        if self.FGCommand.argList is None:
+            message = _('Cannot start FlightGear now.')
             # str(self.lastConfigParsingExc) is not translated...
-            msg = _("The configuration in the main text field has an "
-                    "invalid syntax:\n\n{errmsg}\n\n"
-                    "See docs/README.conditional-config or the "
-                    "CondConfigParser Manual for a description of the "
-                    "syntax rules.").format(
-                        errmsg=self.lastConfigParsingExc)
-            message = '{0}\n\n{1}'.format(title, msg)
-            self.error_message = showerror(_('{prg}').format(prg=PROGNAME),
-                                           message)
+            detail = _("The configuration in the main text field has an "
+                       "invalid syntax:\n\n{errmsg}\n\n"
+                       "See docs/README.conditional-config or the "
+                       "CondConfigParser Manual for a description of the "
+                       "syntax rules.").format(
+                           errmsg=self.FGCommand.lastConfigParsingExc)
+            showerror(_('{prg}').format(prg=PROGNAME), message, detail=detail)
             return False
 
         print('\n' + '=' * 80 + '\n')
         print(_('Starting %s with following options:') % program)
 
-        for i in self.fgfsArgList:
+        for i in self.FGCommand.argList:
             print('\t%s' % i)
         print('\n' + '-' * 80 + '\n')
 
         try:
-            process = subprocess.Popen([program] + self.fgfsArgList,
+            process = subprocess.Popen([program] + self.FGCommand.argList,
                                        cwd=FG_working_dir,
                                        stdout=subprocess.PIPE,
                                        stderr=subprocess.STDOUT,
@@ -1127,9 +954,7 @@ class App:
             return False
 
         self.stopLoops()
-        self.output_window.config(state='normal')
-        self.output_window.delete('1.0', 'end')
-        self.output_window.config(state='disabled')
+        self.FGOutput.clear()
 
         # One queue for fgfs' stdout and stderr, the other for its exit
         # status (or killing signal)
@@ -1189,17 +1014,29 @@ class App:
             return
 
     def _updateFgfsProcessOutput(self, event, queue=None):
-        self.output_window.config(state='normal')
+        """Forward fgfs output from 'queue' to 'self.FGOutput'.
+
+        This function, as well as all code from the FGOutput class used
+        in this file, runs in the main thread (which is the GUI thread
+        here). As a result, there is no risk that a detached FGOutput
+        window is attached or closed while this method is being
+        executed. If the user tries to do that, Tk will just queue an
+        event which won't be processed until this method returns. This
+        is important, because no particular precautions have been taken
+        to make FGOutput thread-safe.
+
+        """
+        self.FGOutput.unlock()
         while True:             # Pop all elements present in the queue
             try:
                 line = queue.get_nowait()
             except queue_mod.Empty:
                 break
 
-            self.output_window.insert('end', line)
+            self.FGOutput.appendNoUnlock(line)
 
-        self.output_window.config(state='disabled')
-        self.output_window.see('end')
+        self.FGOutput.lock()
+        self.FGOutput.showEnd()
 
     def _onFgfsProcessTerminated(self, event, queue=None):
         # There should be exactly one item in the queue now. Get it.
@@ -1219,26 +1056,23 @@ class App:
         self.startLoops()
         self.runFGLock.release()
 
-    def saveAndQuit(self, event=None):
-        """Save options to file and quit."""
-        # Save window resolution.
+    def saveWindowsGeometry(self):
+        # Save the size of the main window.
         geometry = self.master.geometry().split('+')[0]
         self.config.window_geometry.set(geometry)
 
+        if self.FGCommand.visible and self.FGCommand.windowDetached:
+            self.FGCommand.saveGeometry()
+
+        if self.FGOutput.visible and self.FGOutput.windowDetached:
+            self.FGOutput.saveGeometry()
+
+    def saveAndQuit(self, event=None):
+        """Save options to file (incl. geometry of windows) and quit."""
+        self.saveWindowsGeometry()
         t = self.options.get()
         self.config.write(text=t)
         self.master.quit()
-
-    def saveLog(self):
-        p = fd.asksaveasfilename(initialdir=LOG_DIR,
-                                 initialfile=DEFAULT_LOG_NAME)
-        if p:
-            with open(p, mode='w', encoding='utf-8') as logfile:
-                text = self.output_window.get('0.0', 'end')
-                # Cutoff trailing new line that Tk always adds at the end.
-                if text.endswith('\n'):
-                    text = text[:-1]
-                logfile.write(text)
 
     def scenarioDescription(self, event):
         """Make pop up window showing AI scenario description."""
@@ -1437,78 +1271,6 @@ class App:
         else:
             return
 
-    def updateCommand(self, *args):
-        t = self.options.get()
-        options = self._getOptions()
-
-        try:
-            condConfig = condconfigparser.RawConditionalConfig(
-                t, extvars=("aircraft", "airport", "parking", "runway",
-                            "carrier", "scenarios"))
-            context = {"aircraft": self.config.aircraft.get(),
-                       "airport": self.config.airport.get(),
-                       "parking": self.config.park.get(),
-                       "runway": self.config.rwy.get(),
-                       "carrier": self.config.carrier.get(),
-                       "scenarios": self.config.scenario.get().split()}
-
-            # configVars:
-            #   external and non-external (assigned in the cfg file) variables
-            #
-            # rawConfigSections:
-            #   list of lists of strings which are fgfs options. The first list
-            #   corresponds to the "default", unconditional section of the
-            #   config file; the other lists come from the conditional sections
-            #   whose predicate is true according to 'context'.
-            configVars, rawConfigSections = condConfig.eval(context)
-            optionLineGroups = [ self.processRawConfigLines(lines) for lines in
-                                 rawConfigSections ]
-            # Concatenate all lists together
-            additionalLines = functools.reduce(operator.add, optionLineGroups,
-                                               [])
-            options.extend(additionalLines)
-
-            # Merge options starting with an element of MERGED_OPTIONS
-            # The default for MERGED_OPTIONS is the empty list.
-            mergedOptions = configVars.get("MERGED_OPTIONS", [])
-            # Will be available for self._runFG()
-            self.fgfsArgList = self.mergeFGOptions(mergedOptions, options)
-        except condconfigparser.error as e:
-            self.fgfsArgList = None
-            self.lastConfigParsingExc = e
-        else:
-            self.lastConfigParsingExc = None
-
-        self.command_window.config(state='normal')
-        self.command_window.delete('1.0', 'end')
-        if self.fgfsArgList is not None:
-            self.command_window.insert('end', '\n'.join(self.fgfsArgList))
-        self.command_window.config(state='disabled')
-
-    def _getOptions(self):
-        options = []
-        options.append('--fg-root=' + self.config.FG_root.get())
-        options.append('--aircraft=' + self.config.aircraft.get())
-        if self.config.carrier.get() != 'None':
-            options.append('--carrier=' + self.config.carrier.get())
-        if self.config.airport.get() != 'None':
-            options.append('--airport=' + self.config.airport.get())
-        if self.config.park.get() != 'None':
-            options.append('--parkpos=' + self.config.park.get())
-        if self.config.rwy.get() != 'Default':
-            options.append('--runway=' + self.config.rwy.get())
-        if self.config.scenario.get() != '':
-            for scenario in self.config.scenario.get().split():
-                options.append('--ai-scenario=' + scenario)
-        if self.config.FG_aircraft.get() != '':
-            # This one may be split into several options, as for --ai-scenario,
-            # but that doesn't seem to be necessary (tested with FG 3.5
-            # 2496bdecfad733bf69c58474939d4a831cc16d46).
-            options.append('--fg-aircraft=' + self.config.FG_aircraft.get())
-        if self.config.FG_scenery.get() != 'None':
-            options.append('--fg-scenery=' + self.config.FG_scenery.get())
-        return options
-
     def updateImage(self):
         self.image = self.getImage()
         self.thumbnail.config(image=self.image)
@@ -1522,3 +1284,454 @@ class App:
     def updateOptions(self, event=None):
         self.options.set(self.option_window.get('1.0', 'end'))
         self.option_window.edit_modified(False)
+
+    def changeFGCommandConfig(self, event=None):
+        """Switch between the various configurations for FGCommand.
+
+        The “window” may be shown or hidden, attached to or detached
+        from the FGo! main window (4 possible states in total).
+
+        """
+        self.FGCommand.config(self.config.showFGCommand.get(),
+                              self.config.showFGCommandInSeparateWindow.get())
+
+    def changeFGOutputConfig(self, event=None):
+        """Switch between the various configurations for FGOutput.
+
+        The “window” may be shown or hidden, attached to or detached
+        from the FGo! main window (4 possible states in total).
+
+        """
+        self.FGOutput.config(self.config.showFGOutput.get(),
+                             self.config.showFGOutputInSeparateWindow.get())
+
+
+class AttachableToplevel(Toplevel):
+    """Class representing a Toplevel window that can be attached/detached.
+
+    This class is used to implement Toplevel windows that can be
+    integrated into the main FGo! window. Such a window has four states
+    made from the combination of two “axes” containing two values each:
+    visible/hidden and detached/integrated-into-the-main-window.
+
+    Of course, the two hidden states (hidden, detached) and
+    (hidden, integrated) can't be visually distinguished on a given
+    screenshot, but it is important to remember if a window should
+    appear detached or integrated when going from hidden to visible.
+
+    When integrated into the FGo! window, the widgets from this class
+    are not used at all: the Toplevel is destroyed. I often use the term
+    “window” within double quotes to describe this set of widgets that
+    appears to move from a Toplevel to the main window and vice versa.
+
+    The geometry of the “window” in its detached state (i.e., as a
+    Toplevel) is always stored before it is hidden or integrated into
+    the main window, or when FGo! is exited with “Save & Quit”. This
+    way, it can be restored the next time the “window” is shown in
+    detached state.
+
+    """
+    def __init__(self, app, manager, showVariable, *args, **kwargs):
+        Toplevel.__init__(self, *args, **kwargs)
+        # Application instance
+        self.app = app
+        # Instance of a class such as FGCommand or FGOutput
+        self.manager = manager
+        # Tkinter variable linked to the menu checkbutton that is used
+        # to toggle visibility of the “window”. It should always
+        # correspond to the "visible" state of the underlying widgets.
+        self.showVariable = showVariable
+        self.bind('<Control-KeyPress-f>', self.app.onControlF_KeyPress)
+        self.bind('<Control-KeyPress-r>', self.app.onControlR_KeyPress)
+
+        self.protocol("WM_DELETE_WINDOW", self.hide)
+        self.bind('<Escape>', self.hide)
+
+    def hide(self, event=None):
+        self.manager.config(False, self.manager.windowDetached)
+        self.showVariable.set(False)
+
+
+# This class has abstract methods: it is impossible to create an
+# instance of a subclass unless all of the abstract methods have been
+# overridden by concrete ones.
+class DetachableWindowManagerBase(metaclass=abc.ABCMeta):
+    """Base class for managers of detachable “windows”.
+
+    Used to implement classes such as FGCommand and FGOutput.
+
+    """
+    def __init__(self, app, showVariable, parent, title, show, windowDetached,
+                 geomVariable):
+        """Initialize a DetachableWindowManagerBase instance.
+
+            app       -- application instance
+            showVariable
+                      -- Tkinter variable linked to the menu checkbutton
+                         used to toggle the shown/hidden status of the
+                         widgets making up the detachable “window”
+            parent    -- parent of the outer Frame among the widgets to be
+                         created
+            title     -- displayed when the window is detached
+            show      -- whether to show the widgets on instance creation
+                         (regardless of the detached state)
+            windowDetached
+                      -- whether the “window” should start in detached state
+            geomVariable
+                      -- Tkinter variable used to remember the geometry of
+                         the window in its detached state
+
+        """
+        for name in ("app", "parent", "title", "showVariable", "geomVariable"):
+            setattr(self, name, locals()[name])
+        if show:
+            self.createWidgets(windowDetached, firstTime=True)
+        # Stores the current visibility state, as known by this class
+        self.visible = show
+
+    @abc.abstractmethod
+    def createWidgets(self, windowDetached, firstTime=False):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def fillTextWidget(self):
+        raise NotImplementedError
+
+    def config(self, show, windowDetached):
+        """Change the “window” configuration.
+
+        show           -- whether the “window” should be visible after
+                          the call
+        windowDetached -- whether the “window” should be in detached
+                          state after the call
+
+        In other words, these parameters describe the desired state
+        whereas self.visible and self.windowDetached correspond to the
+        current state.
+
+        """
+        # Anything to destroy?
+        if self.visible and (not show or self.windowDetached != windowDetached):
+            if self.windowDetached:
+                self.saveGeometry()
+                self.topLevel.destroy()
+            else:
+                self.outerFrame.destroy()
+
+        # Anything to create?
+        if show and (not self.visible or self.windowDetached != windowDetached):
+            self.createWidgets(windowDetached)
+            self.fillTextWidget()
+
+        self.visible = show
+        self.windowDetached = windowDetached
+
+    def saveGeometry(self, window=None):
+        if self.geomVariable is not None:
+            window = window if window is not None else self.topLevel
+            self.geomVariable.set(window.geometry())
+
+    # Regexp for parsing X11-style geometry specifications (e.g.,
+    # '830x916+151-10')
+    geomCre = re.compile(r"""(?P<size>
+                               (?P<width>\d+)x
+                               (?P<height>\d+))
+                             (?P<pos>
+                               (?P<x_offset>[+-]\d+)?
+                               (?P<y_offset>[+-]\d+)?)$""", re.VERBOSE)
+
+    def restoreGeometry(self, window=None, firstTime=False):
+        if self.geomVariable is None:
+            return
+        geom = self.geomVariable.get()
+        if not geom:
+            return
+
+        mo = self.geomCre.match(geom)
+        if not mo:
+            title = _('Invalid geometry specification')
+            msg = _("The following geometry specification read from "
+                    "the configuration file has an invalid syntax:\n\n"
+                    "  {spec}\n\n").format(spec=geom)
+            message = '{0}\n\n{1}'.format(title, msg)
+            detail = _("You can consult <{url}> for a description of the "
+                       "allowed syntax.").format(
+                           url="http://infohost.nmt.edu/tcc/help/pubs/tkinter/web/geometry.html")
+            showerror(_('{prg}').format(prg=PROGNAME), message,
+                      detail=detail)
+            return
+
+        window = window if window is not None else self.topLevel
+        if firstTime:
+            # If one wanted to restore the size but not the position,
+            # when a “window” is shown in detached state for the first
+            # time in the current FGo! session:
+            #   window.geometry(mo.group("size"))
+            window.geometry(geom)
+        else:
+            window.geometry(geom)
+
+
+class FGCommand(DetachableWindowManagerBase):
+    """Class displaying the fgfs command in a detachable “window”."""
+
+    # cf. DetachableWindowManagerBase for a description of the parameters
+    def __init__(self, app, showVariable, parent=None,
+                 title="FlightGear Command", show=True,
+                 windowDetached=False, geomVariable=None):
+        DetachableWindowManagerBase.__init__(
+            self, app, showVariable, parent, title,
+            show, windowDetached, geomVariable)
+        # Manages the logic of command building (independently of the GUI)
+        self.builder = fgcmdbuilder.FGCommandBuilder(app)
+
+    @property
+    def argList(self):
+        """Convenience property returning the current fgfs argument list."""
+        return self.builder.argList
+
+    @property
+    def lastConfigParsingExc(self):
+        """Convenience property returning the last config parsing exception.
+
+        Note that the exception is not necessarily a condconfigparser.error
+        instance (nor an instance of a subclass).
+
+        """
+        return self.builder.lastConfigParsingExc
+
+    def createWidgets(self, windowDetached, firstTime=False):
+        if windowDetached:
+            topLevel = parent = AttachableToplevel(
+                self.app, self, self.showVariable, master=self.parent)
+            topLevel.title(self.title)
+            self.restoreGeometry(window=topLevel, firstTime=firstTime)
+            outerFrameOpts = {}
+        else:
+            topLevel = None
+            parent = self.parent
+            outerFrameOpts = {"relief": "groove", "borderwidth": 2}
+
+        outerFrame = Frame(parent, **outerFrameOpts)
+        outerFrame.pack(side='top', fill='both', expand=True)
+
+        label = Label(
+            outerFrame,
+            text=_('FlightGear will be started with following arguments:'))
+        label.pack(side='top', fill='y', anchor='nw')
+
+        innerFrame = Frame(outerFrame)
+        innerFrame.pack(side='bottom', fill='both', expand=True)
+
+        commandWindow_sv = Scrollbar(innerFrame, orient='vertical')
+        commandWindow_sh = Scrollbar(innerFrame, orient='horizontal')
+        commandWindow = MyText(self.app,
+                               innerFrame, wrap='none', height=10,
+                               relief='flat', bg=GRAYED_OUT_COL,
+                               yscrollcommand=commandWindow_sv.set,
+                               xscrollcommand=commandWindow_sh.set,
+                               state='disabled')
+        commandWindow_sv.config(command=commandWindow.yview, takefocus=0)
+        commandWindow_sh.config(command=commandWindow.xview, takefocus=0)
+        commandWindow_sh.pack(side='bottom', fill='x')
+        commandWindow.pack(side='left', fill='both', expand=True)
+        commandWindow_sv.pack(side='left', fill='y')
+
+        self.topLevel, self.outerFrame, self.textWidget = \
+                                           topLevel, outerFrame, commandWindow
+        self.windowDetached = windowDetached
+
+    def update(self, *args):
+        self.builder.update()
+        if self.visible:
+            self.fillTextWidget()
+
+    def fillTextWidget(self):
+        """Fill the command window with the last computed fgfs command."""
+        self.textWidget.config(state='normal')
+        self.textWidget.delete('1.0', 'end')
+        if self.builder.argList is not None:
+            self.textWidget.insert('end', '\n'.join(self.builder.argList))
+        self.textWidget.config(state='disabled')
+
+
+class LogManager:
+    """Class managing storing/retrieving of FG output, log saving...
+
+    Contrary to FGOutput, this class doesn't deal with GUI details.
+
+    """
+    def __init__(self, app):
+        # Application instance
+        self.app = app
+        # Used to store fgfs output. Elements are not necessarily lines.
+        self.strings = collections.deque()
+
+    def clearLog(self):
+        self.strings.clear()
+
+    def addText(self, text):
+        self.strings.append(text)
+
+    def getLog(self):
+        return ''.join(self.strings)
+
+    def saveLog(self):
+        p = fd.asksaveasfilename(initialdir=LOG_DIR,
+                                 initialfile=DEFAULT_LOG_NAME)
+        if p:
+            with open(p, mode='w', encoding='utf-8') as logfile:
+                logfile.write(self.getLog())
+
+    def openLogDir(self):
+        program = "xdg-open"
+        try:
+            process = subprocess.Popen([program, LOG_DIR])
+        except OSError as exc:
+            msg = _("Unable to start the file manager with '{0}'.").format(
+                program)
+            detail = _('Problem: {0}').format(exc)
+            showerror(_('{prg}').format(prg=PROGNAME), msg, detail=detail)
+        else:
+            # xdg-open normally doesn't return immediately (cf.
+            # <http://unix.stackexchange.com/a/74631>). The thread will wait()
+            # for it in order to avoid leaving a zombie.
+            threading.Thread(name="FileManager_monitor",
+                             target=self._monitorFileManagerProcessThreadFunc,
+                             args=(process,),
+                             daemon=True).start()
+
+    def _monitorFileManagerProcessThreadFunc(self, process):
+        exitStatus = process.wait()
+        if exitStatus >= 0:
+            complement = _("exit status: {0}").format(exitStatus)
+        else:
+            complement = _("killed by signal {0}").format(-exitStatus)
+
+        print(_("File manager process terminated ({0})").format(complement))
+
+
+class FGOutput(DetachableWindowManagerBase):
+    """Class for displaying fgfs output, saving it to a file, etc.
+
+    This class is not thread-safe: for a given instance, all of its
+    methods must be called from the same thread that created the
+    instance (which has to be the GUI thread, since essential methods
+    manipulate Tkinter widgets).
+
+    """
+    # cf. DetachableWindowManagerBase for a description of the parameters
+    def __init__(self, app, showVariable,
+                 parent=None, title="FlightGear Output", show=True,
+                 windowDetached=False, geomVariable=None):
+        # Manages the logic independently of the GUI. It stores all of
+        # the FG output, which is essential when the window is hidden or
+        # detached/attached (since the widgets are destroy()ed in these
+        # cases).
+        self.logManager = LogManager(app)
+        DetachableWindowManagerBase.__init__(
+            self, app, showVariable, parent, title,
+            show, windowDetached, geomVariable)
+
+    def createWidgets(self, windowDetached, firstTime=False):
+        if windowDetached:
+            topLevel = parent = AttachableToplevel(
+                self.app, self, self.showVariable, master=self.parent)
+            topLevel.title(self.title)
+            self.restoreGeometry(window=topLevel, firstTime=firstTime)
+        else:
+            topLevel = None
+            parent = self.parent
+
+        # Elements of outerFrame are defined in reverse order to make sure
+        # that bottom buttons are always visible when resizing.
+        outerFrame = Frame(parent)
+        outerFrame.pack(side='left', fill='both', expand=True)
+
+        self.frame1 = Frame(outerFrame)
+        self.frame1.pack(side='bottom', fill='y')
+
+        self.saveOutputButton = Button(self.frame1, text=_('Save Log'),
+                                       command=self.logManager.saveLog)
+        self.saveOutputButton.pack(side='left')
+
+        self.openLogDirButton = Button(self.frame1,
+                                       text=_('Open Log Directory'),
+                                       command=self.logManager.openLogDir)
+        self.openLogDirButton.pack(side='left')
+
+        self.frame2 = Frame(outerFrame)
+        self.frame2.pack(side='bottom', fill='both', expand=True)
+
+        outputWindow_sv = Scrollbar(self.frame2, orient='vertical')
+        outputWindow_sh = Scrollbar(self.frame2, orient='horizontal')
+        outputWindow = MyText(self.app,
+                              self.frame2, foreground=COMMENT_COL,
+                              bg=MESSAGE_BG_COL, wrap='none',
+                              yscrollcommand=outputWindow_sv.set,
+                              xscrollcommand=outputWindow_sh.set,
+                              state='disabled')
+        outputWindow_sv.config(command=outputWindow.yview, takefocus=0)
+        outputWindow_sh.config(command=outputWindow.xview, takefocus=0)
+        outputWindow_sh.pack(side='bottom', fill='x')
+        outputWindow.pack(side='left', fill='both', expand=True)
+        outputWindow_sv.pack(side='left', fill='y')
+
+        self.topLevel, self.outerFrame, self.textWidget = \
+                                            topLevel, outerFrame, outputWindow
+        self.windowDetached = windowDetached
+
+    def _appendText(self, text="", clear=False):
+        self.textWidget.config(state='normal')
+        try:
+            if clear:
+                self.textWidget.delete('1.0', 'end')
+            if text:
+                self.textWidget.insert('end', text)
+        finally:
+            self.textWidget.config(state='disabled')
+
+    def clear(self):
+        self.logManager.clearLog()
+        if self.visible:
+            self._appendText(text="", clear=True)
+
+    # The following three methods will be used basically for every line
+    # of output from FlightGear. So, we try to keep them optimized (no
+    # more locking/unlocking than necessary, etc.), even if they may
+    # seem redundant at first with other methods such as append().
+    def lock(self):
+        if self.visible:
+            self.textWidget.config(state='disabled')
+
+    def unlock(self):
+        if self.visible:
+            self.textWidget.config(state='normal')
+
+    def appendNoUnlock(self, text):
+        """Append text to the FlightGear log.
+
+        Contrary to append(), this method doesn't care to put
+        self.textWidget into 'normal' state before appending the text
+        and into 'disabled' state afterwards. It is up to the caller to
+        ensure the widget is in a state that allows writing.
+
+        """
+        self.logManager.addText(text)
+        if self.visible:
+            self.textWidget.insert('end', text)
+
+    def append(self, text):
+        self.logManager.addText(text)
+        if self.visible:
+            self._appendText(text)
+
+    def showEnd(self):
+        if self.visible:
+            self.textWidget.see('end')
+
+    def fillTextWidget(self):
+        """Fill the output window with the log recorded by self.logManager."""
+        self._appendText(self.logManager.getLog(), clear=True)
+        # It would be nice to be able to restore the previous view position...
+        self.showEnd()
