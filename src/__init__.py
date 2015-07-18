@@ -25,10 +25,15 @@ root = early_tk_init()
 from .config import Config
 from .gui.mainwindow import App
 
-CLI_MESSAGE = """Usage: fgo
+
+def promptToNotUseCli():
+    message = _("""Usage: fgo
 This program does not use command line options. Edit fgo/data/config/presets
-file if you need to run {prg} with some pre-configuration.""".format(
-    prg=PROGNAME)
+file if you need to run {prg} with some pre-configuration.""").format(
+        prg=PROGNAME)
+
+    if len(argv) > 1:
+        print(message + '\n')
 
 
 def run(working_dir, root=root):
@@ -68,12 +73,9 @@ def run(working_dir, root=root):
 
     root.mainloop()
 
+
 del root, early_tk_init
 
-
-def promptToNotUseCli():
-    if len(argv) > 1:
-        print(_(CLI_MESSAGE))
 
 if __name__ == '__main__':
     from sys import path
