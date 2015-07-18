@@ -5,6 +5,7 @@
 
 
 from .constants import PROGNAME, LOCALE_DIR
+import locale
 import gettext
 from sys import argv
 from os import chdir
@@ -24,10 +25,6 @@ root = early_tk_init()
 from .config import Config
 from .gui.mainwindow import App
 
-
-gettext.install('fgo', LOCALE_DIR)
-
-
 CLI_MESSAGE = """Usage: fgo
 This program does not use command line options. Edit fgo/data/config/presets
 file if you need to run {prg} with some pre-configuration.""".format(
@@ -43,15 +40,25 @@ def run(working_dir, root=root):
     """
     # Set current working directory.
     chdir(working_dir)
-    # Initialize data object (passing 'root' allows things such as obtaining
+
+    # Initialize config object (passing 'root' allows things such as obtaining
     # the screen dpi in Config methods using root.winfo_fpixels('1i')).
-    data = Config(root)
+    config = Config(root)
+
+    if not config.language.get():
+        # Allow localized error messages, proper encoding detection by
+        # 'locale.getpreferredencoding(False)' which is used in many
+        # places of the Python standard library, etc.
+        locale.setlocale(locale.LC_ALL, '')
+    else:
+        locale.setlocale(locale.LC_CTYPE, '') # encoding only
+
     promptToNotUseCli()
     # Initialize main window.
-    app = App(root, data)
+    app = App(root, config)
 
     # Set window resolution.
-    window_geometry = data.window_geometry.get()
+    window_geometry = config.window_geometry.get()
     if window_geometry:
         root.geometry(window_geometry)
 
