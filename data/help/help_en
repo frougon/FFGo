@@ -5,6 +5,7 @@ FGo! - A simple GUI launcher for FlightGear.
 REQUIREMENTS
 
 - Unix-like operating system (e.g, GNU/Linux)
+  (Windows and MacOS X untested)
 - FlightGear          <http://www.flightgear.org>
 - Python 3.4 or later <https://www.python.org>
 - Tkinter (often known as python-tk or python3-tk in Linux package managers)
@@ -14,6 +15,9 @@ REQUIREMENTS
 
 * This library is not mandatory to run FGo! but aircraft thumbnails
   will not be displayed without it.
+
+Note: the home pages of FGo!'s dependencies indicated here are current at the
+      time of this writing (July 2015) but might change over time.
 
 -------------------------------------------------------------------------------
 
@@ -30,7 +34,8 @@ Python interpreter that you are going to use to run FGo!.
 RUNNING
 
 Click "fgo" file in the main directory of the program, or run it in a console
-with the "./fgo" or "python3 fgo" command.
+with the "./fgo" or "python3 fgo" command (just use the Python interpreter for
+which you installed the dependencies).
 
 -------------------------------------------------------------------------------
 
@@ -113,7 +118,7 @@ TIPS&TRICKS
 * In "Select Scenario" list, you can right click on any scenario to see its
   description (if available).
 
-* Window dimensions are saved when "Save&Quit" button is clicked.
+* Window dimensions are saved when "Save & Quit" button is clicked.
 
 -------------------------------------------------------------------------------
 

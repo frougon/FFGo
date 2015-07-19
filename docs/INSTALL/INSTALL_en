@@ -1,8 +1,16 @@
+-*- coding: utf-8 -*-
+
 Contents
 
   1. Ready-to-use packages
   2. Manual installation
+    a) Easiest procedure
+    b) Standard procedure
 
+  Appendices
+
+    A. What is a "working pip setup"?
+    B. Maintenance of a virtual environment
 
 -------------------------------------------------------------------------------
 
@@ -41,8 +49,74 @@ installing FGo!'s dependencies.
   However, when installing from a Linux distribution package manager, Tkinter
   is often provided as a separate package such as python3-tk or python-tk.
 
-- CondConfigParser: if you already have a working pip setup (see below), all
-  you need to do is:
+So, these two dependencies should be readily available to anyone who can
+install Python 3. There remain two dependencies: CondConfigParser and Pillow.
+
+Note for Windows users:
+
+  Although the author of these lines didn't have the chance to try to run FGo!
+  under Windows (please report if you do so), the most appropriate
+  installation method seems to be the “Standard procedure” described below.
+  Since there is no system Python on Windows, you should be able to use pip
+  directly on your Python installation (don't change the default for the
+  Python installation folder to avoid permission problems). There should be no
+  need to create a virtual environment in this case.
+
+  Windows users at least need to create a HOME environment variable containing
+  the path to a folder they have write access to, as FGo! will store and read
+  files in '$HOME/.fgo'. The “Open Log Directory” feature is not expected to
+  work on Windows (as it uses xdg-open), but it is not important, you can open
+  the directory with any file manager.
+
+
+Easiest procedure
+~~~~~~~~~~~~~~~~~
+
+For the usually simplest installation method, you can omit Pillow, which is
+nice but optional—only used to display aircraft thumbnails. As for
+CondConfigParser, the standard installation method is based on pip (see
+below), but you can install it for FGo! only, using the following steps:
+
+  1. Unpack the CondConfigParser archive wherever you want, under your normal
+     user account:
+
+       cd ~/src
+       tar -xjf CondConfigParser-x.y.z.tar.bz2
+
+     (assuming you downloaded the tarball as
+     ~/src/CondConfigParser-x.y.z.tar.bz2)
+
+  2. Do the same with the FGo! archive:
+
+       cd ~/src
+       tar -xzf fgo-a.b.c.tar.gz
+
+  3. Create a symbolic link to allow FGo! to find CondConfigParser:
+
+       ln -s ~/src/CondConfigParser-x.y.z/condconfigparser \
+             ~/src/fgo-a.b.c/condconfigparser
+
+     (assuming the previous step created the ~/src/fgo-a.b.c directory,
+     leaving the fgo executable script at ~/src/fgo-a.b.c/fgo)
+
+That's all! You should be able to run the fgo executable mentioned in step 3.
+In case you need to explicitely specify the Python interpreter to use, you can
+do so with a command such as:
+
+  python3.4 ~/src/fgo-a.b.c/fgo
+
+
+Standard procedure
+~~~~~~~~~~~~~~~~~~
+
+This procedure makes you install FGo!'s dependencies in a more standard way,
+using pip. Depending on your configuration, the initial setup may be more
+complicated, but once this first step completed, it will make it very easy to
+see when a given dependency is out of date and, if you so desire, to upgrade
+it. So, we have two remaining dependencies to install:
+
+- CondConfigParser: if you already have a working pip setup (see appendix),
+  all you need to do is:
 
     pip install CondConfigParser
 
@@ -50,12 +124,15 @@ installing FGo!'s dependencies.
   aircraft thumbnails). You can either get it as a package from your
   distribution or install it yourself with pip (the package name is
   python3-pil.imagetk in Debian, sometimes python3-imaging-tk, this depends on
-  the distribution). In the first case, if you are working in a virtual
-  environment, you'll probably have to (re-)create it with the
-  '--system-site-packages' option in order to make system-installed packages
-  visible to the virtual environment. In the second case (installing Pillow
-  yourself), assuming you already have a working pip setup (see below), all
-  you need to do is:
+  the distribution).
+
+  a) In the first case (getting Pillow as a package), if you are working in a
+     virtual environment, you'll probably have to (re-)create that virtual
+     environment with the '--system-site-packages' option in order to make
+     system-installed packages visible to the virtual environment.
+
+  b) In the second case (installing Pillow yourself), assuming you already
+     have a working pip setup (see appendix), all you need to do is:
 
     * Install the programs and/or libraries necessary for Pillow's
       compilation. On Debian unstable (July 2015), the following is likely to
@@ -72,23 +149,27 @@ installing FGo!'s dependencies.
 
         pip install Pillow
 
-  Of course, these are just hints; the authoritative source for this
-  installation procedure is Pillow's documentation.
+    Of course, these are just hints; the authoritative source for this
+    installation procedure is Pillow's documentation.
 
 
-So, what is a "working pip setup"?
-----------------------------------
+-------------------------------------------------------------------------------
 
-In the previous paragraphs, a few suggestions have been given assuming you had
-a "working pip setup". In the last 15 years, the Python ecosystem has grown
-several frameworks for packaging Python software in a distribution and
+APPENDICES
+
+What is a "working pip setup"?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+In the previous paragraphs, a few instructions have been given assuming you
+had a "working pip setup". In the last 15 years, the Python ecosystem has
+grown several frameworks for packaging Python software in a distribution and
 OS-agnostic way, each of which offers a different way of installing said
-software for the users. With distutils, the user had to run
-"setup.py install"; later, with setuptools, he had to install and use a
-program named easy_install. Today, the winning framework seems to be a
-combination of setuptools and pip, the latter offering the end-user interface
-for installing, upgrading and removing Python-made software (setuptools being
-used internally, in a way that is not directly visible to the user).
+software for the users. With distutils, the user had to run "setup.py
+install"; later, with setuptools, he had to install and use a program named
+easy_install. Today, the winning framework seems to be a combination of
+setuptools and pip, the latter offering the end-user interface for installing,
+upgrading and removing Python-made software (setuptools being used internally,
+in a way that is not directly visible to the user).
 
 All this to say that there are many ways to install Python-made software, even
 on the same operating system. Each way having its own upsides and downsides,
@@ -150,7 +231,7 @@ one thing that requires paying attention to before doing so:
       pip 7.0.3 from /home/tartampion/python-venv/default-3/lib/python3.4/site-packages (python 3.4)
 
     If the path starts with /usr/lib, don't use that pip (unless you know what
-    you are doing), as it would modify your system Python installation.
+    you are doing), as that would modify your system Python installation.
 
     Depending on your installation, it may be that the 'pip', or 'pip3', or
     'pip3.4', etc. command is equivalent to 'python3 -m pip'. Simply run the
@@ -269,27 +350,27 @@ one thing that requires paying attention to before doing so:
       exec /path/to/foo-venv/bin/python /path/to/fgo "$@"
 
 
-    Maintenance of the virtual environment
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Maintenance of a virtual environment
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    Normally, venvs don't need much maintenance except for keeping them
-    up-to-date, as you should already do with your distribution. In short:
+Normally, venvs don't need much maintenance except for keeping them
+up-to-date, as you should already do with your distribution. In short:
 
-      % foo-venv/bin/pip list --outdated
-      % foo-venv/bin/pip install --upgrade pkg1 pkg2 ...
+  % foo-venv/bin/pip list --outdated
+  % foo-venv/bin/pip install --upgrade pkg1 pkg2 ...
 
-    In case a venv stops working after an update of the underlying base
-    installation, 'python3 -m venv --upgrade foo-venv' might be helpful.
-    Otherwise, you can keep a little script around that contains all commands
-    you used to create and populate your venv. Since venv creation is very
-    quick, you can rerun the script whenever needed.
+In case a venv stops working after an update of the underlying base
+installation, 'python3 -m venv --upgrade foo-venv' might be helpful.
+Otherwise, you can keep a little script around that contains all commands you
+used to create and populate your venv. Since venv creation is very quick, you
+can rerun the script whenever needed.
 
-    References:
-      - Installing Python Modules (official Python documentation)
-          <https://docs.python.org/3/installing/index.html>
-      - pip home page
-          <https://pip.pypa.io/>
-      - 'venv' module of the Python standard library
-          <https://docs.python.org/3/library/venv.html>
-      - 'ensurepip' module of the Python standard library
-          <https://docs.python.org/3/library/ensurepip.html>
+References:
+  - Installing Python Modules (official Python documentation)
+      <https://docs.python.org/3/installing/index.html>
+  - pip home page
+      <https://pip.pypa.io/>
+  - 'venv' module of the Python standard library
+      <https://docs.python.org/3/library/venv.html>
+  - 'ensurepip' module of the Python standard library
+      <https://docs.python.org/3/library/ensurepip.html>
