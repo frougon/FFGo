@@ -397,13 +397,57 @@ Note:
 
 A useful example of what can be done with lists could be the following:
 
+  { custom_start_pos = "parking"    # "parking" or "manual" or ...
+    instruments = ""                # "IFR tutorial" or "LOWI" or ...
+    # Lists to be completed according to your needs
+    gate_class = aircraft in ["777-200ER", "A320neo", "A330-203"]
+    ga_class = aircraft in \
+      ["c172p", "SenecaII", "Cub", "dr400-dauphin", "dhc6", "Dragonfly"]
+  }
+
+  # Toncontin Intl (Tegucigalpa, Honduras)
+  [ custom_start_pos == "parking" and airport == "MHTG" and gate_class ]
+  --lat=14.06054
+  --lon=-87.21878
+  --heading=288
+
+  [ custom_start_pos == "parking" and airport == "MHTG" and ga_class ]
+  --lat=14.05552
+  --lon=-87.21387
+  --heading=265
+
+  [ instruments == "MHTG" or (not instruments) and airport == "MHTG" or
+    custom_start_pos == "MHTG-app" ]
+  --nav1=122:112.3 # Toncontin (TNT)
+
+This simple configuration defines two different parking positions for
+the Toncontin Intl airport, one for aircrafts that take their passengers
+via jet bridges (of class “gate”), the other for usually smaller
+aircrafts (“general aviation”, abbreviated “ga”). It also automatically
+sets up the NAV1 frequency to 112.3 MHz and the radial to 122, which is
+useful for the RNAV (RNP) approach of runway 02 (a particularly
+interesting one!).
+
+For FGo! to know which aircraft belongs to which class, we have defined
+the two variables, 'gate_class' and 'ga_class', as booleans using
+membership tests. Of course, you have to add the aircrafts you fly to
+the appropriate list if you want to use this feature. When you want to
+start on a runway or on a parking position selected from the popup list
+of FGo!'s interface at the same airport, just replace "parking" with
+something else (e.g., "-parking") on the first line, where the
+'custom_start_pos' variable is defined.
+
+Another useful example to help fly helicopters as well as planes could
+be the following:
+
   { custom_start_pos = "parking"  # can be changed to "heli-H5" for instance
     # Define a boolean variable ('using_heli') indicating whether the
     # selected aircraft is a helicopter. The list of helicopters given here
     # is incomplete, of course.
     using_heli = aircraft in \
       ["alouette2", "alouette2F", "Alouette-III_sc", "bo105",
-       "ec130b4", "ec135p2", "M-XE", "s55", "s76c", "uh1", "uh60"] }
+       "ec130b4", "ec135p2", "M-XE", "s55", "s76c", "uh1", "uh60",
+       "rah-66"] }
 
   [ using_heli ]
   # I need smaller throttle increments for helicopters than for planes
