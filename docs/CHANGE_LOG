@@ -288,9 +288,14 @@
 
     * While FlightGear is running, the "Run FG" button is now greyed out.
 
-[FEATURE] Added preview of FlightGear command. (Robert)
-[FEATURE] Added FlightGear output window and log saving. (Robert)
-[USABILITY] Remove everything related to running a standalone TerraSync
+[FEATURE] Added preview of FlightGear command. (Robert & Florent Rougon)
+[FEATURE] Added FlightGear output window and log saving.
+          (Robert & Florent Rougon)
+[USABILITY] Removed everything related to running a standalone TerraSync
           program in the background. As TerraSync has been integrated into
           FlightGear several years ago, this feature was probably more
           confusing than useful to users nowadays. (Robert)
+[FEATURE] Allowed the command preview and FG output windows to be detached,
+          reattached and hidden. Store their geometry when reattaching,
+          closing them or choosing "Save & Quit" to be able to restore it when
+          they are later shown again. (Florent Rougon)
