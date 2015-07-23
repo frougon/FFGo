@@ -690,8 +690,8 @@ backslash you want to include as a normal character. There are a few
 more escape sequences that can be used in fgfs arguments (called “raw
 configuration lines” in CondConfigParser-speak). The authoritative
 documentation for these is in the FGo! code (currently:
-src/gui/mainwindow.py:App.processRawConfigLines()). For information,
-here is the complete list at the time of this writing:
+src/fgcmdbuilder.py:FGCommandBuilder.processRawConfigLines()). For
+information, here is the complete list at the time of this writing:
 
           \\          \ (produces a single backslash)
           \[          [ (useful at the beginning of a line to avoid
