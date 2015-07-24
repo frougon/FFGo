@@ -13,7 +13,8 @@ USER_AGENT = \
  '{prg}/{version} ' \
  '(+http://sites.google.com/site/erobosprojects/flightgear/add-ons/fgo)'.format(
      prg=PROGNAME, version=PROGVERSION)
-COPYRIGHT = "Copyright 2009-2015 by\nRobert 'erobo' Leda  <erobo@wp.pl>"
+COPYRIGHT = "Copyright © 2009-2015\nRobert 'erobo' Leda <erobo@wp.pl>\n" \
+            "Copyright © 2014-2015\nFlorent Rougon <f.rougon@free.fr>"
 AUTHORS = 'Robert Leda\nFlorent Rougon'
 LICENSE = \
     """This program is free software. It comes without any warranty, to
