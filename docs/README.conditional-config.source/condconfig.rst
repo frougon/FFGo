@@ -1,58 +1,51 @@
+.. meta::
+   :description: User documentation for FGo!'s conditional configuration
+                 feature
+   :keywords: FGo!, condition, conditional, configuration, CondConfigParser
+
+
+==================================
 Conditional configuration for FGo!
 ==================================
-
-Contents:
-
-  Introduction
-  Structure of the configuration in the simplest case
-  Variables and conditional sections
-  Advanced expressions
-  Assembling the fgfs command line
-  Escaping rules for special characters
-    Escaping in raw configuration lines (fgfs arguments)
-    Escaping in string literals
-
 
 Introduction
 ------------
 
-This version of FGo! uses CondConfigParser[1], which opens up new
+This version of FGo! uses `CondConfigParser`_, which opens up new
 possibilities regarding what can be done with the configuration file.
 Specifically, the word “configuration” in this document normally refers
 to the part of FGo!'s configuration file that is displayed in the main
 window, which you can use to pass specific options to the FlightGear
-executable (typically, fgfs).
+executable (typically, :program:`fgfs`).
 
-  [1] http://people.via.ecp.fr/~flo/projects/CondConfigParser/
-
+.. _CondConfigParser: http://people.via.ecp.fr/~flo/projects/CondConfigParser/
+.. _CondConfigParser Manual: http://people.via.ecp.fr/~flo/projects/CondConfigParser/doc/
 
 Notes:
 
   - If you actually look at FGo!'s configuration file,
-    $HOME/.fgo/config, this corresponds to the part following the
-    special marker line containing "INTERNAL OPTIONS ABOVE. EDIT
-    CAREFULLY!" (which is an implementation detail and might change in
+    :file:`{$HOME}/.fgo/config`, this corresponds to the part following the
+    special marker line containing ``INTERNAL OPTIONS ABOVE. EDIT
+    CAREFULLY!`` (which is an implementation detail and might change in
     the future).
 
   - The following description is somewhat informal, written with FGo!
     users in mind. For those who want more details, including a formal
     grammar specification of the configuration format, the reference
-    document is the CondConfigParser Manual available at:
-
-      http://people.via.ecp.fr/~flo/projects/CondConfigParser/doc/
+    document is the `CondConfigParser Manual`_.
 
 
 Structure of the configuration in the simplest case
 ---------------------------------------------------
 
-In the simplest case, the configuration is a sequence of lines with
-optional comments. A comment is started on a given line with the '#'
-character and ends at the end of the line. Except where special syntax
-described below is used, every non-blank line, after comment removal, is
-passed as a single argument to fgfs, preserving the order used in the
-configuration.
+In the simplest case, the configuration is a sequence of lines with optional
+comments. A :index:`comment <single: comments>` is started on a given line
+with the ``#`` character and ends at the end of the line. Except where special
+syntax described below is used, every non-blank line, after comment removal,
+is passed as a single argument to :program:`fgfs`, preserving the order used
+in the configuration.
 
-Example:
+Example::
 
   #--enable-auto-coordination
 
@@ -62,77 +55,85 @@ Example:
   --timeofday=noon
   --season=summer
 
-In this example, the '--enable-auto-coordination' option is not passed
-to the FlightGear executable because it is commented out with the '#'
+In this example, the ``--enable-auto-coordination`` option is not passed
+to the FlightGear executable because it is commented out with the ``#``
 character. The four remaining non-blank lines will be passed as four
-arguments to fgfs. They will be added after the options automatically
-set by FGo!, such as '--aircraft=...', '--airport=...',
-'--fg-scenery=...', etc.
+arguments to :program:`fgfs`. They will be added after the options
+automatically set by FGo!, such as :samp:`--aircraft={...}`,
+:samp:`--airport={...}`, :samp:`--fg-scenery={...}`, etc.
 
 Comments don't necessary start at the beginning of a line. For instance,
-a configuration such as:
+a configuration such as::
 
   --prop:/instrumentation/nav/frequencies/selected-mhz=109.70 # OEJ
   --prop:/instrumentation/nav/radials/selected-deg=66
   --dme=nav1
   --adf2=413 # KÜHTAI (KTI)
 
-will cause 4 options to be passed to fgfs, namely:
+will cause 4 options to be passed to :program:`fgfs`, namely::
 
   --prop:/instrumentation/nav/frequencies/selected-mhz=109.70
   --prop:/instrumentation/nav/radials/selected-deg=66
   --dme=nav1
   --adf2=413
 
-The comments, as well as spaces preceding the '#' comment char, are
+The comments, as well as spaces preceding the ``#`` comment char, are
 ignored. Similarly, spaces at the beginning of option lines are ignored,
-but not spaces in the "middle" of an option. Thus, a line such as:
+but not spaces in the "middle" of an option. Thus, a line such as::
 
   --aircraft=A weird aircraft name
 
-would be passed as a single argument to fgfs, including the spaces
+would be passed as a single argument to :program:`fgfs`, including the spaces
 inside.
 
-(and in case you find yourself in such a situation that you actually
-*need* to include spaces at the beginning or end of an fgfs argument,
-this is possible; each of them must simply be preceded by a backslash,
-as explained later in this document)
+(and in case you find yourself in such a situation that you actually *need* to
+include spaces at the beginning or end of an :program:`fgfs` argument, this is
+possible; each of them must simply be preceded by a backslash, as explained
+later in this document)
 
+.. index::
+   single: variable
+   single: section; conditional
 
 Variables and conditional sections
 ----------------------------------
 
+.. index::
+   single: section; default
+   single: section; unconditional
+   single: raw configuration line; default
+   single: configuration line; default raw
+
 The piece of configuration we have described in the previous paragraphs
 defines arguments that are always passed to the FlightGear executable,
-fgfs, regardless of any condition. For this reason, it is called the
-“default, unconditional section” in CondConfigParser-speak; and the
-lines contained within that section are called the “default raw
-configuration lines”. However, you may want to have certain options
-passed to fgfs only in specific circumstances, such as starting at a
-specific airport, using a specific aircraft, flying a helicopter, etc.
-This is where CondConfigParser's variables and conditional sections come
-in handy.
+:program:`fgfs`, regardless of any condition. For this reason, it is called
+the *default, unconditional section* in `CondConfigParser`_-speak; and the
+lines contained within that section are called the *default raw
+configuration lines*. However, you may want to have certain options passed
+to :program:`fgfs` only in specific circumstances, such as starting at a
+specific airport, using a specific aircraft, flying a helicopter, etc. This
+is where CondConfigParser's variables and conditional sections come in
+handy.
 
-Suppose for instance that you often fly around Amsterdam Schiphol
-airport (EHAM) and you want to have the COM1 and COM2 frequencies
-automatically set up when you start FlightGear there. Of course, you can
-set --com1=... and --com2=... in the default, unconditional section as
-we did above. However, this method won't work as soon as you'll want to
-do the same for several airports using different frequencies. In order
-to solve this problem, you can use conditional sections like this:
+Suppose for instance that you often fly around Amsterdam Schiphol airport
+(EHAM) and you want to have the COM1 and COM2 frequencies automatically set up
+when you start FlightGear there. Of course, you can set :samp:`--com1={...}`
+and :samp:`--com2={...}` in the default, unconditional section as we did
+above. However, this method won't work as soon as you'll want to do the same
+for several airports using different frequencies. In order to solve this
+problem, you can use conditional sections like this::
 
   [ airport == "EHAM" ]
   --com1=121.975
   --com2=119.225
 
-With such a section, the --com1 and --com2 options will only be passed
-to fgfs if the selected airport in FGo! is EHAM. The important thing to
-note is that conditional sections must come *after* the default,
-unconditional section. This is because a given conditional section ends
-at the beginning of the next one (or at the end of the file, whichever
-comes first). A blank line does not end any section, conditional or not.
-Therefore, a complete configuration with two conditional sections could
-look like this:
+With such a section, the ``--com1`` and ``--com2`` options will only be passed
+to :program:`fgfs` if the selected airport in FGo! is EHAM. The important
+thing to note is that conditional sections must come *after* the default,
+unconditional section. This is because a given conditional section ends at the
+beginning of the next one (or at the end of the file, whichever comes first).
+A blank line does not end any section, conditional or not. Therefore, a
+complete configuration with two conditional sections could look like this::
 
   --enable-terrasync
   --terrasync-dir=/path/to/scenery-terrasync
@@ -151,19 +152,21 @@ look like this:
   --com1=122.750
   --com2=127.025
 
-This example uses one external variable: 'airport'. It is said to be
-*external* because it is not defined in this configuration, but
-automatically set by FGo! when it interprets the configuration to
-compute the argument list for the fgfs command. The complete list of
-external variables that CondConfigParser obtains from FGo! is, at the
-time of this writing: 'aircraft', 'airport', 'parking', 'runway',
-'carrier' and 'scenarios'.
+.. index::
+   single: variable; external
 
-While external variables get their values from user selections in the
-FGo! graphical user interface, other variables must be explicitely
-defined at the beginning of the configuration, that is, before the
-default, unconditional section. This is done in a special section
-delimited by braces, like this:
+This example uses one external variable: ``airport``. It is said to be
+*external* because it is not defined in this configuration, but
+automatically set by FGo! when it interprets the configuration to compute
+the argument list for the :program:`fgfs` command. The complete list of
+external variables that `CondConfigParser`_ obtains from FGo! is, at the time
+of this writing: ``aircraft``, ``airport``, ``parking``, ``runway``,
+``carrier`` and ``scenarios``.
+
+While external variables get their values from user selections in the FGo!
+graphical user interface, other variables must be explicitely defined at the
+beginning of the configuration, that is, before the default, unconditional
+section. This is done in a special section delimited by braces, like this::
 
   { var1 = value1
     var2 = value2
@@ -171,7 +174,7 @@ delimited by braces, like this:
   }
 
 As an example where using such a variable is convenient, let's consider
-the following configuration:
+the following configuration::
 
   { custom_start_pos = "heli-H7" } # Only one variable defined here
 
@@ -194,34 +197,32 @@ the following configuration:
   --heading=130
   --vc=120
 
-This type of configuration allows one to easily customize the start
-position (latitude, longitude, altitude and heading), as well as the
-initial speed of the aircraft, or anything else that can be set from the
-fgfs command line (use 'fgfs --help --verbose' to see the full option
-list). Which set of options is selected depends on the predicates (the
-conditions between square brackets), and therefore in this example on
-the selected airport and the value given to the 'custom_start_pos'
-variable at the beginning of the configuration.
+This type of configuration allows one to easily customize the start position
+(latitude, longitude, altitude and heading), as well as the initial speed of
+the aircraft, or anything else that can be set from the :program:`fgfs`
+command line (use ``fgfs --help --verbose`` to see the full option list).
+Which set of options is selected depends on the :index:`predicates <single:
+predicate>` (the conditions between square brackets), and therefore in this
+example on the selected airport and the value given to the
+``custom_start_pos`` variable at the beginning of the configuration.
 
 So, if you want to start at the defined parking position at EDDK, select
-EDDK in the FGo! GUI and make sure you have:
+EDDK in the FGo! GUI and make sure you have::
 
   custom_start_pos = "parking"
 
-in the brace-delimited section for variable assignments at the beginning
-of the config. Similarly, you can easily start on the H7 helipad at EDDM
-by choosing EDDM in the FGo! GUI and setting 'custom_start_pos' to the
-string '"heli-H7"' (don't write the single quotes). The third
-conditional section in this example allows you to easily practice
-landings at TFFJ by setting 'custom_start_pos' to '"TFFJ-app"' (for
-aircraft models that support in-air startup).
+in the brace-delimited section for variable assignments at the beginning of
+the config. Similarly, you can easily start on the H7 helipad at EDDM by
+choosing EDDM in the FGo! GUI and setting ``custom_start_pos`` to the string
+``"heli-H7"``. The third conditional section in this example allows you to
+easily practice landings at TFFJ by setting ``custom_start_pos`` to
+``"TFFJ-app"`` (for aircraft models that support in-air startup).
 
 Finally, if you don't want any of these options to be used, just set
-'custom_start_pos' to a value that doesn't satisfy any of the
-predicates, for instance the empty string '""', or something like
-'"-parking"' (convenient if you often switch between the "parking"
-setting and the default FGo! behavior---the one obtained without any
-specific configuration).
+``custom_start_pos`` to a value that doesn't satisfy any of the predicates,
+for instance the empty string ``""``, or something like ``"-parking"``
+(convenient if you often switch between the "parking" setting and the
+default FGo! behavior—the one obtained without any specific configuration).
 
 Note:
 
@@ -229,29 +230,36 @@ Note:
   heading are not very useful in airports where the scenery has
   well-defined parking lots that can be directly selected in the FGo!
   GUI. Unfortunately, this case is relatively rare, especially for
-  "exotic" installations such as helipads.
+  “exotic” installations such as helipads.
 
 
 Advanced expressions
 --------------------
 
-In the previous section, we have seen how to define and use variables
-and conditional sections in the configuration read by FGo! (via
-CondConfigParser). As we have explained, each such section starts with a
-condition, called a “predicate”, enclosed in square brackets ('[' and
-']'). But what constitutes a valid predicate? Similarly, when writing a
-variable assignment, what constitutes a valid right-hand side? The
-answer given here will be kept slightly approximate in order to remain
-short and relatively easy to understand. If you want the full details,
-please refer to the CondConfigParser documentation.
+.. index:: ! predicate
+
+In the previous section, we have seen how to define and use variables and
+conditional sections in the configuration read by FGo! (via
+`CondConfigParser`_). As we have explained, each such section starts with a
+condition, called a *predicate*, enclosed in square brackets (``[`` and
+``]``). But what constitutes a valid predicate? Similarly, when writing a
+variable assignment, what constitutes a valid right-hand side? The answer
+given here will be kept slightly approximate in order to remain short and
+relatively easy to understand. If you want the full details, please refer to
+the `CondConfigParser Manual`_.
+
+.. index::
+   single: variable; external
 
 Before diving into a somewhat verbose description, let's give a sample
 configuration with a few conditional sections. This example makes use of
-two external variables ('airport' and 'aircraft') that CondConfigParser
+two external variables (``airport`` and ``aircraft``) that `CondConfigParser`_
 obtains from FGo!. The other three variables used in the predicates
-('custom_start_pos', 'instruments' and 'condConfigParser_testing') are
+(``custom_start_pos``, ``instruments`` and ``condConfigParser_testing``) are
 defined in the brace-delimited section for variable assignments at the
 beginning of the configuration.
+
+::
 
   { custom_start_pos = "" # You can use "parking", "manual", or anything else...
     instruments = "LOWI"
@@ -305,38 +313,53 @@ beginning of the configuration.
   [ condConfigParser_testing ]
   whatever argument(s) you want to pass to fgfs
 
+.. index::
+   single: expression; syntactic rules
+   single: expression; orTest
+   single: boolean; literal
+   single: string
+   single: list
+
 The syntactic rules for expressions used in variable assignments and
 predicates are deliberately close to those governing expressions in
 Python, but there are less data types available than in Python and, to
 this date, no functions, classes, etc. The syntactic element used for
 the right-hand side of variable assignments is the same as for
 predicates, after removal of the enclosing square brackets. In
-CondConfigParser's grammar, it is called an *orTest* and is composed of
+`CondConfigParser`_'s grammar, it is called an *orTest* and is composed of
 variable references and literals of one of these basic types:
-  - boolean ('True' or 'False');
-  - string, delimited by double quotes ('"');
-  - list, delimited by square brackets ('[' and ']'), the elements
+
+  - boolean (``True`` or ``False``);
+  - string, delimited by double quotes (``"``);
+  - list, delimited by square brackets (``[`` and ``]``), the elements
     inside a list being separated by commas.
 
+.. index::
+   single: variable reference
+
 A *variable reference* is a variable name used in an expression. For
-instance:
+instance::
 
   { heli1 = "ec130b4"
     other_heli = "uh1"
     my_helis = [heli1, "ec135p2", other_heli, "bo105"] }
 
 In this example, two variables are assigned string literals and the
-third variable ('my_helis') is assigned a list defined using two string
-literals ('"ec135p2"' and '"bo105"') and two variable references
-('heli1' and 'other_heli').
+third variable (``my_helis``) is assigned a list defined using two string
+literals (``"ec135p2"`` and ``"bo105"``) and two variable references
+(``heli1`` and ``other_heli``).
+
+.. index::
+   single: variable name
 
 A *variable name* is a sequence of ASCII letters, digits or underscore:
+
   - that is delimited by word boundaries (according to the Python re
     module);
-  - that is not a keyword ('or', 'and', 'not', 'in', 'True', 'False').
+  - that is not a keyword (``or``, ``and``, ``not``, ``in``, ``True``, ``False``).
 
 Lists can be of arbitrary length, may contain any expression, including
-other lists, and their nesting level is not limited by CondConfigParser.
+other lists, and their nesting level is not limited by `CondConfigParser`_.
 
 There is no integer nor float type in CondConfigParser, as it has not
 seemed to be very useful for FGo! so far, however this might change in
@@ -347,15 +370,23 @@ assignment or inside the predicate of a conditional section? Answer: any
 number of the aforementioned basic type literals or variable references,
 combined with the following operators and parentheses:
 
-  ==, !=, in     equality and membership tests
-  not            logical 'not'
-  and            logical 'and'
-  or             logical 'or'
+.. index::
+   pair: boolean; operators
+
+======================     =============================
+Operator                   Meaning
+======================     =============================
+``==``, ``!=``, ``in``     equality and membership tests
+``not``                    logical “not”
+``and``                    logical “and”
+``or``                     logical “or”
+======================     =============================
 
 (operators listed in decreasing order of precedence; those on the same
 line have equal priority)
 
-The 'in' operator can be used to test:
+The ``in`` operator can be used to test:
+
   - whether a character (string of length 1) is part of a string;
   - whether an arbitrary object is equal to an element of a list.
 
@@ -365,21 +396,21 @@ variable references or even expressions)
 Example:
 
   As a consequence of the preceding rules, the expression inside the
-  predicate used in the above example:
+  predicate used in the above example::
 
     instruments == "LOWI" or ((not instruments) and airport == "LOWI") or
     custom_start_pos in ["LOWI-appW", "LOWI-appE"]
 
-  is equivalent to:
+  is equivalent to::
 
     instruments == "LOWI" or (not instruments) and airport == "LOWI" or
     custom_start_pos in ["LOWI-appW", "LOWI-appE"]
 
-  This is because 'and' has a higher priority than 'or' and '==' a
-  higher priority than both of them. Since 'not' has a higher priority
-  than 'and', it is also equivalent to the following expression,
+  This is because ``and`` has a higher priority than ``or`` and ``==`` a
+  higher priority than both of them. Since ``not`` has a higher priority
+  than ``and``, it is also equivalent to the following expression,
   although I would advise against using it, because it will probably
-  feel ambiguous to people not knowing the precise precedence rules:
+  feel ambiguous to people not knowing the precise precedence rules::
 
     instruments == "LOWI" or not instruments and airport == "LOWI" or
     custom_start_pos in ["LOWI-appW", "LOWI-appE"]
@@ -392,10 +423,12 @@ if, and only if, it is not empty).
 
 Note:
 
-  The 'and' and 'or' boolean operators are short circuit and return the
+  The ``and`` and ``or`` boolean operators are short circuit and return the
   last evaluated expression, as in Python.
 
-A useful example of what can be done with lists could be the following:
+.. index:: MHTG, Tegucigalpa, Toncontin, Honduras
+
+A useful example of what can be done with lists could be the following::
 
   { custom_start_pos = "parking"    # "parking" or "manual" or ...
     instruments = ""                # "IFR tutorial" or "LOWI" or ...
@@ -424,21 +457,23 @@ This simple configuration defines two different parking positions for
 the Toncontin Intl airport, one for aircrafts that take their passengers
 via jet bridges (of class “gate”), the other for usually smaller
 aircrafts (“general aviation”, abbreviated “ga”). It also automatically
-sets up the NAV1 frequency to 112.3 MHz and the radial to 122, which is
+sets up the NAV1 frequency to 112.3 MHz and the radial to 122, which is
 useful for the RNAV (RNP) approach of runway 02 (a particularly
 interesting one!).
 
 For FGo! to know which aircraft belongs to which class, we have defined
-the two variables, 'gate_class' and 'ga_class', as booleans using
+the two variables, ``gate_class`` and ``ga_class``, as booleans using
 membership tests. Of course, you have to add the aircrafts you fly to
 the appropriate list if you want to use this feature. When you want to
 start on a runway or on a parking position selected from the popup list
-of FGo!'s interface at the same airport, just replace "parking" with
-something else (e.g., "-parking") on the first line, where the
-'custom_start_pos' variable is defined.
+of FGo!'s interface at the same airport, just replace ``"parking"`` with
+something else (e.g., ``"-parking"``) on the first line, where the
+``custom_start_pos`` variable is defined.
+
+.. index:: helicopter
 
 Another useful example to help fly helicopters as well as planes could
-be the following:
+be the following::
 
   { custom_start_pos = "parking"  # can be changed to "heli-H5" for instance
     # Define a boolean variable ('using_heli') indicating whether the
@@ -487,6 +522,8 @@ Finally, to give you an idea of what the syntax allows, here is a valid
 configuration using the possibilities presented above. Of course, it is
 very convoluted and completely artificial!
 
+::
+
   { a = ["def", "ghi"]
     # The expression for 'b' contains 3 variables, 2 of which are external.
     # Its evaluation will return a nested list.
@@ -527,28 +564,32 @@ very convoluted and completely artificial!
   --oh no!
 
 
+.. index::
+   single: command line; assembling
+
 Assembling the fgfs command line
 --------------------------------
 
 As we have seen, the configuration read by FGo! consists in an optional
 section containing variable assignments followed by a possibly-empty
-default, unconditional section, itself followed by zero or more
-conditional sections. Let's explain how the various arguments (sometimes
-called “options”) specified in these get assembled into an fgfs command.
+default, unconditional section, itself followed by zero or more conditional
+sections. Let's explain how the various arguments (sometimes called
+*options*) specified in these get assembled into an :program:`fgfs` command.
 
-The rules used by default are pretty simple. The fgfs program is passed
-the following arguments in this order:
+The rules used by default are pretty simple. The :program:`fgfs` program is
+passed the following arguments in this order:
 
   - arguments derived from user settings in the FGo! graphical user
-    interface (e.g., '--fg-root=...', '--fg-aircraft=...',
-    '--fg-scenery=...', '--aircraft=...', '--airport=...', etc.);
+    interface (e.g., :samp:`--fg-root={...}`, :samp:`--fg-aircraft={...}`,
+    :samp:`--fg-scenery={...}`, :samp:`--aircraft={...}`,
+    :samp:`--airport={...}`, etc.);
 
   - arguments from the default, unconditional section;
 
   - arguments from each conditional section whose predicate is true
-    (i.e., the sections that are said to be “applicable”).
+    (i.e., the sections that are said to be *applicable*).
 
-For instance, let's consider the following configuration:
+For instance, let's consider the following configuration::
 
   { custom_start_pos = "parking" }
 
@@ -574,9 +615,9 @@ For instance, let's consider the following configuration:
   --lon=2.5793183
   --heading=220
 
-Assuming the selected airport in the FGo! user interface is LFPG, then
-the fgfs command issued by FGo! when the user clicks on the "Run FG"
-button will be:
+Assuming the selected airport in the FGo! user interface is LFPG, then the
+:program:`fgfs` command issued by FGo! when the user clicks on the
+:guilabel:`Run FG` button will be::
 
   fgfs <basic options> --enable-terrasync \
                        --terrasync-dir=/path/to/scenery-terrasync \
@@ -586,61 +627,69 @@ button will be:
                        --lon=2.5793183 \
                        --heading=220
 
-where <basic options> is a placeholder for the options automatically
-added based on the settings in the FGo! user interface, as mentioned
-above ('--aircraft=...', '--airport=...', etc.).
+where :samp:`{<basic options>}` is a placeholder for the options
+automatically added based on the settings in the FGo! user interface, as
+mentioned above (:samp:`--aircraft={...}`, :samp:`--airport={...}`, etc.).
 
-Right, this is all nice and clean, but what happens when several
-applicable sections declare the same or redundant fgfs options? In some
-cases, such as with '--ai-scenario', it can be useful to provide an
-option several times. In other cases (e.g., with '--airport',
-'--lat'...), it doesn't make sense. Therefore, there is no “one size
-fits all” solution that can automatically do the right thing here. But
-there is a mechanism in place that can allow you, for some options
-explicitly listed in your configuration, to have FGo! apply a “last
-occurence wins” policy.
+.. index::
+   pair: redundant; options
+
+Right, this is all nice and clean, but what happens when several applicable
+sections declare the same or redundant :program:`fgfs` options? In some
+cases, such as with ``--ai-scenario``, it can be useful to provide an option
+several times. In other cases (e.g., with ``--airport``, ``--lat``...), it
+doesn't make sense. Therefore, there is no “one size fits all” solution that
+can automatically do the right thing here. But there is a mechanism in place
+that can allow you, for some options explicitly listed in your
+configuration, to have FGo! apply a “last occurence wins” policy.
+
+.. index:: MERGED_OPTIONS
 
 In order to use this mechanism, you must list one or more prefixes in a
-special variable called 'MERGED_OPTIONS'. Let's illustrate this with a
-simple example:
+special variable called ``MERGED_OPTIONS``. Let's illustrate this with a
+simple example::
 
   { MERGED_OPTIONS = ["--airport=", "--aircraft=", "--parking-id=",
                       "--runway=", "--carrier=", "--parkpos=",
                       "--com1=", "--com2="] }
 
 Now, suppose that, after filtering out all non-applicable sections, the
-list of fgfs arguments would be:
+list of :program:`fgfs` arguments would be::
 
   --airport=LFPO --aircraft=777-200ER --com1=121.975 --com1=122.750
   --aircraft=c172p --aircraft=ec130b4 --nav1=57:110.55 --airport=LFML
   --disable-hud-3d --nav1=66:109.70
 
-We have here three elements of 'MERGED_OPTIONS' that are a prefix of at
-least one of the arguments: "--airport=", "--aircraft=" and "--com1=".
+We have here three elements of ``MERGED_OPTIONS`` that are a prefix of at
+least one of the arguments: ``--airport=``, ``--aircraft=`` and ``--com1=``.
 For each of these prefixes, the corresponding arguments will be
 automatically merged using the “last occurence wins” policy, resulting
-in the following argument list:
+in the following argument list::
 
   --airport=LFML --aircraft=ec130b4 --com1=122.750 --nav1=57:110.55
   --disable-hud-3d --nav1=66:109.70
 
-(the two '--nav1=' options have not been merged because we didn't
-include any corresponding prefix in 'MERGED_OPTIONS')
+(the two :samp:`--nav1={...}` options have not been merged because we didn't
+include any corresponding prefix in ``MERGED_OPTIONS``)
 
 As you can see, the first argument for a given prefix acts as a sort of
 anchor: its position is kept (relatively to the other arguments), but
 the “value” (what comes after the prefix) is replaced with the value of
 the last argument that has the same prefix.
 
-By default, 'MERGED_OPTIONS' is empty, so this mechanism is not active
+By default, ``MERGED_OPTIONS`` is empty, so this mechanism is not active
 for any option. This is because there is no way to determine the “right”
 default value that would work for present and future FlightGear
 releases. As a consequence, it is up to you to ensure that your
-configuration doesn't generate unwanted duplicate options---or at least,
+configuration doesn't generate unwanted duplicate options—or at least,
 if it does, make sure you are aware of the concerned options and what
 consequences it has for FlightGear to have them passed several times on
 the command line.
 
+
+.. index::
+   single: special characters
+   single: escape sequences
 
 Escaping rules for special characters
 -------------------------------------
@@ -649,66 +698,81 @@ Generally speaking, you can split a configuration line without affecting
 syntax by ending it with a backslash, as in many computer languages.
 Some syntactic constructs don't need such precautions. In particular,
 this is the case with grammar elements that start with an opening
-bracket ('[') or opening parenthesis ('('). In these cases, newlines
+bracket (``[``) or opening parenthesis (``(``). In these cases, newlines
 don't matter: only the matching closing delimiter can terminate the
 grammar element.
 
 Escaping in raw configuration lines (fgfs arguments)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In the previous sections of this document, we have introduced
-conditional sections; if you remember well, these always start with an
-opening bracket ('['). This special character marks the beginning of a
-conditional section's predicate, the end of which is marked by the
-matching closing bracket (']'). Then all following lines until either
-the end of the file or the first opening bracket at the beginning of a
-line (after optional spaces) belong to that conditional section: these
-are the lines containing the fgfs arguments. The opening bracket, if
-any, marks the start of the next conditional section, and so on. But,
-what if you absolutely need to pass fgfs an argument that starts with an
-opening bracket (or spaces, for that matter---same problem)?
+In the previous sections of this document, we have introduced conditional
+sections; if you remember well, these always start with an opening bracket
+(``[``). This special character marks the beginning of a conditional
+section's predicate, the end of which is marked by the matching closing
+bracket (``]``). Then all following lines until either the end of the file
+or the first opening bracket at the beginning of a line (after optional
+spaces) belong to that conditional section: these are the lines containing
+the :program:`fgfs` arguments. The opening bracket, if any, marks the start
+of the next conditional section, and so on. But, what if you absolutely need
+to pass :program:`fgfs` an argument that starts with an opening bracket (or
+spaces, for that matter—same problem)?
 
 Granted, this kind of situation sounds rather unusual. Nevertheless,
-CondConfigParser provides a way to do such things, which should not be
+`CondConfigParser`_ provides a way to do such things, which should not be
 much of a surprise to programmers. The technique used to solve the
-problem is “backslash escaping”. This means that, in order to use a
+problem is *backslash escaping*. This means that, in order to use a
 special character (here, an opening bracket or a space) without
 retaining its special meaning for the grammar in use, just as if it were
-an ordinary character, you have to precede it with a backslash ('\').
-So, a conditional section passing fgfs the argument
-'[arg inside brackets]' could look like this:
+an ordinary character, you have to precede it with a backslash (``\``).
+So, a conditional section passing :program:`fgfs` the argument
+``[arg inside brackets]`` could look like this::
 
   [ variable == "foobar" ]
   \[arg inside brackets]
   --other-argument
   \[this is also allowed, for symmetry reasons\]
 
-As the last line illustrates, '\]' is also accepted as an escape
-sequence for ']'. And if you need to pass fgfs an argument containing a
-backslash, you have to use the '\\' escape sequence, i.e., double every
-backslash you want to include as a normal character. There are a few
-more escape sequences that can be used in fgfs arguments (called “raw
-configuration lines” in CondConfigParser-speak). The authoritative
+As the last line illustrates, ``\]`` is also accepted as an escape sequence
+for ``]``. And if you need to pass :program:`fgfs` an argument containing a
+backslash, you have to use the ``\\`` escape sequence, i.e., double every
+backslash you want to include as a normal character. There are a few more
+escape sequences that can be used in :program:`fgfs` arguments (called *raw
+configuration lines* in `CondConfigParser`_-speak). The authoritative
 documentation for these is in the FGo! code (currently:
-src/fgcmdbuilder.py:FGCommandBuilder.processRawConfigLines()). For
+:file:`src/fgcmdbuilder.py:FGCommandBuilder.processRawConfigLines()`). For
 information, here is the complete list at the time of this writing:
 
-          \\          \ (produces a single backslash)
-          \[          [ (useful at the beginning of a line to avoid
-                         confusion with the start of a predicate)
-          \]          ] (for symmetry with '\[')
-          \#          # (literal '#' character, doesn't start a comment)
-          \t          tab character
-          \n          newline character (doesn't start a new option)
-          \<space>    space character (useful to include a space at the
-                      end of an option, which would be ignored without
-                      the backslash)
-          \<newline>  continuation line (i.e., make as if the next line
-                      were really the continuation of the current line,
-                      with the \<newline> escape sequence removed)
++-----------------------+-------------------+----------------------------------+
+| Escape sequence       | Meaning           | Comments                         |
++=======================+===================+==================================+
+| ``\\``                | ``\``             | produces a single backslash      |
++-----------------------+-------------------+----------------------------------+
+| ``\[``                | ``[``             | useful at the beginning of a     |
+|                       |                   | line to avoid confusion with the |
+|                       |                   | start of a predicate             |
++-----------------------+-------------------+----------------------------------+
+| ``\]``                | ``]``             | for symmetry with ``\[``         |
++-----------------------+-------------------+----------------------------------+
+| ``\#``                | ``#``             | literal ``#`` character, doesn't |
+|                       |                   | start a comment                  |
++-----------------------+-------------------+----------------------------------+
+| ``\t``                | tab character     |                                  |
++-----------------------+-------------------+----------------------------------+
+| ``\n``                | newline character | doesn't start a new option       |
++-----------------------+-------------------+----------------------------------+
+| :samp:`\\{<space>}`   | space character   | useful to include a space at the |
+|                       |                   | end of an option, which would be |
+|                       |                   | ignored without the backslash    |
++-----------------------+-------------------+----------------------------------+
+| :samp:`\\{<newline>}` | continuation line | makes as if the next line were   |
+|                       |                   | really the continuation of the   |
+|                       |                   | current line, with the           |
+|                       |                   | :samp:`\\{<newline>}` escape     |
+|                       |                   | sequence removed                 |
++-----------------------+-------------------+----------------------------------+
 
-Yes, the last one means you can split a very long fgfs option into
-several lines if you want, like this:
+Yes, the last one means you can split a very long :program:`fgfs` option into
+several lines if you want, like this::
 
   [ variable == "foobar" ]
   --this-is-a-very-very-very-very-very-very-very-very-very-very-very\
@@ -719,30 +783,33 @@ several lines if you want, like this:
 Escaping in string literals
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-String literals in CondConfigParser also support some kind of escaping
+String literals in `CondConfigParser`_ also support some kind of escaping
 mechanism to allow for instance to write string literals containing
-double quotes. Example:
+double quotes. Example::
 
   { abc = "bla \"waouuh\" bla" }
 
-This short variable assignments section defines the variable 'abc' as a
+This short variable assignments section defines the variable ``abc`` as a
 string containing three words separated by spaces, the second word being
 enclosed in double quotes. At the time of this writing, the escape
 sequences supported in CondConfigParser's string literals are:
 
-  \\            \
-  \t            <tab> character
-  \n            <newline> character
-  \"            "
-  \<newline>    continuation line
+=====================      ===================
+Escape sequence            Meaning
+=====================      ===================
+``\\``                     ``\``
+``\t``                     tab character
+``\n``                     newline character
+``\"``                     ``"``
+:samp:`\\{<newline>}`      continuation line
+=====================      ===================
 
 For the definitive reference on these escape sequences, please consult
-the CondConfigParser Manual at:
-
-      http://people.via.ecp.fr/~flo/projects/CondConfigParser/doc/
+the `CondConfigParser Manual`_.
 
 
-Local Variables:
-coding: utf-8
-fill-column: 72
-End:
+.. For Emacs:
+   Local Variables:
+   coding: utf-8
+   fill-column: 76
+   End:
