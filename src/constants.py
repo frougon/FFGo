@@ -2,13 +2,17 @@
 
 
 from os.path import expanduser, join, pardir
+from .version import __version__ as PROGVERSION
 
 
 # FGo! related constants.
 
 PROGNAME = 'FGo!'
-NAME_WITH_VERSION = '{} 1.6.0 Alpha_log_and_command_window_test'.format(PROGNAME)
-USER_AGENT = '{}/1.6.0 (+http://sites.google.com/site/erobosprojects/flightgear/add-ons/fgo)'.format(PROGNAME)
+NAME_WITH_VERSION = '{prg} {version}'.format(prg=PROGNAME, version=PROGVERSION)
+USER_AGENT = \
+ '{prg}/{version} ' \
+ '(+http://sites.google.com/site/erobosprojects/flightgear/add-ons/fgo)'.format(
+     prg=PROGNAME, version=PROGVERSION)
 COPYRIGHT = "Copyright 2009-2015 by\nRobert 'erobo' Leda  <erobo@wp.pl>"
 AUTHORS = 'Robert Leda\nFlorent Rougon'
 LICENSE = \
