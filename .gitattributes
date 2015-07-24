@@ -12,6 +12,7 @@
 *.jpg                          binary
 *.png                          binary
 *.ppm                          binary
+*.bat                          text eol=crlf
 /docs/*                        text
 AUTHORS                        text
 COPYING                        text
