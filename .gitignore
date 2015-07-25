@@ -2,3 +2,7 @@
 *.pyc
 *.pyo
 __pycache__/
+# For generated tarballs
+/dist/
+# For generated documentation
+/docs/README.conditional-config/
