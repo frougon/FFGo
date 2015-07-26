@@ -14,6 +14,13 @@ icons:
 l10n_files:
 	$(MAKE) -C data/locale
 
+update-pot:
+	$(MAKE) -C data/locale update-pot
+update-po:
+	$(MAKE) -C data/locale update-po
+update-mo:
+	$(MAKE) -C data/locale update-mo
+
 doc:
 	$(MAKE) -C docs/README.conditional-config.source $(DOC_FORMATS)
 
@@ -34,4 +41,4 @@ clean:
           $(MAKE) -C data/locale clean && \
           $(MAKE) -C docs/README.conditional-config.source clean
 
-.PHONY: all icons l10n_files doc dist clean
+.PHONY: all icons l10n_files update-pot update-po update-mo doc dist clean
