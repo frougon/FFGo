@@ -373,7 +373,9 @@ class Config:
         if not path:
             path = CONFIG
         # Use default config if no regular config exists.
-        if not os.path.exists(path):
+        if os.path.exists(path):
+            beforeCutLine = True
+        else:
             # Find currently used language.
             try:
                 lang_code = gettext.translation(
@@ -393,10 +395,11 @@ class Config:
                             settings.append(line)
             except IOError:
                 pass
+            # There is no "cut line" in the template config files.
+            beforeCutLine = False
 
         try:
             with open(path, encoding='utf-8') as config_in:
-                beforeCutLine = True
                 for line in config_in:
                     if beforeCutLine:
                         line = line.strip()
