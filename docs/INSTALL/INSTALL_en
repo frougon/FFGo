@@ -62,11 +62,9 @@ Note for Windows users:
   Python installation folder to avoid permission problems). There should be no
   need to create a virtual environment in this case.
 
-  Windows users at least need to create a HOME environment variable containing
-  the path to a folder they have write access to, as FGo! will store and read
-  files in '$HOME/.fgo'. The “Open Log Directory” feature is not expected to
-  work on Windows (as it uses xdg-open), but it is not important, you can open
-  the directory with any file manager.
+  The “Open Log Directory” feature is not expected to work on Windows, as it
+  uses the 'xdg-open' program. However, this is not very important, you can
+  open the log directory with any file manager.
 
 
 Easiest procedure

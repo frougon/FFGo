@@ -103,7 +103,8 @@ wish. Even smallest contribution will be appreciated. Here are some helpful
 5. TESTING YOUR TRANSLATION:
 
   When translation is ready, you can test if all text is properly displayed in
-  the application. Navigate to "~/.fgo" directory, and move out,
+  the application. Navigate to the $USER_DATA_DIR folder (~/.ffgo on Unix,
+  %APPDATA%/FFGo on Windows) and move out,
   or rename temporarily file called "config". It will simulate a situation when
   FGo! is started the first time. After running the program, it should
   automatically pick up translation based on you system settings. If no proper

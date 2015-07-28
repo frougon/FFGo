@@ -1,4 +1,4 @@
-"""This module process data from ~/.fgo folder."""
+"""This module processes data from FFGo's configuration directory."""
 
 import sys
 import os
@@ -7,11 +7,15 @@ import gettext
 import traceback
 from xml.etree.ElementTree import ElementTree
 from tkinter import IntVar, StringVar
-from tkinter.messagebox import showerror
+from tkinter.messagebox import askyesno, showinfo, showerror
 import tkinter.font
 
 from .gui.infowindow import InfoWindow
 from .constants import *
+
+
+class AbortConfig(Exception):
+    pass
 
 
 class Config:
@@ -98,6 +102,7 @@ class Config:
 
         self._earlyTranslationsSetup()
         self._createUserDirectories()
+        self._maybeMigrateFromFGoConfig()
         self.update(first_run=True)
 
         self.setTkDefaultFontSize()
@@ -352,11 +357,107 @@ class Config:
             return c, c + 1
 
     def _createUserDirectories(self):
-        """Create config directory if non exists."""
-        if not os.path.exists(USER_DATA_DIR):
-            os.mkdir(USER_DATA_DIR)
-        if not os.path.exists(LOG_DIR):
-            os.mkdir(LOG_DIR)
+        """Create config and log directories if they don't exist."""
+        for d in USER_DATA_DIR, LOG_DIR:
+            os.makedirs(d, exist_ok=True)
+
+    def _maybeMigrateFromFGoConfig_dialogs(self, parent):
+        message = _("Initialize {prg}'s configuration from your existing " \
+                    "FGo! configuration?").format(prg=PROGNAME)
+        detail = (_("""\
+You have no {cfgfile} file but you do have a {fgo_cfgfile} file,
+which normally belongs to FGo!. Except in rare circumstances
+(such as using braces or backslashes, or opening brackets at the
+beginning of a config line), a configuration file from
+FGo! 1.5.5 or earlier should be usable as is by {prg}.""")
+                  .replace('\n', ' ') + "\n\n" + _("""\
+If {fgo_cfgfile} was written by FGo! 1.5.5 or earlier, you
+should probably say “Yes” here in order to initialize {prg}'s
+configuration based on your FGo! config file (precisely:
+copy {fgo_cfgfile} to {cfgfile}).""")
+                  .replace('\n', ' ') + "\n\n" + _("""\
+If {fgo_cfgfile} was written by a version of FGo! that is greater
+than 1.5.5, it is advised to say “No” here.""")
+                  .replace('\n', ' ')
+                 ).format(prg=PROGNAME, cfgfile=CONFIG, fgo_cfgfile=FGO_CONFIG)
+
+        if askyesno(PROGNAME, message, detail=detail, parent=parent):
+            choice = "migrate from FGo!"
+        else:
+            message = _("Create a default {prg} configuration?").format(
+                prg=PROGNAME)
+            detail = _("""\
+Choose “Yes” to create a basic {prg} configuration now. If you
+choose “No”, {prg} will exit and you'll have to create {cfgfile}
+yourself, or restart {prg} to see the same questions again.""") \
+                     .replace('\n', ' ').format(prg=PROGNAME, cfgfile=CONFIG)
+
+            if askyesno(PROGNAME, message, detail=detail, parent=parent):
+                choice = "create default cfg"
+                message = _("Creating a default {prg} configuration.").format(
+                    prg=PROGNAME)
+                detail = (_("""\
+It is suggested that you go to the Settings menu and choose
+Preferences to review your newly-created configuration.""")
+                          .replace('\n', ' ') + "\n\n" + _("""\
+You can also reuse most, if not all FlightGear options you
+had in FGo!'s main text box (the “options window”). Just copy
+them to the corresponding {prg} text box.""")
+                          .replace('\n', ' ') + "\n\n" + _("""\
+Note: you may run both FGo! and FFGo simultaneously, as their
+configurations are kept separate.""")
+                          .replace('\n', ' ')
+                         ).format(prg=PROGNAME)
+                showinfo(PROGNAME, message, detail=detail, parent=parent)
+            else:
+                choice = "abort"
+
+        return choice
+
+    def _maybeMigrateFromFGoConfig(self):
+        if os.path.isfile(FGO_CONFIG) and not os.path.isfile(CONFIG):
+            baseSize = tkinter.font.nametofont("TkDefaultFont").actual()["size"]
+            def configFontSize(val, absolute=False):
+                for style in ("Default", "Text", "Fixed", "Caption", "Tooltip"):
+                    font = tkinter.font.nametofont("Tk{}Font".format(style))
+                    if absolute:
+                        font.configure(size=val)
+                    else:
+                        font.configure(size=int(round(baseSize * val)))
+
+            # Make sure most people can read the following dialogs (the
+            # standard Tk size may be rather small): 140% increase
+            configFontSize(1.4, absolute=False)
+
+            choice = None       # user choice in the to-be-displayed dialogs
+            # It seems we need an otherwise useless Toplevel window in order to
+            # center the Tk standard dialogs...
+            t = tkinter.Toplevel()
+            try:
+                # Transparent if the OS supports it
+                t.attributes('-alpha', '0.0')
+                # Center the Toplevel. To be effective, this would probably
+                # need a visit to the Tk event loop, however it is enough to
+                # have the child dialogs centered, which is what matters here.
+                self.master.eval('tk::PlaceWindow {} center'.format(
+                    t.winfo_pathname(t.winfo_id())))
+                choice = self._maybeMigrateFromFGoConfig_dialogs(t)
+            finally:
+                t.destroy()
+
+            # Restore font size for later self.setupFonts() call
+            configFontSize(baseSize, absolute=True)
+
+            if choice in (None, "abort"):
+                raise AbortConfig
+            elif choice == "migrate from FGo!":
+                # shutil.copy() and shutil.copy2() attempt to preserve the file's
+                # permission mode, which is undesirable here → manual copy.
+                with open(FGO_CONFIG, "r", encoding='utf-8') as fgoConfig, \
+                     open(CONFIG, "w", encoding='utf-8') as config:
+                    config.write(fgoConfig.read())
+            else:
+                assert choice == "create default cfg", repr(choice)
 
     def _makeApt(self, head=None):
         """Build apt database from apt.dat.gz"""
@@ -392,7 +493,7 @@ class Config:
                 with open(PRESETS, encoding='utf-8') as presets:
                     for line in presets:
                         line = line.strip()
-                        if not line.startswith('#'):
+                        if line and not line.startswith('#'):
                             settings.append(line)
             except IOError:
                 pass

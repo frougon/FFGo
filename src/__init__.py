@@ -7,7 +7,7 @@
 from .constants import PROGNAME, LOCALE_DIR
 import locale
 import gettext
-from sys import argv
+import sys
 from os import chdir
 from tkinter import Tk
 
@@ -22,7 +22,7 @@ def early_tk_init():
 # definition time) because of the constructor's
 # 'font=tkFont.nametofont("TkTextFont")' optional argument.
 root = early_tk_init()
-from .config import Config
+from .config import Config, AbortConfig
 from .gui.mainwindow import App
 
 
@@ -32,7 +32,7 @@ This program does not use command line options. Edit fgo/data/config/presets
 file if you need to run {prg} with some pre-configuration.""").format(
         prg=PROGNAME)
 
-    if len(argv) > 1:
+    if len(sys.argv) > 1:
         print(message + '\n')
 
 
@@ -48,7 +48,14 @@ def run(working_dir, root=root):
 
     # Initialize config object (passing 'root' allows things such as obtaining
     # the screen dpi in Config methods using root.winfo_fpixels('1i')).
-    config = Config(root)
+    try:
+        config = Config(root)
+    except AbortConfig:
+        # We have a temporary translation setup at this point, based on the
+        # environment.
+        print(_("{prg}: initialization of the configuration aborted. Exiting.")
+              .format(prg=PROGNAME))
+        sys.exit(1)
 
     if not config.language.get():
         # Allow localized error messages, proper encoding detection by

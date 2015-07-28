@@ -1,6 +1,7 @@
-# You can define list of options that will be passed to application in case if
-# ~/.fgo/config can't be found. That is in most situations at program's
-# first start. Write every option from a new line. 
+# You can define a list of options that will be passed to application in case
+# the config file (~/.ffgo/config on Unix, %APPDATA%/FFGo/config on Windows)
+# can't be found. That is in most situations at program's first start. Write
+# every option on a separate line.
 #
 #
 # Options shared with FlightGear:

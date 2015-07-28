@@ -23,11 +23,12 @@ executable (typically, :program:`fgfs`).
 
 Notes:
 
-  - If you actually look at FGo!'s configuration file,
-    :file:`{$HOME}/.fgo/config`, this corresponds to the part following the
-    special marker line containing ``INTERNAL OPTIONS ABOVE. EDIT
-    CAREFULLY!`` (which is an implementation detail and might change in
-    the future).
+  - If you actually look at FFGo's configuration file,
+    :file:`{USER_DATA_DIR}/config` (where :file:`{USER_DATA_DIR}` is
+    :file:`{$HOME}/.ffgo` on Unix, :file:`{%APPDATA%}/FFGo` on Windows), this
+    corresponds to the part following the special marker line containing
+    ``INTERNAL OPTIONS ABOVE. EDIT CAREFULLY!`` (which is an implementation
+    detail and might change in the future).
 
   - The following description is somewhat informal, written with FGo!
     users in mind. For those who want more details, including a formal

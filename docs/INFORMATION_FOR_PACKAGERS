@@ -34,6 +34,6 @@ be used to specify settings that the packager wants to be enabled by default.
 For example, in a system-wide installation this will allow every user to run
 FGo! without having to bother with its basic setup; other FGo! and FlightGear
 options can also be specified. The presets file is well commented and will be
-used by FGo! every time a local ~/.fgo/config cannot be found: for instance,
-this is the case when FGo! is run by the user for the first time.
+used by FFGo every time the file $USER_DATA_DIR/config cannot be found: for
+instance, this is the case when FFGo is run by the user for the first time.
 

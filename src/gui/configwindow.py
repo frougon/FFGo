@@ -206,14 +206,15 @@ the working directory is the user's home directory.""")
         self.tooltip_aptMenu = _("""Select data source where {prg} will be looking for information about runways or
 parking positions. There are two options:
 
-Default - {prg} will show runway numbers based on ~/.fgo/apt file,
-    which is generated from FG_ROOT/Airports/apt.dat.gz database.
-    Parking names will be taken from FG_ROOT/AI/Airports directory.
+Default - {prg} will show runway numbers based on $USER_DATA_DIR/apt
+    file, which is generated from FG_ROOT/Airports/apt.dat.gz
+    database. Parking names will be taken from FG_ROOT/AI/Airports
+    directory.
 
-Scenery - {prg} will show runway numbers based on ~/.fgo/apt file,
-    which is generated from FG_ROOT/Airports/apt.dat.gz database.
-    Parking names will be taken from FG_SCENERY/Airports folder
-    - or folders - if multiple scenery paths are provided.
+Scenery - {prg} will show runway numbers based on $USER_DATA_DIR/apt
+    file, which is generated from FG_ROOT/Airports/apt.dat.gz
+    database. Parking names will be taken from FG_SCENERY/Airports
+    folder - or folders - if multiple scenery paths are provided.
 
 Generally speaking: "Default" option will tell {prg} to show the same
 data that FlightGear uses by default when selecting starting location,

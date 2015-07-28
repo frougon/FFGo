@@ -1,13 +1,14 @@
 """Here are defined all global constants."""
 
 
-from os.path import expanduser, join, pardir
+import platform
+from os.path import expanduser, join, pardir, normpath
 from .version import __version__ as PROGVERSION
 
 
-# FGo! related constants.
+# FFGo-related constants
 
-PROGNAME = 'FGo!'
+PROGNAME = 'FFGo'
 NAME_WITH_VERSION = '{prg} {version}'.format(prg=PROGNAME, version=PROGVERSION)
 USER_AGENT = \
  '{prg}/{version} ' \
@@ -26,7 +27,12 @@ http://sam.zoy.org/wtfpl/COPYING for more details.
 # User's home directory.
 HOME_DIR = expanduser('~')
 # Default directory for user data files.
-USER_DATA_DIR = join(HOME_DIR, '.fgo')
+if platform.system() == "Windows":
+    # normpath() converts / to \ on Windows, which can be useful when
+    # displaying paths to users.
+    USER_DATA_DIR = normpath(join(os.getenv("APPDATA", "C:/"), "FFGo"))
+else:
+    USER_DATA_DIR = join(HOME_DIR, '.ffgo')
 # Place to store FG output logs.
 LOG_DIR = join(USER_DATA_DIR, 'Logs')
 # Path to airport data file.
@@ -35,6 +41,9 @@ APT = join(USER_DATA_DIR, 'apt')
 INSTALLED_APT = join(USER_DATA_DIR, 'apt_installed')
 # Path to config file.
 CONFIG = join(USER_DATA_DIR, 'config')
+# To allow easy migration from FGo! to FFGo
+FGO_CONFIG = join(HOME_DIR, '.fgo', 'config')
+
 # Path to apt.dat.gz timestamp file.
 APT_TIMESTAMP = join(USER_DATA_DIR, 'timestamp')
 # Path to default config directory.

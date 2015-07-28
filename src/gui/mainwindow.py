@@ -505,21 +505,21 @@ class App:
             return
 
     def configLoad(self):
-        p = fd.askopenfilename(initialdir=USER_DATA_DIR,
-                               filetypes=[(_('Config Files'), '*.fgo')])
+        p = fd.askopenfilename(
+            initialdir=USER_DATA_DIR,
+            filetypes=[(_('{prg} Config Files').format(prg=PROGNAME), '*.ffgo'),
+                       (_('FGo! Config Files'), '*.fgo')])
         if p:
             self.reset(path=p)
 
     def configSave(self):
         asf = fd.asksaveasfilename
         p = asf(initialdir=USER_DATA_DIR,
-                filetypes=[(_('Config Files'), '*.fgo')])
+                filetypes=[(_('{prg} Config Files').format(prg=PROGNAME),
+                            '*.ffgo')])
         if p:
-            try:
-                if p[-4:] != '.fgo':
-                    p += '.fgo'
-            except TypeError:
-                pass
+            if not p.endswith('.ffgo'):
+                p += '.ffgo'
             t = self.options.get()
             self.config.write(text=t, path=p)
 
