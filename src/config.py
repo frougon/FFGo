@@ -96,6 +96,7 @@ class Config:
                          self.showFGOutputInSeparateWindow,
                          'FG_OUTPUT_GEOMETRY=': self.FGOutputGeometry}
 
+        self._earlyTranslationsSetup()
         self._createUserDirectories()
         self.update(first_run=True)
 
@@ -578,6 +579,22 @@ class Config:
                 data.append(parking_name.text)
         data.append(scenario_name)
         return data
+
+    def _earlyTranslationsSetup(self):
+        """Setup translations before the config file has been read.
+
+        The language is determined from the environment (LANGUAGE,
+        LC_ALL, LC_MESSAGES, and LANG—cf. gettext.translation() and
+        gettext.find()).
+
+        """
+        try:
+            langCode = gettext.translation(
+                MESSAGES, LOCALE_DIR).info()['language']
+        except OSError:
+            langCode = 'en'
+
+        self._setLanguage(langCode)
 
     def _setLanguage(self, lang):
         # Initialize provided language...
