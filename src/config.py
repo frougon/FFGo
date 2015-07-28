@@ -602,7 +602,7 @@ class Config:
             L = gettext.translation(MESSAGES, LOCALE_DIR, languages=[lang])
             L.install()
         # ...or fallback to system default.
-        except:
+        except Exception:
             gettext.install(MESSAGES, LOCALE_DIR)
 
     def _stringToCoordinates(self, coordinates):
