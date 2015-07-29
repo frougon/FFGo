@@ -95,6 +95,7 @@ class ConfigWindow:
         self.close = Button(self.frame_close_button, text=_('Cancel'),
                             command=self.quit)
         self.close.pack(side='left')
+        self.top.bind('<Escape>', lambda event: self.close.invoke())
 # -----------------------------------------------------------------------------
         # Show FG settings tab by default.
         self.showFGSettings()
