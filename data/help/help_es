@@ -1,4 +1,4 @@
-FGo! - Un simple GUI lanzador para FlightGear.
+FFGo - Un simple GUI lanzador para FlightGear.
 
 -------------------------------------------------------------------------------
 
@@ -12,7 +12,7 @@ REQUISITOS
   modulo ImageTk **
 - Tcl/Tk 8.6
 
-*  FGo! solo es compatible con Python 3.x.
+*  FFGo solo es compatible con Python 3.x.
 ** Esta biblioteca non es obligatoria, pero sin ella las miniaturas de los
    aviones no serán visualizadas.
 
@@ -22,7 +22,7 @@ INSTALACIÓN
 
 Este programa no precisa instalación: la extracción de el fichero archivio es
 suficiente, pero los paquetes necesarios deben ser instalados antes de ejecutar
-por primera vez Fgo!.
+por primera vez FFGo.
 
 En Debian y en las distribuciones basadas en Debian los paquetes necesarios
 serian python3, python3-tk, python3-imaging-tk, tcl8.x y tk8.x. Los paquetes
@@ -31,7 +31,7 @@ distribucion en particular. Puedes simplemente seleccionar python3-imaging-tk o
 python3-pil.imagetk: el gestor de paquetes instalará el resto de dependencias
 requeridas.
 
-Un SlackBuild para FGo! está disponible para Slackware GNU/Linux y los sistemas
+Un SlackBuild para FFGo está disponible para Slackware GNU/Linux y los sistemas
 compatibles. El script incluido en el Slackbuild puede generar un paquete que
 permite una instalación del programa integrada en el sistema. El SlackBuild se
 puede descargar desde el sitio http://www.slackbuilds.org. Las instalaciones
@@ -41,14 +41,14 @@ estándar de Slackware (full) no requieren paquetes adicionales.
 
 EJECUCION
 
-Navega al directorio donde FGo! fue descomprimido y clic en el fichero "fgo", o
-escribe "python3 fgo" o "./fgo" en la teminal.
+Navega al directorio donde FFGo fue descomprimido y clic en el fichero "ffgo", o
+escribe "python3 ffgo" o "./ffgo" en la teminal.
 
 -------------------------------------------------------------------------------
 
 CONFIGURACIÓN
 
-Para poder usar FGo! primero necesitas configurarlo. Selecciona "Ajustes" =>
+Para poder usar FFGo primero necesitas configurarlo. Selecciona "Ajustes" =>
 "Preferencias" y rellena los campos vacíos. Rellenar las tres primeras
 entradas en "Ajustes de FlightGear" es necesario para el correcto
 funcionamiento del programa; el resto es opcional.
@@ -57,7 +57,7 @@ Truco: mover el cursor en las opciones para leer las descripciones.
 
 Los cambios en los ajustes de FlightGear son inmediatamente aplicados después
 de pulsar "Guardar ajustes", pero los cambios en "Miscelaneo" pueden requerir
-cerrar y abrir de nuevo FGo!.
+cerrar y abrir de nuevo FFGo.
 
 -------------------------------------------------------------------------------
 

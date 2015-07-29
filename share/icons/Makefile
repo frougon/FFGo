@@ -1,4 +1,4 @@
-# Makefile to generate */fgo.png in various sizes from scalable/fgo.svg
+# Makefile to generate */ffgo.png in various sizes from scalable/ffgo.svg
 # (tested with GNU Make)
 #
 # Copyright (C) 2015  Florent Rougon
@@ -8,13 +8,13 @@
 SIZES := 16 24 32 48 64 128 256
 
 define CONVERT_RULE =
-$(1)x$(1)/fgo.png: scalable/fgo.svg
+$(1)x$(1)/ffgo.png: scalable/ffgo.svg
 	mkdir -p '$(1)x$(1)' && \
           rsvg-convert --width='$(1)' --keep-aspect-ratio --format=png \
                  --output='$$@' '$$<'
 endef
 
-PNG_FILES := $(foreach size,$(SIZES),$(size)x$(size)/fgo.png)
+PNG_FILES := $(foreach size,$(SIZES),$(size)x$(size)/ffgo.png)
 
 all: $(PNG_FILES)
 

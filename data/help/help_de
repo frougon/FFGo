@@ -1,4 +1,4 @@
-FGo! - Ein einfacher GUI Starter für FlightGear.
+FFGo - Ein einfacher GUI Starter für FlightGear.
 
 -------------------------------------------------------------------------------
 
@@ -12,12 +12,12 @@ SYSTEMVORAUSSETZUNGEN
   mit ImageTk Modul **
 - Tcl/Tk 8.6
 
-*  FGo! ist nur mit Python Serie 3.x kompatibel.
-** Diese Bibliothek ist nicht unbedingt notwendig um FGo! zu starten
+*  FFGo ist nur mit Python Serie 3.x kompatibel.
+** Diese Bibliothek ist nicht unbedingt notwendig um FFGo zu starten
    aber die Flugzeug-Vorschau wird ohne sie nicht angezeigt.
 
 Diese Versionsnummern stellen die Versionen der verwendeten Softwaredar, die
-zur Entwicklung genutzt wurden. Es ist durchaus möglich, daß FGo! auch mit
+zur Entwicklung genutzt wurden. Es ist durchaus möglich, daß FFGo auch mit
 älteren (oder neueren) Versionen funktioniert, aber das Programm wurde damit
 nicht getestet.
 
@@ -25,7 +25,7 @@ nicht getestet.
 
 INSTALLATION
 
-FGo! braucht nicht installiert zu werden, man braucht nur das Archiv
+FFGo braucht nicht installiert zu werden, man braucht nur das Archiv
 zu entpacken und sicherzustellen, daß die Anforderungen erfüllt wurden.
 
 In Debian und Debian-basierten Distributionen werden die folgenden Pakete
@@ -38,7 +38,7 @@ werden.
 
 Für Slackware-basierte Systeme steht ein SlackBuild Paket zu Verfügung. Das
 enthaltene Skript generiert ein kompatibles Slackware Paket, das eine saubere,
-systemweite Installation von FGo! ermöglicht. Das SlackBuild kann von
+systemweite Installation von FFGo ermöglicht. Das SlackBuild kann von
 der Website http://www.slackbuilds.org heruntergeladen werden. Für standard
 Slackware Installationen (full) ist kein zusätzliches Paket nötig.
 
@@ -46,14 +46,14 @@ Slackware Installationen (full) ist kein zusätzliches Paket nötig.
 
 GESTARTET
 
-Klicke auf die Datei "fgo" im Hauptverzeichnis des Programms, oder starte es
-aus einer Konsole mit entweder "./fgo" oder "python3 fgo".
+Klicke auf die Datei "ffgo" im Hauptverzeichnis des Programms, oder starte es
+aus einer Konsole mit entweder "./ffgo" oder "python3 ffgo".
 
 -------------------------------------------------------------------------------
 
 KONFIGURATION
 
-Um FGo! benutzen zu können, muss man es erst einrichten. Öffnen Sie das
+Um FFGo benutzen zu können, muss man es erst einrichten. Öffnen Sie das
 Einstellungsfenster (im Menü: Einstellungen => Eigenschaften) und füllen Sie
 die leeren Felder aus.
 Das Ausfüllen der ersten drei Felder ist notwendig für die korrekte Ausführung
@@ -64,7 +64,7 @@ Maus kurz über dem entsprechenden Feld.
 
 Veränderungen in den Einstellungen werden nach "Einstellungen speichern"
 sofort angewendet, allerdings benötigen Veränderungen in den
-Spracheinstellungen einen Neustart von FGo!.
+Spracheinstellungen einen Neustart von FFGo.
 
 -------------------------------------------------------------------------------
 
@@ -107,7 +107,7 @@ Hilfe:
 
 KOMMANDOZEILEN OPTIONEN FENSTER
 
-Im Text-Fenster am unteren Ende des FGo!-Fensters kann man Kommandozeilen-
+Im Text-Fenster am unteren Ende des FFGo-Fensters kann man Kommandozeilen-
 Optionen angeben, die an FlightGear weitergereicht werden.
 
 Es werden vorerst nur wenige Optionen angezeigt. Für mehr Informationen und

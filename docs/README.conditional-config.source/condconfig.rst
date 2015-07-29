@@ -1,22 +1,22 @@
 .. meta::
-   :description: User documentation for FGo!'s conditional configuration
+   :description: User documentation for FFGo's conditional configuration
                  feature
-   :keywords: FGo!, condition, conditional, configuration, CondConfigParser
+   :keywords: FFGo, condition, conditional, configuration, CondConfigParser
 
 
 ==================================
-Conditional configuration for FGo!
+Conditional configuration for FFGo
 ==================================
 
 Introduction
 ------------
 
-This version of FGo! uses `CondConfigParser`_, which opens up new
-possibilities regarding what can be done with the configuration file.
-Specifically, the word “configuration” in this document normally refers
-to the part of FGo!'s configuration file that is displayed in the main
-window, which you can use to pass specific options to the FlightGear
-executable (typically, :program:`fgfs`).
+FFGo uses `CondConfigParser`_, which opens up new possibilities regarding
+what can be done with the configuration file. Specifically, the word
+“configuration” in this document normally refers to the part of FFGo's
+configuration file that is displayed in the main window, which you can use
+to pass specific options to the FlightGear executable (typically,
+:program:`fgfs`).
 
 .. _CondConfigParser: http://people.via.ecp.fr/~flo/projects/CondConfigParser/
 .. _CondConfigParser Manual: http://people.via.ecp.fr/~flo/projects/CondConfigParser/doc/
@@ -30,7 +30,7 @@ Notes:
     ``INTERNAL OPTIONS ABOVE. EDIT CAREFULLY!`` (which is an implementation
     detail and might change in the future).
 
-  - The following description is somewhat informal, written with FGo!
+  - The following description is somewhat informal, written with FFGo
     users in mind. For those who want more details, including a formal
     grammar specification of the configuration format, the reference
     document is the `CondConfigParser Manual`_.
@@ -60,7 +60,7 @@ In this example, the ``--enable-auto-coordination`` option is not passed
 to the FlightGear executable because it is commented out with the ``#``
 character. The four remaining non-blank lines will be passed as four
 arguments to :program:`fgfs`. They will be added after the options
-automatically set by FGo!, such as :samp:`--aircraft={...}`,
+automatically set by FFGo, such as :samp:`--aircraft={...}`,
 :samp:`--airport={...}`, :samp:`--fg-scenery={...}`, etc.
 
 Comments don't necessary start at the beginning of a line. For instance,
@@ -129,7 +129,7 @@ problem, you can use conditional sections like this::
   --com2=119.225
 
 With such a section, the ``--com1`` and ``--com2`` options will only be passed
-to :program:`fgfs` if the selected airport in FGo! is EHAM. The important
+to :program:`fgfs` if the selected airport in FFGo is EHAM. The important
 thing to note is that conditional sections must come *after* the default,
 unconditional section. This is because a given conditional section ends at the
 beginning of the next one (or at the end of the file, whichever comes first).
@@ -158,13 +158,13 @@ complete configuration with two conditional sections could look like this::
 
 This example uses one external variable: ``airport``. It is said to be
 *external* because it is not defined in this configuration, but
-automatically set by FGo! when it interprets the configuration to compute
+automatically set by FFGo when it interprets the configuration to compute
 the argument list for the :program:`fgfs` command. The complete list of
-external variables that `CondConfigParser`_ obtains from FGo! is, at the time
+external variables that `CondConfigParser`_ obtains from FFGo is, at the time
 of this writing: ``aircraft``, ``airport``, ``parking``, ``runway``,
 ``carrier`` and ``scenarios``.
 
-While external variables get their values from user selections in the FGo!
+While external variables get their values from user selections in the FFGo
 graphical user interface, other variables must be explicitely defined at the
 beginning of the configuration, that is, before the default, unconditional
 section. This is done in a special section delimited by braces, like this::
@@ -208,13 +208,13 @@ example on the selected airport and the value given to the
 ``custom_start_pos`` variable at the beginning of the configuration.
 
 So, if you want to start at the defined parking position at EDDK, select
-EDDK in the FGo! GUI and make sure you have::
+EDDK in the FFGo GUI and make sure you have::
 
   custom_start_pos = "parking"
 
 in the brace-delimited section for variable assignments at the beginning of
 the config. Similarly, you can easily start on the H7 helipad at EDDM by
-choosing EDDM in the FGo! GUI and setting ``custom_start_pos`` to the string
+choosing EDDM in the FFGo GUI and setting ``custom_start_pos`` to the string
 ``"heli-H7"``. The third conditional section in this example allows you to
 easily practice landings at TFFJ by setting ``custom_start_pos`` to
 ``"TFFJ-app"`` (for aircraft models that support in-air startup).
@@ -223,13 +223,13 @@ Finally, if you don't want any of these options to be used, just set
 ``custom_start_pos`` to a value that doesn't satisfy any of the predicates,
 for instance the empty string ``""``, or something like ``"-parking"``
 (convenient if you often switch between the "parking" setting and the
-default FGo! behavior—the one obtained without any specific configuration).
+default FFGo behavior—the one obtained without any specific configuration).
 
 Note:
 
   These custom parking positions defined by latitude, longitude and
   heading are not very useful in airports where the scenery has
-  well-defined parking lots that can be directly selected in the FGo!
+  well-defined parking lots that can be directly selected in the FFGo
   GUI. Unfortunately, this case is relatively rare, especially for
   “exotic” installations such as helipads.
 
@@ -240,7 +240,7 @@ Advanced expressions
 .. index:: ! predicate
 
 In the previous section, we have seen how to define and use variables and
-conditional sections in the configuration read by FGo! (via
+conditional sections in the configuration read by FFGo (via
 `CondConfigParser`_). As we have explained, each such section starts with a
 condition, called a *predicate*, enclosed in square brackets (``[`` and
 ``]``). But what constitutes a valid predicate? Similarly, when writing a
@@ -255,7 +255,7 @@ the `CondConfigParser Manual`_.
 Before diving into a somewhat verbose description, let's give a sample
 configuration with a few conditional sections. This example makes use of
 two external variables (``airport`` and ``aircraft``) that `CondConfigParser`_
-obtains from FGo!. The other three variables used in the predicates
+obtains from FFGo. The other three variables used in the predicates
 (``custom_start_pos``, ``instruments`` and ``condConfigParser_testing``) are
 defined in the brace-delimited section for variable assignments at the
 beginning of the configuration.
@@ -363,7 +363,7 @@ Lists can be of arbitrary length, may contain any expression, including
 other lists, and their nesting level is not limited by `CondConfigParser`_.
 
 There is no integer nor float type in CondConfigParser, as it has not
-seemed to be very useful for FGo! so far, however this might change in
+seemed to be very useful for FFGo so far, however this might change in
 the future.
 
 So, what is allowed to go into the right-hand side of a variable
@@ -462,12 +462,12 @@ sets up the NAV1 frequency to 112.3 MHz and the radial to 122, which is
 useful for the RNAV (RNP) approach of runway 02 (a particularly
 interesting one!).
 
-For FGo! to know which aircraft belongs to which class, we have defined
+For FFGo to know which aircraft belongs to which class, we have defined
 the two variables, ``gate_class`` and ``ga_class``, as booleans using
 membership tests. Of course, you have to add the aircrafts you fly to
 the appropriate list if you want to use this feature. When you want to
 start on a runway or on a parking position selected from the popup list
-of FGo!'s interface at the same airport, just replace ``"parking"`` with
+of FFGo's interface at the same airport, just replace ``"parking"`` with
 something else (e.g., ``"-parking"``) on the first line, where the
 ``custom_start_pos`` variable is defined.
 
@@ -571,7 +571,7 @@ very convoluted and completely artificial!
 Assembling the fgfs command line
 --------------------------------
 
-As we have seen, the configuration read by FGo! consists in an optional
+As we have seen, the configuration read by FFGo consists in an optional
 section containing variable assignments followed by a possibly-empty
 default, unconditional section, itself followed by zero or more conditional
 sections. Let's explain how the various arguments (sometimes called
@@ -580,7 +580,7 @@ sections. Let's explain how the various arguments (sometimes called
 The rules used by default are pretty simple. The :program:`fgfs` program is
 passed the following arguments in this order:
 
-  - arguments derived from user settings in the FGo! graphical user
+  - arguments derived from user settings in the FFGo graphical user
     interface (e.g., :samp:`--fg-root={...}`, :samp:`--fg-aircraft={...}`,
     :samp:`--fg-scenery={...}`, :samp:`--aircraft={...}`,
     :samp:`--airport={...}`, etc.);
@@ -616,8 +616,8 @@ For instance, let's consider the following configuration::
   --lon=2.5793183
   --heading=220
 
-Assuming the selected airport in the FGo! user interface is LFPG, then the
-:program:`fgfs` command issued by FGo! when the user clicks on the
+Assuming the selected airport in the FFGo user interface is LFPG, then the
+:program:`fgfs` command issued by FFGo when the user clicks on the
 :guilabel:`Run FG` button will be::
 
   fgfs <basic options> --enable-terrasync \
@@ -629,7 +629,7 @@ Assuming the selected airport in the FGo! user interface is LFPG, then the
                        --heading=220
 
 where :samp:`{<basic options>}` is a placeholder for the options
-automatically added based on the settings in the FGo! user interface, as
+automatically added based on the settings in the FFGo user interface, as
 mentioned above (:samp:`--aircraft={...}`, :samp:`--airport={...}`, etc.).
 
 .. index::
@@ -642,7 +642,7 @@ several times. In other cases (e.g., with ``--airport``, ``--lat``...), it
 doesn't make sense. Therefore, there is no “one size fits all” solution that
 can automatically do the right thing here. But there is a mechanism in place
 that can allow you, for some options explicitly listed in your
-configuration, to have FGo! apply a “last occurence wins” policy.
+configuration, to have FFGo apply a “last occurence wins” policy.
 
 .. index:: MERGED_OPTIONS
 
@@ -739,7 +739,7 @@ backslash, you have to use the ``\\`` escape sequence, i.e., double every
 backslash you want to include as a normal character. There are a few more
 escape sequences that can be used in :program:`fgfs` arguments (called *raw
 configuration lines* in `CondConfigParser`_-speak). The authoritative
-documentation for these is in the FGo! code (currently:
+documentation for these is in the FFGo code (currently:
 :file:`src/fgcmdbuilder.py:FGCommandBuilder.processRawConfigLines()`). For
 information, here is the complete list at the time of this writing:
 

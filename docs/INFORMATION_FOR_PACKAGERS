@@ -1,39 +1,43 @@
 INFORMATION FOR PACKAGERS
 
 = Location =
-The FGo! release package can be extracted anywhere and the program can be run
-from that location without having to move files around. For example, FGo! can
+The FFGo release package can be extracted anywhere and the program can be run
+from that location without having to move files around. For example, FFGo can
 be installed to a specific user's home directory, and that user will be able
 to run it right away, provided that the needed dependencies are installed.
-For system-wide installations of FGo! it is recommended to copy the main fgo/
-directory, with its entire content, to /opt, then create a symlink to the
-application's executable in a location included in the PATH environment
-variable, most likely /usr/bin. Optionally, a symlink to the configuration
-file can be created as well in /etc.
+
+Note: the following advice is more suited to private system-wide installations
+      on Unix-like systems than to distribution packages or non-Unix systems.
+
+For system-wide installations of FFGo, the main 'ffgo-x.y.z' directory may be
+copied, with its entire contents, to '/opt/ffgo' or similar. Then, you may
+create a symlink to the application executable in a directory listed in the
+PATH environment variable.
 
 = Documentation =
-The program's documentation is stored in fgo/docs and can be either symlinked
-from /usr/doc/fgo-x.y.z, or copied there.
+The program's documentation is stored in the top-level 'docs' directory and
+can be either symlinked from '/usr/share/doc/ffgo' or copied there.
 
 = Icons =
-Icons are stored in fgo/share/icons and can be either symlinked from or copied
-to the proper directories in /usr/share/icons.
+Icons are stored in 'share/icons' and can be either symlinked from or copied
+to the proper directories in '/usr/share/icons'.
 
 = Desktop =
-A desktop file, fgo.desktop, is available in fgo/share. It creates a menu entry
-for FGo! and simplifies the creation of application launchers. It can be either
-symlinked from or copied to /usr/share/applications and expects the FGo!
-executable to be available through $PATH, as well as icons to be in the right
-place.
+A desktop file, 'ffgo.desktop', is available in the top-level 'share'
+directory. It creates a menu entry for FFGo and simplifies the creation of
+application launchers. It can be either symlinked from or copied to
+'/usr/share/applications' and expects the FFGo executable to be available
+through $PATH, as well as icons to be in the right place.
 
 = Presets =
-The default FGo! settings are quite minimal and the user is required to perform
-a few minor tasks, like setting the needed paths for FlightGear executables and
-directories. However, a presets file is available in fgo/data/config, which can
-be used to specify settings that the packager wants to be enabled by default.
-For example, in a system-wide installation this will allow every user to run
-FGo! without having to bother with its basic setup; other FGo! and FlightGear
-options can also be specified. The presets file is well commented and will be
-used by FFGo every time the file $USER_DATA_DIR/config cannot be found: for
+The default FFGo settings are quite minimal and the user is required to
+perform a few minor tasks, such as setting the needed paths for FlightGear
+data, aircrafts, scenery, etc. as well as for the 'fgfs' executable. However,
+a 'presets' file is available in 'data/config', which can be used to specify
+settings that the packager wants to be enabled by default. For example, in a
+system-wide installation this will allow every user to run FFGo without having
+to bother with its basic setup; other FFGo and FlightGear options can also be
+specified in that file. The 'presets' file is well commented and will be used
+by FFGo every time the '$USER_DATA_DIR/config' file cannot be found (where
+'$USER_DATA_DIR' is '~/.ffgo' on Unix, '%APPDATA%/FFGo on Windows). For
 instance, this is the case when FFGo is run by the user for the first time.
-

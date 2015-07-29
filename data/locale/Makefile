@@ -6,14 +6,14 @@
 # License: DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE version 2, dated
 #          December 2004
 
-PROGNAME := FGo!
+PROGNAME := FFGo
 VERSION := $(shell PYTHONPATH="../../src:$$PYTHONPATH" python -c \
                    'from version import __version__; print(__version__)')
 define POT_COPYRIGHT
 Copyright (C) 2010-2015  Robert Leda
 Copyright (C) 2014-2015  Florent Rougon
 endef
-MSGID_BUGS_ADDRESS := erobo@wp.pl
+MSGID_BUGS_ADDRESS := f.rougon@free.fr
 
 PYTHON := python3
 LANGUAGES := de en es fr it ja nl pl
@@ -58,9 +58,9 @@ endef
 # $(var), doesn't handle newlines correctly when expanded inside a recipe)
 export replace_metadata
 
-PY_FILES := ../../fgo $(shell find ../../src -type f -name '*.py')
-# File paths relative to the package root directory (containing the fgo script)
-REL_PY_FILES := fgo $(shell cd ../.. && find src -type f -name '*.py')
+PY_FILES := ../../ffgo $(shell find ../../src -type f -name '*.py')
+# File paths relative to the package root directory (containing the ffgo script)
+REL_PY_FILES := ffgo $(shell cd ../.. && find src -type f -name '*.py')
 
 messages.pot: $(PY_FILES)
 	xgettext --directory=../.. --language=Python --from-code=UTF-8 \

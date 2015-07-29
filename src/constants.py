@@ -12,7 +12,7 @@ PROGNAME = 'FFGo'
 NAME_WITH_VERSION = '{prg} {version}'.format(prg=PROGNAME, version=PROGVERSION)
 USER_AGENT = \
  '{prg}/{version} ' \
- '(+http://sites.google.com/site/erobosprojects/flightgear/add-ons/fgo)'.format(
+ '(+http://people.via.ecp.fr/~flo/projects/FFGo/)'.format(
      prg=PROGNAME, version=PROGVERSION)
 COPYRIGHT = "Copyright © 2009-2015\nRobert 'erobo' Leda <erobo@wp.pl>\n" \
             "Copyright © 2014-2015\nFlorent Rougon <f.rougon@free.fr>"

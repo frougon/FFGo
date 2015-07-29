@@ -16,18 +16,9 @@ Contents
 
 READY-TO-USE PACKAGES
 
-- At the time of this writing (July 2015), Debian unstable and testing have an
-  up-to-date 'fgo' package.
-
-- For Slackware and compatible systems a SlackBuild for FGo! is available. The
-  included script will generate a package that allows for a clean, system-wide
-  installation of the program. The SlackBuild can be downloaded from the
-  official website: http://www.slackbuilds.org. On default Slackware systems
-  (full) no additional packages are required. [NOT TESTED WITH THIS VERSION OF
-  FGo!]
-
-- It is quite likely that other distributions offer something similar, please
-  check on your distribution website.
+It may be that your distribution offers a ready-to-use package of FFGo. Please
+check on its website and contact me (email address at the end of this file) if
+this is the case to allow me to mention it here.
 
 -------------------------------------------------------------------------------
 
@@ -36,7 +27,7 @@ MANUAL INSTALLATION
 This program requires no installation, just unpack the archive anywhere and
 make sure that all software requirements are met before the first start. In
 the rest of this section, I'll try to guide you through the process of
-installing FGo!'s dependencies.
+installing FFGo's dependencies.
 
 - Python 3.x should be available in any Linux distribution (package 'python3',
   or 'python', or 'python3.4', etc.). If your distribution doesn't have
@@ -54,7 +45,7 @@ install Python 3. There remain two dependencies: CondConfigParser and Pillow.
 
 Note for Windows users:
 
-  Although the author of these lines didn't have the chance to try to run FGo!
+  Although the author of these lines didn't have a chance to try to run FFGo
   under Windows (please report if you do so), the most appropriate
   installation method seems to be the “Standard procedure” described below.
   Since there is no system Python on Windows, you should be able to use pip
@@ -73,7 +64,7 @@ Easiest procedure
 For the usually simplest installation method, you can omit Pillow, which is
 nice but optional—only used to display aircraft thumbnails. As for
 CondConfigParser, the standard installation method is based on pip (see
-below), but you can install it for FGo! only, using the following steps:
+below), but you can install it for FFGo only, using the following steps:
 
   1. Unpack the CondConfigParser archive wherever you want, under your normal
      user account:
@@ -84,30 +75,30 @@ below), but you can install it for FGo! only, using the following steps:
      (assuming you downloaded the tarball as
      ~/src/CondConfigParser-x.y.z.tar.bz2)
 
-  2. Do the same with the FGo! archive:
+  2. Do the same with the FFGo archive:
 
        cd ~/src
-       tar -xzf fgo-a.b.c.tar.gz
+       tar -xzf ffgo-a.b.c.tar.gz
 
-  3. Create a symbolic link to allow FGo! to find CondConfigParser:
+  3. Create a symbolic link to allow FFGo to find CondConfigParser:
 
        ln -s ~/src/CondConfigParser-x.y.z/condconfigparser \
-             ~/src/fgo-a.b.c/condconfigparser
+             ~/src/ffgo-a.b.c/condconfigparser
 
-     (assuming the previous step created the ~/src/fgo-a.b.c directory,
-     leaving the fgo executable script at ~/src/fgo-a.b.c/fgo)
+     (assuming the previous step created the ~/src/ffgo-a.b.c directory,
+     leaving the ffgo executable script at ~/src/ffgo-a.b.c/ffgo)
 
-That's all! You should be able to run the fgo executable mentioned in step 3.
+That's all! You should be able to run the ffgo executable mentioned in step 3.
 In case you need to explicitely specify the Python interpreter to use, you can
 do so with a command such as:
 
-  python3.4 ~/src/fgo-a.b.c/fgo
+  python3.4 ~/src/ffgo-a.b.c/ffgo
 
 
 Standard procedure
 ~~~~~~~~~~~~~~~~~~
 
-This procedure makes you install FGo!'s dependencies in a more standard way,
+This procedure makes you install FFGo's dependencies in a more standard way,
 using pip. Depending on your configuration, the initial setup may be more
 complicated, but once this first step completed, it will make it very easy to
 see when a given dependency is out of date and, if you so desire, to upgrade
@@ -187,9 +178,9 @@ end-user documentation concerning installation of Python modules:
 
   <https://docs.python.org/3/installing/index.html>
 
-(which is not FGo!-specific, but may prove useful anyway)
+(which is not FFGo-specific, but may prove useful anyway)
 
-So, you have a Python installation and want to install FGo! and its
+So, you have a Python installation and want to install FFGo and its
 dependencies to use this installation. The first thing you need to know is how
 to invoke its Python interpreter from a command line. This may be 'python',
 'python3', 'python3.4', or a full path such as '/opt/python3/bin/python',
@@ -328,10 +319,10 @@ one thing that requires paying attention to before doing so:
           % python3 -m venv --system-site-packages foo-venv
 
     Once you have all dependencies installed in your venv, you will want to
-    run FGo! using the Python interpreter from this venv. The most
+    run FFGo using the Python interpreter from this venv. The most
     straightforward way to do this is to run:
 
-      % foo-venv/bin/python /path/to/fgo
+      % foo-venv/bin/python /path/to/ffgo
 
     After checking this works fine, you may want to create an alias for this
     command or a launcher script such as:
@@ -339,13 +330,13 @@ one thing that requires paying attention to before doing so:
       #! /path/to/foo-venv/bin/python
 
       import os, sys
-      os.execv("/path/to/fgo", ["fgo"] + sys.argv[1:])
+      os.execv("/path/to/ffgo", ["ffgo"] + sys.argv[1:])
 
     or an equivalent shell script:
 
       #! /bin/sh
 
-      exec /path/to/foo-venv/bin/python /path/to/fgo "$@"
+      exec /path/to/foo-venv/bin/python /path/to/ffgo "$@"
 
 
 Maintenance of a virtual environment
@@ -363,7 +354,9 @@ Otherwise, you can keep a little script around that contains all commands you
 used to create and populate your venv. Since venv creation is very quick, you
 can rerun the script whenever needed.
 
+
 References:
+
   - Installing Python Modules (official Python documentation)
       <https://docs.python.org/3/installing/index.html>
   - pip home page
@@ -372,3 +365,6 @@ References:
       <https://docs.python.org/3/library/venv.html>
   - 'ensurepip' module of the Python standard library
       <https://docs.python.org/3/library/ensurepip.html>
+
+
+-- Florent Rougon <f.rougon@free.fr>

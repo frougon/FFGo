@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# version.py --- Version information for FGo!
+# version.py --- Version information for FFGo
 #
 # Copyright (c) 2015, Florent Rougon
 #

@@ -29,7 +29,7 @@
 # --prop:/sim/frame-rate-throttle-hz=35
 
 ## Użyj danych ze scenerii. Użyj tej opcji jeżeli źródłem danych o lotniskach
-## dla FGo! została wybrana sceneria.
+## dla FFGo została wybrana sceneria.
 # --prop:/sim/paths/use-custom-scenery-data=true
 
 

@@ -1,4 +1,4 @@
-FGo! is using gettext library to localize its interface. Localization files are
+FFGo is using gettext library to localize its interface. Localization files are
 stored in "data/locale" directory; additionally, other files that can be
 translated are in: "data/config/", "data/help/", and "share/" folders. You are
 very welcome to update/improve existing translation, or add a new one if you
@@ -15,7 +15,7 @@ wish. Even smallest contribution will be appreciated. Here are some helpful
 
   When ready, please send "messages.po", and/or other files at a mail
   address provided at the end of this document. I'll be happy to include you
-  translation in next release of FGo!
+  translation in next release of FFGo
 
 
 
@@ -44,10 +44,10 @@ wish. Even smallest contribution will be appreciated. Here are some helpful
   Note: you may need to install gettext if msgfmt command is not found.
   In Debian based distributions it is found in the gettext package.
 
-  Now you can inspect if changes you have made are properly included in FGo! If
+  Now you can inspect if changes you have made are properly included in FFGo If
   you're happy with the result, please send "messages.po" file at a mail
   address provided at the end of this document. I'll be happy to include you
-  translation in next release of FGo!
+  translation in next release of FFGo
 
   See section 4 for information about other files that can be translated.
 
@@ -82,7 +82,7 @@ wish. Even smallest contribution will be appreciated. Here are some helpful
 
   You can also translate files in the "data/config/" and "data/help/". Content
   from the first directory is shown in Command Line Options Window (the text
-  window at the bottom of the application) at first start of FGo!, and content
+  window at the bottom of the application) at first start of FFGo, and content
   from the second directory is displayed in the help window.
 
   If no file with your language code is present, open file which ends with
@@ -95,7 +95,7 @@ wish. Even smallest contribution will be appreciated. Here are some helpful
   and can be exceeded slightly if appropriate. In many text editors, you can
   enable right margin line which can help you to not exceed this limit.
 
-  Additionally, you may also check if "share/fgo.desktop" has localization for
+  Additionally, you may also check if "share/ffgo.desktop" has localization for
   your language included.
 
 
@@ -106,13 +106,16 @@ wish. Even smallest contribution will be appreciated. Here are some helpful
   the application. Navigate to the $USER_DATA_DIR folder (~/.ffgo on Unix,
   %APPDATA%/FFGo on Windows) and move out,
   or rename temporarily file called "config". It will simulate a situation when
-  FGo! is started the first time. After running the program, it should
+  FFGo is started the first time. After running the program, it should
   automatically pick up translation based on you system settings. If no proper
   translation is found, it should revert to default, English language. If you
   approach any troubles at this point please contact me at a mail address that
   can be found at the end of this file, I will be happy to help you.
 
 
+Thank you for your help!
 
-                                                       Thank you for your help,
-                                             Robert 'erobo' Leda  <erobo@wp.pl>
+
+-- Florent Rougon <f.rougon@free.fr>
+
+(original text by FGo!'s author, Robert 'erobo' Leda)

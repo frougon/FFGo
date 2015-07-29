@@ -1,4 +1,4 @@
-FGo! conditional config documentation
+FFGo conditional config documentation
 =====================================
 
 .. toctree::

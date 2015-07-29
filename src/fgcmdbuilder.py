@@ -18,7 +18,7 @@ import condconfigparser
 class InvalidEscapeSequenceInOptionLine(Exception):
     """Exception raised when an option line contains an invalid escape sequence.
 
-    This happens when the escape sequence is not recognized by FGo!.
+    This happens when the escape sequence is not recognized by FFGo.
 
     """
     def __init__(self, char):

@@ -1,7 +1,11 @@
 #!/usr/bin/env python
 
 
-"""FGo! - a simple GUI launcher for FlightGear Flight Simulator."""
+"""FFGo - a simple GUI launcher for the FlightGear flight simulator.
+
+(forked from FGo!)
+
+"""
 
 
 from .constants import PROGNAME, LOCALE_DIR
@@ -27,10 +31,11 @@ from .gui.mainwindow import App
 
 
 def promptToNotUseCli():
-    message = _("""Usage: fgo
-This program does not use command line options. Edit fgo/data/config/presets
-file if you need to run {prg} with some pre-configuration.""").format(
-        prg=PROGNAME)
+    message = _("""Usage: ffgo
+
+This program does not use command line options for now. Edit the
+data/config/presets file if you need to run {prg} with some pre-configuration.\
+""").format(prg=PROGNAME)
 
     if len(sys.argv) > 1:
         print(message + '\n')

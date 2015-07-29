@@ -1,4 +1,4 @@
-FGo! - Un semplice programma con interfaccia grafica per avviare FlightGear
+FFGo - Un semplice programma con interfaccia grafica per avviare FlightGear
 
 -------------------------------------------------------------------------------
 
@@ -12,12 +12,12 @@ REQUISITI
   modulo ImageTk **
 - Tcl/Tk 8.6
 
-*  FGo! è compatibile solo con Python 3.x.
-** Non è obbligatorio avere questa libreria per utilizzare FGo!, tuttavia
+*  FFGo è compatibile solo con Python 3.x.
+** Non è obbligatorio avere questa libreria per utilizzare FFGo, tuttavia
    senza di essa le miniature degli aerei non verranno visualizzate.
 
 I numeri di versione qui specificati corrispondono al software utilizzato per
-lo sviluppo del programma. È molto probabile che FGo! funzioni anche con
+lo sviluppo del programma. È molto probabile che FFGo funzioni anche con
 versioni precedenti (o successive) ma con esse non è stato testato.
 
 -------------------------------------------------------------------------------
@@ -26,7 +26,7 @@ INSTALLAZIONE
 
 Questo programma non richiede installazione: è sufficiente estrarre l'archivio
 dove si desidera, assicurandosi che il software necessario sia stato installato
-prima che FGo! venga avviato per la prima volta.
+prima che FFGo venga avviato per la prima volta.
 
 In Debian e nelle distribuzioni basate su Debian è necessario che i seguenti
 pacchetti siano installati: python3, python3-tk, tcl8.x e tk8.x; a seconda
@@ -37,7 +37,7 @@ pacchetti preferito; tutte le dipendenze necessarie dovrebbero venire aggiunte
 automaticamente.
 
 Per Slackware e i sistemi compatibili è disponibile uno SlackBuild, con cui è
-possibile generare, a partire dall'archivio originale di FGo!, un pacchetto che
+possibile generare, a partire dall'archivio originale di FFGo, un pacchetto che
 permette un'installazione del programma integrata nel sistema. Lo SlackBuild è
 scaricabile dal sito http://www.slackbuilds.org. Sui sistemi Slackware standard
 (full) non è necessario installare del software supplementare.
@@ -46,14 +46,14 @@ scaricabile dal sito http://www.slackbuilds.org. Sui sistemi Slackware standard
 
 UTILIZZO
 
-Cliccare sul file "fgo" che si trova nella directory principale del programma,
-oppure avviarlo da terminale con il comando "./fgo" o "python3 fgo".
+Cliccare sul file "ffgo" che si trova nella directory principale del programma,
+oppure avviarlo da terminale con il comando "./ffgo" o "python3 ffgo".
 
 -------------------------------------------------------------------------------
 
 CONFIGURAZIONE
 
-Per poter utilizzare FGo! occorre dapprima configurarlo. Aprire la finestra
+Per poter utilizzare FFGo occorre dapprima configurarlo. Aprire la finestra
 delle impostazioni (scegliere "Preferenze" dal menu "Impostazioni") e riempire
 i campi vuoti. Per poter utilizzare il programma è necessario riempire i primi
 tre campi nella sezione "Impostazioni di FlightGear"; il resto è facoltativo.
@@ -97,9 +97,9 @@ Strumenti:
 
 Aiuto:
 
-    Aiuto - apre la finestra della guida di FGo!.
+    Aiuto - apre la finestra della guida di FFGo.
 
-    Informazioni su FGo! - mostra informazioni sul programma.
+    Informazioni su FFGo - mostra informazioni sul programma.
 
 -------------------------------------------------------------------------------
 

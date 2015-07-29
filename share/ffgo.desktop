@@ -1,11 +1,11 @@
 [Desktop Entry]
 Version=1.0
 Type=Application
-Exec=fgo
-Icon=fgo
+Exec=ffgo
+Icon=ffgo
 StartupNotify=false
 Categories=Game;Simulation;Other;
-Name=FGo!
+Name=FFGo
 GenericName=Front-end for FlightGear
 GenericName[de]=Front-End für FlightGear
 GenericName[es]=Lanzador para FlightGear

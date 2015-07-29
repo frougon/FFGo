@@ -1,4 +1,4 @@
-FGo! - A simple GUI launcher for FlightGear.
+FFGo - A simple GUI launcher for FlightGear.
 
 -------------------------------------------------------------------------------
 
@@ -13,10 +13,10 @@ REQUIREMENTS
 - Pillow (PIL fork)*  <http://python-pillow.github.io/>
 - CondConfigParser    <http://people.via.ecp.fr/~flo/projects/CondConfigParser/>
 
-* This library is not mandatory to run FGo! but aircraft thumbnails
+* This library is not mandatory to run FFGo but aircraft thumbnails
   will not be displayed without it.
 
-Note: the home pages of FGo!'s dependencies indicated here are current at the
+Note: the home pages of FFGo's dependencies indicated here are current at the
       time of this writing (July 2015) but might change over time.
 
 -------------------------------------------------------------------------------
@@ -27,21 +27,21 @@ This program requires no installation, just unpack the archive anywhere and
 make sure that all software requirements are met before the first start. If
 you need help for installing these dependencies, you may consult the guide in
 docs/INSTALL. You have to make sure the dependencies are installed for the
-Python interpreter that you are going to use to run FGo!.
+Python interpreter that you are going to use to run FFGo.
 
 -------------------------------------------------------------------------------
 
 RUNNING
 
-Click "fgo" file in the main directory of the program, or run it in a console
-with the "./fgo" or "python3 fgo" command (just use the Python interpreter for
+Click "ffgo" file in the main directory of the program, or run it in a console
+with the "./ffgo" or "python3 ffgo" command (just use the Python interpreter for
 which you installed the dependencies).
 
 -------------------------------------------------------------------------------
 
 CONFIGURATION
 
-In order to use FGo! you need to first set it up. Open preferences window
+In order to use FFGo you need to first set it up. Open preferences window
 (in menu choose: Settings => Preferences) and fill in empty entry fields.
 Filling the first three entries in "FlightGear settings" tab is necessary for
 proper operation of the program - the rest is optional.
@@ -50,7 +50,7 @@ Tip: Hover mouse cursor over any option to see its description.
 
 Changes in "FlightGear settings" tab are applied immediately after clicking on
 "Save Settings" button, however changes in other tabs may require restarting
-FGo! for them to be applied.
+FFGo for them to be applied.
 
 -------------------------------------------------------------------------------
 

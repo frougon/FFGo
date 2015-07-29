@@ -41,18 +41,18 @@ class PassShortcutsToApp:
     App.onControlF_KeyPress(), which is the central place where this
     shortcut is handled.
 
-    This class is used to customize Text and Entry widgets of FGo!'s
+    This class is used to customize Text and Entry widgets of FFGo's
     main window. In other windows (e.g., Preferences), one should use
     standard Tkinter widgets, since Ctrl-F is only supposed to run
     FlightGear when the main window is active.
 
     """
     def __init__(self, app):
-        self.FGoApp = app
+        self.FFGoApp = app
         self.bind('<Control-KeyPress-f>', self.onControlF_KeyPress)
 
     def onControlF_KeyPress(self, event):
-        self.FGoApp.onControlF_KeyPress(event)
+        self.FFGoApp.onControlF_KeyPress(event)
         return "break"
 
 class MyText(Text, PassShortcutsToApp):
@@ -81,8 +81,10 @@ class MyEntry(Entry, PassShortcutsToApp):
 class App:
 
     def __init__(self, master, config):
-        print(_("Using CondConfigParser version {0}").format(
-            condconfigparser.__version__))
+        print(_("{prg_plus_ver} started\n"
+                "Using CondConfigParser {ccp_ver}").format(
+                    prg_plus_ver=NAME_WITH_VERSION,
+                    ccp_ver=condconfigparser.__version__))
         self.master = master
         self.config = config
 
@@ -960,10 +962,10 @@ class App:
         # status (or killing signal)
         outputQueue, statusQueue = queue_mod.Queue(), queue_mod.Queue()
 
-        self.master.bind("<<FGoNewFgfsOutputQueued>>",
+        self.master.bind("<<FFGoNewFgfsOutputQueued>>",
                          functools.partial(self._updateFgfsProcessOutput,
                                            queue=outputQueue))
-        self.master.bind("<<FGoFgfsProcessTerminated>>",
+        self.master.bind("<<FFGoFgfsProcessTerminated>>",
                          functools.partial(self._onFgfsProcessTerminated,
                                            queue=statusQueue))
         t = threading.Thread(name="FG_monitor",
@@ -998,7 +1000,7 @@ class App:
             print(line, end='')
             outputQueue.put(line)
             try:
-                self.master.event_generate("<<FGoNewFgfsOutputQueued>>",
+                self.master.event_generate("<<FFGoNewFgfsOutputQueued>>",
                                            when="tail")
                 # In case Tk is not here anymore
             except TclError:
@@ -1008,7 +1010,7 @@ class App:
         # FlightGear is terminated and all its output has been read
         statusQueue.put(exitStatus)
         try:
-            self.master.event_generate("<<FGoFgfsProcessTerminated>>",
+            self.master.event_generate("<<FFGoFgfsProcessTerminated>>",
                                        when="tail")
         except TclError:
             return
@@ -1289,7 +1291,7 @@ class App:
         """Switch between the various configurations for FGCommand.
 
         The “window” may be shown or hidden, attached to or detached
-        from the FGo! main window (4 possible states in total).
+        from the FFGo main window (4 possible states in total).
 
         """
         self.FGCommand.config(self.config.showFGCommand.get(),
@@ -1299,7 +1301,7 @@ class App:
         """Switch between the various configurations for FGOutput.
 
         The “window” may be shown or hidden, attached to or detached
-        from the FGo! main window (4 possible states in total).
+        from the FFGo main window (4 possible states in total).
 
         """
         self.FGOutput.config(self.config.showFGOutput.get(),
@@ -1310,7 +1312,7 @@ class AttachableToplevel(Toplevel):
     """Class representing a Toplevel window that can be attached/detached.
 
     This class is used to implement Toplevel windows that can be
-    integrated into the main FGo! window. Such a window has four states
+    integrated into the main FFGo window. Such a window has four states
     made from the combination of two “axes” containing two values each:
     visible/hidden and detached/integrated-into-the-main-window.
 
@@ -1319,14 +1321,14 @@ class AttachableToplevel(Toplevel):
     screenshot, but it is important to remember if a window should
     appear detached or integrated when going from hidden to visible.
 
-    When integrated into the FGo! window, the widgets from this class
+    When integrated into the FFGo window, the widgets from this class
     are not used at all: the Toplevel is destroyed. I often use the term
     “window” within double quotes to describe this set of widgets that
     appears to move from a Toplevel to the main window and vice versa.
 
     The geometry of the “window” in its detached state (i.e., as a
     Toplevel) is always stored before it is hidden or integrated into
-    the main window, or when FGo! is exited with “Save & Quit”. This
+    the main window, or when FFGo is exited with “Save & Quit”. This
     way, it can be restored the next time the “window” is shown in
     detached state.
 
@@ -1465,7 +1467,7 @@ class DetachableWindowManagerBase(metaclass=abc.ABCMeta):
         if firstTime:
             # If one wanted to restore the size but not the position,
             # when a “window” is shown in detached state for the first
-            # time in the current FGo! session:
+            # time in the current FFGo session:
             #   window.geometry(mo.group("size"))
             window.geometry(geom)
         else:

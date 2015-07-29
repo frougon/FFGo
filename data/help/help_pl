@@ -1,4 +1,4 @@
-FGo! - Prosty program do uruchamiania symulatora FlightGear.
+FFGo - Prosty program do uruchamiania symulatora FlightGear.
 
 -------------------------------------------------------------------------------
 
@@ -12,12 +12,12 @@ WYMAGANIA
   z modułem ImageTk **
 - Tcl/Tk 8.6
 
-*  FGo! jest kompatybilne tylko z Pythonem 3.x.
+*  FFGo jest kompatybilne tylko z Pythonem 3.x.
 ** Biblioteka ta nie jest wymagana do uruchomienia programu, jednak bez niej
    nie będą wyświetlane miniatury samolotów.
 
 Podane tutaj numery wersji oprogramowania odpowiadają wersjom użytym przy
-tworzeniu programu, jest możliwe, że FGo! będzie działał ze starszymi
+tworzeniu programu, jest możliwe, że FFGo będzie działał ze starszymi
 (lub nowszymi) wydaniami, nie został jednak z nimi przetestowany.
 
 -------------------------------------------------------------------------------
@@ -33,7 +33,7 @@ dystrybucji): python3-pil.imagetk lub python3-imaging-tk. W menadżerze pakietó
 wystarczy wybrać pakiet python3-pil.imagetk lub python3-imaging-tk, reszta
 zależności powinna zostać zainstalowana automatycznie razem z nim.
 
-Dla Slackware i kompatybilnych systemów dostępny jest SlackBuild dla FGo!.
+Dla Slackware i kompatybilnych systemów dostępny jest SlackBuild dla FFGo.
 Skrypt ten generuje pakiet, który pozwala na instalację programu dla całego
 systemu. Można go pobrać na oficjalnej stronie: http://www.slackbuilds.org.
 W standardowym systemie Slackware (full) nie ma potrzeby instalowania
@@ -43,8 +43,8 @@ dodatkowych paczek.
 
 URUCHAMIANIE
 
-Kliknij plik "fgo" w katalogu głównym programu, lub uruchom w konsoli
-poleceniem "./fgo" lub "python3 fgo".
+Kliknij plik "ffgo" w katalogu głównym programu, lub uruchom w konsoli
+poleceniem "./ffgo" lub "python3 ffgo".
 
 -------------------------------------------------------------------------------
 
@@ -57,7 +57,7 @@ pól w zakładce "Ustawienia FlightGear", reszta ustawień jest opcjonalna.
 
 Podpowiedź: Umieść kursor myszy nad elementem aby zobaczyć jego opis.
 
-Zmiany ustawień w zakładce "Ustawienia FlightGear" są uwzględniane przez FGo!
+Zmiany ustawień w zakładce "Ustawienia FlightGear" są uwzględniane przez FFGo
 natychmiast po kliknięciu przycisku "Zapisz ustawienia", zmiany w pozostałych
 zakładkach mogą jednak wymagać ponownego uruchomienia programu.
 
@@ -122,7 +122,7 @@ TIPS&TRICKS
   wybrany samolot) i wybierz któryś z dostępnych okrętów. Kod lotniska
   zostanie zastąpiony nazwą wybranej jednostki i zmieni kolor na niebieski,
   by zaznaczyć, że program znajduje się teraz w trybie wyboru lotniskowca.
-  Dodatkowo, FGo! automatycznie wybierze odpowiedni dla danego okrętu
+  Dodatkowo, FFGo automatycznie wybierze odpowiedni dla danego okrętu
   scenariusz.
   Aby móc z powrotem startować z lotnisk, należy kliknąć nazwę lotniskowca
   i z listy która się ukaże, wybrać opcję "Żaden".
@@ -130,7 +130,7 @@ TIPS&TRICKS
 * Na liście scenariuszy można kliknąć prawym przyciskiem myszki na
   każdym z nich, aby zobaczyć jego opis (o ile opis ten jest dostępny).
 
-* Gdy zostanie użyta opcja "Zapisz i Wyjdź", FGo! zapamięta rozmiar swojego
+* Gdy zostanie użyta opcja "Zapisz i Wyjdź", FFGo zapamięta rozmiar swojego
   okna.
 
 -------------------------------------------------------------------------------

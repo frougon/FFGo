@@ -1,4 +1,4 @@
-# Makefile to prepare the FGo! directory tree after a "git clone" operation
+# Makefile to prepare the FFGo directory tree after a "git clone" operation
 #
 # Copyright (C) 2015  Florent Rougon
 # License: DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE version 2, dated
@@ -28,13 +28,13 @@ doc:
 version := $(shell PYTHONPATH="src:$$PYTHONPATH" python -c \
                    'from version import __version__; print(__version__)')
 dist: doc
-	git archive --format=tar -o dist/fgo-$(version).tar master
+	git archive --format=tar -o dist/ffgo-$(version).tar master
 	mkdir -p docs/README.conditional-config
 	cp -a docs/README.conditional-config.source/_build/html \
           docs/README.conditional-config/en
-	tar --append --file=dist/fgo-$(version).tar \
+	tar --append --file=dist/ffgo-$(version).tar \
           docs/README.conditional-config
-	gzip -9 --force dist/fgo-$(version).tar
+	gzip -9 --force dist/ffgo-$(version).tar
 
 clean:
 	$(MAKE) -C share/icons clean && \
