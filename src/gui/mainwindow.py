@@ -99,7 +99,7 @@ class App:
         self.menubar = Menu(self.master)
 
         self.filemenu = Menu(self.menubar, tearoff=0)
-        self.filemenu.add_command(label=_('Load'), command=self.configLoad)
+        self.filemenu.add_command(label=_('Load...'), command=self.configLoad)
         self.filemenu.add_command(label=_('Reload config file'),
                                   accelerator=_('Ctrl-R'), command=self.reset)
         self.filemenu.add_command(label=_('Save as...'),
