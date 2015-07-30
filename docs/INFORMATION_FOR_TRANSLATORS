@@ -1,78 +1,88 @@
-FFGo is using gettext library to localize its interface. Localization files are
-stored in "data/locale" directory; additionally, other files that can be
-translated are in: "data/config/", "data/help/", and "share/" folders. You are
-very welcome to update/improve existing translation, or add a new one if you
-wish. Even smallest contribution will be appreciated. Here are some helpful
-(I hope) tips:
+FFGo uses the gettext library to localize its interface. Localization files
+are stored in the "data/locale" directory; additionally, other files that can
+be translated are in the "data/config/", "data/help/" and "share/" folders.
+You are very welcome to update/improve existing translations, or add a new one
+if you wish. Even the smallest contribution will be appreciated. Here are some
+helpful (I hope) tips:
 
 
 
 1. IF YOU ARE FAMILIAR WITH GETTEXT AND WOULD LIKE TO CONTRIBUTE A NEW, OR
    MODIFY AN EXISTING TRANSLATION:
 
-  Localization files are in "data/locale" directory. See section 4 for
+  Localization files are in the "data/locale" directory. See section 4 for
   information about other files that can be translated.
 
-  When ready, please send "messages.po", and/or other files at a mail
-  address provided at the end of this document. I'll be happy to include you
-  translation in next release of FFGo
+  When ready, please send "messages.po", and/or other files to a mail address
+  provided at the end of this document. I'll be happy to include your
+  translation in the next release of FFGo.
 
 
 
-2. IF YOU LIKE TO MODIFY EXISTING TRANSLATION BUT NEVER TRANSLATED
+2. IF YOU'D LIKE TO MODIFY AN EXISTING TRANSLATION BUT NEVER TRANSLATED
    AN APPLICATION BEFORE:
 
   Don't worry, it is quite simple. All you need to do is to edit a
-  "messages.po" file located in "data/locale/LANGUAGE_CODE/LC_MESSAGES"
+  "messages.po" file located in a "data/locale/LANGUAGE_CODE/LC_MESSAGES"
   directory. You can do this by using any text editor, but using dedicated
-  software (e.g. Poedit, Virtaal, or Emacs) is more convenient and less
-  error-prone way to edit a PO file. Translation process itself is
+  software (e.g. Poedit, Virtaal, or Emacs) is a more convenient and less
+  error-prone way to edit a PO file. The translation process itself is
   straightforward and you should have no trouble with the task at all. One
-  thing to remember however, is to include in your translation all "%s", "{0}",
-  or "{1}" formatting characters from the original text. It is a placeholder
-  for some values to be displayed on screen, and its absence can lead to crash
-  of the application.
+  thing to remember, however, is to include in your translation all "%s",
+  "{0}", "{1}", "{foobar}", etc. formatting substrings from the original text.
+  These are placeholders for some values to be displayed on screen, and their
+  absence could lead to crashes of the application.
 
-  When you're happy with the changes you made to PO file, one last thing to do,
-  is to generate new "messages.mo" file, which is actually used by the program
-  to show translated messages. Some editors have option to generate it for you
-  automatically - if not, you need to do it manually. To do this, open console,
-  navigate to folder containing "messages.po" file and run this command:
+  When you're happy with the changes you made to a PO file, one last thing to
+  do is to generate a new "messages.mo" file from the .po file.
+  "data/locale/LANGUAGE_CODE/LC_MESSAGES/messages.mo" is the file that will
+  actually used by the program to show translated messages in the language
+  identified by LANGUAGE_CODE. Some editors have option to automatically
+  generate it for you. If not, you'll have to do it manually. To do this, open
+  a terminal emulator, navigate to folder containing the "messages.po" file
+  corresponding to the language you are translating for, and run this command:
 
-  msgfmt messages.po
+    msgfmt messages.po
 
-  Note: you may need to install gettext if msgfmt command is not found.
-  In Debian based distributions it is found in the gettext package.
+  Alternatively, if you are running FFGo directly from an unpacked tarball or
+  zip file, or from a clone of the Git repository, you may run
+  'make l10n_files' from the top-level distribution directory (the one
+  containing the 'ffgo' script). This method requires GNU Make in addition to
+  'msgfmt'.
 
-  Now you can inspect if changes you have made are properly included in FFGo If
-  you're happy with the result, please send "messages.po" file at a mail
-  address provided at the end of this document. I'll be happy to include you
-  translation in next release of FFGo
+  Note: you may need to install gettext if the 'msgfmt' command is not found.
+        In Debian-based distributions, it is found in the gettext package.
+
+  Now you can inspect if the changes you have made are properly included in
+  FFGo. If you're happy with the result, please send the "messages.po" file to
+  a mail address provided at the end of this document. I'll be happy to
+  include your translation in next release of FFGo.
 
   See section 4 for information about other files that can be translated.
 
 
 
-3. IF YOU LIKE TO ADD NEW TRANSLATION BUT NEVER TRANSLATED AN APPLICATION
+3. IF YOU'D LIKE TO ADD A NEW TRANSLATION BUT NEVER TRANSLATED AN APPLICATION
    BEFORE:
 
-  First you need to create a new folder in "data/locale" directory. This new
-  folder should have the same name as language code for your language. Some of
-  most common examples of language codes can be found here:
-  http://www.gnu.org/software/hello/manual/gettext/Usual-Language-Codes.html.
-  Next, navigate to this newly created directory and create "LC_MESSAGES"
-  folder. Rest of the translation process is the same as described in
-  section 2, with one exception: you should edit "messages.pot" file in
-  "data/locale" directory, and then save it as "messages.po" into created
-  by you folder.
+  First, you need to create a new folder in the "data/locale" directory. The
+  name of this new folder should be the ISO 639-1 code for your language. Some
+  common language codes according to this standard can be found here:
+  <http://www.gnu.org/software/hello/manual/gettext/Usual-Language-Codes.html>.
+  Then, navigate to this newly created directory and create an "LC_MESSAGES"
+  folder. The rest of the translation process is the same as described in
+  section 2, with one exception: you should edit the "messages.pot" file
+  located in the "data/locale" directory, and then save it as "messages.po"
+  into the folder you created.
 
-  At the end open "messages.po" file with a simple text editor and edit some
+  At the end, open "messages.po" with a simple text editor and edit some
   comments:
 
-    * At the first line, replace word LANGUAGE with actual name of your language.
+    * in the first line, replace the word LANGUAGE with the actual name of
+      your language.
 
-    * At the fourth line, provide your personal data (if you wish of course) as
-      you are the first author of this translation.
+    * in the fourth line, provide your personal data (if you wish of course),
+      as you are the first author of this translation.
 
   See section 4 for information about other files that can be translated.
 
@@ -80,37 +90,45 @@ wish. Even smallest contribution will be appreciated. Here are some helpful
 
 4. SOME ADDITIONAL TEXT TO TRANSLATE:
 
-  You can also translate files in the "data/config/" and "data/help/". Content
-  from the first directory is shown in Command Line Options Window (the text
-  window at the bottom of the application) at first start of FFGo, and content
-  from the second directory is displayed in the help window.
+  You can also translate files in the "data/config/" and "data/help/"
+  directories. Contents from the first directory is shown in the “Options
+  window[1]” at first start of FFGo, and contents from the second directory is
+  displayed in the help window.
 
-  If no file with your language code is present, open file which ends with
-  "en", and save it replacing "en" suffix with your language code - which is
-  the same as the name of directory with your translation in "data/locale".
+  [1] The text window at the left of the application main window, right below
+      the fgfs status indication---which reads “Ready” when FlightGear is not
+      running.
 
-  Please take a note that no line in these files should have more than 79
-  characters. In case of the help file it is mandatory to stay within that
-  79 characters limit, while in case of the config it is only a general advice
-  and can be exceeded slightly if appropriate. In many text editors, you can
-  enable right margin line which can help you to not exceed this limit.
+  If no file with your language code is present, open the file which ends with
+  "en", and save it the replacing "en" suffix with your language code---which
+  is the same as the name of the directory containing your translations in
+  "data/locale".
 
-  Additionally, you may also check if "share/ffgo.desktop" has localization for
-  your language included.
+  Please note that no line in these files should have more than 79 characters.
+  In the case of the help file, it is mandatory to stay within that 79
+  characters limit, while in the case of the config, it is only a general
+  advice and can be slightly exceeded if appropriate. In many text editors,
+  you can enable a right margin line which can help you not to exceed this
+  limit.
+
+  Additionally, you may also check:
+    - if "share/ffgo.desktop" has localization for your language included;
+    - if there are files under the "docs" directory that you would like to
+      translate.
 
 
 
 5. TESTING YOUR TRANSLATION:
 
-  When translation is ready, you can test if all text is properly displayed in
-  the application. Navigate to the $USER_DATA_DIR folder (~/.ffgo on Unix,
-  %APPDATA%/FFGo on Windows) and move out,
-  or rename temporarily file called "config". It will simulate a situation when
-  FFGo is started the first time. After running the program, it should
-  automatically pick up translation based on you system settings. If no proper
-  translation is found, it should revert to default, English language. If you
-  approach any troubles at this point please contact me at a mail address that
-  can be found at the end of this file, I will be happy to help you.
+  When your translation is ready, you can test if all the text is properly
+  displayed in the application. Navigate to the $USER_DATA_DIR folder (~/.ffgo
+  on Unix, %APPDATA%/FFGo on Windows) and move out, or temporarily rename the
+  file called "config". This will simulate the situation where FFGo is started
+  for the first time. When started, the program should automatically pick
+  up a translation based on you system settings. If no proper translation is
+  found, it should revert to the default: the English language. If you
+  encounter any trouble at this point, please contact me at the email address
+  that can be found at the end of this file, I will be happy to help you.
 
 
 Thank you for your help!

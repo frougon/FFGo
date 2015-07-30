@@ -1,14 +1,37 @@
-FFGo - A simple GUI launcher for FlightGear.
+FFGo -- A powerful graphical launcher for FlightGear
+
+-------------------------------------------------------------------------------
+
+This software is a fork of the FGo![1] program written by Robert 'erobo'
+Leda, see HISTORY below for details.
+
+  [1] https://sites.google.com/site/erobosprojects/flightgear/add-ons/fgo
+
+
+Contents
+
+  Requirements
+  Installation
+  Running
+  Note For FGo! Users
+  Configuration
+  Main Menu Items
+  Command Line Options Window
+  Command Window
+  Output Window
+  Tips & Tricks
+  Known Bugs And Limitations
+  History
 
 -------------------------------------------------------------------------------
 
 REQUIREMENTS
 
 - Unix-like operating system (e.g, GNU/Linux)
-  (Windows and MacOS X untested)
+  (Windows and MacOS X untested, feedback welcome)
 - FlightGear          <http://www.flightgear.org>
 - Python 3.4 or later <https://www.python.org>
-- Tkinter (often known as python-tk or python3-tk in Linux package managers)
+- Tkinter (often known as python3-tk or python-tk in Linux package managers)
                       <https://docs.python.org/3/library/tkinter.html>
 - Pillow (PIL fork)*  <http://python-pillow.github.io/>
 - CondConfigParser    <http://people.via.ecp.fr/~flo/projects/CondConfigParser/>
@@ -16,41 +39,65 @@ REQUIREMENTS
 * This library is not mandatory to run FFGo but aircraft thumbnails
   will not be displayed without it.
 
-Note: the home pages of FFGo's dependencies indicated here are current at the
-      time of this writing (July 2015) but might change over time.
+Note: the home pages of FFGo's dependencies indicated here are current
+      at the time of this writing (July 2015) but might change over
+      time.
 
 -------------------------------------------------------------------------------
 
 INSTALLATION
 
-This program requires no installation, just unpack the archive anywhere and
-make sure that all software requirements are met before the first start. If
-you need help for installing these dependencies, you may consult the guide in
-docs/INSTALL. You have to make sure the dependencies are installed for the
-Python interpreter that you are going to use to run FFGo.
+This program requires no installation, just unpack the archive anywhere
+and make sure that all software requirements are met before the first
+start. If you need help for installing these dependencies, you may
+consult the guide in docs/INSTALL. You have to make sure the
+dependencies are installed for the Python interpreter that you are going
+to use to run FFGo.
 
 -------------------------------------------------------------------------------
 
 RUNNING
 
-Click "ffgo" file in the main directory of the program, or run it in a console
-with the "./ffgo" or "python3 ffgo" command (just use the Python interpreter for
-which you installed the dependencies).
+Click on the "ffgo" file in the top-level directory obtained after
+unpacking the tarball, or run it from a terminal with a command such as
+"./ffgo" or "python3 ffgo". Just make sure you are running "ffgo" with
+the Python interpreter for which you installed the dependencies.
+
+-------------------------------------------------------------------------------
+
+NOTE FOR FGo! USERS
+
+Except in rather unlikely cases[1], a configuration file (normally
+~/.fgo/config) written by FGo! 1.5.5 or earlier should be usable as is
+by FFGo, except that FFGo expects its configuration file in
+~/.ffgo/config (%APPDATA%/FFGo/config on Windows). If FFGo finds a
+~/.fgo/config file on startup but no ~/.ffgo/config, it will offer you
+to copy the former to the latter, effectively basing your new FFGo
+configuration on your existing FGo! configuration.
+
+  [1] Such as having things like '\#' or '\[' in your Command Line
+      Options window; or lines beginning with '['; or '{' at the very
+      beginning of the text contained in this window.
+
+FFGo offers advanced possibilities based on variables and boolean
+expressions to describe the argument list to pass to FlightGear. You can
+read about them in docs/README.conditional-config.
 
 -------------------------------------------------------------------------------
 
 CONFIGURATION
 
-In order to use FFGo you need to first set it up. Open preferences window
-(in menu choose: Settings => Preferences) and fill in empty entry fields.
-Filling the first three entries in "FlightGear settings" tab is necessary for
-proper operation of the program - the rest is optional.
+In order to use FFGo, you need to first set it up. Open the preferences
+window (in menu choose: Settings => Preferences) and fill in the empty
+entry fields. Filling the first three entries in the "FlightGear
+settings" tab is necessary for proper operation of the program---the
+rest is optional.
 
-Tip: Hover mouse cursor over any option to see its description.
+Tip: Hover the mouse pointer over any option to see its description.
 
-Changes in "FlightGear settings" tab are applied immediately after clicking on
-"Save Settings" button, however changes in other tabs may require restarting
-FFGo for them to be applied.
+Changes in the "FlightGear settings" tab are applied immediately after
+clicking on "Save Settings" button, however changes in other tabs may
+require restarting FFGo for them to be applied.
 
 -------------------------------------------------------------------------------
 
@@ -58,67 +105,156 @@ MAIN MENU ITEMS
 
 File:
 
-    Load - load specified config file.
+    Load...     -- load the specified config file
 
-    Save as... - save settings to specified config file.
+    Reload config file -- reload FFGo's configuration file (~/.ffgo/config
+                   on Unix-like systems, %APPDATA%/FFGo/config on Windows)
 
-    Save & Quit - save settings and quit the application.
+    Save as...  -- save settings to the specified config file
 
-    Quit - quit the application.
+    Run FlightGear -- self-explanatory; same effect as the "Run FG" button
+
+    Save & Quit -- save settings and quit the application
+
+    Quit        -- quit the application
 
 Settings:
 
-    Show installed airports only - only airports present in scenery actually
-        installed on the hard drive will be shown on the airport list.
+    Show installed airports only -- only airports present in scenery
+                   actually installed on the hard drive will be shown in the
+                   airport list.
 
-    Update list of installed airports - scan hard drive for installed scenery
-        and update the airport list. It works only if "Show installed airports
-        only" is selected.
+    Update list of installed airports -- scan hard drive for installed
+                   scenery and update the airport list. It works only if
+                   "Show installed airports only" is selected.
 
-    Preferences - open preferences window.
+    ========================== Four check buttons ==========================
+
+    Show FlightGear arguments -- show or hide the Command Window (see below)
+
+    Show FlightGear arguments in separate window -- detach from, or reattach
+                   to the main window, the Command Window
+
+    Show FlightGear output -- show or hide the window gathering FlightGear's
+                   output on stdout and stderr (“Output Window”, see below)
+
+    Show FlightGear output in separate window -- detach from, or reattach to
+                   the main window, the Output Window
+
+    ========================================================================
+
+    Preferences -- open the preferences window
 
 Tools:
 
-    METAR - show METAR report for selected (or nearest) airport. These reports
-        are downloaded from http://weather.noaa.gov/
+    METAR       -- show METAR report for the selected (or nearest) airport.
+                   These reports are downloaded from
+                   http://weather.noaa.gov/
 
 Help:
 
-    Help - open "Help" window.
+    Help        -- open the "Help" window
 
-    About - open "About" window.
+    About       -- open the "About" window
 
 -------------------------------------------------------------------------------
 
 COMMAND LINE OPTIONS WINDOW
 
-In text window at the bottom, you can write command line options that will be
-passed to FlightGear.
+In the text window at the left of the main window, right below the fgfs
+status indicator[1], you can write any arguments for FlightGear
+(“command line options”) that will be passed to 'fgfs', the FlightGear
+executable. You should write each argument on a line of its own. Blank
+lines are ignored, comments are started with '#', cf.
+docs/README.conditional-config for details.
 
-Few options are provided by default, for more examples consult FlightGear
-documentation or check Wiki at:
-http://wiki.flightgear.org/index.php/Command_Line_Options
+  [1] Which is green and reads “Ready” when FlightGear is not running.
+
+Few options are provided by default, for more examples consult the
+FlightGear documentation or check the Wiki at:
+
+  http://wiki.flightgear.org/index.php/Command_Line_Options
+
+The complete list of options understood by your FlightGear version can
+be obtained with the following command:
+
+  fgfs --help --verbose
+
+('fgfs --help --verbose | less' should allow you to scroll through the
+multiple pages of output; type 'q' to quit the 'less' program)
+
+FFGo offers advanced possibilities based on variables and boolean
+expressions to describe the argument list to pass to FlightGear. You can
+read about them in docs/README.conditional-config.
 
 -------------------------------------------------------------------------------
 
-TIPS&TRICKS
+COMMAND WINDOW
 
-* If airport data source was set to "Scenery", then information about
-  airport's park positions may not be available until corresponding scenery
-  is installed.
+This window, normally located at the bottom of the FFGo main window,
+indicates in real time which exact arguments will be passed to 'fgfs' if
+the "Run FG" button is pressed (i.e., after evaluation of the conditions
+allowed by CondConfigParser, that you may have included in the Command
+Line Options window). The contents of this window is updated every time
+you change the aircraft, airport, parking position, etc. as well as
+after every change in the Command Line Options window.
 
-* You can start a flight from an aircraft carrier. In the middle panel click on
-  current airport ICAO code (right under aircraft picture) and choose one from
-  available ships. ICAO code will then change to selected ship's name,
-  and will be highlighted blue to indicate that you're now in "carrier mode".
-  Corresponding scenario will be selected automatically.
-  To be able to choose airports again, you need to click on carrier name,
-  and from pop-up list select "None".
+The Command Window can be detached from the main window, reattached to
+it or completely hidden. This can be done from the Settings menu. The
+current setting, as well as the geometry of the window if it is
+detached, are saved when choosing "Save & Quit".
 
-* In "Select Scenario" list, you can right click on any scenario to see its
-  description (if available).
+-------------------------------------------------------------------------------
 
-* Window dimensions are saved when "Save & Quit" button is clicked.
+OUTPUT WINDOW
+
+The main text box in this window contains FlightGear's output on stdout
+and stderr. It is updated in real time and can be useful to file bug
+reports to FlightGear.
+
+The "Save Log" button allows one to save the entire output of the last
+FlightGear run to a file of your choice.
+
+The "Open Log Directory" button is just a shortcut to open the default
+log directory in a file manager. This is done with the 'xdg-open'
+command to allow you to configure the file manager of your choice.
+
+The Output Window can be detached from the main window, reattached to it
+or completely hidden. This can be done from the Settings menu. The
+current setting, as well as the geometry of the window if it is
+detached, are saved when choosing "Save & Quit".
+
+-------------------------------------------------------------------------------
+
+TIPS & TRICKS
+
+* If the airport data source is set to "Scenery", then information about
+  airports parking positions may not be available until the
+  corresponding scenery is installed.
+
+* For serious editing of the configuration, the builtin text widget in
+  the FFGo interface may not be as convenient as a real text editor
+  (Emacs, Vim, etc.). But you can perfectly use your favorite text
+  editor on the configuration file (~/.ffgo/config on Unix-like systems,
+  %APPDATA%/FFGo/config on Windows)! The only thing to remember in this
+  case is to choose “Reload config file” (Ctrl-R) in FFGo before doing
+  any other action (such as “Run FG” or “Save & Quit”) that saves the
+  in-memory configuration to the config file. Otherwise, you may lose
+  the changes to the config file made in-between outside FFGo.
+
+* You can start a flight from an aircraft carrier. In the middle panel
+  click on the current airport ICAO code (right under the aircraft
+  picture) and choose one from the available ships. The ICAO code will
+  then change to the selected ship's name, and will be highlighted in
+  blue to indicate that you're now in "carrier mode". The corresponding
+  scenario will be automatically selected. To be able to choose airports
+  again, you need to click on the carrier name, and from the pop-up list
+  select "None".
+
+* In the "Select Scenario" list, you can right click on any scenario to
+  see its description (if available).
+
+* Window dimensions are saved when the "Save & Quit" button is clicked.
 
 -------------------------------------------------------------------------------
 
@@ -128,5 +264,40 @@ KNOWN BUGS AND LIMITATIONS
 
 -------------------------------------------------------------------------------
 
+HISTORY
+
+This software is a fork of the FGo![1] program written by Robert 'erobo'
+Leda <erobo@wp.pl>. The original intent was not to fork but to improve
+FGo!, however enough time has passed with interesting new features
+working and no public release that I (Florent Rougon) finally decided to
+publish the improved version so as to allow other people to benefit from
+this work. After sending many patches written for FGo!, I changed the
+name of the program to FFGo in order to avoid spreading confusion among
+users, and released the code.
+
+  [1] https://sites.google.com/site/erobosprojects/flightgear/add-ons/fgo
+
+At the origin of this work, there is Robert's port of FGo! 1.5.5 to
+Python 3. I had proposed to do it in 2014 as a base for my project of
+conditional configuration parsing for FGo!, but Robert was kind enough
+to do all the porting himself and send it to me by private email. This
+allowed me to integrate my developments, starting with the addition of
+CondConfigParser support. I set up a private Git repository to ease
+collaboration with Robert, developed new features in it, integrated
+Robert's proof of concept for the Command and Output windows, improved
+upon it, etc. and now, this repository is public and used for FFGo
+development.
+
+-------------------------------------------------------------------------------
+
+
                                              Thank you for using this software,
-                                             Robert 'erobo' Leda  <erobo@wp.pl>
+                                             Florent Rougon <f.rougon@free.fr>
+
+                                             (original text by FGo!'s author,
+                                             Robert 'erobo' Leda)
+
+Local Variables:
+coding: utf-8
+fill-column: 72
+End:
