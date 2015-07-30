@@ -28,6 +28,7 @@ except ImportError:
     print ('[{prg} Warning] PIL library not found. Aircraft thumbnails '
            'will not be displayed.'.format(prg=PROGNAME), file=sys.stderr)
 
+from .tooltip import ToolTip
 from .metar import Metar
 from .configwindow import ConfigWindow
 from ..constants import *
@@ -290,8 +291,11 @@ class App:
                                 command=self.saveAndQuit)
         self.sq_button.pack(side='left')
 
-        self.reset_button = Button(self.frame41, text=_('Reset'), width=10,
-                                   command=self.reset)
+        self.reset_button = Button(self.frame41, text=_('Reload config'),
+                                   width=10, command=self.reset)
+        ToolTip(self.reset_button,
+                _("Reload the configuration file ({cfg_file})").format(
+                    cfg_file=CONFIG))
         self.reset_button.pack(side='left')
 
         self.run_button = Button(self.frame41, text=_('Run FG'), width=10,
