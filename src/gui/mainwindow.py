@@ -105,6 +105,9 @@ class App:
         self.filemenu.add_command(label=_('Save as...'),
                                   command=self.configSave)
         self.filemenu.add_separator()
+        self.filemenu.add_command(label=_('Run FlightGear'),
+                                  accelerator=_('Ctrl-F'), command=self.runFG)
+        self.filemenu.add_separator()
         self.filemenu.add_command(label=_('Save & Quit (Ctrl-Q)'),
                                   command=self.saveAndQuit)
         self.filemenu.add_command(label=_('Quit'), command=self.quit)
