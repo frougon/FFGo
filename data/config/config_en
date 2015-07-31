@@ -1,36 +1,52 @@
-## List of command line options. Enable options you want to use by removing
-## hash symbol at the beginning of appropriate line.
-
-## NETWORK OPTIONS
-## Start FlightGear with multiplayer enabled. Replace MPSERVER_ADDRESS with
-## valid server address. For list of available servers and more information
-## about the subject, check http://wiki.flightgear.org/Howto:Multiplayer
-# --multiplay=out,10,MPSERVER_ADDRESS,5000
-
-## Enter your callsign. Note that it's currently limited to seven characters.
-## Check this page http://fgfs.i-net.hu/modules/fgtracker/ to see whether
-## your callsign is already in use or not.
-# --callsign=
-
-## ENVIRONMENT OPTIONS
-## Fetch weather information from the web.
-# --enable-real-weather-fetch
+## List of 'fgfs' command line options. Enable the options you want to use by
+## removing the hash symbol at the beginning of the appropriate lines.
 
 ## RENDERING OPTIONS
-## Specify FlightGear's window geometry.
-# --geometry=800x600
-
 ## Enable fullscreen mode.
 # --enable-fullscreen
 
+## Specify the geometry of FlightGear's window (no need to specify it if you
+## use --enable-fullscreen).
+# --geometry=800x600
+
+## MULTIPLAYER-MODE OPTIONS
+## Start FlightGear with multiplayer mode enabled. Replace MPSERVER_ADDRESS
+## with a valid server address. For a list of available servers and more
+## information about the subject, check
+## <http://wiki.flightgear.org/Howto:Multiplayer>
+# --multiplay=out,10,MPSERVER_ADDRESS,5000
+
+## Enter your callsign. Note that it's currently limited to seven characters.
+## Please don't choose a callsign already in use by someone else on the
+## multiplayer network.
+# --callsign=
+
 ## OTHER
-## Limit fps to specified number.
+## Enable automatic scenery download as you fly:
+#--enable-terrasync
+
+## If you want to choose the directory used for automatic scenery download:
+#--terrasync-dir=/path/to/the/folder/of/your/choice
+
+## You can choose the start time of day for your flight.
+#--timeofday=noon
+
+## Summer and winter use different textures.
+#--season=summer
+
+## You may find the 2D Head-Up Display more readable than the 3D one.
+## cf. <http://wiki.flightgear.org/Head-up_display>.
+#--disable-hud-3d
+
+## Limit fps to the specified number.
 # --prop:/sim/frame-rate-throttle-hz=35
 
-## Use custom scenery data. Useful if e.g. airport data source is set to scenery.
+## Use custom scenery data. Useful if, e.g., the airport data source is set to
+## scenery.
 # --prop:/sim/paths/use-custom-scenery-data=true
 
-
-## More information about command line options
-## can be found in the FlightGear documentation, or at
-## http://wiki.flightgear.org/index.php/Command_Line_Options
+## More information about 'fgfs' (FlightGear) command line options
+## can be found:
+##   - with the command 'fgfs --help --verbose';
+##   - in the FlightGear documentation;
+##   - or at <http://wiki.flightgear.org/index.php/Command_Line_Options>.
