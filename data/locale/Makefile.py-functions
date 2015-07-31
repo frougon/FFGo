@@ -1,0 +1,76 @@
+# Makefile snippet for updating localization files
+#
+# Copyright (C) 2015  Florent Rougon
+# License: DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE version 2, dated
+#          December 2004
+
+PROGNAME := FFGo
+PROGVERSION := $(shell PYTHONPATH="../../src:$$PYTHONPATH" python -c \
+                       'from version import __version__; print(__version__)')
+
+# Longish function compared to a sed one-liner, but:
+#   - it checks that the PO file has an encoding declaration and that its
+#     encoding is consistent with this declaration;
+#   - it allows to (relatively) cleanly do advanced checking and processing
+#     on the PO files;
+#   - it doesn't introduce a new dependency that is not commonly installed
+#     on OSes such as Windows (I may replace all Makefiles with Python code,
+#     and these functions are one step in that direction).
+
+define check_and_replace_po_metadata
+import sys, os, re, tempfile
+
+poFilePath = sys.argv[1]
+
+with open(poFilePath, "rb") as poFile:
+    for line in poFile:
+        mo = re.match(
+            rb'"Content-Type: text/plain; charset=([0-9a-zA-Z_-]+)\\n"$$',
+            line)
+        if mo:
+            encoding = mo.group(1).decode("ascii")
+            break
+    else:
+        sys.exit("Unable to determine the encoding of {!r}".format(poFilePath))
+
+try:
+    with open(poFilePath, "r", encoding=encoding) as poFile, \
+         tempfile.NamedTemporaryFile(
+             mode='w', encoding=encoding, prefix='tmp.update-metadata.',
+             dir=os.path.dirname(poFilePath), delete=False) as tmpFile:
+        for line in poFile:
+            if re.match(r'^"Project-Id-Version: .*"\s*$$', line):
+                tmpFile.write(
+                    '"Project-Id-Version: $(PROGNAME) $(PROGVERSION)\\n"\n')
+            else:
+                tmpFile.write(line)
+
+    os.replace(tmpFile.name, poFilePath)
+finally:
+    if os.path.isfile(tmpFile.name):
+        os.unlink(tmpFile.name)
+
+sys.exit(0)
+endef
+
+
+define replace_pot_metadata
+import sys, re, textwrap
+
+while True:
+    line = sys.stdin.readline()
+    if re.match("^# *$$", line):
+        break
+    elif not line:
+        sys.exit("gettext-generated header not found")
+
+print(textwrap.indent(
+      """LANGUAGE translations for $(PROGNAME) version $(PROGVERSION).
+$(POT_COPYRIGHT)
+Copyright (C) YEARS  TRANSLATOR <EMAIL@ADDRESS>
+This file is distributed under the same license as the $(PROGNAME) package.""",
+      "# ") + "\n#")
+
+sys.stdout.write(sys.stdin.read())
+sys.exit(0)
+endef
