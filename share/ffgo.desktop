@@ -1,10 +1,11 @@
 [Desktop Entry]
 Version=1.0
 Type=Application
+Keywords=FlightGear;fgfs;flight;simulator;sim
 Exec=ffgo
 Icon=ffgo
-StartupNotify=false
-Categories=Game;Simulation;Other;
+Terminal=false
+Categories=Game;Simulation
 Name=FFGo
 GenericName=Front-end for FlightGear
 GenericName[de]=Front-End für FlightGear
