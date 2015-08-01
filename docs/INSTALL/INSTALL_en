@@ -6,6 +6,7 @@ Contents
   2. Manual installation
     a) Easiest procedure
     b) Standard procedure
+  3. Installation from the Git repository
 
   Appendices
 
@@ -365,6 +366,42 @@ References:
       <https://docs.python.org/3/library/venv.html>
   - 'ensurepip' module of the Python standard library
       <https://docs.python.org/3/library/ensurepip.html>
+
+-------------------------------------------------------------------------------
+
+INSTALLATION FROM THE GIT REPOSITORY
+
+First, make sure you have the following programs installed in addition to the
+dependencies listed in the README_ll file (where 'll' stands for the language
+code of your choice):
+  - GNU Make
+  - GNU gettext
+  - librsvg's rsvg-convert program
+
+Then download the source code:
+
+  cd /some/directory
+  git clone https://github.com/frougon/FFGo.git
+
+(alternatively, you may download a Zip-compressed snapshot of the repository
+by clicking on "Download ZIP" at <https://github.com/frougon/FFGo>)
+
+Then prepare the source (icons and translation files) with:
+
+  cd FFGo
+  make
+
+This 'make' run in the top-level directory must be done after each 'git clone'
+or 'git pull' operation. From this point on, you can follow the instructions
+given in the MANUAL INSTALLATION section.
+
+Optional: if you have Sphinx installed and want to generate the HTML version
+          of the 'README.conditional-config' document, you can run:
+
+            make doc
+
+          from the same (top-level) directory. The result will end up in
+          'docs/README.conditional-config.source/_build/html'.
 
 
 -- Florent Rougon <f.rougon@free.fr>
