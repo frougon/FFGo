@@ -1,0 +1,9 @@
+thumbnail.xcf was created by Florent Rougon from scratch with GIMP. It is
+distributed under the following terms:
+
+  Copyright (C) 2015  Florent Rougon
+  License: DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE version 2, dated
+           December 2004
+
+thumnail.jpg is derived from thumbnail.xcf by simple conversion. It is
+distributed under the same terms as thumbnail.xcf.
