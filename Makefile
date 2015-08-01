@@ -27,13 +27,16 @@ doc:
 
 version := $(shell PYTHONPATH="src:$$PYTHONPATH" python -c \
                    'from version import __version__; print(__version__)')
+SIZES := 16 24 32 48 64 128 256
+
 dist: doc
 	git archive --format=tar -o dist/ffgo-$(version).tar master
 	mkdir -p docs/README.conditional-config
 	cp -a docs/README.conditional-config.source/_build/html \
           docs/README.conditional-config/en
 	tar --append --file=dist/ffgo-$(version).tar \
-          docs/README.conditional-config
+          docs/README.conditional-config \
+          $(foreach size,$(SIZES),share/icons/$(size)x$(size)/ffgo.png)
 	gzip -9 --force dist/ffgo-$(version).tar
 
 clean:
