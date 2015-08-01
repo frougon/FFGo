@@ -1,0 +1,12 @@
+ffgo.svg was created by Florent Rougon with Inkscape, from the following
+openclipart icon:
+
+  https://openclipart.org/detail/190981/helicopter
+
+which, according to <https://openclipart.org/share>, is in the public domain.
+The resulting derived work is also released in the public domain and, if/where
+not applicable:
+
+  Copyright (C) 2015  Florent Rougon
+  License: DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE version 2, dated
+           December 2004
