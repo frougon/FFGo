@@ -2,17 +2,14 @@ FFGo -- A powerful graphical launcher for FlightGear
 
 -------------------------------------------------------------------------------
 
-This software is a fork of the FGo![1] program written by Robert 'erobo'
-Leda, see HISTORY below for details.
+This software is a fork of the excellent FGo![1] program written by
+Robert 'erobo' Leda, see HISTORY below for details.
 
   [1] https://sites.google.com/site/erobosprojects/flightgear/add-ons/fgo
 
 
 Contents
 
-  Requirements
-  Installation
-  Running
   Note For FGo! Users
   Configuration
   Main Menu Items
@@ -23,45 +20,6 @@ Contents
   Known Bugs And Limitations
   History
 
--------------------------------------------------------------------------------
-
-REQUIREMENTS
-
-- Unix-like operating system (e.g, GNU/Linux)
-  (Windows and MacOS X untested, feedback welcome)
-- FlightGear          <http://www.flightgear.org>
-- Python 3.4 or later <https://www.python.org>
-- Tkinter (often known as python3-tk or python-tk in Linux package managers)
-                      <https://docs.python.org/3/library/tkinter.html>
-- Pillow (PIL fork)*  <http://python-pillow.github.io/>
-- CondConfigParser    <http://people.via.ecp.fr/~flo/projects/CondConfigParser/>
-
-* This library is not mandatory to run FFGo but aircraft thumbnails
-  will not be displayed without it.
-
-Note: the home pages of FFGo's dependencies indicated here are current
-      at the time of this writing (July 2015) but might change over
-      time.
-
--------------------------------------------------------------------------------
-
-INSTALLATION
-
-This program requires no installation, just unpack the archive anywhere
-and make sure that all software requirements are met before the first
-start. If you need help for installing these dependencies, you may
-consult the guide in docs/INSTALL. You have to make sure the
-dependencies are installed for the Python interpreter that you are going
-to use to run FFGo.
-
--------------------------------------------------------------------------------
-
-RUNNING
-
-Click on the "ffgo" file in the top-level directory obtained after
-unpacking the tarball, or run it from a terminal with a command such as
-"./ffgo" or "python3 ffgo". Just make sure you are running "ffgo" with
-the Python interpreter for which you installed the dependencies.
 
 -------------------------------------------------------------------------------
 
