@@ -79,21 +79,21 @@ below), but you can install it for FFGo only, using the following steps:
   2. Do the same with the FFGo archive:
 
        cd ~/src
-       tar -xzf ffgo-a.b.c.tar.gz
+       tar -xzf FFGo-a.b.c.tar.gz
 
   3. Create a symbolic link to allow FFGo to find CondConfigParser:
 
        ln -s ~/src/CondConfigParser-x.y.z/condconfigparser \
-             ~/src/ffgo-a.b.c/condconfigparser
+             ~/src/FFGo-a.b.c/condconfigparser
 
-     (assuming the previous step created the ~/src/ffgo-a.b.c directory,
-     leaving the ffgo executable script at ~/src/ffgo-a.b.c/ffgo)
+     (assuming the previous step created the ~/src/FFGo-a.b.c directory,
+     leaving the ffgo executable script at ~/src/FFGo-a.b.c/ffgo)
 
 That's all! You should be able to run the ffgo executable mentioned in step 3.
 In case you need to explicitely specify the Python interpreter to use, you can
 do so with a command such as:
 
-  python3.4 ~/src/ffgo-a.b.c/ffgo
+  python3.4 ~/src/FFGo-a.b.c/ffgo
 
 
 Standard procedure
