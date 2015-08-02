@@ -1,3 +1,5 @@
+-*- mode: text; fill-column: 78; -*-
+
 Prior changes belong to the FGo! program by Robert 'erobo' Leda and are listed
 in the file 'CHANGE_LOG.FGo!'.
 
@@ -78,7 +80,15 @@ in the file 'CHANGE_LOG.FGo!'.
 [FEATURE] Help files: update installation instructions, add description of new
           features and add a tip about config file reloading.
           (Robert & Florent Rougon)
+[FEATURE] Add top-level README.rst and move first sections of
+          data/help/help_en to it. (Florent Rougon)
 [FEATURE] Update data/config/config_en: slightly reorder, improve wording
           (IMHO), remove reference to now-invalid URL (list of callsigns in
-          use), introduce new options, give hint about 'fgfs --help --verbose'.
+          use), introduce new options, give hint about
+          'fgfs --help --verbose'. (Florent Rougon)
+[FEATURE] New ffgo.svg icon and new thumbnail.jpg (with xcf source).
           (Florent Rougon)
+[FEATURE] Add Makefiles to automate generation of many files
+          (messages.pot, *.po and *.mo files, ffgo.png in all sizes from
+          ffgo.svg, HTML rendering of docs/README.conditional-config.source,
+          release tarball...). (Florent Rougon)
