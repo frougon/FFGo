@@ -1,0 +1,3 @@
+PROGNAME := FFGo
+LANGUAGES := de en es fr it ja nl pl
+PROG_ICON_SIZES := 16 24 32 48 64 128 256

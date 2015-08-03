@@ -5,7 +5,7 @@
 # License: DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE version 2, dated
 #          December 2004
 
-SIZES := 16 24 32 48 64 128 256
+include ../../shared.mk # Define PROG_ICON_SIZES
 
 define CONVERT_RULE =
 $(1)x$(1)/ffgo.png: scalable/ffgo.svg
@@ -14,13 +14,13 @@ $(1)x$(1)/ffgo.png: scalable/ffgo.svg
                  --output='$$@' '$$<'
 endef
 
-PNG_FILES := $(foreach size,$(SIZES),$(size)x$(size)/ffgo.png)
+PNG_FILES := $(foreach size,$(PROG_ICON_SIZES),$(size)x$(size)/ffgo.png)
 
 all: $(PNG_FILES)
 
 # This line writes the conversion rule (target, prerequisite and recipe)
-# for each size in $(SIZES).
-$(foreach size,$(SIZES),$(eval $(call CONVERT_RULE,$(size))))
+# for each size in $(PROG_ICON_SIZES).
+$(foreach size,$(PROG_ICON_SIZES),$(eval $(call CONVERT_RULE,$(size))))
 
 clean:
 	rm -f $(PNG_FILES)

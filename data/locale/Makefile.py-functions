@@ -4,7 +4,7 @@
 # License: DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE version 2, dated
 #          December 2004
 
-PROGNAME := FFGo
+include ../../shared.mk # Define PROGNAME
 PROGVERSION := $(shell PYTHONPATH="../../src:$$PYTHONPATH" python -c \
                        'from version import __version__; print(__version__)')
 

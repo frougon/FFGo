@@ -12,11 +12,11 @@ Copyright (C) 2014-2015  Florent Rougon
 endef
 MSGID_BUGS_ADDRESS := f.rougon@free.fr
 
+include ../../shared.mk # Define LANGUAGES
+include Makefile.py-functions # Define variables containing Python 3 code
 PYTHON := python3
-LANGUAGES := de en es fr it ja nl pl
 MO_FILES := $(foreach lang,$(LANGUAGES),$(lang)/LC_MESSAGES/messages.mo)
 PO_FILES := $(foreach lang,$(LANGUAGES),$(lang)/LC_MESSAGES/messages.po)
-include Makefile.py-functions # Define variables containing Python 3 code
 
 all: $(MO_FILES)
 
