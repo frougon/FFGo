@@ -6,13 +6,10 @@
 
 DOC_FORMATS := html
 
-all: icons l10n_files
+default: icons update-mo
 
 icons:
 	$(MAKE) -C share/icons
-
-l10n_files:
-	$(MAKE) -C data/locale
 
 update-pot:
 	$(MAKE) -C data/locale update-pot
@@ -28,20 +25,37 @@ doc:
 version := $(shell PYTHONPATH="src:$$PYTHONPATH" python -c \
                    'from version import __version__; print(__version__)')
 SIZES := 16 24 32 48 64 128 256
+LANGUAGES := de en es fr it ja nl pl
 
-dist: doc
-	git archive --format=tar -o dist/FFGo-$(version).tar master
-	mkdir -p docs/README.conditional-config
-	cp -a docs/README.conditional-config.source/_build/html \
-          docs/README.conditional-config/en
-	tar --append --file=dist/FFGo-$(version).tar \
-          docs/README.conditional-config \
-          $(foreach size,$(SIZES),share/icons/$(size)x$(size)/ffgo.png)
-	gzip -9 --force dist/FFGo-$(version).tar
+dist: default doc
+	git archive --format=tar --prefix=FFGo-$(version)/ \
+          -o dist/FFGo-$(version).tar master
+
+	tmpdir=$$(mktemp --tmpdir --directory \
+                         tmp.FFGo-tarball.XXXXXXXXXXXXXXX) && \
+          mkdir -p $(addprefix "$$tmpdir"/FFGo-$(version)/,share/icons/ \
+              docs/README.conditional-config \
+              $(foreach lang,$(LANGUAGES),data/locale/$(lang)/LC_MESSAGES)) && \
+          cp -a docs/README.conditional-config.source/_build/html \
+                "$$tmpdir"/FFGo-$(version)/docs/README.conditional-config/en && \
+          cp -at "$$tmpdir"/FFGo-$(version)/share/icons \
+             $(foreach size,$(SIZES),share/icons/$(size)x$(size)) && \
+          for lang in $(LANGUAGES); do \
+            cp -t "$$tmpdir"/FFGo-$(version)/data/locale/$$lang/LC_MESSAGES \
+                  data/locale/$$lang/LC_MESSAGES/messages.mo; \
+          done && \
+          \
+          tar --file=dist/FFGo-$(version).tar -C "$$tmpdir" --append \
+          $(addprefix FFGo-$(version)/,docs/README.conditional-config \
+            $(foreach size,$(SIZES),share/icons/$(size)x$(size)/ffgo.png) \
+            $(foreach lang,$(LANGUAGES),data/locale/$(lang)/LC_MESSAGES/messages.mo)) && \
+          gzip -9 --force dist/FFGo-$(version).tar && \
+          \
+          rm -rf "$$tmpdir"
 
 clean:
 	$(MAKE) -C share/icons clean && \
           $(MAKE) -C data/locale clean && \
           $(MAKE) -C docs/README.conditional-config.source clean
 
-.PHONY: all icons l10n_files update-pot update-po update-mo doc dist clean
+.PHONY: default icons update-pot update-po update-mo doc dist clean

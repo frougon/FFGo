@@ -46,7 +46,7 @@ helpful (I hope) tips:
 
   Alternatively, if you are running FFGo directly from an unpacked tarball or
   zip file, or from a clone of the Git repository, you may run
-  'make l10n_files' from the top-level distribution directory (the one
+  'make update-mo' from the top-level distribution directory (the one
   containing the 'ffgo' script). This method requires GNU Make in addition to
   'msgfmt'.
 
