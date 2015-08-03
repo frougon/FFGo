@@ -18,7 +18,7 @@ PYTHON := python3
 MO_FILES := $(foreach lang,$(LANGUAGES),$(lang)/LC_MESSAGES/messages.mo)
 PO_FILES := $(foreach lang,$(LANGUAGES),$(lang)/LC_MESSAGES/messages.po)
 
-all: $(MO_FILES)
+default: $(MO_FILES)
 
 $(MO_FILES): %.mo: %.po
 	msgfmt -o '$@' '$<'
@@ -36,24 +36,27 @@ $(PO_FILES): %.po: messages.pot
 # $(var), doesn't handle newlines correctly when expanded inside a recipe)
 export replace_pot_metadata
 
-PY_FILES := ../../ffgo $(shell find ../../src -type f -name '*.py')
 # File paths relative to the package root directory (containing the ffgo script)
 REL_PY_FILES := ffgo $(shell cd ../.. && find src -type f -name '*.py')
 
-messages.pot: $(PY_FILES)
+# The target could be messages.pot, with dependencies on the source files
+# (similar to REL_PY_FILES, but with ../../ prepended). However, this would
+# cause the PO files to be updated too often (e.g., after a user cloned the
+# repo and ran 'make', the PO files would be updated if there were new
+# translatable strings, and he would end up with locally-modified files).
+update-pot:
 	xgettext --directory=../.. --language=Python --from-code=UTF-8 \
                  --msgid-bugs-address='$(MSGID_BUGS_ADDRESS)' \
                  --output=- $(REL_PY_FILES) | \
-          $(PYTHON) -c "$$replace_pot_metadata" > '$@'
+          $(PYTHON) -c "$$replace_pot_metadata" >messages.pot
         # Set 'Project-Id-Version' metadata
-	$(PYTHON) -c "$$check_and_replace_po_metadata" '$@'
+	$(PYTHON) -c "$$check_and_replace_po_metadata" messages.pot
 
 # Convenience phony targets
-update-pot: messages.pot
 update-po: $(PO_FILES)
 update-mo: $(MO_FILES)
 
 clean:
 	rm -f $(MO_FILES) messages.pot
 
-.PHONY: all clean update-pot update-po update-mo
+.PHONY: default clean update-pot update-po update-mo
