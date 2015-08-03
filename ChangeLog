@@ -5,11 +5,9 @@ in the file 'ChangeLog.FGo'.
 
 ******************************************************************************
 
-1.0.0b1
+1.0.0b2
 [FEATURE] Import the code from FGo! 1.5.5 onwards (Python 2 at that time)
-          into a Git repository and add Makefiles to generate the needed
-          files (fgo.png in various sizes and l10n *.mo files) from their
-          sources. (Florent Rougon)
+          into a Git repository. (Florent Rougon)
 [FEATURE] Port the code to Python 3. (Robert)
 [FEATURE] Add the file docs/INSTALL/INSTALL_en to guide users through the
           process of installing the dependencies. (Florent Rougon)
