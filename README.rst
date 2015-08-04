@@ -149,6 +149,16 @@ documentation (for the latest FFGo release) is always `available online
 .. [#] Basically, it boils down to installing a recent enough `Sphinx`_
        and running ``make doc`` from the top-level directory.
 
+
+License
+-------
+
+FFGo is distributed under the terms of the `WTFPL`_ version 2, dated
+December 2004.
+
+.. _WTFPL: http://wtfpl.net/
+
+
 .. 
   # Local Variables:
   # coding: utf-8
