@@ -59,7 +59,7 @@ HELP_DIR = join(DATA_DIR, 'help')
 # Name of directory where localization files are stored.
 LOCALE_DIR = join(DATA_DIR, 'locale')
 # Name of localization file.
-MESSAGES = 'messages'
+MESSAGES = 'FFGo'
 # Path to substitutionary thumbnail.
 NO_PIL_PIC = join(DATA_DIR, 'pics', 'thumbnail.ppm')
 # Path to substitutionary thumbnail.

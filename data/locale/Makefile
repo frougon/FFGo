@@ -15,31 +15,31 @@ MSGID_BUGS_ADDRESS := f.rougon@free.fr
 include ../../shared.mk # Define LANGUAGES
 include Makefile.py-functions # Define variables containing Python 3 code
 PYTHON := python3
-MO_FILES := $(foreach lang,$(LANGUAGES),$(lang)/LC_MESSAGES/messages.mo)
-PO_FILES := $(foreach lang,$(LANGUAGES),$(lang)/LC_MESSAGES/messages.po)
+MO_FILES := $(foreach lang,$(LANGUAGES),$(lang)/LC_MESSAGES/FFGo.mo)
+PO_FILES := $(foreach lang,$(LANGUAGES),$(lang)/LC_MESSAGES/FFGo.po)
 
 default: $(MO_FILES)
 
 $(MO_FILES): %.mo: %.po
 	msgfmt -o '$@' '$<'
 
-# Used in the recipe for the messages.po files (using Make variable expansion,
+# Used in the recipe for the FFGo.po files (using Make variable expansion,
 # as in $(var), doesn't handle newlines correctly when expanded inside a
 # recipe)
 export check_and_replace_po_metadata
 
-$(PO_FILES): %.po: messages.pot
+$(PO_FILES): %.po: FFGo.pot
 	msgmerge --update --backup=none '$@' '$<'
 	$(PYTHON) -c "$$check_and_replace_po_metadata" '$@'
 
-# Used in the recipe for messages.pot (using Make variable expansion, as in
+# Used in the recipe for FFGo.pot (using Make variable expansion, as in
 # $(var), doesn't handle newlines correctly when expanded inside a recipe)
 export replace_pot_metadata
 
 # File paths relative to the package root directory (containing the ffgo script)
 REL_PY_FILES := ffgo $(shell cd ../.. && find src -type f -name '*.py')
 
-# The target could be messages.pot, with dependencies on the source files
+# The target could be FFGo.pot, with dependencies on the source files
 # (similar to REL_PY_FILES, but with ../../ prepended). However, this would
 # cause the PO files to be updated too often (e.g., after a user cloned the
 # repo and ran 'make', the PO files would be updated if there were new
@@ -48,15 +48,15 @@ update-pot:
 	xgettext --directory=../.. --language=Python --from-code=UTF-8 \
                  --msgid-bugs-address='$(MSGID_BUGS_ADDRESS)' \
                  --output=- $(REL_PY_FILES) | \
-          $(PYTHON) -c "$$replace_pot_metadata" >messages.pot
+          $(PYTHON) -c "$$replace_pot_metadata" >FFGo.pot
         # Set 'Project-Id-Version' metadata
-	$(PYTHON) -c "$$check_and_replace_po_metadata" messages.pot
+	$(PYTHON) -c "$$check_and_replace_po_metadata" FFGo.pot
 
 # Convenience phony targets
 update-po: $(PO_FILES)
 update-mo: $(MO_FILES)
 
 clean:
-	rm -f $(MO_FILES) messages.pot
+	rm -f $(MO_FILES) FFGo.pot
 
 .PHONY: default clean update-pot update-po update-mo
