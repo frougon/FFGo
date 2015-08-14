@@ -41,7 +41,7 @@ dist: default doc
             $(foreach size,$(PROG_ICON_SIZES),share/icons/$(size)x$(size)) && \
           for lang in $(LANGUAGES); do \
             cp -t "$$tmpdir"/$(PROGNAME)-$(version)/data/locale/$$lang/LC_MESSAGES \
-               data/locale/$$lang/LC_MESSAGES/FFGo.mo; \
+               data/locale/$$lang/LC_MESSAGES/$(PROGNAME).mo; \
           done && \
           \
           tar --file=dist/$(PROGNAME)-$(version).tar -C "$$tmpdir" --append \
@@ -49,7 +49,7 @@ dist: default doc
             $(foreach \
              size,$(PROG_ICON_SIZES),share/icons/$(size)x$(size)/ffgo.png) \
             $(foreach \
-             lang,$(LANGUAGES),data/locale/$(lang)/LC_MESSAGES/FFGo.mo)) && \
+             lang,$(LANGUAGES),data/locale/$(lang)/LC_MESSAGES/$(PROGNAME).mo)) && \
           gzip -9 --force dist/$(PROGNAME)-$(version).tar && \
           \
           rm -rf "$$tmpdir"
