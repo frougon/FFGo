@@ -20,6 +20,12 @@ from xml.etree.ElementTree import ElementTree
 from tkinter.messagebox import showerror
 import condconfigparser
 
+from .tooltip import ToolTip
+from .metar import Metar
+from .configwindow import ConfigWindow
+from ..constants import *
+from .. import fgcmdbuilder
+
 try:
     from PIL import Image, ImageTk
     PIL = True
@@ -27,12 +33,6 @@ except ImportError:
     PIL = False
     print ('[{prg} Warning] PIL library not found. Aircraft thumbnails '
            'will not be displayed.'.format(prg=PROGNAME), file=sys.stderr)
-
-from .tooltip import ToolTip
-from .metar import Metar
-from .configwindow import ConfigWindow
-from ..constants import *
-from .. import fgcmdbuilder
 
 
 class PassShortcutsToApp:
