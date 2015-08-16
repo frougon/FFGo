@@ -5,7 +5,7 @@ in the file 'ChangeLog.FGo'.
 
 ******************************************************************************
 
-1.0.0b2
+1.0.0b3
 [FEATURE] Import the code from FGo! 1.5.5 onwards (Python 2 at that time)
           into a Git repository. (Florent Rougon)
 [FEATURE] Port the code to Python 3. (Robert)
@@ -90,3 +90,23 @@ in the file 'ChangeLog.FGo'.
           (messages.pot, *.po and *.mo files, ffgo.png in all sizes from
           ffgo.svg, HTML rendering of docs/README.conditional-config.source,
           release tarball...). (Florent Rougon)
+[FEATURE] Rename messages.{pot,po,mo} to FFGo.{pot,po,mo}. This will make it
+          much easier for downstream distributors to create FHS-compliant
+          packages with .mo files in /usr/share/locale/<locale>/LC_MESSAGES/
+          (which is shared by all programs on a given system, therefore using
+          such a generic name as 'messages' is unacceptable there).
+          (Florent Rougon)
+[FEATURE] Improve the thumbnail situation. cf. the Git log for
+          6bf65f453ba28920397371d932b3b2ef491827bc for details (information
+          maybe relevant to packagers but not users; in short,
+          data/pics/thumbnail.ppm is replaced by
+          data/pics/thumbnail-no-Pillow.gif and data/pics/thumbnail.jpg by
+          data/pics/thumbnail-not-avail.png, and the two new files are both
+          automatically generated from their respective sources).
+          ImageMagick's convert program is now required by the Makefiles when
+          installing from the Git repository. (Florent Rougon)
+[BUGFIX]  Fix a bug introduced in 1.0.0b2 that would prevent FFGo from working
+          properly when Pillow is not installed. (Florent Rougon)
+[BUGFIX]  Include FFGo.pot in release tarballs. It is not needed by FFGo, but
+          may be useful for people wanting to add new translations.
+          (Florent Rougon)
