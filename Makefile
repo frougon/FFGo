@@ -44,6 +44,8 @@ dist: default doc
             cp -t "$$tmpdir"/$(PROGNAME)-$(version)/data/locale/$$lang/LC_MESSAGES \
                data/locale/$$lang/LC_MESSAGES/$(PROGNAME).mo; \
           done && \
+          cp -t "$$tmpdir"/$(PROGNAME)-$(version)/data/locale \
+               data/locale/FFGo.pot && \
           cp -t "$$tmpdir"/$(PROGNAME)-$(version)/data/pics \
             data/pics/thumbnail-no-Pillow.gif \
             data/pics/thumbnail-not-avail.png && \
@@ -54,6 +56,7 @@ dist: default doc
              size,$(PROG_ICON_SIZES),share/icons/$(size)x$(size)/ffgo.png) \
             $(foreach \
              lang,$(LANGUAGES),data/locale/$(lang)/LC_MESSAGES/$(PROGNAME).mo) \
+            data/locale/FFGo.pot \
             data/pics/thumbnail-no-Pillow.gif \
             data/pics/thumbnail-not-avail.png) && \
           gzip -9 --force dist/$(PROGNAME)-$(version).tar && \
