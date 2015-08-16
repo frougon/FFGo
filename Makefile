@@ -11,6 +11,7 @@ default: icons update-mo
 
 icons:
 	$(MAKE) -C share/icons
+	$(MAKE) -C data/pics
 
 update-pot:
 	$(MAKE) -C data/locale update-pot
@@ -32,8 +33,8 @@ dist: default doc
 
 	tmpdir=$$(mktemp --tmpdir --directory \
                          tmp.$(PROGNAME)-tarball.XXXXXXXXXXXXXXX) && \
-          mkdir -p $(addprefix "$$tmpdir"/$(PROGNAME)-$(version)/,share/icons/ \
-            docs/README.conditional-config \
+          mkdir -p $(addprefix "$$tmpdir"/$(PROGNAME)-$(version)/,share/icons \
+            data/pics docs/README.conditional-config \
             $(foreach lang,$(LANGUAGES),data/locale/$(lang)/LC_MESSAGES)) && \
           cp -a docs/README.conditional-config.source/_build/html \
             "$$tmpdir"/$(PROGNAME)-$(version)/docs/README.conditional-config/en && \
@@ -43,13 +44,18 @@ dist: default doc
             cp -t "$$tmpdir"/$(PROGNAME)-$(version)/data/locale/$$lang/LC_MESSAGES \
                data/locale/$$lang/LC_MESSAGES/$(PROGNAME).mo; \
           done && \
+          cp -t "$$tmpdir"/$(PROGNAME)-$(version)/data/pics \
+            data/pics/thumbnail-no-Pillow.gif \
+            data/pics/thumbnail-not-avail.png && \
           \
           tar --file=dist/$(PROGNAME)-$(version).tar -C "$$tmpdir" --append \
           $(addprefix $(PROGNAME)-$(version)/,docs/README.conditional-config \
             $(foreach \
              size,$(PROG_ICON_SIZES),share/icons/$(size)x$(size)/ffgo.png) \
             $(foreach \
-             lang,$(LANGUAGES),data/locale/$(lang)/LC_MESSAGES/$(PROGNAME).mo)) && \
+             lang,$(LANGUAGES),data/locale/$(lang)/LC_MESSAGES/$(PROGNAME).mo) \
+            data/pics/thumbnail-no-Pillow.gif \
+            data/pics/thumbnail-not-avail.png) && \
           gzip -9 --force dist/$(PROGNAME)-$(version).tar && \
           \
           rm -rf "$$tmpdir"
@@ -57,6 +63,7 @@ dist: default doc
 clean:
 	$(MAKE) -C share/icons clean && \
           $(MAKE) -C data/locale clean && \
+          $(MAKE) -C data/pics clean && \
           $(MAKE) -C docs/README.conditional-config.source clean
 
 .PHONY: default icons update-pot update-po update-mo doc dist clean

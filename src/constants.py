@@ -60,10 +60,11 @@ HELP_DIR = join(DATA_DIR, 'help')
 LOCALE_DIR = join(DATA_DIR, 'locale')
 # Name of localization file.
 MESSAGES = 'FFGo'
-# Path to substitutionary thumbnail.
-NO_PIL_PIC = join(DATA_DIR, 'pics', 'thumbnail.ppm')
-# Path to substitutionary thumbnail.
-NO_THUMBNAIL_PIC = join(DATA_DIR, 'pics', 'thumbnail.jpg')
+# Path to substitutionary thumbnail (used when Pillow is not available).
+NO_PIL_PIC = join(DATA_DIR, 'pics', 'thumbnail-no-Pillow.gif')
+# Substitutionary thumbnail (used when Pillow is installed but the aircraft has
+# no thumbnail).
+NO_THUMBNAIL_PIC = join(DATA_DIR, 'pics', 'thumbnail-not-avail.png')
 # Line used in config file.
 CUT_LINE = ' INTERNAL OPTIONS ABOVE. EDIT CAREFULLY! '.center(80, 'x')
 # Default aircraft.

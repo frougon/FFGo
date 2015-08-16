@@ -11,7 +11,7 @@
 *.svg                          text
 *.jpg                          binary
 *.png                          binary
-*.ppm                          binary
+*.gif                          binary
 *.bat                          text eol=crlf
 /docs/*                        text
 AUTHORS                        text

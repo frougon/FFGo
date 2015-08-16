@@ -377,6 +377,7 @@ code of your choice):
   - GNU Make
   - GNU gettext
   - librsvg's rsvg-convert program
+  - ImageMagick's convert program
 
 Then download the source code:
 
