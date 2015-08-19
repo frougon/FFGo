@@ -740,7 +740,7 @@ backslash you want to include as a normal character. There are a few more
 escape sequences that can be used in :program:`fgfs` arguments (called *raw
 configuration lines* in `CondConfigParser`_-speak). The authoritative
 documentation for these is in the FFGo code (currently:
-:file:`src/fgcmdbuilder.py:FGCommandBuilder.processRawConfigLines()`). For
+:file:`ffgo/fgcmdbuilder.py:FGCommandBuilder.processRawConfigLines()`). For
 information, here is the complete list at the time of this writing:
 
 +-----------------------+-------------------+----------------------------------+

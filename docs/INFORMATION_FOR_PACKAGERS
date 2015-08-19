@@ -1,21 +1,29 @@
 INFORMATION FOR PACKAGERS
 
-= Location =
-The FFGo release package can be extracted anywhere and the program can be run
-from that location without having to move files around. For example, FFGo can
-be installed to a specific user's home directory, and that user will be able
-to run it right away, provided that the needed dependencies are installed.
+As of version 1.0.0rc1, FFGo is packaged with Setuptools and can thus be
+handled in a similar way to most other Python packages distributed on PyPI.
 
-Note: the following advice is more suited to private system-wide installations
-      on Unix-like systems than to distribution packages or non-Unix systems.
+Note: the following advice (mostly inherited from FGo!) is more suited to
+      private system-wide installations on Unix-like systems than to
+      distribution packages or non-Unix systems.
+
+= Location =
+Besides the standard installation method relying on pip and Setuptools (or
+'setup.py install ...'), an FFGo release package can be extracted anywhere and
+the program can be run from that location using the 'ffgo-launcher.py' script
+(when installing using the standard 'setup.py'-based method, this script is
+not used at all and should be ignored). For example, FFGo can be installed to
+a specific user's home directory, and that user will be able to run it right
+away with the 'ffgo-launcher.py' script, provided that the needed dependencies
+are installed.
 
 For system-wide installations of FFGo, the main 'ffgo-x.y.z' directory may be
 copied, with its entire contents, to '/opt/ffgo' or similar. Then, you may
-create a symlink to the application executable in a directory listed in the
+create a symlink to the 'ffgo-launcher.py' script in a directory listed in the
 PATH environment variable.
 
 = Documentation =
-The program's documentation is stored in the top-level 'docs' directory and
+The program documentation is stored in the top-level 'docs' directory and
 can be either symlinked from '/usr/share/doc/ffgo' or copied there.
 
 = Icons =
@@ -26,18 +34,23 @@ to the proper directories in '/usr/share/icons'.
 A desktop file, 'ffgo.desktop', is available in the top-level 'share'
 directory. It creates a menu entry for FFGo and simplifies the creation of
 application launchers. It can be either symlinked from or copied to
-'/usr/share/applications' and expects the FFGo executable to be available
-through $PATH, as well as icons to be in the right place.
+'/usr/share/applications', and expects the 'ffgo' executable or
+'ffgo-launcher.py' script (depending on the installation method you chose, you
+should adapt the 'Exec' entry in 'ffgo.desktop') to be available through
+$PATH, as well as icons to be in the right place.
 
 = Presets =
 The default FFGo settings are quite minimal and the user is required to
 perform a few minor tasks, such as setting the needed paths for FlightGear
 data, aircrafts, scenery, etc. as well as for the 'fgfs' executable. However,
-a 'presets' file is available in 'data/config', which can be used to specify
-settings that the packager wants to be enabled by default. For example, in a
-system-wide installation this will allow every user to run FFGo without having
-to bother with its basic setup; other FFGo and FlightGear options can also be
-specified in that file. The 'presets' file is well commented and will be used
-by FFGo every time the '$USER_DATA_DIR/config' file cannot be found (where
-'$USER_DATA_DIR' is '~/.ffgo' on Unix, '%APPDATA%/FFGo on Windows). For
-instance, this is the case when FFGo is run by the user for the first time.
+a 'presets' file is available in 'ffgo/data/config', which can be used to
+specify settings that the packager wants to be enabled by default.
+
+For example, in a system-wide installation, this will allow every user to run
+FFGo without having to bother with its basic setup; other FFGo and FlightGear
+options can also be specified in that file. The 'presets' file is well
+commented and will be used by FFGo every time the '$USER_DATA_DIR/config' file
+cannot be found (where '$USER_DATA_DIR' is '~/.ffgo' on all platforms but
+Windows, where it is '%APPDATA%/FFGo [cf. ffgo/constants.py in the source]).
+For instance, this is the case when FFGo is run by the user for the first
+time.

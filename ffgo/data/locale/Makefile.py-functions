@@ -4,8 +4,8 @@
 # License: DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE version 2, dated
 #          December 2004
 
-include ../../shared.mk # Define PROGNAME
-PROGVERSION := $(shell PYTHONPATH="../../src:$$PYTHONPATH" python -c \
+include ../../../shared.mk # Define PROGNAME
+PROGVERSION := $(shell PYTHONPATH="../../../ffgo:$$PYTHONPATH" python -c \
                        'from version import __version__; print(__version__)')
 
 # Longish function compared to a sed one-liner, but:

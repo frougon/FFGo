@@ -20,6 +20,7 @@ from xml.etree.ElementTree import ElementTree
 from tkinter.messagebox import showerror
 import condconfigparser
 
+from ..misc import resourceExists, textResourceStream, binaryResourceStream
 from .tooltip import ToolTip
 from .metar import Metar
 from .configwindow import ConfigWindow
@@ -583,7 +584,8 @@ class App:
                                     'thumbnail.jpg')
                 image = ImageTk.PhotoImage(Image.open(path))
             except:
-                image = ImageTk.PhotoImage(Image.open(NO_THUMBNAIL_PIC))
+                with binaryResourceStream(NO_THUMBNAIL_PIC) as f:
+                    image = ImageTk.PhotoImage(Image.open(f))
         else:
             image = PhotoImage(file=NO_PIL_PIC)
 
@@ -1194,14 +1196,12 @@ class App:
             lang_code = language
         else:
             lang_code = translation(MESSAGES, LOCALE_DIR).info()['language']
-        path = os.path.join(HELP_DIR, 'help_' + lang_code)
-        if not os.path.isfile(path):
-            lang_code = 'en'
-            path = os.path.join(HELP_DIR, 'help_' + lang_code)
 
-        readme_in = open(path, encoding='utf-8')
-        text = readme_in.read()
-        readme_in.close()
+        if not resourceExists(HELP_STEM + lang_code):
+            lang_code = 'en'
+
+        with textResourceStream(HELP_STEM + lang_code) as readme:
+            text = readme.read()
 
         self.helpWindow = Toplevel(self.master)
         self.helpWindow.title(_('Help'))

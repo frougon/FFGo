@@ -12,7 +12,7 @@ Copyright (C) 2014-2015  Florent Rougon
 endef
 MSGID_BUGS_ADDRESS := f.rougon@free.fr
 
-include ../../shared.mk # Define PROGNAME and LANGUAGES
+include ../../../shared.mk # Define PROGNAME and LANGUAGES
 include Makefile.py-functions # Define variables containing Python 3 code
 PYTHON := python3
 MO_FILES := $(foreach lang,$(LANGUAGES),$(lang)/LC_MESSAGES/$(PROGNAME).mo)
@@ -36,8 +36,10 @@ $(PO_FILES): %.po: $(PROGNAME).pot
 # $(var), doesn't handle newlines correctly when expanded inside a recipe)
 export replace_pot_metadata
 
-# File paths relative to the package root directory (containing the ffgo script)
-REL_PY_FILES := ffgo $(shell cd ../.. && find src -type f -name '*.py')
+# File paths relative to the package root directory (containing the
+# ffgo-launcher.py script)
+REL_PY_FILES := ffgo-launcher.py \
+                $(shell cd ../../.. && find ffgo -type f -name '*.py')
 
 # The target could be $(PROGNAME).pot, with dependencies on the source files
 # (similar to REL_PY_FILES, but with ../../ prepended). However, this would
@@ -45,7 +47,7 @@ REL_PY_FILES := ffgo $(shell cd ../.. && find src -type f -name '*.py')
 # repo and ran 'make', the PO files would be updated if there were new
 # translatable strings, and he would end up with locally-modified files).
 update-pot:
-	xgettext --directory=../.. --language=Python --from-code=UTF-8 \
+	xgettext --directory=../../.. --language=Python --from-code=UTF-8 \
                  --msgid-bugs-address='$(MSGID_BUGS_ADDRESS)' \
                  --output=- $(REL_PY_FILES) | \
           $(PYTHON) -c "$$replace_pot_metadata" >$(PROGNAME).pot

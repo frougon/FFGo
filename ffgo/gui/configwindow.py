@@ -5,6 +5,7 @@ import os
 from tkinter import *
 import tkinter.filedialog as fd
 
+from .. import misc
 from .tooltip import ToolTip
 from ..constants import *
 
@@ -183,8 +184,8 @@ class ConfigWindow:
         """Walk through a locale directory and return list of
         supported languages based on directory names."""
         res = []
-        for d in os.listdir(LOCALE_DIR):
-            if os.path.isdir(os.path.join(LOCALE_DIR, d)):
+        for d in misc.resourcelistDir("data/locale"):
+            if misc.resourceIsDir("data/locale/" + d):
                 res.append(d)
         res.sort()
         res = ['-'] + res

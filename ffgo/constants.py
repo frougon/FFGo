@@ -5,9 +5,12 @@ import platform
 from os.path import expanduser, join, pardir, normpath
 from .version import __version__ as PROGVERSION
 
+# Name of the top-level Python package, required to import .misc
+PYPKG_NAME = 'ffgo'
+from .misc import resourceFilename
+
 
 # FFGo-related constants
-
 PROGNAME = 'FFGo'
 NAME_WITH_VERSION = '{prg} {version}'.format(prg=PROGNAME, version=PROGVERSION)
 USER_AGENT = \
@@ -46,25 +49,27 @@ FGO_CONFIG = join(HOME_DIR, '.fgo', 'config')
 
 # Path to apt.dat.gz timestamp file.
 APT_TIMESTAMP = join(USER_DATA_DIR, 'timestamp')
-# Path to default config directory.
-DATA_DIR = join(pardir, 'data')
 
 DEFAULT_LOG_NAME = 'FlightGear.log'
 
-DEFAULT_CONFIG_DIR = join(DATA_DIR, 'config')
+# Resource paths handled by pkg_resources (setuptools) must use the '/'
+# separator, regardless of the platform.
+DEFAULT_CONFIG_STEM = 'data/config/config_' # + two-letter language code
 # Path to config file with predefined settings.
-PRESETS = join(DEFAULT_CONFIG_DIR, 'presets')
-# Path to help directory.
-HELP_DIR = join(DATA_DIR, 'help')
+PRESETS = 'data/config/presets'
+
+HELP_STEM = 'data/help/help_'   # + two-letter language code
 # Name of directory where localization files are stored.
-LOCALE_DIR = join(DATA_DIR, 'locale')
+LOCALE_DIR = resourceFilename('data/locale')
 # Name of localization file.
 MESSAGES = 'FFGo'
 # Path to substitutionary thumbnail (used when Pillow is not available).
-NO_PIL_PIC = join(DATA_DIR, 'pics', 'thumbnail-no-Pillow.gif')
+# (apparently, Tkinter needs a file name [not a file-like object] when loading
+# images without Pillow -> pkg_resources.resource_stream() doesn't work here)
+NO_PIL_PIC = resourceFilename('data/pics/thumbnail-no-Pillow.gif')
 # Substitutionary thumbnail (used when Pillow is installed but the aircraft has
 # no thumbnail).
-NO_THUMBNAIL_PIC = join(DATA_DIR, 'pics', 'thumbnail-not-avail.png')
+NO_THUMBNAIL_PIC = 'data/pics/thumbnail-not-avail.png'
 # Line used in config file.
 CUT_LINE = ' INTERNAL OPTIONS ABOVE. EDIT CAREFULLY! '.center(80, 'x')
 # Default aircraft.

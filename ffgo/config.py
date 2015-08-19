@@ -2,7 +2,9 @@
 
 import sys
 import os
+import re
 import gzip
+import contextlib
 import gettext
 import traceback
 from xml.etree.ElementTree import ElementTree
@@ -11,6 +13,7 @@ from tkinter.messagebox import askyesno, showinfo, showerror
 import tkinter.font
 
 from .gui.infowindow import InfoWindow
+from .misc import resourceExists, textResourceStream
 from .constants import *
 
 
@@ -465,58 +468,84 @@ configurations are kept separate.""")
             _ProcessApt(self.master, self.apt_path, head)
 
     def _read(self, path=None):
-        """Read config file"""
+        """Read the specified or a default configuration file.
+
+        - If 'path' is None and CONFIG exists, load CONFIG;
+        - if 'path' is None and CONFIG does not exist, load the
+          configuration from the presets and default, localized
+          config_ll resource;
+        - otherwise, load configuration from the specified file.
+
+        """
+        try:
+            # ExitStack not strictly necessary here, but allows clean and
+            # convenient handling of the various files or resources the
+            # configuration may be loaded from.
+            with contextlib.ExitStack() as stack:
+                res = self._read0(stack, path)
+        except OSError as e:
+            message = _('Error loading configuration')
+            showerror(_('{prg}').format(prg=PROGNAME), message, detail=str(e))
+            res = ([''], '')
+
+        return res
+
+    _presetsBlankLineOrCommentCre = re.compile(r"^[ \t]*(#|$)")
+
+    def _read0(self, stack, path):
         # Data before the CUT_LINE in the config file, destined to
         # self.settings
         settings = []
         # Data after the CUT_LINE in the config file, destined to
         # self.text and to be parsed by CondConfigParser
         condConfLines = []
-        if not path:
-            path = CONFIG
-        # Use default config if no regular config exists.
-        if os.path.exists(path):
+
+        if path is not None or (path is None and os.path.exists(CONFIG)):
+            if path is None:
+                path = CONFIG
+            configStream = stack.enter_context(open(path, "r",
+                                                    encoding="utf-8"))
             beforeCutLine = True
-        else:
-            # Find currently used language.
+        else:                 # Use default config if no regular config exists.
+            # Load presets if exists.
+            if resourceExists(PRESETS):
+                with textResourceStream(PRESETS) as presets:
+                    for line in presets:
+                        line = line.strip()
+                        if not self._presetsBlankLineOrCommentCre.match(line):
+                            settings.append(line)
+
+            # Find the currently used language according to the environment.
             try:
                 lang_code = gettext.translation(
                     MESSAGES, LOCALE_DIR).info()['language']
-            except IOError:
+            except OSError:
                 lang_code = 'en'
-            path = os.path.join(DEFAULT_CONFIG_DIR, 'config_' + lang_code)
-            if not os.path.isfile(path):
+
+            if not resourceExists(DEFAULT_CONFIG_STEM + lang_code):
                 lang_code = 'en'
-                path = os.path.join(DEFAULT_CONFIG_DIR, 'config_' + lang_code)
-            # Load presets if exists.
-            try:
-                with open(PRESETS, encoding='utf-8') as presets:
-                    for line in presets:
-                        line = line.strip()
-                        if line and not line.startswith('#'):
-                            settings.append(line)
-            except IOError:
-                pass
+            resPath = DEFAULT_CONFIG_STEM + lang_code
+
+            configStream = stack.enter_context(textResourceStream(resPath))
             # There is no "cut line" in the template config files.
             beforeCutLine = False
 
-        try:
-            with open(path, encoding='utf-8') as config_in:
-                for line in config_in:
-                    if beforeCutLine:
-                        line = line.strip()
+        for line in configStream:
+            if beforeCutLine:
+                line = line.strip()
 
-                    if line != CUT_LINE:
-                        if beforeCutLine:
-                            settings.append(line)
-                        else:
-                            condConfLines.append(line)
-                    else:
-                        beforeCutLine = False
+            if line != CUT_LINE:
+                if beforeCutLine:
+                    # Comments wouldn't be preserved on saving, therefore don't
+                    # try to handle them before the "cut line".
+                    if line:
+                        settings.append(line)
+                else:
+                    condConfLines.append(line)
+            else:
+                beforeCutLine = False
 
-            return (settings, ''.join(condConfLines))
-        except IOError:
-            return ([''], '')
+        return (settings, ''.join(condConfLines))
 
     def _readAircraft(self):
         """Walk through Aircraft directories and return two sorted lists:

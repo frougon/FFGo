@@ -57,14 +57,20 @@ Requirements
 
 FFGo relies on the following software:
 
-  - Unix-like operating system (e.g, GNU/Linux; Windows and MacOS X
-    untested, feedback welcome);
+  - Operating system:
+
+      * GNU/Linux surely works, as should any Unix-like system;
+      * Windows should work, please report;
+      * MacOS X should also work, except maybe for MacOS-specific Tcl/Tk
+        bugs as explained at
+        `<https://www.python.org/download/mac/tcltk/>`_. Please report.
+
   - `FlightGear`_;
   - `Python`_ 3.4 or later;
-  - `Tkinter`_ (often known as ``python3-tk`` or ``python-tk`` in Linux
-    package managers);
-  - `Pillow`_ (a PIL fork that supports Python 3) [#]_;
+  - `Tkinter`_ (part of the Python standard library; often known as
+    ``python3-tk`` or ``python-tk`` in Linux package managers);
   - `CondConfigParser`_.
+  - `Pillow`_ (a PIL fork that supports Python 3) [#]_;
 
 .. [#] This library is not mandatory to run FFGo, but aircraft thumbnails
        won't be displayed without it.
@@ -81,8 +87,7 @@ Note:
 Download
 --------
 
-Ready-to-use tarballs (once the dependencies are installed) can be
-downloaded from:
+Release tarballs or zip files can be downloaded from:
 
   http://people.via.ecp.fr/~flo/projects/FFGo/dist/
 
@@ -99,43 +104,67 @@ FFGo is maintained in a `Git repository
 Installation
 ------------
 
-This program requires no installation, just unpack the archive anywhere
-and make sure that all software requirements are met before the first
-start. If you need help to install these dependencies, you may consult
-the guide in ``docs/INSTALL``. You have to make sure the dependencies
-are installed for the `Python`_ interpreter that you are going to use to
-run FFGo.
+The detailed installation guide for FFGo is in the ``docs/INSTALL``
+directory in any release tarball or zip file. In short:
+
+  - FFGo may be run without installation, provided that all software
+    requirements are installed.
+
+  - Otherwise, FFGo can be installed in the standard way for Python
+    packages, i.e. with::
+
+      pip install FFGo
+
+    If you have never used `pip`_ before, or if you need more details,
+    read the guide in ``docs/INSTALL`` before running this command, and
+    **don't invoke it as the superuser** unless you *really* know what
+    you are doing!
+
+    Besides FFGo, you may want to also install `Pillow`_ in order to see
+    the aircraft thumbnails in FFGo. The presence of Pillow is detected
+    at run time, therefore it doesn't matter if Pillow is installed
+    before or after FFGo.
+
+.. _pip: https://pypi.python.org/pypi/pip
 
 
 Running
 -------
 
-From your file manager, you may click on the ``ffgo`` file in the
-top-level directory obtained after unpacking a release tarball.
-Alternatively, you can run it from a terminal with a command such as
-``./ffgo`` or ``python3 ffgo``. Just make sure you are running ``ffgo``
-with the `Python`_ interpreter for which you installed the dependencies.
+- If you chose to run FFGo without installing it:
 
-Note:
+  From your file manager, you may click on the ``ffgo-launcher.py`` file
+  in the top-level directory obtained after unpacking a release tarball
+  or zip file. Alternatively, you can run it from a terminal with a
+  command such as ``./ffgo-launcher.py`` or ``python3
+  ffgo-launcher.py``. Just make sure you are running
+  ``ffgo-launcher.py`` with the `Python`_ interpreter for which you
+  installed the dependencies.
 
-  Future versions may provide more conventional packaging allowing
-  installations and upgrades with `pip`_.
+- Otherwise, if you installed FFGo with `pip`_:
 
-.. _pip: https://pypi.python.org/pypi/pip
+  pip should have installed an ``ffgo`` executable in the directory it
+  normally installs scripts into. This directory may be a ``Scripts``
+  subdirectory of your Python installation, or a ``bin`` subdirectory of
+  the virtual environment if you ran it in a venv, etc. It depends on
+  how you ran pip (inside or outside a venv, etc.). More details are
+  given in ``docs/INSTALL``, and if this is not enough, please refer to
+  the `pip`_ documentation.
 
 
 Documentation
 -------------
 
 Apart from this text (which corresponds to ``README.rst`` in a release
-tarball), FFGo's documentation can be found in the ``docs`` top-level
-directory after unpacking a release tarball. Once FFGo installed, users
-should start by reading ``docs/README`` (also accessible from FFGo's
-*Help* menu). In a second time, ``docs/README.conditional-config``
-(`available online
+tarball or zip file), FFGo's documentation can be found in the ``docs``
+top-level directory after unpacking a release tarball or zip file. Once
+FFGo is installed, users should start by reading ``docs/README/README_en``
+(``en`` being for the English version; this text is also accessible from
+FFGo's *Help* menu). In a second time,
+``docs/README.conditional-config`` (`available online
 <http://people.via.ecp.fr/~flo/projects/FFGo/doc/README-conditional-config/>`_)
-will teach them how to use the full power of the configuration system
-used by FFGo.
+explains how to use the full power of the configuration system used by
+FFGo.
 
 If you got FFGo from the `Git repository`_ instead of a release tarball,
 part of the documentation is in source form only (written for

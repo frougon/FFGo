@@ -4,8 +4,10 @@ Contents
 
   1. Ready-to-use packages
   2. Manual installation
-    a) Easiest procedure
-    b) Standard procedure
+    a) Overview of FFGo's dependencies
+    b) Tips for Windows users
+    c) Easiest procedure
+    d) Standard procedure
   3. Installation from the Git repository
 
   Appendices
@@ -25,10 +27,16 @@ this is the case to allow me to mention it here.
 
 MANUAL INSTALLATION
 
-This program requires no installation, just unpack the archive anywhere and
-make sure that all software requirements are met before the first start. In
-the rest of this section, I'll try to guide you through the process of
-installing FFGo's dependencies.
+Overview of FFGo's dependencies
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+FFGo's dependencies are:
+  - Python 3.4 or later;
+  - Tkinter (for the aforementioned Python interpreter);
+  - CondConfigParser;
+  - Pillow (optional, only used to display aircraft thumbnails).
+
+Let's examine them one by one:
 
 - Python 3.x should be available in any Linux distribution (package 'python3',
   or 'python', or 'python3.4', etc.). If your distribution doesn't have
@@ -37,35 +45,85 @@ installing FFGo's dependencies.
   README file. You don't need to perform the 'make install' step, you can use
   the 'python' executable obtained in the build directory as is.
 
-- Tkinter is normally shipped with Python when installing from source.
-  However, when installing from a Linux distribution package manager, Tkinter
-  is often provided as a separate package such as python3-tk or python-tk.
+- Tkinter is normally shipped with Python when installing Python from source.
+  However, when installing it from a Linux distribution package manager,
+  Tkinter is often provided as a separate package such as python3-tk or
+  python-tk.
 
-So, these two dependencies should be readily available to anyone who can
-install Python 3. There remain two dependencies: CondConfigParser and Pillow.
+  The nice point is that Tkinter is part of the Python standard library. As a
+  consequence, assuming you installed it for a given Python interpreter, it is
+  always available in virtual environments created from that interpreter, even
+  if you created them without the '--system-site-packages' option.
 
-Note for Windows users:
+- CondConfigParser is straightforward to install once you have a "working pip
+  setup" (cf. Appendix A): all that is needed is to run
+  'pip install CondConfigParser'.
 
-  Although the author of these lines didn't have a chance to try to run FFGo
-  under Windows (please report if you do so), the most appropriate
-  installation method seems to be the “Standard procedure” described below.
-  Since there is no system Python on Windows, you should be able to use pip
-  directly on your Python installation (don't change the default for the
-  Python installation folder to avoid permission problems). There should be no
-  need to create a virtual environment in this case.
+- Pillow can be installed similarly ('pip install Pillow'), but this will only
+  work if you have already installed the software required to compile Pillow.
+  An alternative is to use a Pillow package from your distribution (for
+  instance, Pillow is shipped as python3-pil.imagetk in Debian).
+
+  The tricky part in the latter case is to make sure *all* dependencies are
+  available to the *same* Python interpreter. One way to do that is to install
+  CondConfigParser in a virtual environment created with the
+  '--system-site-packages' option and the other packages via your
+  distribution's package manager (until CondConfigParser is packaged for your
+  distribution, at which point a virtual environment won't be needed anymore).
+
+
+Tips for Windows users
+~~~~~~~~~~~~~~~~~~~~~~
+
+Although the author of these lines didn't have a chance to try to run FFGo
+under Windows (please report if you do so), he knows for sure it can be
+installed with the “Standard procedure” described a few paragraphs below.
+But before doing so, in the Python installer:
+
+  - make sure to enable the 'Tcl/tk' and 'pip' components;
+
+  - don't change the default value for the Python installation folder,
+    otherwise you are likely to run into permission problems (except for old
+    versions of Windows, writing to “Program Files”, at least, is subject to
+    special restrictions that may cause the 'pip install FFGo' step to fail);
+
+  - if you are not comfortable with the command line (“Command Prompt”), it is
+    suggested you choose “Add python.exe to Path”. This way, you will be able
+    to run pip and ffgo directly at the Command Prompt without having to
+    specify their full paths.
+
+Then, when installing FFGo and its dependencies: since there is no system
+Python on Windows, you can use pip directly on your Python installation. There
+should be *no need to create a virtual environment* for typical Windows users.
+Of course, if you are comfortable with virtual environments and want to use
+one, no problem, go ahead.
+
+Note:
 
   The “Open Log Directory” feature is not expected to work on Windows, as it
-  uses the 'xdg-open' program. However, this is not very important, you can
-  open the log directory with any file manager.
+  uses the 'xdg-open' program. However, this is not important, you can open
+  the log directory with any file manager (such as Explorer).
 
 
 Easiest procedure
 ~~~~~~~~~~~~~~~~~
 
-For the usually simplest installation method, you can omit Pillow, which is
-nice but optional—only used to display aircraft thumbnails. As for
-CondConfigParser, the standard installation method is based on pip (see
-below), but you can install it for FFGo only, using the following steps:
+It is possible to run FFGo without installing it. For this:
+  - unpack the archive wherever you want;
+  - make sure that all software requirements are met;
+  - run 'ffgo-launcher.py' with the Python interpreter you installed the
+    requirements for.
+
+The potentially difficult step here if you are not familiar with Python is the
+second one, "make sure that all software requirements are met". If you
+carefully read the instructions below about setting up a virtual environment
+and using pip inside it, you should be able to install and later upgrade
+everything easily. But if you want to cut the procedure as short as possible
+and test FFGo right away, here is how (this method requires an OS supporting
+symbolic links, therefore Windows seems not to qualify):
+
+  0. You may install Pillow through your distribution package manager; it's
+     usually easy, but entirely optional.
 
   1. Unpack the CondConfigParser archive wherever you want, under your normal
      user account:
@@ -87,39 +145,113 @@ below), but you can install it for FFGo only, using the following steps:
              ~/src/FFGo-a.b.c/condconfigparser
 
      (assuming the previous step created the ~/src/FFGo-a.b.c directory,
-     leaving the ffgo executable script at ~/src/FFGo-a.b.c/ffgo)
+     leaving an ffgo-launcher.py executable script at
+     ~/src/FFGo-a.b.c/ffgo-launcher.py)
 
-That's all! You should be able to run the ffgo executable mentioned in step 3.
-In case you need to explicitely specify the Python interpreter to use, you can
-do so with a command such as:
+That's all! You should be able to run the ffgo-launcher.py executable
+mentioned in step 3. In case you need to explicitely specify the Python
+interpreter to use, you can do so with a command such as:
 
-  python3.4 ~/src/FFGo-a.b.c/ffgo
+  python3.4 ~/src/FFGo-a.b.c/ffgo-launcher.py
 
 
 Standard procedure
 ~~~~~~~~~~~~~~~~~~
 
-This procedure makes you install FFGo's dependencies in a more standard way,
-using pip. Depending on your configuration, the initial setup may be more
-complicated, but once this first step completed, it will make it very easy to
-see when a given dependency is out of date and, if you so desire, to upgrade
-it. So, we have two remaining dependencies to install:
+The "standard procedure" is what Python users generally expect to have to do
+in order to install a Python package. In short, if you have Internet access
+and your pip is properly setup, all you have to do is 'pip install FFGo'.
+Optionally, you can also install Pillow with 'pip install Pillow', but this
+may fail if you don't have some particular software installed (see below).
 
-- CondConfigParser: if you already have a working pip setup (see appendix),
-  all you need to do is:
+Besides being cleaner in concept, the "standard procedure" makes upgrades and
+removals easier than the "easiest procedure" described above, and makes it
+very easy to see when a given dependency is out of date. For this method, you
+need to have a "working pip setup", as described in Appendix A, and the
+dependencies installed *in that environment*. Then, all you have to do is:
+
+  pip install FFGo       (which normally installs from PyPI)
+
+or
+
+  pip install /path/to/FFGo-a.b.c.tar.gz
+              (something like C:\path\to\FFGo-a.b.c.tar.gz on Windows)
+or
+
+  pip install https://url/to/FFGo-a.b.c.tar.gz
+
+or
+
+  pip install http://url/to/FFGo-a.b.c.tar.gz
+
+Note: old versions of pip don't support https.
+
+The above commands automatically pull in the required dependencies (i.e.,
+CondConfigParser, but not Pillow since it is optional). After that, you will
+have an 'ffgo' executable in the directory where pip installs scripts ('bin'
+subdirectory of the virtual environment if your pip runs in a venv, something
+such as C:\PythonXX\Scripts on Windows if you ran pip outside a venv).
+
+Note for Windows users:
+
+  If you chose “Add python.exe to Path” in the Python installer and ran pip
+  outside a venv, then the FFGo executable should also be in your PATH,
+  allowing you to run FFGo by just typing 'ffgo' (without the quotes) in a
+  Command Prompt.
+
+Upgrades can be done by simply passing '--upgrade' or '-U' to the
+'pip install' command, as in:
+
+  pip install --upgrade FFGo
+
+Uninstallation should be as easy as:
+
+  pip uninstall FFGo
+
+For more information about pip and venv.py/pyvenv, see "References" at the end
+of this document.
+
+
+Hints concerning installation of CondConfigParser and Pillow
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* CondConfigParser
+
+  As a required dependency of FFGo, CondConfigParser is automatically
+  installed when you run the command:
+
+    pip install FFGo
+
+  Therefore, you only need to explicitely install it in particular cases such
+  as when on a machine without Internet access.
+
+  If you already have a working pip setup (see appendix), all you need to do
+  is:
 
     pip install CondConfigParser
 
-- The last remaining dependency is Pillow, and it is optional (used to display
-  aircraft thumbnails). You can either get it as a package from your
-  distribution or install it yourself with pip (the package name is
-  python3-pil.imagetk in Debian, sometimes python3-imaging-tk, this depends on
-  the distribution).
+  This normally requires Internet access, downloading packages from PyPI. If
+  you are installing on a machine without Internet access, you need to have
+  somehow obtained a tarball or zip file of CondConfigParser's source code
+  first, then you can do something like:
 
-  a) In the first case (getting Pillow as a package), if you are working in a
-     virtual environment, you'll probably have to (re-)create that virtual
-     environment with the '--system-site-packages' option in order to make
-     system-installed packages visible to the virtual environment.
+    pip install /path/to/CondConfigParser-x.y.z.tar.gz
+
+  (or something like 'pip install C:\path\to\CondConfigParser-x.y.z.tar.gz'
+  on Windows)
+
+* Pillow
+
+  Pillow is optional for FFGo, only used to display aircraft thumbnails. You
+  can either get it as a package from your distribution or install it yourself
+  with pip (the package name is python3-pil.imagetk in Debian, sometimes
+  python3-imaging-tk, this depends on the distribution).
+
+  a) In the first case (getting Pillow as a system package), if you are
+     working in a virtual environment, you'll probably have to (re-)create
+     that virtual environment with the '--system-site-packages' option in
+     order to make system-installed packages visible to the virtual
+     environment.
 
   b) In the second case (installing Pillow yourself), assuming you already
      have a working pip setup (see appendix), all you need to do is:
@@ -139,9 +271,48 @@ it. So, we have two remaining dependencies to install:
 
         pip install Pillow
 
-    Of course, these are just hints; the authoritative source for this
-    installation procedure is Pillow's documentation.
+Of course, these are just hints; the authoritative source for installation
+procedures is obviously the documentation for the particular piece of software
+you want to install.
 
+-------------------------------------------------------------------------------
+
+INSTALLATION FROM THE GIT REPOSITORY
+
+First, make sure you have the following programs installed in addition to the
+dependencies listed in the README_ll file (where 'll' stands for the language
+code of your choice):
+  - GNU Make
+  - GNU gettext
+  - librsvg's rsvg-convert program
+  - ImageMagick's convert program
+
+Then download the source code:
+
+  cd /some/directory
+  git clone https://github.com/frougon/FFGo.git
+
+(alternatively, you may download a Zip-compressed snapshot of the repository
+by clicking on "Download ZIP" at <https://github.com/frougon/FFGo>)
+
+Then prepare the source (icons and translation files) with:
+
+  cd FFGo
+  make
+
+This 'make' run in the top-level directory must be done after each 'git clone'
+or 'git pull' operation. From this point on, you can follow the instructions
+given in the MANUAL INSTALLATION section.
+
+Optional:
+
+  If you have Sphinx installed and want to generate the HTML version of the
+  'README.conditional-config' document, you can run:
+
+    make doc
+
+  from the same (top-level) directory. The result will end up in
+  'docs/README.conditional-config.source/_build/html'.
 
 -------------------------------------------------------------------------------
 
@@ -164,8 +335,7 @@ in a way that is not directly visible to the user).
 All this to say that there are many ways to install Python-made software, even
 on the same operating system. Each way having its own upsides and downsides,
 this makes it difficult to give simple and clear installation instructions
-understandable by non-Pythonistas, in our case for Pillow and
-CondConfigParser.
+understandable by non-Pythonistas.
 
 The method I am giving hints about here is the one relying on the
 setuptools+pip combination, because:
@@ -268,18 +438,17 @@ one thing that requires paying attention to before doing so:
     directory, in particular 'python' and probably also 'pip' (if 'pip' is not
     present, run 'foo-venv/bin/python -m ensurepip'). Whenever you run one of
     these programs, it will use the 'foo-venv' virtual environment. Therefore,
-    if you want to install the CondConfigParser Python package inside
-    'foo-venv', you can do:
+    if you want to install FFGo inside 'foo-venv', you can do:
 
-      % foo-venv/bin/pip install CondConfigParser
+      % foo-venv/bin/pip install FFGo
 
     If you want to remove it:
 
-      % foo-venv/bin/pip uninstall CondConfigParser
+      % foo-venv/bin/pip uninstall FFGo
 
     If you want to upgrade it (-U is equivalent to --upgrade):
 
-      % foo-venv/bin/pip install --upgrade CondConfigParser
+      % foo-venv/bin/pip install --upgrade FFGo
 
     To see the list of packages seen by pip in the 'foo-venv' venv:
 
@@ -301,6 +470,7 @@ one thing that requires paying attention to before doing so:
     on Debian).
 
     Notes:
+
       - if you have many commands to run using the same venv, 'foo-venv' in
         our case, and you don't want to type the 'foo-venv/bin/' prefix every
         time, you can run 'source foo-venv/bin/activate' in your shell. Then,
@@ -308,36 +478,27 @@ one thing that requires paying attention to before doing so:
         until you run 'deactivate'. Note that this relies on a modification of
         the PATH environment variable and may need to be done differently on
         exotic shells.
+
       - if you have a 'pip', or 'pip3', or 'pip3.4'... in your PATH and want
         to know which Python installation it is bound to, simply run it with
         the '--version' option, as in 'pip --version'.
+
       - by default, a newly created venv has access to the Python standard
         library only. It is possible, however, to create venvs that have
-        access to all packages of the base installation used to create the
-        venv. In order to do this, you have to pass the
+        access to all packages of the base Python installation used to create
+        the venv. In order to do this, you have to pass the
         '--system-site-packages' option to the venv creation command, as in:
 
           % python3 -m venv --system-site-packages foo-venv
 
-    Once you have all dependencies installed in your venv, you will want to
-    run FFGo using the Python interpreter from this venv. The most
-    straightforward way to do this is to run:
+    Once you have installed FFGo and maybe Pillow in your venv, you will want
+    to run FFGo using the Python interpreter from this venv. The 'ffgo'
+    executable should be in 'foo-venv/bin'. You may run it like this:
 
-      % foo-venv/bin/python /path/to/ffgo
+      % foo-venv/bin/ffgo
 
-    After checking this works fine, you may want to create an alias for this
-    command or a launcher script such as:
-
-      #! /path/to/foo-venv/bin/python
-
-      import os, sys
-      os.execv("/path/to/ffgo", ["ffgo"] + sys.argv[1:])
-
-    or an equivalent shell script:
-
-      #! /bin/sh
-
-      exec /path/to/foo-venv/bin/python /path/to/ffgo "$@"
+    or add the full path to the 'foo-venv/bin' directory to your PATH for more
+    convenience.
 
 
 Maintenance of a virtual environment
@@ -360,49 +521,13 @@ References:
 
   - Installing Python Modules (official Python documentation)
       <https://docs.python.org/3/installing/index.html>
+  - Using Python on Windows   (official Python documentation)
+      <https://docs.python.org/3/using/windows.html>
   - pip home page
       <https://pip.pypa.io/>
   - 'venv' module of the Python standard library
       <https://docs.python.org/3/library/venv.html>
   - 'ensurepip' module of the Python standard library
       <https://docs.python.org/3/library/ensurepip.html>
-
--------------------------------------------------------------------------------
-
-INSTALLATION FROM THE GIT REPOSITORY
-
-First, make sure you have the following programs installed in addition to the
-dependencies listed in the README_ll file (where 'll' stands for the language
-code of your choice):
-  - GNU Make
-  - GNU gettext
-  - librsvg's rsvg-convert program
-  - ImageMagick's convert program
-
-Then download the source code:
-
-  cd /some/directory
-  git clone https://github.com/frougon/FFGo.git
-
-(alternatively, you may download a Zip-compressed snapshot of the repository
-by clicking on "Download ZIP" at <https://github.com/frougon/FFGo>)
-
-Then prepare the source (icons and translation files) with:
-
-  cd FFGo
-  make
-
-This 'make' run in the top-level directory must be done after each 'git clone'
-or 'git pull' operation. From this point on, you can follow the instructions
-given in the MANUAL INSTALLATION section.
-
-Optional: if you have Sphinx installed and want to generate the HTML version
-          of the 'README.conditional-config' document, you can run:
-
-            make doc
-
-          from the same (top-level) directory. The result will end up in
-          'docs/README.conditional-config.source/_build/html'.
-
 
 -- Florent Rougon <f.rougon@free.fr>

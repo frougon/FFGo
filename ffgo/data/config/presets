@@ -34,7 +34,7 @@
 #                                 automatically when it is needed.
 # BASE_FONT_SIZE=size           - Font size in points. Should be in the range
 #                                 from MIN_BASE_FONT_SIZE to MAX_BASE_FONT_SIZE
-#                                 defined in src/constants.py; or 0, which is
+#                                 defined in ffgo/constants.py; or 0, which is
 #                                 platform-dependent default size.
 # FG_AIRCRAFT=path              - Path to additional aircraft directory.
 #                                 Multiple paths, separated by a colon can be
