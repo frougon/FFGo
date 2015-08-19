@@ -1,6 +1,7 @@
 """Here are defined all global constants."""
 
 
+import os
 import platform
 from os.path import expanduser, join, pardir, normpath
 from .version import __version__ as PROGVERSION
