@@ -192,21 +192,36 @@ class ConfigWindow:
         return res
 
     def initToolTipMessages(self):
-        self.tooltip_bin = _("""Enter the path to "fgfs" file, or "run_fgfs.sh", if you are using
-download_and_compile.sh scripts.""")
-        self.tooltip_root = _("""Path to FlightGear's main directory.""")
-        self.tooltip_scenery = _("""Path to scenery. You can specify more than one path (separated by a colon)
-in order from highest to lowest layer.""")
-        self.tooltip_aircraft = _("""Path to additional aircraft directory. Multiple directories separated by
-a colon can be included. Leave it empty if you are not using additional
-aircraft directories.""")
-        self.tooltip_working_dir = _("""Optional parameter specifying FlightGear's working directory.
-That is the directory where logs or screen-shots will be saved. If left blank,
-the working directory is the user's home directory.""")
-        self.tooltip_langMenu = _("""Choose other language. If not selected,
-{prg} will try to choose the system language.""").format(prg=PROGNAME)
-        self.tooltip_aptMenu = _("""Select data source where {prg} will be looking for information about runways or
-parking positions. There are two options:
+        self.tooltip_bin = _("""\
+Enter the path to the "fgfs" executable, or "run_fgfs.sh", if you are
+using download_and_compile.sh scripts.""")
+        self.tooltip_root = _("""\
+Path to FlightGear's main data directory.
+Before FlightGear 3.6, that could be something like
+/usr/share/games/flightgear. From 3.6 onwards (i.e., after the FGData
+split), it might be something like /usr/share/games/flightgear/fgdata
+instead. This will be passed to fgfs as the value for the --fg-root=
+option. You may consult <http://wiki.flightgear.org/$FG_ROOT> for
+details.""")
+        self.tooltip_scenery = _("""\
+Path(s) to scenery directories.
+You can specify more than one path (separated by a colon) in order
+from highest to lowest priority.""")
+        self.tooltip_aircraft = _("""\
+Path(s) to additional aircraft directories.
+Multiple directories separated by a colon can be included. Leave it
+empty if you are not using additional aircraft directories.""")
+        self.tooltip_working_dir = _("""\
+Optional parameter specifying FlightGear's working directory.
+That is the directory FlightGear will be run from. It can affect the
+default location of some files created by FlightGear (screenshots...).
+If left blank, the working directory is the user's home directory.""")
+        self.tooltip_langMenu = _("""\
+Choose other language. If not selected, {prg} will try to choose the
+system language.""").format(prg=PROGNAME)
+        self.tooltip_aptMenu = _("""\
+Select data source where {prg} will be looking for information about
+runways or parking positions. There are two options:
 
 Default - {prg} will show runway numbers based on $USER_DATA_DIR/apt
     file, which is generated from FG_ROOT/Airports/apt.dat.gz
@@ -227,16 +242,20 @@ line options window to tell FlightGear to use the same data.
 
 If not sure which option you should choose, the best is to stick
 with the default setting.""").format(prg=PROGNAME)
-        self.tooltip_autoAptMenu = _("""Automatic - {prg} will try to keep track of changes of
-    FG_ROOT/Airports/apt.dat.gz file, and will rebuild its airport database
-    when need it.
+        self.tooltip_autoAptMenu = _("""\
+Automatic - {prg} will try to keep track of changes of
+    FG_ROOT/Airports/apt.dat.gz file, and will rebuild its airport
+    database when need it.
 
 Manual - "Rebuild Airport Database" button needs to be used every time
     FG_ROOT/Airports/apt.dat.gz is changed.""").format(prg=PROGNAME)
-        self.tooltip_rebuildApt = _("""Build new airport database from current FG_ROOT/Airports/apt.dat.gz.
-Useful in case when apt.dat.gz file has been updated.""")
-        self.tooltip_fontSize = _("""Set the base font size in the range from {0} to {1}. Zero is a special
-value that sets font to a platform-dependent default size.""").format(MIN_BASE_FONT_SIZE, MAX_BASE_FONT_SIZE)
+        self.tooltip_rebuildApt = _("""\
+Build new airport database from current FG_ROOT/Airports/apt.dat.gz.
+Useful when apt.dat.gz file has been updated.""")
+        self.tooltip_fontSize = _("""\
+Set the base font size in the range from {0} to {1}. Zero is a special
+value corresponding to a platform-dependent default size.""").format(
+    MIN_BASE_FONT_SIZE, MAX_BASE_FONT_SIZE)
 
     def quit(self):
         """Quit without saving."""
