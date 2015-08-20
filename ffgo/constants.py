@@ -4,10 +4,8 @@
 import os
 import platform
 from os.path import expanduser, join, pardir, normpath
-from .version import __version__ as PROGVERSION
 
-# Name of the top-level Python package, required to import .misc
-PYPKG_NAME = 'ffgo'
+from .version import __version__ as PROGVERSION
 from .misc import resourceFilename
 
 
@@ -53,8 +51,8 @@ APT_TIMESTAMP = join(USER_DATA_DIR, 'timestamp')
 
 DEFAULT_LOG_NAME = 'FlightGear.log'
 
-# Resource paths handled by pkg_resources (setuptools) must use the '/'
-# separator, regardless of the platform.
+# Resource paths handled by the pkg_resources-style API implemented in misc.py
+# must use the '/' separator, regardless of the platform.
 DEFAULT_CONFIG_STEM = 'data/config/config_' # + two-letter language code
 # Path to config file with predefined settings.
 PRESETS = 'data/config/presets'

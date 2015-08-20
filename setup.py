@@ -68,7 +68,15 @@ def do_setup():
         install_requires=['CondConfigParser'],
         extras_require = {'images':  ["Pillow"]},
         entry_points={'console_scripts': ['ffgo = ffgo.main:main']},
-        # "resource_filename() only supported for .egg, not .zip"
+        # We need real files and directories for gettext l10n files, but
+        # pkg_resources.resource_filename() doesn't work if the package is
+        # imported from a zip file ("resource_filename() only supported for
+        # .egg, not .zip"). As a consequence:
+        #   - this project can't be "zip safe" without ugly hacks;
+        #   - the pkg_resources module doesn't bring any value here; we can
+        #     happily use __file__ to find our resources, and avoid depending
+        #     on pkg_resources to spare our beloved users the hassle of
+        #     installing one more dependency.
         zip_safe=False
 )
 
