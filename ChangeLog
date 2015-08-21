@@ -5,7 +5,7 @@ in the file 'ChangeLog.FGo'.
 
 ******************************************************************************
 
-1.0.0b3
+1.0.0
 [FEATURE] Import the code from FGo! 1.5.5 onwards (Python 2 at that time)
           into a Git repository. (Florent Rougon)
 [FEATURE] Port the code to Python 3. (Robert)
@@ -110,3 +110,24 @@ in the file 'ChangeLog.FGo'.
 [BUGFIX]  Include FFGo.pot in release tarballs. It is not needed by FFGo, but
           may be useful for people wanting to add new translations.
           (Florent Rougon)
+[FEATURE] Add Setuptools packaging. This will make it easier (once you have
+          learnt how to use pip) to install, upgrade, remove, or check when
+          FFGo or one of its dependencies has a newer upstream version. Please
+          read docs/INSTALL/INSTALL_en for user-level details and the Git log
+          for developer-level details. This change impacts a lot of files.
+          The top-level 'src' directory is renamed to 'ffgo' (necessary to be
+          able to install FFGo with 'pip install --editable'). The 'data'
+          top-level directory is not top-level anymore: moved under the
+          top-level 'ffgo' directory. This should improve FFGo's portability
+          to non-Linux platforms with a minimum of platform-specific code.
+          (Florent Rougon)
+[BUGFIX]  Fix missing import for a Windows-specific code path (this prevented
+          FFGo from starting under Windows; I hope that is the last remaining
+          problem of this kind on Windows. I definitely need testers for this
+          platform. Please report on your experiences!). (Florent Rougon)
+[USABILITY] Improve tooltips of the Preferences dialog. (Florent Rougon)
+[USABILITY] Use CRLF line endings for the top-level README.rst file as well as
+            for docs/INSTALL/INSTALL_* because the Windows Notepad program
+            used not to be able to read LF line endings (ahem). Is it still
+            the case in 2015? These files should be enough to get users
+            started. (Florent Rougon)

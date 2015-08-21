@@ -1,7 +1,7 @@
 INFORMATION FOR PACKAGERS
 
-As of version 1.0.0rc1, FFGo is packaged with Setuptools and can thus be
-handled in a similar way to most other Python packages distributed on PyPI.
+As of version 1.0.0, FFGo is packaged with Setuptools and can thus be handled
+in a similar way to most other Python packages distributed on PyPI.
 
 Note: the following advice (mostly inherited from FGo!) is more suited to
       private system-wide installations on Unix-like systems than to
