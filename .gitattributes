@@ -6,6 +6,7 @@
 *.py                           text
 *.txt                          text
 *.rst                          text
+/README.rst                    text eol=crlf
 *.xml                          text
 *.desktop                      text
 *.svg                          text
@@ -14,8 +15,11 @@
 *.gif                          binary
 *.bat                          text eol=crlf
 /docs/*                        text
+/docs/INSTALL/INSTALL_*        text eol=crlf
 AUTHORS                        text
 COPYING                        text
 COPYING.*                      text
 README.*                       text
 Makefile                       text
+ChangeLog                      text
+ChangeLog.*                    text
