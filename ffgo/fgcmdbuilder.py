@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright (c) 2014, 2015  Florent Rougon
-# Copyright (c) 2015        Robert Leda
 #
 # This file is distributed under the terms of the DO WHAT THE FUCK YOU WANT TO
 # PUBLIC LICENSE version 2, dated December 2004, by Sam Hocevar. You should
@@ -176,26 +175,32 @@ class FGCommandBuilder:
 
     def getUIExposedOptions(self):
         options = []
-        options.append('--fg-root=' + self.app.config.FG_root.get())
-        options.append('--aircraft=' + self.app.config.aircraft.get())
-        if self.app.config.carrier.get() != 'None':
-            options.append('--carrier=' + self.app.config.carrier.get())
-        if self.app.config.airport.get() != 'None':
-            options.append('--airport=' + self.app.config.airport.get())
-        if self.app.config.park.get() != 'None':
-            options.append('--parkpos=' + self.app.config.park.get())
+        # --fg-aircraft may be split into several options, as for
+        # --ai-scenario, but that doesn't seem to be necessary (tested with FG
+        # 3.5, commit 2496bdecfad733bf69c58474939d4a831cc16d46).
+        for opt, cfg in (('--fg-root=', self.app.config.FG_root.get()),
+                         ('--fg-aircraft=',
+                          self.app.config.FG_aircraft.get())):
+            if cfg:
+                options.append(opt + cfg)
+
+        scenery_dirs = self.app.config.FG_scenery.get()
+        if scenery_dirs and scenery_dirs != 'None':
+            options.append('--fg-scenery=' + scenery_dirs)
+
+        for opt, cfg in (('--aircraft=', self.app.config.aircraft.get()),
+                         ('--carrier=', self.app.config.carrier.get()),
+                         ('--airport=', self.app.config.airport.get()),
+                         ('--parkpos=', self.app.config.park.get())):
+            if cfg != 'None':
+                options.append(opt + cfg)
+
         if self.app.config.rwy.get() != 'Default':
             options.append('--runway=' + self.app.config.rwy.get())
         if self.app.config.scenario.get() != '':
             for scenario in self.app.config.scenario.get().split():
                 options.append('--ai-scenario=' + scenario)
-        if self.app.config.FG_aircraft.get() != '':
-            # This one may be split into several options, as for --ai-scenario,
-            # but that doesn't seem to be necessary (tested with FG 3.5
-            # 2496bdecfad733bf69c58474939d4a831cc16d46).
-            options.append('--fg-aircraft=' + self.app.config.FG_aircraft.get())
-        if self.app.config.FG_scenery.get() != 'None':
-            options.append('--fg-scenery=' + self.app.config.FG_scenery.get())
+
         return options
 
     def update(self):
