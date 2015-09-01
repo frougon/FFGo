@@ -244,6 +244,8 @@ class Config:
         self.FG_working_dir.set('')
         self.language.set('')
         self.baseFontSize.set(DEFAULT_BASE_FONT_SIZE)
+        self.showFGCommand.set('1')
+        self.showFGOutput.set('1')
         self.park.set('None')
         self.rwy.set('Default')
         self.scenario.set('')
