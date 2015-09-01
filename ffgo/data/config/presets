@@ -50,7 +50,29 @@
 #                                 if not set.
 # WINDOW_GEOMETRY=widthxheight  - Specific window geometry. Use only if you
 #                                 are not satisfied with default window size.
-#
+# SHOW_FG_COMMAND=boolean       - 0 or 1 (defaults to 1). Show the arguments
+#                                 that will be passed to fgfs, the FlightGear
+#                                 executable.
+# SHOW_FG_COMMAND_IN_SEPARATE_WINDOW=boolean
+#                               - 0 or 1 (defaults to 0). If the arguments
+#                                 that will be passed to fgfs are to be
+#                                 displayed, do it in a separate window instead
+#                                 of the main FFGo window.
+# FG_COMMAND_GEOMETRY=widthxheight+x+y
+#                               - Window geometry specification for the
+#                                 Commmand Window. Set this only if you are not
+#                                 satisfied with the default window geometry.
+# SHOW_FG_OUTPUT=boolean        - 0 or 1 (defaults to 1). Show the output
+#                                 (sdtout and stderr) of fgfs, the FlightGear
+#                                 executable.
+# SHOW_FG_OUTPUT_IN_SEPARATE_WINDOW=boolean
+#                               - 0 or 1 (defaults to 0). If the fgfs output is
+#                                 to be displayed, do it in a separate window
+#                                 instead of the main FFGo window.
+# FG_OUTPUT_GEOMETRY=widthxheight+x+y
+#                               - Window geometry specification for the
+#                                 Output Window. Set this only if you are not
+#                                 satisfied with the default window geometry.
 #
 # Any number of options can be selected, but to get FFGo ready to work,
 # you only need:
