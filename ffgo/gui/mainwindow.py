@@ -1078,8 +1078,13 @@ class App:
         self.runFGLock.release()
 
     def saveWindowsGeometry(self):
-        # Save the size of the main window.
-        geometry = self.master.geometry().split('+')[0]
+        if self.config.saveWindowPosition.get():
+            # Save the size and position of the main window.
+            geometry = self.master.geometry()
+        else:
+            # Save the size of the main window but not its position (behavior
+            # of FGo! 1.5.5).
+            geometry = self.master.geometry().split('+')[0]
         self.config.mainWindowGeometry.set(geometry)
 
         if self.FGCommand.visible and self.FGCommand.windowDetached:

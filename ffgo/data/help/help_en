@@ -214,6 +214,15 @@ TIPS & TRICKS
 
 * Window dimensions are saved when the "Save & Quit" button is clicked.
 
+  More precisely, for the Command Window and Output Window, the whole
+  geometry is always saved, i.e.: the size and offsets from the screen
+  borders of each of these windows. For the main window, you can choose
+  in the Preferences dialog (“Remember the main window position”)
+  whether you want only the size to be saved, or the whole geometry. The
+  first option corresponds to the behavior of FGo! 1.5.5, maybe it is
+  suitable for tiling window managers? The second option is the default
+  setting in FFGo.
+
 -------------------------------------------------------------------------------
 
 KNOWN BUGS AND LIMITATIONS

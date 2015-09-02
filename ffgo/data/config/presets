@@ -48,8 +48,14 @@
 # LANG=lang_code                - Use short language code, e.g.: en, de, fr, es
 #                                 FFGo will try to use system system language
 #                                 if not set.
-# WINDOW_GEOMETRY=widthxheight  - Specific window geometry. Use only if you
+# WINDOW_GEOMETRY=widthxheight or widthxheight+x+y
+#                               - Geometry of the main window. Use only if you
 #                                 are not satisfied with default window size.
+# SAVE_WINDOW_POSITION=boolean  - 0 or 1 (defaults to 1). If 0, then only the
+#                                 size of the main window is saved in
+#                                 WINDOW_GEOMETRY; otherwise, both its size
+#                                 and the offsets from the screen borders are
+#                                 saved.
 # SHOW_FG_COMMAND=boolean       - 0 or 1 (defaults to 1). Show the arguments
 #                                 that will be passed to fgfs, the FlightGear
 #                                 executable.

@@ -256,6 +256,10 @@ Useful when apt.dat.gz file has been updated.""")
 Set the base font size in the range from {0} to {1}. Zero is a special
 value corresponding to a platform-dependent default size.""").format(
     MIN_BASE_FONT_SIZE, MAX_BASE_FONT_SIZE)
+        self.tooltip_rememberMainWinPos = _("""\
+When saving the configuration, don't store the main window size only,
+but also its position (i.e., the offsets from the screen borders).
+When this option is unchecked, only the main window size is stored.""")
 
     def quit(self):
         """Quit without saving."""
@@ -546,3 +550,15 @@ value corresponding to a platform-dependent default size.""").format(
                                  command=self.config.rebuildApt)
         ToolTip(self.rebuildApt, self.tooltip_rebuildApt)
         self.rebuildApt.pack(side='top', fill='x')
+
+        self.frame_misc_5 = Frame(self.frame_misc, borderwidth=8)
+        self.frame_misc_5.pack(side='top', fill='x', expand=True)
+        self.frame_misc_51 = Frame(self.frame_misc_5)
+        self.frame_misc_51.pack(side='top', fill='x', expand=True)
+
+        self.rememberMainWinPos = Checkbutton(
+            self.frame_misc_51,
+            text=_('Remember the main window position'),
+            variable=self.config.saveWindowPosition)
+        ToolTip(self.rememberMainWinPos, self.tooltip_rememberMainWinPos)
+        self.rememberMainWinPos.pack(side='left', fill='x')
