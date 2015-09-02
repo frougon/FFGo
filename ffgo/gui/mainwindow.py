@@ -1073,7 +1073,7 @@ class App:
     def saveWindowsGeometry(self):
         # Save the size of the main window.
         geometry = self.master.geometry().split('+')[0]
-        self.config.window_geometry.set(geometry)
+        self.config.mainWindowGeometry.set(geometry)
 
         if self.FGCommand.visible and self.FGCommand.windowDetached:
             self.FGCommand.saveGeometry()

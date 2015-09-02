@@ -64,7 +64,7 @@ class Config:
         self.park = StringVar()
         self.rwy = StringVar()
         self.scenario = StringVar()
-        self.window_geometry = StringVar()
+        self.mainWindowGeometry = StringVar()
         self.baseFontSize = StringVar()
         self.TkDefaultFontSize = IntVar()
 
@@ -92,7 +92,7 @@ class Config:
                          'FG_WORKING_DIR=': self.FG_working_dir,
                          'FILTER_APT_LIST=': self.filtredAptList,
                          'LANG=': self.language,
-                         'WINDOW_GEOMETRY=': self.window_geometry,
+                         'WINDOW_GEOMETRY=': self.mainWindowGeometry,
                          'BASE_FONT_SIZE=': self.baseFontSize,
                          'SHOW_FG_COMMAND=': self.showFGCommand,
                          'SHOW_FG_COMMAND_IN_SEPARATE_WINDOW=':
