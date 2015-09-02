@@ -1,12 +1,20 @@
-ffgo.svg was created by Florent Rougon with Inkscape, from the following
-openclipart icon:
+* ffgo.svg was created by Florent Rougon with Inkscape, from the following
+  openclipart icon:
 
-  https://openclipart.org/detail/190981/helicopter
+    https://openclipart.org/detail/190981/helicopter
 
-which, according to <https://openclipart.org/share>, is in the public domain.
-The resulting derived work is also released in the public domain and, if/where
-not applicable:
+  which, according to <https://openclipart.org/share>, is distributed under
+  the terms of the CC0 1.0 Universal license (which should be as close as
+  possible to public domain for the concerned juridiction(s)).
 
-  Copyright (C) 2015  Florent Rougon
-  License: DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE version 2, dated
-           December 2004
+  The derived work ffgo.svg is also distributed under the terms of the CC0 1.0
+  Universal license. To the extent possible under law, Florent Rougon has waived
+  all copyright and related or neighboring rights to ffgo.svg. This work is
+  published from France.
+
+  You should have received a copy of the CC0 1.0 Universal license along with
+  FFGo, otherwise see <http://creativecommons.org/publicdomain/zero/1.0/>.
+
+* The various ffgo.png files under the directory containing this file are
+  derived from ffgo.svg by simple, automated conversion. They are all
+  distributed under the same terms as ffgo.svg.

@@ -5,18 +5,19 @@
   License: DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE version 2, dated
            December 2004
 
-* thumnail-not-avail.png is derived from thumbnail-not-avail.xcf by simple
- conversion. It is distributed under the same terms as
- thumbnail-not-avail.xcf.
+* thumnail-not-avail.png is derived from thumbnail-not-avail.xcf by simple,
+  automated conversion. It is distributed under the same terms as
+  thumbnail-not-avail.xcf.
 
 * thumbnail-no-Pillow.svg was created by Florent Rougon, trivially derived
-  from share/icons/scalable/ffgo.svg. It is distributed under the following
-  terms:
+  from share/icons/scalable/ffgo.svg. It is distributed under the terms of the
+  CC0 1.0 Universal license. To the extent possible under law, Florent Rougon
+  has waived all copyright and related or neighboring rights to
+  thumbnail-no-Pillow.svg. This work is published from France.
 
-  Copyright (C) 2015  Florent Rougon
-  License: DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE version 2, dated
-           December 2004
+  You should have received a copy of the CC0 1.0 Universal license along with
+  FFGo, otherwise see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-* thumnail-no-Pillow.gif is derived from thumbnail-no-Pillow.svg by simple
-  conversion. It is distributed under the same terms as
+* thumnail-no-Pillow.gif is derived from thumbnail-no-Pillow.svg by simple,
+  automated conversion. It is distributed under the same terms as
   thumbnail-no-Pillow.svg.

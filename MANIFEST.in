@@ -2,6 +2,7 @@ global-include COPYING COPYING.*
 include README.rst ChangeLog ChangeLog.*
 include ffgo-launcher.py Makefile shared.mk MANIFEST.in
 
+graft other-licenses
 graft docs
 # Make sure the built doc has been copied to this place
 # (yes, this is normally redundant with 'graft docs')
