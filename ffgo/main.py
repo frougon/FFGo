@@ -74,11 +74,6 @@ def run(master):
     # Initialize main window.
     app = App(master, config)
 
-    # Set window resolution.
-    mainWindowGeometry = config.mainWindowGeometry.get()
-    if mainWindowGeometry:
-        master.geometry(mainWindowGeometry)
-
     # Override the window close button in order to allow a controlled, clean
     # shutdown.
     master.protocol("WM_DELETE_WINDOW", app.quit)

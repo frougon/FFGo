@@ -847,6 +847,12 @@ class App:
         else:
             self.resetCarrier()
 
+        # Restore the main window geometry
+        mainWindowGeometry = self.config.mainWindowGeometry.get()
+        if mainWindowGeometry:
+            self.master.geometry(mainWindowGeometry)
+
+        # Restore the state and geometry of other windows
         for manager, meth in ((self.FGOutput, self.changeFGOutputConfig),
                               (self.FGCommand, self.changeFGCommandConfig)):
             # Show/hidden and detached/integrated state of FGOutput and
@@ -855,6 +861,7 @@ class App:
             # Geometry if applicable
             if manager.visible and manager.windowDetached:
                 manager.restoreGeometry()
+
         # Update the fgfs argument list preview (“Command window”)
         self.FGCommand.update()
 
