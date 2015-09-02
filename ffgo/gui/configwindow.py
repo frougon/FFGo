@@ -194,7 +194,9 @@ class ConfigWindow:
     def initToolTipMessages(self):
         self.tooltip_bin = _("""\
 Enter the path to the "fgfs" executable, or "run_fgfs.sh", if you are
-using download_and_compile.sh scripts.""")
+using download_and_compile.sh scripts.
+
+Note: this path corresponds to FG_BIN in the configuration file.""")
         self.tooltip_root = _("""\
 Path to FlightGear's main data directory.
 Before FlightGear 3.6, that could be something like
