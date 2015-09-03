@@ -24,23 +24,8 @@ which allows many interesting things as shown at:
 Screenshots
 -----------
 
-.. figure:: screenshot1.png
-   :target: http://people.via.ecp.fr/~flo/projects/FFGo/screenshots/screenshot1.png
-   :alt: screenshot with the Command Window integrated into the main window
-
-   Screenshot with the Command Window integrated into the main window
-
-   In this first screenshot, the font size is a bit too large to let a
-   descent amount of space available for the Command Window (at the
-   bottom, in gray). But just as the Output Window, it can be detached
-   from the main window: see the next screenshot.
-
-.. figure:: screenshot2.png
-   :target: http://people.via.ecp.fr/~flo/projects/FFGo/screenshots/screenshot2.png
-   :alt: screenshot with the Command Window detached from the main window
-
-   Screenshot with the Command Window detached from the main window
-
+Screenshots are available from the `FFGo home page
+<http://people.via.ecp.fr/~flo/projects/FFGo/>`_.
 
 .. _end-of-intro:
 
