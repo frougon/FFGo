@@ -101,11 +101,67 @@ FFGo is maintained in a `Git repository
   git clone https://github.com/frougon/FFGo.git
 
 
+Debian packages
+---------------
+
+If you use Debian_, the first thing to do is, as usual, to check whether
+there is an ``ffgo`` package in Debian proper. If not (which is the case
+at the time of this writing), you can still install FFGo and its
+dependencies with a simple::
+
+  apt-get install ffgo
+
+or
+
+::
+
+  aptitude install ffgo
+
+etc. depending on your package manager of choice. For this to work, you
+only need to add the following lines to your ``/etc/apt/sources.list``
+(given for Debian *unstable* here)::
+
+  deb http://people.via.ecp.fr/~flo/debian-ffgo unstable main
+  deb-src http://people.via.ecp.fr/~flo/debian-ffgo unstable main
+
+Packages for Debian *stable* are also available. If this is what you
+need, just replace *unstable* with *jessie*, or whatever is the
+codename of the current Debian *stable* release, in these
+``sources.list`` lines.
+
+Don't forget to run::
+
+  apt-get update
+
+(or ``aptitude update``, etc.) after adding the two lines, otherwise the
+package manager won't find the packages available from the newly-added
+repository.
+
+Notes:
+
+  - The ``ffgo`` package recommends ``python3-pil.imagetk``. This
+    package is available in Debian_. If you don't install it, FFGo will
+    still work but you won't be able to see the aircraft thumbnails.
+
+  - The ``deb-src`` line in ``/etc/apt/sources.list`` is useful if you
+    want to be able to run::
+
+      apt-get source ffgo
+
+    or similar for its dependencies available from the repository given
+    above (currently and for the foreseeable future, only
+    CondConfigParser_). Otherwise, you may safely omit that line.
+
+.. _Debian: https://www.debian.org/
+
+
 Installation
 ------------
 
 The detailed installation guide for FFGo is in the ``docs/INSTALL``
 directory in any release tarball or zip file. In short:
+
+  - If you are using Debian_, please see above.
 
   - FFGo may be run without installation, provided that all software
     requirements are installed.
@@ -131,6 +187,10 @@ directory in any release tarball or zip file. In short:
 Running
 -------
 
+- If you've installed FFGo using a ready-made package (Linux or BSD
+  distribution, etc.), just run ``ffgo`` from the command line, or
+  choose FFGo in your desktop menu, etc.
+
 - If you chose to run FFGo without installing it:
 
   From your file manager, you may click on the ``ffgo-launcher.py`` file
@@ -150,6 +210,10 @@ Running
   how you ran pip (inside or outside a venv, etc.). More details are
   given in ``docs/INSTALL``, and if this is not enough, please refer to
   the `pip`_ documentation.
+
+In any case, it is suggested that you skim through the available help
+from the Help menu after you start FFGo. This will direct you to the
+important first-time settings, hopefully give you useful tips, etc.
 
 
 Documentation

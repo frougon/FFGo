@@ -19,9 +19,13 @@ Contents
 
 READY-TO-USE PACKAGES
 
-It may be that your distribution offers a ready-to-use package of FFGo. Please
-check on its website and contact me (email address at the end of this file) if
-this is the case to allow me to mention it here.
+Debian packages for FFGo and its dependencies are available, see README.rst
+for specific instructions (or, equivalently, the FFGo home page at
+<http://people.via.ecp.fr/~flo/projects/FFGo/>).
+
+Apart from Debian, it may be that your distribution offers a ready-to-use
+package of FFGo. Please check on its website and contact me (email address at
+the end of this file) if this is the case to allow me to mention it here.
 
 -------------------------------------------------------------------------------
 
@@ -57,28 +61,34 @@ Let's examine them one by one:
 
 - CondConfigParser is straightforward to install once you have a "working pip
   setup" (cf. Appendix A): all that is needed is to run
-  'pip install CondConfigParser'.
+  'pip install CondConfigParser'. Otherwise, it is available as a Debian
+  package, see its home page for details.
 
 - Pillow can be installed similarly ('pip install Pillow'), but this will only
   work if you have already installed the software required to compile Pillow.
   An alternative is to use a Pillow package from your distribution (for
   instance, Pillow is shipped as python3-pil.imagetk in Debian).
 
-  The tricky part in the latter case is to make sure *all* dependencies are
-  available to the *same* Python interpreter. One way to do that is to install
-  CondConfigParser in a virtual environment created with the
-  '--system-site-packages' option and the other packages via your
-  distribution's package manager (until CondConfigParser is packaged for your
-  distribution, at which point a virtual environment won't be needed anymore).
+  The potentially tricky part in the latter case is to make sure *all*
+  dependencies are available to the *same* Python interpreter. For Debian, it
+  is easy since all dependencies are available as Debian packages, and even
+  FFGo itself actually. Otherwise, supposing for instance that you wanted to
+  install all dependencies but CondConfigParser as Debian packages, one way to
+  do that could be to install CondConfigParser in a virtual environment
+  created with the '--system-site-packages' option and the other packages via
+  your distribution package manager. I am not pretending this would be
+  particularly useful now that there are Debian packages for FFGo and
+  CondConfigParser; this is only to give non-Debian users ideas of what can be
+  done to install the dependencies as easily as possible.
 
 
 Tips for Windows users
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Although the author of these lines didn't have a chance to try to run FFGo
+Although the author of these lines didn't have a chance to run FFGo himself
 under Windows (please report if you do so), he knows for sure it can be
-installed with the “Standard procedure” described a few paragraphs below.
-But before doing so, in the Python installer:
+installed and run with the “Standard procedure” described a few paragraphs
+below. But before doing so, in the Python installer:
 
   - make sure to enable the 'Tcl/tk' and 'pip' components;
 
@@ -103,6 +113,9 @@ Note:
   The “Open Log Directory” feature is not expected to work on Windows, as it
   uses the 'xdg-open' program. However, this is not important, you can open
   the log directory with any file manager (such as Explorer).
+
+For Windows-specific instructions concerning Python installation and use, you
+may refer to <https://docs.python.org/3/using/windows.html>.
 
 
 Easiest procedure
@@ -225,8 +238,10 @@ Hints concerning installation of CondConfigParser and Pillow
   Therefore, you only need to explicitely install it in particular cases such
   as when on a machine without Internet access.
 
-  If you already have a working pip setup (see appendix), all you need to do
-  is:
+  You may get it as a package from your distribution if it's available (for
+  Debian, there is a package called python3-condconfigparser, cf. the
+  CondConfigParser home page). Otherwise, supposing you already have a working
+  pip setup (see appendix), all you need to do is:
 
     pip install CondConfigParser
 
