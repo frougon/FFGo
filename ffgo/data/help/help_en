@@ -53,9 +53,11 @@ rest is optional.
 
 Tip: Hover the mouse pointer over any option to see its description.
 
-Changes in the "FlightGear settings" tab are applied immediately after
-clicking on "Save Settings" button, however changes in other tabs may
-require restarting FFGo for them to be applied.
+Changes in the "FlightGear settings" tab are immediately applied after
+clicking on the "Save Settings" button, however changes in other tabs
+may require restarting FFGo for them to be applied. Most notably,
+changing the interface language requires restarting FFGo to be fully
+effective---as far as the chosen translation is complete, of course.
 
 -------------------------------------------------------------------------------
 
