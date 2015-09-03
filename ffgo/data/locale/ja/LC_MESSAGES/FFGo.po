@@ -6,9 +6,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: FFGo 1.0.0\n"
+"Project-Id-Version: FFGo 1.1.0\n"
 "Report-Msgid-Bugs-To: f.rougon@free.fr\n"
-"POT-Creation-Date: 2015-08-21 09:38+0200\n"
+"POT-Creation-Date: 2015-09-03 20:10+0200\n"
 "PO-Revision-Date: 2014-11-09 16:40+0900\n"
 "Last-Translator: AOKI kiyohito <sambar.fgfs@gmail.com>\n"
 "Language-Team: FlightGear.jpn.org\n"
@@ -52,23 +52,23 @@ msgstr ""
 "        ここをクリックすると、選択した(or 至近の)空港の気象通報をダウンロード"
 "します。        "
 
-#: ffgo/gui/configwindow.py:31 ffgo/gui/configwindow.py:273
-#: ffgo/gui/configwindow.py:516
+#: ffgo/gui/configwindow.py:31 ffgo/gui/configwindow.py:279
+#: ffgo/gui/configwindow.py:522
 msgid "Scenery"
 msgstr "シーナリー"
 
-#: ffgo/gui/configwindow.py:33 ffgo/gui/configwindow.py:498
-#: ffgo/gui/configwindow.py:516 ffgo/gui/mainwindow.py:97
+#: ffgo/gui/configwindow.py:33 ffgo/gui/configwindow.py:504
+#: ffgo/gui/configwindow.py:522 ffgo/gui/mainwindow.py:97
 #: ffgo/gui/mainwindow.py:660
 msgid "Default"
 msgstr "デフォルト"
 
-#: ffgo/gui/configwindow.py:36 ffgo/gui/configwindow.py:278
-#: ffgo/gui/configwindow.py:533
+#: ffgo/gui/configwindow.py:36 ffgo/gui/configwindow.py:284
+#: ffgo/gui/configwindow.py:539
 msgid "Automatic"
 msgstr "自動"
 
-#: ffgo/gui/configwindow.py:38 ffgo/gui/configwindow.py:533
+#: ffgo/gui/configwindow.py:38 ffgo/gui/configwindow.py:539
 msgid "Manual"
 msgstr "手動"
 
@@ -76,11 +76,11 @@ msgstr "手動"
 msgid "Preferences"
 msgstr "詳細設定"
 
-#: ffgo/gui/configwindow.py:69 ffgo/gui/configwindow.py:341
+#: ffgo/gui/configwindow.py:69 ffgo/gui/configwindow.py:347
 msgid "FlightGear settings"
 msgstr "FlightGear の設定"
 
-#: ffgo/gui/configwindow.py:74 ffgo/gui/configwindow.py:459
+#: ffgo/gui/configwindow.py:74 ffgo/gui/configwindow.py:465
 msgid "Miscellaneous"
 msgstr "雑多な設定"
 
@@ -92,15 +92,15 @@ msgstr "設定を保存"
 msgid "Cancel"
 msgstr "キャンセル"
 
-#: ffgo/gui/configwindow.py:120 ffgo/gui/configwindow.py:352
+#: ffgo/gui/configwindow.py:120 ffgo/gui/configwindow.py:358
 msgid "Path to executable file:"
 msgstr "実行ファイルへのパス:"
 
-#: ffgo/gui/configwindow.py:156 ffgo/gui/configwindow.py:417
+#: ffgo/gui/configwindow.py:156 ffgo/gui/configwindow.py:423
 msgid "Additional aircraft path:"
 msgstr "追加の航空機データのパス:"
 
-#: ffgo/gui/configwindow.py:168 ffgo/gui/configwindow.py:439
+#: ffgo/gui/configwindow.py:168 ffgo/gui/configwindow.py:445
 msgid "Working directory (optional):"
 msgstr "作業フォルダ (オプション):"
 
@@ -108,12 +108,14 @@ msgstr "作業フォルダ (オプション):"
 #, fuzzy
 msgid ""
 "Enter the path to the \"fgfs\" executable, or \"run_fgfs.sh\", if you are\n"
-"using download_and_compile.sh scripts."
+"using download_and_compile.sh scripts.\n"
+"\n"
+"Note: this path corresponds to FG_BIN in the configuration file."
 msgstr ""
 "\"fgfs\" ファイル (download_and_compile.shスクリプトを使用している場合は "
 "\"run_fgfs.sh\" ファイル) へのパスを入力してください。"
 
-#: ffgo/gui/configwindow.py:198
+#: ffgo/gui/configwindow.py:200
 msgid ""
 "Path to FlightGear's main data directory.\n"
 "Before FlightGear 3.6, that could be something like\n"
@@ -124,7 +126,7 @@ msgid ""
 "details."
 msgstr ""
 
-#: ffgo/gui/configwindow.py:206
+#: ffgo/gui/configwindow.py:208
 #, fuzzy
 msgid ""
 "Path(s) to scenery directories.\n"
@@ -134,7 +136,7 @@ msgstr ""
 "シーナリーへのパスを入力してください。優先度の高い順からコロン(:)で区切って複"
 "数のパスを指定できます。"
 
-#: ffgo/gui/configwindow.py:210
+#: ffgo/gui/configwindow.py:212
 #, fuzzy
 msgid ""
 "Path(s) to additional aircraft directories.\n"
@@ -145,7 +147,7 @@ msgstr ""
 "区切って複数のパスを指定できます。\n"
 "追加の航空機フォルダを使用しない場合、空欄にしておいてください。"
 
-#: ffgo/gui/configwindow.py:214
+#: ffgo/gui/configwindow.py:216
 #, fuzzy
 msgid ""
 "Optional parameter specifying FlightGear's working directory.\n"
@@ -157,7 +159,7 @@ msgstr ""
 "これはログやスクリーンショットの保存先になります。\n"
 "もし空欄の場合、ユーザーのホームディレクトリが作業ディレクトリになります。"
 
-#: ffgo/gui/configwindow.py:219
+#: ffgo/gui/configwindow.py:221
 #, fuzzy, python-brace-format
 msgid ""
 "Choose other language. If not selected, {prg} will try to choose the\n"
@@ -166,7 +168,7 @@ msgstr ""
 "言語を選択してください。選択されていない場合、FGo! はシステムで設定されている"
 "言語を使うことを試みます。"
 
-#: ffgo/gui/configwindow.py:222
+#: ffgo/gui/configwindow.py:224
 #, fuzzy, python-brace-format
 msgid ""
 "Select data source where {prg} will be looking for information about\n"
@@ -216,7 +218,7 @@ msgstr ""
 "あなたがどのオプションを選択すべきかはっきり分からない場合、 \"デフォルト\" "
 "セッティングを使用してください。"
 
-#: ffgo/gui/configwindow.py:245
+#: ffgo/gui/configwindow.py:247
 #, fuzzy, python-brace-format
 msgid ""
 "Automatic - {prg} will try to keep track of changes of\n"
@@ -232,7 +234,7 @@ msgstr ""
 "手動 - FG_ROOT/Airports/apt.dat.gz が変更される毎に、\"空港データベースの再構"
 "築\"  ボタンを押す必要があります。"
 
-#: ffgo/gui/configwindow.py:252
+#: ffgo/gui/configwindow.py:254
 #, fuzzy
 msgid ""
 "Build new airport database from current FG_ROOT/Airports/apt.dat.gz.\n"
@@ -241,7 +243,7 @@ msgstr ""
 "現在の FG_ROOT/Airports/apt.dat.gz から新しい空港データベースを構築します。\n"
 "apt.dat.gzが最新の場合に有用です。"
 
-#: ffgo/gui/configwindow.py:255
+#: ffgo/gui/configwindow.py:257
 #, fuzzy, python-brace-format
 msgid ""
 "Set the base font size in the range from {0} to {1}. Zero is a special\n"
@@ -250,31 +252,42 @@ msgstr ""
 "基本的な文字サイズを {0} から {1} の間で設定してください。 0は文字サイズをプ"
 "ラットフォームでのデフォルトサイズにする特別な値です。"
 
-#: ffgo/gui/configwindow.py:363 ffgo/gui/configwindow.py:384
-#: ffgo/gui/configwindow.py:405 ffgo/gui/configwindow.py:428
-#: ffgo/gui/configwindow.py:450
+#: ffgo/gui/configwindow.py:261
+msgid ""
+"When saving the configuration, don't store the main window size only,\n"
+"but also its position (i.e., the offsets from the screen borders).\n"
+"When this option is unchecked, only the main window size is stored."
+msgstr ""
+
+#: ffgo/gui/configwindow.py:369 ffgo/gui/configwindow.py:390
+#: ffgo/gui/configwindow.py:411 ffgo/gui/configwindow.py:434
+#: ffgo/gui/configwindow.py:456
 msgid "Find"
 msgstr "探す"
 
-#: ffgo/gui/configwindow.py:468
+#: ffgo/gui/configwindow.py:474
 msgid "Change language:"
 msgstr "言語を変更:"
 
-#: ffgo/gui/configwindow.py:480
+#: ffgo/gui/configwindow.py:486
 msgid "Font size:"
 msgstr "文字サイズ:"
 
-#: ffgo/gui/configwindow.py:511
+#: ffgo/gui/configwindow.py:517
 msgid "Airport data source:"
 msgstr "空港データのソース:"
 
-#: ffgo/gui/configwindow.py:528
+#: ffgo/gui/configwindow.py:534
 msgid "Airport database update:"
 msgstr "空港データベースの更新:"
 
-#: ffgo/gui/configwindow.py:545
+#: ffgo/gui/configwindow.py:551
 msgid "Rebuild Airport Database"
 msgstr "空港データベースを再構築"
+
+#: ffgo/gui/configwindow.py:563
+msgid "Remember the main window position"
+msgstr ""
 
 #: ffgo/gui/mainwindow.py:86
 #, python-brace-format
@@ -366,7 +379,7 @@ msgid "Tools"
 msgstr "ツール"
 
 #: ffgo/gui/mainwindow.py:152 ffgo/gui/mainwindow.py:155
-#: ffgo/gui/mainwindow.py:1207
+#: ffgo/gui/mainwindow.py:1219
 msgid "Help"
 msgstr "ヘルプ"
 
@@ -378,7 +391,7 @@ msgstr "このプログラムについて"
 msgid "Clear"
 msgstr "クリア"
 
-#: ffgo/gui/mainwindow.py:213 ffgo/gui/mainwindow.py:865
+#: ffgo/gui/mainwindow.py:213 ffgo/gui/mainwindow.py:872
 msgid "Airport:"
 msgstr "空港:"
 
@@ -441,27 +454,27 @@ msgstr "設定ファイル"
 msgid "OK"
 msgstr "OK"
 
-#: ffgo/gui/mainwindow.py:913
+#: ffgo/gui/mainwindow.py:920
 msgid "Sorry!"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:914
+#: ffgo/gui/mainwindow.py:921
 msgid ""
 "FlightGear is already running and we'd rather not run two instances "
 "simultaneously under the same account."
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:917 ffgo/gui/mainwindow.py:949
-#: ffgo/gui/mainwindow.py:1472 ffgo/gui/mainwindow.py:1606 ffgo/config.py:488
+#: ffgo/gui/mainwindow.py:924 ffgo/gui/mainwindow.py:956
+#: ffgo/gui/mainwindow.py:1484 ffgo/gui/mainwindow.py:1618 ffgo/config.py:498
 #, python-brace-format
 msgid "{prg}"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:941
+#: ffgo/gui/mainwindow.py:948
 msgid "Cannot start FlightGear now."
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:943
+#: ffgo/gui/mainwindow.py:950
 #, python-brace-format
 msgid ""
 "The configuration in the main text field has an invalid syntax:\n"
@@ -472,20 +485,20 @@ msgid ""
 "description of the syntax rules."
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:953
+#: ffgo/gui/mainwindow.py:960
 #, python-format
 msgid "Starting %s with following options:"
 msgstr "%s を以下のオプション付きで開始します:"
 
-#: ffgo/gui/mainwindow.py:990
+#: ffgo/gui/mainwindow.py:997
 msgid "FlightGear is running..."
 msgstr "FlightGear を実行しています…"
 
-#: ffgo/gui/mainwindow.py:996
+#: ffgo/gui/mainwindow.py:1003
 msgid "Unable to run FlightGear!"
 msgstr "FlightGearを実行できません！"
 
-#: ffgo/gui/mainwindow.py:997
+#: ffgo/gui/mainwindow.py:1004
 msgid ""
 "Please make sure that paths: FG_BIN and FG_ROOT\n"
 "in \"Preferences\" window are pointing to right directories."
@@ -493,45 +506,45 @@ msgstr ""
 "\"Prefernces\"ウインドウから、FG_BIN と FG_ROOT のパスが正しいか確認してくだ"
 "さい。"
 
-#: ffgo/gui/mainwindow.py:1000 ffgo/config.py:999 ffgo/config.py:1003
-#: ffgo/config.py:1007
+#: ffgo/gui/mainwindow.py:1007 ffgo/config.py:1009 ffgo/config.py:1013
+#: ffgo/config.py:1017
 msgid "Error"
 msgstr "エラー"
 
-#: ffgo/gui/mainwindow.py:1059
+#: ffgo/gui/mainwindow.py:1066
 #, python-brace-format
 msgid "FG's last exit status: {0}"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1060 ffgo/gui/mainwindow.py:1619
+#: ffgo/gui/mainwindow.py:1067 ffgo/gui/mainwindow.py:1631
 #, python-brace-format
 msgid "exit status: {0}"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1062
+#: ffgo/gui/mainwindow.py:1069
 #, python-brace-format
 msgid "FG last killed by signal {0}"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1063 ffgo/gui/mainwindow.py:1621
+#: ffgo/gui/mainwindow.py:1070 ffgo/gui/mainwindow.py:1633
 #, python-brace-format
 msgid "killed by signal {0}"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1067
+#: ffgo/gui/mainwindow.py:1074
 #, python-brace-format
 msgid "Ready ({0})"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1160
+#: ffgo/gui/mainwindow.py:1172
 msgid "Carrier:"
 msgstr "空母 :"
 
-#: ffgo/gui/mainwindow.py:1464
+#: ffgo/gui/mainwindow.py:1476
 msgid "Invalid geometry specification"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1465
+#: ffgo/gui/mainwindow.py:1477
 #, python-brace-format
 msgid ""
 "The following geometry specification read from the configuration file has an "
@@ -541,44 +554,44 @@ msgid ""
 "\n"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1469
+#: ffgo/gui/mainwindow.py:1481
 #, python-brace-format
 msgid "You can consult <{url}> for a description of the allowed syntax."
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1532
+#: ffgo/gui/mainwindow.py:1544
 msgid "FlightGear will be started with following arguments:"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1603
+#: ffgo/gui/mainwindow.py:1615
 #, python-brace-format
 msgid "Unable to start the file manager with '{0}'."
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1605
+#: ffgo/gui/mainwindow.py:1617
 #, python-brace-format
 msgid "Problem: {0}"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1623
+#: ffgo/gui/mainwindow.py:1635
 #, python-brace-format
 msgid "File manager process terminated ({0})"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1666
+#: ffgo/gui/mainwindow.py:1678
 msgid "Save Log"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1671
+#: ffgo/gui/mainwindow.py:1683
 msgid "Open Log Directory"
 msgstr ""
 
-#: ffgo/config.py:368
+#: ffgo/config.py:378
 #, python-brace-format
 msgid "Initialize {prg}'s configuration from your existing FGo! configuration?"
 msgstr ""
 
-#: ffgo/config.py:370
+#: ffgo/config.py:380
 #, python-brace-format
 msgid ""
 "You have no {cfgfile} file but you do have a {fgo_cfgfile} file,\n"
@@ -588,7 +601,7 @@ msgid ""
 "FGo! 1.5.5 or earlier should be usable as is by {prg}."
 msgstr ""
 
-#: ffgo/config.py:376
+#: ffgo/config.py:386
 #, python-brace-format
 msgid ""
 "If {fgo_cfgfile} was written by FGo! 1.5.5 or earlier, you\n"
@@ -597,19 +610,19 @@ msgid ""
 "copy {fgo_cfgfile} to {cfgfile})."
 msgstr ""
 
-#: ffgo/config.py:381
+#: ffgo/config.py:391
 #, python-brace-format
 msgid ""
 "If {fgo_cfgfile} was written by a version of FGo! that is greater\n"
 "than 1.5.5, it is advised to say “No” here."
 msgstr ""
 
-#: ffgo/config.py:390
+#: ffgo/config.py:400
 #, python-brace-format
 msgid "Create a default {prg} configuration?"
 msgstr ""
 
-#: ffgo/config.py:392
+#: ffgo/config.py:402
 #, python-brace-format
 msgid ""
 "Choose “Yes” to create a basic {prg} configuration now. If you\n"
@@ -617,18 +630,18 @@ msgid ""
 "yourself, or restart {prg} to see the same questions again."
 msgstr ""
 
-#: ffgo/config.py:400
+#: ffgo/config.py:410
 #, python-brace-format
 msgid "Creating a default {prg} configuration."
 msgstr ""
 
-#: ffgo/config.py:402
+#: ffgo/config.py:412
 msgid ""
 "It is suggested that you go to the Settings menu and choose\n"
 "Preferences to review your newly-created configuration."
 msgstr ""
 
-#: ffgo/config.py:405
+#: ffgo/config.py:415
 #, python-brace-format
 msgid ""
 "You can also reuse most, if not all FlightGear options you\n"
@@ -636,21 +649,21 @@ msgid ""
 "them to the corresponding {prg} text box."
 msgstr ""
 
-#: ffgo/config.py:409
+#: ffgo/config.py:419
 msgid ""
 "Note: you may run both FGo! and FFGo simultaneously, as their\n"
 "configurations are kept separate."
 msgstr ""
 
-#: ffgo/config.py:487
+#: ffgo/config.py:497
 msgid "Error loading configuration"
 msgstr ""
 
-#: ffgo/config.py:771
+#: ffgo/config.py:781
 msgid "Modification of apt.dat.gz detected."
 msgstr "apt.dat.gz の変更を検出しました。"
 
-#: ffgo/config.py:804
+#: ffgo/config.py:814
 msgid ""
 "Generating airport database,\n"
 "this can take a while..."
@@ -658,7 +671,7 @@ msgstr ""
 "空港データベースを生成しています。\n"
 "しばらくお待ちください・・・"
 
-#: ffgo/config.py:994
+#: ffgo/config.py:1004
 #, fuzzy, python-brace-format
 msgid ""
 "Cannot read version number of apt.dat database.\n"
@@ -672,15 +685,15 @@ msgstr ""
 "マットの詳細についてはhttp://data.x-plane.com/designers.html#Formatsを見てく"
 "ださい。"
 
-#: ffgo/config.py:1002
+#: ffgo/config.py:1012
 msgid "Cannot read apt.dat database."
 msgstr "apt.dat データベースを読み込むことができません。"
 
-#: ffgo/config.py:1006
+#: ffgo/config.py:1016
 msgid "Cannot find apt.dat database."
 msgstr "apt.dat データベース を見つけることができません。"
 
-#: ffgo/fgcmdbuilder.py:28
+#: ffgo/fgcmdbuilder.py:27
 #, python-brace-format
 msgid "invalid escape sequence in option line: \\{0}"
 msgstr ""
