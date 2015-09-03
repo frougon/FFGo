@@ -1,7 +1,8 @@
--*- mode: text; fill-column: 78; -*-
+-*- mode: text; coding: utf-8; fill-column: 78; -*-
 
 Prior changes belong to the FGo! program by Robert 'erobo' Leda and are listed
-in the file 'ChangeLog.FGo'.
+in the file 'ChangeLog.FGo'. For more details about any change listed below,
+you may want to consult the Git repository log.
 
 ******************************************************************************
 
@@ -131,3 +132,56 @@ in the file 'ChangeLog.FGo'.
             used not to be able to read LF line endings (ahem). Is it still
             the case in 2015? These files should be enough to get users
             started. (Florent Rougon)
+
+1.1.0
+[USABILITY] Show the FlightGear arguments and output in the default
+          configuration (i.e., the Command Window and the Output Window). This
+          will hopefully improve the first-time user experience.
+          (Florent Rougon)
+[FEATURE] Slightly better algorithm for preparing the fgfs command line.
+          Mostly: order of the UI-exposed options such as airport, aircraft,
+          parking, etc. as well as avoid passing empty '--fg-root=' or
+          '--fg-scenery=' options unless they are written as is in the Command
+          Line Options Window. In other words: an empty field in the
+          Preferences dialog for FG_ROOT or FG_SCENERY will not by itself
+          cause an empty '--fg-root=' or '--fg-scenery=' option to be passed
+          to 'fgfs'. (Florent Rougon)
+[USABILITY] Document the following new parameters in the 'presets' file:
+          SHOW_FG_COMMAND, SHOW_FG_COMMAND_IN_SEPARATE_WINDOW,
+          FG_COMMAND_GEOMETRY, SHOW_FG_OUTPUT,
+          SHOW_FG_OUTPUT_IN_SEPARATE_WINDOW and FG_OUTPUT_GEOMETRY. These
+          parameters were already present in FFGo 1.0.0 but not in FGo! 1.5.5.
+          (Florent Rougon)
+[“BUGFIX”] Distribute images derived from the CC0 helicopter image under the
+          CC0 license too. The original intent was to distribute the images
+          under the same license as the rest of FFGo for unity, i.e. WTFPL
+          version 2. I think it was, and is still legal to do under most
+          juridictions. However, legal matters being what they are, the safest
+          course of action IMHO is to publish the derived images under the
+          same license as the original image, i.e. CC0 1.0 Universal.
+          (Florent Rougon)
+[BUGFIX]  Improve restoring of geometry upon reset (“reload config”). Before
+          this change, and contrary to the Command Window and Output Window,
+          the dimensions of the main window were not restored when using the
+          “Reload config” button; they were only restored at program startup.
+          Of course, something can only be restored if it has been previously
+          saved! (Florent Rougon)
+[FEATURE] New option to save the main window position. For user convenience,
+          as well as consistency with the Command Window and Output Window,
+          add a new check box in the Miscellaneous tab of the Preferences
+          dialog to tell FFGo to “Remember the main window position” whenever
+          saving to a configuration file or using “Save & Quit”. This option
+          is enabled by default in FFGo. This means that the whole geometry of
+          the main window 'widthxheight+x+y' is saved as WINDOW_GEOMETRY into
+          the configuration file, instead of its size only ('widthxheight').
+          To revert to the previous behavior, simply uncheck “Remember the
+          main window position” in the Preferences dialog. This option
+          corresponds to SAVE_WINDOW_POSITION in the configuration file.
+          (Florent Rougon)
+[USABILITY] Mention the FG_BIN name in the tooltip for the fgfs executable
+          path. This is likely to be helpful to new users, because FG_BIN is
+          used in the hint displayed when fgfs can't be executed, but new
+          users might not know what this refers to. (Florent Rougon)
+[USABILITY] Improve installation instructions. Most notably, make the suitable
+          changes now that Debian packages are available for FFGo and
+          CondConfigParser. (Florent Rougon)
