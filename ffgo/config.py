@@ -417,7 +417,7 @@ You can also reuse most, if not all FlightGear options you
 had in FGo!'s main text box (the “options window”). Just copy
 them to the corresponding {prg} text box.""")
                           .replace('\n', ' ') + "\n\n" + _("""\
-Note: you may run both FGo! and FFGo simultaneously, as their
+Note: you may run both FGo! and {prg} simultaneously, as their
 configurations are kept separate.""")
                           .replace('\n', ' ')
                          ).format(prg=PROGNAME)
