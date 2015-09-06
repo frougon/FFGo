@@ -1069,7 +1069,7 @@ class App:
             complement = _("FG last killed by signal {0}").format(-exitStatus)
             shortComplement = _("killed by signal {0}").format(-exitStatus)
 
-        print("fgfs process terminated ({0})".format(shortComplement))
+        print(_("fgfs process terminated ({0})").format(shortComplement))
 
         self.fgStatusText.set(_('Ready ({0})').format(complement))
         self.fgStatusLabel.config(background="#88ff88")
