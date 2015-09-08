@@ -9,6 +9,56 @@
 # it at <http://www.wtfpl.net/>.
 
 import os
+import sys
+import enum
+
+
+def pythonVersionString():
+    return "{major}.{minor}.{micro} {releaseLevel}".format(
+        major=sys.version_info[0],
+        minor=sys.version_info[1],
+        micro=sys.version_info[2],
+        releaseLevel=sys.version_info[3])
+
+
+# Based on an example from the 'enum' documentation
+class OrderedEnum(enum.Enum):
+    """Base class for enumerations whose members can be ordered.
+
+    Contrary to enum.IntEnum, this class maintains normal enum.Enum
+    invariants, such as members not being comparable to members of other
+    enumerations (nor of any other class, actually).
+
+    """
+    def __ge__(self, other):
+        if self.__class__ is other.__class__:
+            return self.value >= other.value
+        return NotImplemented
+
+    def __gt__(self, other):
+        if self.__class__ is other.__class__:
+            return self.value > other.value
+        return NotImplemented
+
+    def __le__(self, other):
+        if self.__class__ is other.__class__:
+            return self.value <= other.value
+        return NotImplemented
+
+    def __lt__(self, other):
+        if self.__class__ is other.__class__:
+            return self.value < other.value
+        return NotImplemented
+
+    def __eq__(self, other):
+        if self.__class__ is other.__class__:
+            return self.value == other.value
+        return NotImplemented
+
+    def __ne__(self, other):
+        if self.__class__ is other.__class__:
+            return self.value != other.value
+        return NotImplemented
 
 
 # ****************************************************************************

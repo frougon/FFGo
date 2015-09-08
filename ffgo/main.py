@@ -15,15 +15,20 @@
 
 """
 
-from . import constants
-from .constants import PROGNAME, PROGVERSION, LOCALE_DIR
 import locale
 import gettext
 import sys
 import os
 import argparse
 import tkinter
+import time
+import platform
 
+from . import constants
+from .constants import PROGNAME, PROGVERSION, LOCALE_DIR, LOG_DIR
+from . import misc
+# Make it clear this is not the 'logging' module from the standard library
+from .logging import logger, LogLevel, allLogLevels
 
 def earlyTkInit():
     master = tkinter.Tk()
@@ -53,6 +58,11 @@ FlightGear executable, with suitable arguments.""",
         # I want --help but not -h (it might be useful for something else)
         add_help=False)
 
+    parser.add_argument('--log-level', default="notice",
+                        choices=allLogLevels,
+                        help="""\
+      only messages with the same or a higher priority will be printed to the
+      terminal (default: %(default)s)""")
     parser.add_argument('--help', action="help",
                         help="display this message and exit")
     # The version text is not wrapped when using
@@ -71,9 +81,6 @@ FlightGear executable, with suitable arguments.""",
 
 def run(master):
     """Initialize the application."""
-    global params
-    params = processCommandLine()
-
     # Initialize config object (passing 'master' allows things such as
     # obtaining the screen dpi in Config methods using
     # master.winfo_fpixels('1i')).
@@ -105,7 +112,32 @@ def run(master):
 
 
 def main():
-    sys.exit(run(master))
+    global params
+
+    params = processCommandLine()
+    logger.logLevel = getattr(LogLevel, params.log_level)
+    os.makedirs(LOG_DIR, exist_ok=True)
+
+    with logger.open(os.path.join(LOG_DIR, PROGNAME + ".log"),
+                     "w", encoding="utf-8"):
+        timeFormatString = "%a, %d %b %Y %H:%M:%S %z"
+        logger.logToFile("Starting {prg_with_ver} at {date}\n"
+                         "Platform is {platform}\n"
+                         "Python is {python_version}\n".format(
+            prg_with_ver=constants.NAME_WITH_VERSION,
+            date=time.strftime(timeFormatString),
+            platform=platform.platform(),
+            python_version=misc.pythonVersionString()))
+
+        res = run(master)
+
+        # Locales weren't initialized for the start time, so let's be
+        # consistent
+        locale.setlocale(locale.LC_TIME, 'C')
+        logger.logToFile("{prg} terminated at {date}.".format(
+            prg=PROGNAME, date=time.strftime(timeFormatString)))
+
+    sys.exit(res)
 
 
 if __name__ == '__main__':
