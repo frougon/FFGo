@@ -15,11 +15,13 @@
 
 """
 
-from .constants import PROGNAME, LOCALE_DIR
+from . import constants
+from .constants import PROGNAME, PROGVERSION, LOCALE_DIR
 import locale
 import gettext
 import sys
 import os
+import argparse
 import tkinter
 
 
@@ -37,19 +39,41 @@ from .config import Config, AbortConfig
 from .gui.mainwindow import App
 
 
-def promptToNotUseCli():
-    message = _("""Usage: ffgo
+def processCommandLine():
+    params = argparse.Namespace()
 
-This program does not use command line options for now. Edit the
-ffgo/data/config/presets file if you need to run {prg} with some
-pre-configuration.""").format(prg=PROGNAME)
+    parser = argparse.ArgumentParser(
+        usage="""\
+%(prog)s [OPTION ...]
+Graphical launcher for the FlightGear flight simulator.""",
+        description="""\
+Start a graphical user interface to make it easy to launch fgfs, the
+FlightGear executable, with suitable arguments.""",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        # I want --help but not -h (it might be useful for something else)
+        add_help=False)
 
-    if len(sys.argv) > 1:
-        print(message + '\n')
+    parser.add_argument('--help', action="help",
+                        help="display this message and exit")
+    # The version text is not wrapped when using
+    # formatter_class=argparse.RawDescriptionHelpFormatter
+    parser.add_argument('--version', action='version',
+                        version="{name} {version}\n{copyright}\n\n{license}"
+                                .format(
+                                    name=PROGNAME, version=PROGVERSION,
+                                    copyright=constants.COPYRIGHT_HELP,
+                                    license=constants.LICENSE))
+
+    params = parser.parse_args(namespace=params)
+
+    return params
 
 
 def run(master):
     """Initialize the application."""
+    global params
+    params = processCommandLine()
+
     # Initialize config object (passing 'master' allows things such as
     # obtaining the screen dpi in Config methods using
     # master.winfo_fpixels('1i')).
@@ -70,7 +94,6 @@ def run(master):
     else:
         locale.setlocale(locale.LC_CTYPE, '') # encoding only
 
-    promptToNotUseCli()
     # Initialize main window.
     app = App(master, config)
 
