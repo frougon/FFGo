@@ -113,6 +113,14 @@ def run(master):
     return master.mainloop()
 
 
+def reportTkinterCallbackException(type_, val, tb):
+    message = 'Error in a Tkinter callback'
+    detail = ''.join(traceback.format_exception(type_, val, tb))
+    logger.criticalNP('\n{}:\n{}'.format(message, detail))
+    tkinter.messagebox.showerror(_('{prg}').format(prg=PROGNAME), message,
+                                 detail=detail)
+
+
 def main():
     global params
 
@@ -132,6 +140,7 @@ def main():
             python_version=misc.pythonVersionString()))
 
         try:
+            master.report_callback_exception = reportTkinterCallbackException
             res = run(master)
         except:
             logger.logToFile(traceback.format_exc())
