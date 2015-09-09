@@ -15,6 +15,7 @@ import tkinter.font
 from .gui.infowindow import InfoWindow
 from .misc import resourceExists, textResourceStream
 from .constants import *
+from .logging import logger
 
 
 class AbortConfig(Exception):
@@ -802,7 +803,7 @@ class _ProcessApt:
                 self.close_window()
                 return
             except:
-                print(traceback.format_exc(), file=sys.stderr)
+                logger.errorNP(traceback.format_exc())
                 self.show_aptdat_general_error()
                 self.close_window()
                 return

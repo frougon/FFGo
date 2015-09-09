@@ -23,6 +23,7 @@ import argparse
 import tkinter
 import time
 import platform
+import traceback
 
 from . import constants
 from .constants import PROGNAME, PROGVERSION, LOCALE_DIR, LOG_DIR
@@ -89,8 +90,9 @@ def run(master):
     except AbortConfig:
         # We have a temporary translation setup at this point, based on the
         # environment.
-        print(_("{prg}: initialization of the configuration aborted. Exiting.")
-              .format(prg=PROGNAME))
+        logger.criticalNP(
+            _("{prg}: initialization of the configuration aborted. Exiting.")
+            .format(prg=PROGNAME))
         sys.exit(1)
 
     if not config.language.get():
@@ -129,13 +131,17 @@ def main():
             platform=platform.platform(),
             python_version=misc.pythonVersionString()))
 
-        res = run(master)
-
-        # Locales weren't initialized for the start time, so let's be
-        # consistent
-        locale.setlocale(locale.LC_TIME, 'C')
-        logger.logToFile("{prg} terminated at {date}.".format(
-            prg=PROGNAME, date=time.strftime(timeFormatString)))
+        try:
+            res = run(master)
+        except:
+            logger.logToFile(traceback.format_exc())
+            raise
+        finally:
+            # Locales weren't initialized for the start time, so let's be
+            # consistent
+            locale.setlocale(locale.LC_TIME, 'C')
+            logger.logToFile("{prg} terminated at {date}.".format(
+                prg=PROGNAME, date=time.strftime(timeFormatString)))
 
     sys.exit(res)
 

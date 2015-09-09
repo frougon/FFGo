@@ -20,6 +20,7 @@ from xml.etree.ElementTree import ElementTree
 from tkinter.messagebox import showerror
 import condconfigparser
 
+from ..logging import logger
 from ..misc import resourceExists, textResourceStream, binaryResourceStream
 from .tooltip import ToolTip
 from .metar import Metar
@@ -32,8 +33,9 @@ try:
     PIL = True
 except ImportError:
     PIL = False
-    print ('[{prg} Warning] PIL library not found. Aircraft thumbnails '
-           'will not be displayed.'.format(prg=PROGNAME), file=sys.stderr)
+    logger.warningNP(
+        _('[{prg} warning] PIL library not found. Aircraft thumbnails '
+          'will not be displayed.').format(prg=PROGNAME))
 
 
 class PassShortcutsToApp:
@@ -83,10 +85,10 @@ class MyEntry(Entry, PassShortcutsToApp):
 class App:
 
     def __init__(self, master, config):
-        print(_("{prg_plus_ver} started\n"
-                "Using CondConfigParser {ccp_ver}").format(
-                    prg_plus_ver=NAME_WITH_VERSION,
-                    ccp_ver=condconfigparser.__version__))
+        logger.notice(_("{prg_with_ver} started\n"
+                        "Using CondConfigParser {ccp_ver}").format(
+                            prg_with_ver=NAME_WITH_VERSION,
+                            ccp_ver=condconfigparser.__version__))
         self.master = master
         self.config = config
 
@@ -774,6 +776,7 @@ class App:
 
     def read_parking(self, xml_file):
         """Read parking positions from XML file."""
+        logger.info("Reading parking positions from '{}'".format(xml_file))
         res = []
         with open(xml_file) as xml:
             root = self._get_root(xml)
@@ -956,12 +959,11 @@ class App:
             showerror(_('{prg}').format(prg=PROGNAME), message, detail=detail)
             return False
 
-        print('\n' + '=' * 80 + '\n')
-        print(_('Starting %s with following options:') % program)
-
-        for i in self.FGCommand.argList:
-            print('\t%s' % i)
-        print('\n' + '-' * 80 + '\n')
+        l = ['\n' + '=' * 80 + '\n',
+             _('Starting %s with following options:') % program] + \
+            [ '\t{}'.format(arg) for arg in self.FGCommand.argList ] + \
+            ['\n' + '-' * 80 + '\n']
+        logger.notice(*l, sep='\n')
 
         try:
             process = subprocess.Popen([program] + self.FGCommand.argList,
@@ -1016,7 +1018,7 @@ class App:
         # Other Tk functions are usually considered unsafe to call from these
         # other threads.
         for line in iter(process.stdout.readline, ''):
-            print(line, end='')
+            logger.notice(line, end='')
             outputQueue.put(line)
             try:
                 self.master.event_generate("<<FFGoNewFgfsOutputQueued>>",
@@ -1069,7 +1071,8 @@ class App:
             complement = _("FG last killed by signal {0}").format(-exitStatus)
             shortComplement = _("killed by signal {0}").format(-exitStatus)
 
-        print(_("fgfs process terminated ({0})").format(shortComplement))
+        logger.notice(_("fgfs process terminated ({0})").format(
+            shortComplement))
 
         self.fgStatusText.set(_('Ready ({0})').format(complement))
         self.fgStatusLabel.config(background="#88ff88")
@@ -1632,7 +1635,8 @@ class LogManager:
         else:
             complement = _("killed by signal {0}").format(-exitStatus)
 
-        print(_("File manager process terminated ({0})").format(complement))
+        logger.notice(_("File manager process terminated ({0})").format(
+            complement))
 
 
 class FGOutput(DetachableWindowManagerBase):
