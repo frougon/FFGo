@@ -786,7 +786,8 @@ class App:
             parkings = parking_list.findall('Parking')
             for p in parkings:
                 name = p.get('name').split('"')[0]
-                number = p.get('number').split('"')[0]
+                # Some parking positions have no 'number' attribute
+                number = p.get('number', '').split('"')[0]
                 res.append(''.join((name, number)))
         res = list(set(res))  # Remove doubles
         res.sort()
