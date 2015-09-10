@@ -84,11 +84,12 @@ class MyEntry(Entry, PassShortcutsToApp):
 
 class App:
 
-    def __init__(self, master, config):
+    def __init__(self, master, config, params):
         logger.notice(_("{prg_with_ver} started\n"
                         "Using CondConfigParser {ccp_ver}").format(
                             prg_with_ver=NAME_WITH_VERSION,
                             ccp_ver=condconfigparser.__version__))
+        self.params = params
         self.master = master
         self.config = config
 

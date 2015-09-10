@@ -80,7 +80,7 @@ FlightGear executable, with suitable arguments.""",
     return params
 
 
-def run(master):
+def run(master, params):
     """Initialize the application."""
     # Initialize config object (passing 'master' allows things such as
     # obtaining the screen dpi in Config methods using
@@ -104,7 +104,7 @@ def run(master):
         locale.setlocale(locale.LC_CTYPE, '') # encoding only
 
     # Initialize main window.
-    app = App(master, config)
+    app = App(master, config, params)
 
     # Override the window close button in order to allow a controlled, clean
     # shutdown.
@@ -122,8 +122,6 @@ def reportTkinterCallbackException(type_, val, tb):
 
 
 def main():
-    global params
-
     params = processCommandLine()
     logger.logLevel = getattr(LogLevel, params.log_level)
     os.makedirs(LOG_DIR, exist_ok=True)
@@ -141,7 +139,7 @@ def main():
 
         try:
             master.report_callback_exception = reportTkinterCallbackException
-            res = run(master)
+            res = run(master, params)
         except:
             logger.logToFile(traceback.format_exc())
             raise
