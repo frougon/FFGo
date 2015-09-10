@@ -16,7 +16,7 @@ import queue as queue_mod       # keep 'queue' available for variable bindings
 from tkinter import *
 import tkinter.filedialog as fd
 from tkinter.scrolledtext import ScrolledText
-from xml.etree.ElementTree import ElementTree
+from xml.etree import ElementTree
 from tkinter.messagebox import showerror
 import condconfigparser
 
@@ -785,44 +785,47 @@ class App:
 
         return res
 
-    def read_parking(self, xml_file):
+    def read_parking(self, xmlFilePath):
         """Read parking positions from XML file."""
-        logger.info("Reading parking positions from '{}'".format(xml_file))
-        res = []
-        with open(xml_file) as xml:
-            root = self._get_root(xml)
-            parking_list = root.find('parkingList')
-            if parking_list is None:
-                parking_list = root.find('parkinglist')
-            parkings = parking_list.findall('Parking')
-            for p in parkings:
-                name = p.get('name').split('"')[0]
-                # Some parking positions have no 'number' attribute
-                number = p.get('number', '').split('"')[0]
-                res.append(''.join((name, number)))
-        res = list(set(res))  # Remove doubles
-        res.sort()
-        return res
+        logger.info("Reading parking positions from '{}'".format(xmlFilePath))
+        s = set()
+        root = self._get_root(xmlFilePath)
+
+        for eltName in ('parkingList', 'parkinglist'):
+            parking_list = root.find(eltName)
+            if parking_list is not None:
+                break
+        else:
+            return []
+
+        for p in parking_list.iterfind('Parking'):
+            name = p.get('name', '')
+            # Some parking positions have no 'number' attribute
+            number = p.get('number', '')
+            fullName = name + number
+            if fullName:
+                s.add(fullName)
+
+        return sorted(list(s))
 
     def read_scenario(self, scenario):
         """Read description from a scenario."""
         text = ''
         file_name = scenario + '.xml'
         path = os.path.join(self.config.ai_path, file_name)
-        with open(path) as xml:
-            root = self._get_root(xml)
-            # There is no consistency along scenario files where
-            # the <description> tag can be found in the root tree,
-            # therefore we are making a list of all occurrences
-            # of the tag and return the first element (if any).
-            descriptions = root.findall('.//description')
-            if descriptions:
-                text = self._rstrip_text_block(descriptions[0].text)
+        root = self._get_root(path)
+        # There is no consistency along scenario files where
+        # the <description> tag can be found in the root tree,
+        # therefore we are making a list of all occurrences
+        # of the tag and return the first element (if any).
+        descriptions = root.findall('.//description')
+        if descriptions:
+            text = self._rstrip_text_block(descriptions[0].text)
+
         return text
 
-    def _get_root(self, xml):
-        tree = ElementTree()
-        tree.parse(xml)
+    def _get_root(self, xmlFilePath):
+        tree = ElementTree.parse(xmlFilePath)
         return tree.getroot()
 
     def _rstrip_text_block(self, text):

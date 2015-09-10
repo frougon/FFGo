@@ -7,7 +7,7 @@ import gzip
 import contextlib
 import gettext
 import traceback
-from xml.etree.ElementTree import ElementTree
+from xml.etree import ElementTree
 from tkinter import IntVar, StringVar
 from tkinter.messagebox import askyesno, showinfo, showerror
 import tkinter.font
@@ -670,54 +670,46 @@ configurations are kept separate.""")
             carrier data: [[name, parkking pos, ..., scenario name], ...]
         Return two empty lists if no scenario is found.
         """
-        try:
-            carriers = []
-            scenarios = []
-            for f in os.listdir(self.ai_path):
-                path = os.path.join(self.ai_path, f)
+        carriers = []
+        scenarios = []
+        for f in os.listdir(self.ai_path):
+            path = os.path.join(self.ai_path, f)
 
-                if os.path.isfile(path):
-                    if f.lower().endswith('xml'):
-                        scenario_name = f[:-4]
-                        scenarios.append(scenario_name)
-                        carriers = self._append_carrier_data(carriers, path,
-                                                             scenario_name)
-            carriers.sort()
-            scenarios.sort()
-            return scenarios, carriers
+            if os.path.isfile(path) and f.lower().endswith('.xml'):
+                scenario_name = f[:-4]
+                scenarios.append(scenario_name)
+                # Appends to 'carriers'
+                self._append_carrier_data(carriers, path, scenario_name)
 
-        except OSError:
-            return [], []
+        return sorted(scenarios), sorted(carriers)
 
-    def _append_carrier_data(self, list_, path, scenario_name):
-        with open(path) as xml:
-            try:
-                list_copy = list_[:]
-                root = self._get_root(xml)
-                scenario = root.find('scenario')
-                entries = scenario.findall('entry')
-                for e in entries:
-                    name = e.find('type')
-                    if name.text == 'carrier':
-                        data = self._get_carrier_data(e, scenario_name)
-                        list_copy.append(data)
-                return list_copy
-            except (AttributeError, OSError):
-                return list_
+    def _append_carrier_data(self, carriers, path, scenario_name):
+        root = self._get_root(path)
+        scenario = root.find('scenario')
 
-    def _get_root(self, xml):
-        tree = ElementTree()
-        tree.parse(xml)
+        if scenario is not None:
+            for e in scenario.iterfind('entry'):
+                typeElt = e.find('type')
+                if typeElt is not None and typeElt.text == 'carrier':
+                    data = self._get_carrier_data(e, scenario_name)
+                    carriers.append(data)
+
+    def _get_root(self, xmlFilePath):
+        tree = ElementTree.parse(xmlFilePath)
         return tree.getroot()
 
     def _get_carrier_data(self, e, scenario_name):
-        data = []
-        for child in e:
-            if child.tag == 'name':
-                data.append(child.text)
-            if child.tag == 'parking-pos':
-                parking_name = child.find('name')
-                data.append(parking_name.text)
+        nameElt = e.find('name')
+        if nameElt is not None:
+            data = [nameElt.text]
+        else:
+            data = ['unnamed']
+
+        for child in e.iterfind('parking-pos'):
+            parkingNameElt = child.find('name')
+            if parkingNameElt is not None:
+                data.append(parkingNameElt.text)
+
         data.append(scenario_name)
         return data
 
