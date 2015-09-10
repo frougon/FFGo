@@ -149,6 +149,10 @@ class App:
         self.toolsmenu = Menu(self.menubar, tearoff=0)
         self.toolsmenu.add_command(label='METAR',
                                    command=self.showMETARWindow)
+        if self.params.test_mode:
+            self.toolsmenu.add_command(label=_('Test stuff'),
+                                       accelerator=_('Ctrl-T'),
+                                       command=self.testStuff)
         self.menubar.add_cascade(label=_('Tools'), menu=self.toolsmenu)
 
         self.helpmenu = Menu(self.menubar, tearoff=0)
@@ -369,6 +373,9 @@ class App:
         self.setupKeyboardShortcuts()
         self.startLoops()
 
+    def testStuff(self, event=None):
+        pass
+
     def onControlF_KeyPress(self, event):
         self.runFG(event)
         return "break"
@@ -378,6 +385,9 @@ class App:
         return "break"
 
     def setupKeyboardShortcuts(self):
+        if self.params.test_mode:
+            self.master.bind('<Control-KeyPress-t>', self.testStuff)
+
         self.master.bind('<Control-KeyPress-f>', self.onControlF_KeyPress)
         self.master.bind('<Control-KeyPress-r>', self.onControlR_KeyPress)
         self.master.bind_all('<Control-KeyPress-q>', self.saveAndQuit)

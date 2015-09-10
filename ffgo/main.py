@@ -64,6 +64,10 @@ FlightGear executable, with suitable arguments.""",
                         help="""\
       only messages with the same or a higher priority will be printed to the
       terminal (default: %(default)s)""")
+    parser.add_argument('-t', '--test-mode', action='store_true',
+                        help="""\
+      enable test mode (useful to test pieces of code from the {prg} GUI)"""
+    .format(prg=PROGNAME))
     parser.add_argument('--help', action="help",
                         help="display this message and exit")
     # The version text is not wrapped when using
