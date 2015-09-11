@@ -125,10 +125,22 @@ def reportTkinterCallbackException(type_, val, tb):
                                  detail=detail)
 
 
+def rotateLogFiles():
+    # FFGo.log, FFGo_1.log, FFGo_2.log, ..., FFGo_9.log
+    names = [ PROGNAME + ".log" ] + \
+            [ "{}_{}.log".format(PROGNAME, i) for i in range(1, 10) ]
+
+    for i in range(len(names) - 2, -1, -1):
+        if os.path.isfile(os.path.join(LOG_DIR, names[i])):
+            os.replace(os.path.join(LOG_DIR, names[i]),
+                       os.path.join(LOG_DIR, names[i+1]))
+
+
 def main():
     params = processCommandLine()
     logger.logLevel = getattr(LogLevel, params.log_level)
     os.makedirs(LOG_DIR, exist_ok=True)
+    rotateLogFiles()
 
     with logger.open(os.path.join(LOG_DIR, PROGNAME + ".log"),
                      "w", encoding="utf-8"):
