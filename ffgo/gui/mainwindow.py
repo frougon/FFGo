@@ -34,8 +34,8 @@ try:
 except ImportError:
     PIL = False
     logger.warningNP(
-        _('[{prg} warning] PIL library not found. Aircraft thumbnails '
-          'will not be displayed.').format(prg=PROGNAME))
+        _("[{prg} warning] {libName} library not found. Aircraft thumbnails "
+          "won't be displayed.").format(prg=PROGNAME, libName="Pillow"))
 
 
 class PassShortcutsToApp:
