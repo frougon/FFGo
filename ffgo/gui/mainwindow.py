@@ -1622,6 +1622,7 @@ class LogManager:
         p = fd.asksaveasfilename(initialdir=LOG_DIR,
                                  initialfile=DEFAULT_LOG_NAME)
         if p:
+            logger.info("Opening '{}' for writing".format(p))
             with open(p, mode='w', encoding='utf-8') as logfile:
                 logfile.write(self.getLog())
 

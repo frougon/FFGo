@@ -165,8 +165,11 @@ class Config:
             self.aboutTitleFont.configure(size=aboutTitleFontSize)
 
     def makeInstalledAptList(self):
+        logger.notice(_("Building the list of installed airports "
+                        "(this may take some time)..."))
         airports = sorted(self._findInstalledApt())
         s = '\n'.join(airports)
+        logger.info("Opening '{}' for writing".format(INSTALLED_APT))
         with open(INSTALLED_APT, 'w') as fout:
             fout.writelines(s)
 
@@ -182,6 +185,8 @@ class Config:
                 self._makeApt()
 
             res = {}
+            logger.info("Opening apt file for reading: '{}'".format(APT))
+
             with open(APT, encoding='utf-8') as fin:
                 for line in fin:
                     line = line.strip().split('=')
@@ -198,6 +203,7 @@ class Config:
     def readMetarDat(self):
         """Fetch METAR station list from metar.dat.gz file"""
         try:
+            logger.info("Opening '{}' for reading".format(self.metar_path))
             fin = gzip.open(self.metar_path, mode='rt', encoding='utf-8')
             res = []
             for line in fin:
@@ -318,6 +324,7 @@ class Config:
                 options.append(k + str(v.get()))
 
         s = '\n'.join(options)
+        logger.info("Opening config file for writing: '{}'".format(path))
 
         with open(path, mode='w', encoding='utf-8') as config_out:
             config_out.write(s + '\n' + CUT_LINE + '\n')
@@ -514,6 +521,7 @@ configurations are kept separate.""")
         if path is not None or (path is None and os.path.exists(CONFIG)):
             if path is None:
                 path = CONFIG
+            logger.info("Opening config file '{}' for reading".format(path))
             configStream = stack.enter_context(open(path, "r",
                                                     encoding="utf-8"))
             beforeCutLine = True
@@ -613,8 +621,9 @@ configurations are kept separate.""")
                 self._makeApt()
 
             icao, name, rwy = [], [], []
-            with open(APT, encoding='utf-8') as fin:
+            logger.info("Opening apt file '{}' for reading".format(APT))
 
+            with open(APT, "r", encoding="utf-8") as fin:
                 if self.filtredAptList.get():
                     installed_apt = self._readInstalledAptList()
                     for line in fin:
@@ -655,7 +664,10 @@ configurations are kept separate.""")
             self.makeInstalledAptList()
 
         res = []
-        with open(INSTALLED_APT, encoding='utf-8') as fin:
+        logger.info("Opening installed apt file '{}' for reading".format(
+            INSTALLED_APT))
+
+        with open(INSTALLED_APT, "r", encoding="utf-8") as fin:
             for line in fin:
                 icao = line.strip()
                 res.append(icao)
@@ -683,8 +695,9 @@ configurations are kept separate.""")
 
         return sorted(scenarios), sorted(carriers)
 
-    def _append_carrier_data(self, carriers, path, scenario_name):
-        root = self._get_root(path)
+    def _append_carrier_data(self, carriers, xmlFilePath, scenario_name):
+        logger.info("Reading scenario data from '{}'".format(xmlFilePath))
+        root = self._get_root(xmlFilePath)
         scenario = root.find('scenario')
 
         if scenario is not None:
@@ -756,12 +769,17 @@ configurations are kept separate.""")
     def _readAptTimestamp(self):
         if not os.path.exists(APT_TIMESTAMP):
             self._writeAptTimestamp('')
+
+        logger.info("Opening apt timestamp file '{}' for reading".format(
+            APT_TIMESTAMP))
         with open(APT_TIMESTAMP) as timestamp:
             old_modtime = timestamp.read()
         timestamp.close()
         return old_modtime
 
     def _writeAptTimestamp(self, s):
+        logger.info("Opening apt timestamp file '{}' for writing".format(
+            APT_TIMESTAMP))
         with open(APT_TIMESTAMP, 'w') as timestamp:
             timestamp.write(s)
         timestamp.close()
@@ -829,6 +847,7 @@ class _ProcessApt:
         It can be found at the beginning of a second line of the header.
 
         """
+        logger.info("Opening '{}' for reading".format(self.apt_path))
         with gzip.open(self.apt_path) as fin:
             origin, number, version = self.read_header(fin)
             number = self.get_version_number(origin, number, version)
@@ -851,6 +870,7 @@ class _ProcessApt:
             raise AptdatHeaderError
 
     def process_atp(self, version):
+        logger.info("Opening '{}' for reading".format(self.apt_path))
         with gzip.open(self.apt_path) as fin:
             for line in fin:
                 # The apt.dat is using iso-8859-1 encoding.
@@ -989,6 +1009,7 @@ class _ProcessApt:
         self.data.append(self.entry)
 
     def save_atp_data(self):
+        logger.info("Opening apt file '{}' for writing".format(APT))
         with open(APT, 'w') as fin:
             for i in self.data:
                 fin.write(str(i) + '\n')
