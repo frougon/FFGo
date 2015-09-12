@@ -167,11 +167,11 @@ class Config:
     def makeInstalledAptList(self):
         logger.notice(_("Building the list of installed airports "
                         "(this may take some time)..."))
-        airports = sorted(self._findInstalledApt())
-        s = '\n'.join(airports)
+        # writelines() used below doesn't automatically add line terminators
+        airports = sorted([ icao + '\n' for icao in self._findInstalledApt() ])
         logger.info("Opening '{}' for writing".format(INSTALLED_APT))
         with open(INSTALLED_APT, "w", encoding="utf-8") as fout:
-            fout.writelines(s)
+            fout.writelines(airports)
 
     def readCoord(self):
         """Read coordinates list (makes new one if non exists).
