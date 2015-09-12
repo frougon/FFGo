@@ -31,12 +31,9 @@ from .. import fgcmdbuilder
 
 try:
     from PIL import Image, ImageTk
-    PIL = True
+    HAS_PIL = True
 except ImportError:
-    PIL = False
-    logger.warningNP(
-        _("[{prg} warning] {libName} library not found. Aircraft thumbnails "
-          "won't be displayed.").format(prg=PROGNAME, libName="Pillow"))
+    HAS_PIL = False
 
 
 class PassShortcutsToApp:
@@ -90,6 +87,13 @@ class App:
                         "Using CondConfigParser {ccp_ver}").format(
                             prg_with_ver=NAME_WITH_VERSION,
                             ccp_ver=condconfigparser.__version__))
+        # We can't print a translated version of the warning when the import
+        # test is done at module initialization; thus, do it now.
+        if not HAS_PIL:
+            logger.warningNP(
+                _("[{prg} warning] {libName} library not found. Aircraft "
+                  "thumbnails won't be displayed.").format(prg=PROGNAME,
+                                                           libName="Pillow"))
         self.params = params
         self.master = master
         self.config = config
@@ -595,7 +599,7 @@ class App:
 
     def getImage(self):
         """Find thumbnail in aircraft directory."""
-        if PIL:
+        if HAS_PIL:
             try:
                 name = self.config.aircraft.get()
                 index = self.config.aircraft_list.index(name)
