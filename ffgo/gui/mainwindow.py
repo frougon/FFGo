@@ -25,6 +25,7 @@ from ..misc import resourceExists, textResourceStream, binaryResourceStream
 from .tooltip import ToolTip
 from .metar import Metar
 from .configwindow import ConfigWindow
+from . import infowindow
 from ..constants import *
 from .. import fgcmdbuilder
 
@@ -555,8 +556,13 @@ class App:
         Apply filter to airportList if self.config.filtredAptList is True.
 
         """
+        message = _("Building airport lists (this may take some time)...")
+        infoWindow = infowindow.InfoWindow(self.master, message)
+        infoWindow.update()
         self.config.updateAptLists()
         self.buildAirportList()
+        infoWindow.destroy()
+
         self.airportList.see(self.getIndex('p'))
         self.airportList.select_set(self.getIndex('p'))
 
