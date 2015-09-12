@@ -225,7 +225,11 @@ you may want to consult the Git repository log.
           raising an exception because "52.old" is not an integer.
           (Florent Rougon)
 [USABILITY] Display an explanation when building airport lists. The operation
-           may be a bit long and freezes the interface. Display a window so
-           that the user knows what is happening and patiently waits.
-           (Florent Rougon)
+          may be a bit long and freezes the interface. Display a window so
+          that the user knows what is happening and patiently waits.
+          (Florent Rougon)
 [FEATURE] Update the French translation of the interface. (Florent Rougon)
+
+1.2.1
+[BUGFIX]  Fix crash at initialization when Pillow is not installed (bug
+          introduced in 1.2.0). (Florent Rougon)
