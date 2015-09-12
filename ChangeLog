@@ -185,3 +185,47 @@ you may want to consult the Git repository log.
 [USABILITY] Improve installation instructions. Most notably, make the suitable
           changes now that Debian packages are available for FFGo and
           CondConfigParser. (Florent Rougon)
+
+1.2.0
+[FEATURE] New logging system. Automatically write a log file containing the
+          start and end date, OS, FFGo and Python versions, and all other
+          usual messages (including exceptions and FlightGear messages). The
+          log file is ~/.ffgo/Logs/FFGo.log (%APPDATA%/FFGo/Logs/FFGo.log on
+          Windows). It is automatically rotated at application startup,
+          keeping at most ten log files (FFGo.log, FFGo_1.log,
+          FFGo_2.log, ..., FFGo_9.log). (Florent Rougon)
+[FEATURE] Support command line options --help and --verbose. (Florent Rougon)
+[FEATURE] New command line option --log-level to choose the log level for
+          terminal output (defaults to 'notice', which makes the terminal less
+          verbose than the log file by default). Run 'ffgo --help' to see the
+          available log levels. (Florent Rougon)
+[FEATURE] Add logging calls in a few key places to help debug problems. FFGo
+          logs things such as XML parking/groundnet files about to be parsed
+          (among others) with level 'info' or above to make it easy to spot
+          the culprit in case there is a problem. Thus, in such a case, you
+          can either look into the log file or rerun FFGo in a terminal, like
+          this: 'ffgo --log-level=info' or 'ffgo --log-level=debug' (also
+          possible with ffgo-launcher.py, of course). (Florent Rougon)
+[BUGFIX]  Exceptions raised from a Tkinter callback cause an error window to
+          appear, not only a traceback on the terminal. (Florent Rougon)
+[FEATURE] New command line option --test-mode for developers, useful for
+          running test code from the FFGo GUI. (Florent Rougon)
+[BUGFIX]  Improve parsing of XML files (parking/groundnet and scenario files).
+          This should work better in a few cases and make it clear there is an
+          error when one of these files is really invalid. (Florent Rougon)
+[BUGFIX]  Small fixes with respect to file operations (be explicit about the
+          encoding... this notably affects USER_DATA_DIR/apt, which can have a
+          few non-ASCII airport names such as EDRZ = Zweibrücken; properly
+          use writelines() in Config.makeInstalledAptList() too...).
+          (Florent Rougon)
+[BUGFIX]  Improve parsing of directory names under <scenery_dir>/Terrain for
+          those using the 'Show installed airports only' option. Some custom
+          scenery directories may have subdirs such as
+          'Scenery/Terrain/e020n50/e020n52.old'. Ignore them instead of
+          raising an exception because "52.old" is not an integer.
+          (Florent Rougon)
+[USABILITY] Display an explanation when building airport lists. The operation
+           may be a bit long and freezes the interface. Display a window so
+           that the user knows what is happening and patiently waits.
+           (Florent Rougon)
+[FEATURE] Update the French translation of the interface. (Florent Rougon)

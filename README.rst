@@ -228,6 +228,15 @@ documentation (for the latest FFGo release) is always `available online
        and running ``make doc`` from the top-level directory.
 
 
+Getting help, discussing
+------------------------
+
+At the time of this writing, there is a thread dedicated to FFGo on the
+FlightGear forum at the following address:
+
+  http://forum.flightgear.org/viewtopic.php?f=18&t=27054
+
+
 License
 -------
 
