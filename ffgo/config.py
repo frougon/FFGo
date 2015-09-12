@@ -694,14 +694,15 @@ configurations are kept separate.""")
         """
         carriers = []
         scenarios = []
-        for f in os.listdir(self.ai_path):
-            path = os.path.join(self.ai_path, f)
+        if os.path.isdir(self.ai_path):
+            for f in os.listdir(self.ai_path):
+                path = os.path.join(self.ai_path, f)
 
-            if os.path.isfile(path) and f.lower().endswith('.xml'):
-                scenario_name = f[:-4]
-                scenarios.append(scenario_name)
-                # Appends to 'carriers'
-                self._append_carrier_data(carriers, path, scenario_name)
+                if os.path.isfile(path) and f.lower().endswith('.xml'):
+                    scenario_name = f[:-4]
+                    scenarios.append(scenario_name)
+                    # Appends to 'carriers'
+                    self._append_carrier_data(carriers, path, scenario_name)
 
         return sorted(scenarios), sorted(carriers)
 

@@ -770,7 +770,7 @@ class App:
                 for path in paths:
                     for i in range(3):
                         path = os.path.join(path, icao[i])
-                    if os.path.exists(path):
+                    if os.path.isdir(path):
                         files = os.listdir(path)
                         parking = '.'.join([icao, 'parking.xml'])
                         groundnet = '.'.join([icao, 'groundnet.xml'])
@@ -781,7 +781,7 @@ class App:
             # If airport data source is set to: Standard...
             else:
                 path = os.path.join(self.config.ai_path, DEFAULT_AIRPORTS_DIR)
-                if os.path.exists(path):
+                if os.path.isdir(path):
                     dirs = os.listdir(path)
                     if icao in dirs:
                         path = os.path.join(path, icao)
