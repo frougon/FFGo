@@ -353,8 +353,19 @@ class Config:
                 for dir in os.listdir(path):
                     p = os.path.join(path, dir)
                     for coords in os.listdir(p):
+                        d = os.path.join(p, coords)
+                        if not os.path.isdir(d):
+                            continue
+
+                        logger.debug("Exploring Terrain directory '{}' -> '{}'"
+                                     .format(p, coords))
                         converted = self._stringToCoordinates(coords)
-                        coord_dict[converted] = None
+                        if converted is not None:
+                            coord_dict[converted] = None
+                        else:
+                            logger.notice(
+                                "Ignoring directory '{}' (unexpected name)"
+                                .format(d))
 
         apt_coords = self.readCoord()
         coords = coord_dict.keys()
@@ -750,8 +761,14 @@ configurations are kept separate.""")
         except Exception:
             gettext.install(MESSAGES, LOCALE_DIR)
 
+    # Regexp for directory names such as w040n20
+    _geoDirCre = re.compile(r"[we]\d{3}[ns]\d{2}$")
+
     def _stringToCoordinates(self, coordinates):
         """Convert geo coordinates to decimal format."""
+        if not self._geoDirCre.match(coordinates):
+            return None
+
         lat = coordinates[4:]
         lon = coordinates[:4]
 
