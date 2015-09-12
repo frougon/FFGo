@@ -364,7 +364,7 @@ class Config:
                             coord_dict[converted] = None
                         else:
                             logger.notice(
-                                "Ignoring directory '{}' (unexpected name)"
+                                _("Ignoring directory '{}' (unexpected name)")
                                 .format(d))
 
         apt_coords = self.readCoord()
