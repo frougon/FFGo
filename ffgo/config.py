@@ -170,7 +170,7 @@ class Config:
         airports = sorted(self._findInstalledApt())
         s = '\n'.join(airports)
         logger.info("Opening '{}' for writing".format(INSTALLED_APT))
-        with open(INSTALLED_APT, 'w') as fout:
+        with open(INSTALLED_APT, "w", encoding="utf-8") as fout:
             fout.writelines(s)
 
     def readCoord(self):
@@ -648,7 +648,6 @@ configurations are kept separate.""")
                             rwy_list.append(i)
                         rwy.append(rwy_list)
 
-            fin.close()
             return icao, name, rwy
 
         except IOError:
@@ -772,17 +771,15 @@ configurations are kept separate.""")
 
         logger.info("Opening apt timestamp file '{}' for reading".format(
             APT_TIMESTAMP))
-        with open(APT_TIMESTAMP) as timestamp:
+        with open(APT_TIMESTAMP, "r", encoding="utf-8") as timestamp:
             old_modtime = timestamp.read()
-        timestamp.close()
         return old_modtime
 
     def _writeAptTimestamp(self, s):
         logger.info("Opening apt timestamp file '{}' for writing".format(
             APT_TIMESTAMP))
-        with open(APT_TIMESTAMP, 'w') as timestamp:
+        with open(APT_TIMESTAMP, "w", encoding="utf-8") as timestamp:
             timestamp.write(s)
-        timestamp.close()
 
     def _getAptModTime(self):
         return str(os.path.getmtime(self.apt_path))
@@ -851,7 +848,7 @@ class _ProcessApt:
         with gzip.open(self.apt_path) as fin:
             origin, number, version = self.read_header(fin)
             number = self.get_version_number(origin, number, version)
-            return number
+        return number
 
     def read_header(self, fin):
         data = fin.read(24).decode('utf-8')
@@ -1010,7 +1007,7 @@ class _ProcessApt:
 
     def save_atp_data(self):
         logger.info("Opening apt file '{}' for writing".format(APT))
-        with open(APT, 'w') as fin:
+        with open(APT, "w", encoding="utf-8") as fin:
             for i in self.data:
                 fin.write(str(i) + '\n')
 
