@@ -61,6 +61,33 @@ class OrderedEnum(enum.Enum):
         return NotImplemented
 
 
+# Similar to processPosition() in src/Airports/dynamicloader.cxx of the
+# FlightGear source code (version 3.7)
+def mixedToDecimalCoords(s):
+    """Convert from e.g., 'W122 22.994' to -122.38323333333334 (float).
+
+    The source format is used in FlightGear groundnet files. The first
+    number represents degrees and must be an integer. The second number
+    is written as a decimal number and represents minutes of angle.
+
+    """
+    if not s:
+        raise ValueError(_("empty coordinate string"))
+
+    if s[0] in "NE":
+        sign = 1
+    elif s[0] in "SW":
+        sign = -1
+    else:
+        raise ValueError(_("unexpected first character in mixed-style "
+                           "coordinate string: {!r}").format(s[0]))
+
+    degree = int(s[1:s.index(' ', 1)])
+    minutes = float(s[s.index(' ', 1) + 1:])
+
+    return sign * (degree + minutes/60.0)
+
+
 # ****************************************************************************
 # Thin abstraction layer offering an API similar to that of pkg_resources. By
 # changing the functions below, it would be trivial to switch to pkg_resources
