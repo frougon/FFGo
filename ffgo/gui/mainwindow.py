@@ -28,6 +28,7 @@ from .configwindow import ConfigWindow
 from . import infowindow
 from ..constants import *
 from .. import fgcmdbuilder
+from .. import fgdata
 
 try:
     from PIL import Image, ImageTk
@@ -647,25 +648,47 @@ class App:
                               command=lambda i=i: self.setCarrier(i))
         popup.tk_popup(event.x_root, event.y_root, 0)
 
+    def _flightTypeDisplayName(self, flightType):
+        d = {"cargo":       _("Cargo"),
+             "ga":          _("General aviation"),
+             "gate":        _("Gate"),
+             "mil-cargo":   _("Mil. cargo"),
+             "mil-fighter": _("Mil. fighter"),
+             "vtol":        _("VTOL"), # Vertical Take-Off and Landing
+             "":            _("Unspecified")}
+
+        return d.get(flightType, flightType)
+
     def popupPark(self, event):
         """Make pop up menu."""
         # Take focus out of search entry to stop search loop.
         self.master.focus()
         popup = Menu(tearoff=0)
+        # Background color for column headers
+        headerBgColor = "#000066"
+
         if self.config.airport.get() != 'None':
+            popup.add_command(label='', state=DISABLED,
+                              background=headerBgColor)
             popup.add_command(label=_('None'),
                               command=lambda: self.config.park.set('None'))
-            count = 1
-            for i in self.read_airport_data(self.config.airport.get(), 'park'):
-                #  Cut menu
-                if count % 20:
-                    popup.add_command(label=i,
-                                    command=lambda i=i: self.config.park.set(i))
-                else:
-                    popup.add_command(label=i,
-                                    command=lambda i=i: self.config.park.set(i),
-                                    columnbreak=1)
-                count += 1
+
+            d = self.readParkingData(self.config.airport.get())
+
+            for flightType in sorted(d.keys()):
+                for i, parking in enumerate(d[flightType]):
+                    parkName = str(parking)
+                    if not (i % 20):
+                        # Column header
+                        popup.add_command(
+                            label=self._flightTypeDisplayName(flightType),
+                            state=DISABLED,
+                            background=headerBgColor,
+                            columnbreak=True)
+
+                    popup.add_command(
+                        label=parkName,
+                        command=lambda x=parkName: self.config.park.set(x))
         else:
             L = self.currentCarrier[1:-1]
             for i in L:
@@ -682,7 +705,7 @@ class App:
             popup = Menu(tearoff=0)
             popup.add_command(label=_('Default'),
                               command=lambda: self.config.rwy.set('Default'))
-            for i in self.read_airport_data(self.config.airport.get(), 'rwy'):
+            for i in self.readRunwayData(self.config.airport.get()):
                 popup.add_command(label=i, command=lambda i=i:
                                   self.config.rwy.set(i))
             popup.tk_popup(event.x_root, event.y_root, 0)
@@ -747,76 +770,50 @@ class App:
         """Quit application."""
         self.master.quit()
 
-    def read_airport_data(self, icao, type_):
-        """Get runway or parking names.
-
-        type_ should be: 'rwy' or 'park'
-
-        """
+    def readRunwayData(self, icao):
         res = []
-        if type_ == 'rwy':
-            path = os.path.join(self.config.ai_path, DEFAULT_AIRPORTS_DIR)
-            if os.path.exists(path):
-                # Runway
-                if type_ == 'rwy':
-                    index = self.getIndex('p')
-                    rwy = self.config.airport_rwy[index]
-                    for i in rwy:
-                        res.append(i)
-        else:
-            # If airport data source is set to: From scenery...
-            if self.config.apt_data_source.get():
-                paths = []
-                L = self.config.FG_scenery.get().split(':')
-                for path in L:
-                    paths.append(os.path.join(path, DEFAULT_AIRPORTS_DIR))
-
-                for path in paths:
-                    for i in range(3):
-                        path = os.path.join(path, icao[i])
-                    if os.path.isdir(path):
-                        files = os.listdir(path)
-                        parking = '.'.join([icao, 'parking.xml'])
-                        groundnet = '.'.join([icao, 'groundnet.xml'])
-                        for f in files:
-                            file_path = os.path.join(path, f)
-                            if f == parking or f == groundnet and not res:
-                                res = self.read_parking(file_path)
-            # If airport data source is set to: Standard...
-            else:
-                path = os.path.join(self.config.ai_path, DEFAULT_AIRPORTS_DIR)
-                if os.path.isdir(path):
-                    dirs = os.listdir(path)
-                    if icao in dirs:
-                        path = os.path.join(path, icao)
-                        file_path = os.path.join(path, 'parking.xml')
-                        if os.path.exists(file_path):
-                            res = self.read_parking(file_path)
+        path = os.path.join(self.config.ai_path, DEFAULT_AIRPORTS_DIR)
+        if os.path.isdir(path):
+            index = self.getIndex('p')
+            rwy = self.config.airport_rwy[index]
+            for i in rwy:
+                res.append(i)
 
         return res
 
-    def read_parking(self, xmlFilePath):
-        """Read parking positions from XML file."""
-        logger.info("Reading parking positions from '{}'".format(xmlFilePath))
-        s = set()
-        root = self._get_root(xmlFilePath)
+    def readParkingData(self, icao):
+        res = {}
 
-        for eltName in ('parkingList', 'parkinglist'):
-            parking_list = root.find(eltName)
-            if parking_list is not None:
-                break
+        # If airport data source is set to: From scenery...
+        if self.config.apt_data_source.get():
+            paths = []
+            L = self.config.FG_scenery.get().split(':')
+            for path in L:
+                paths.append(os.path.join(path, DEFAULT_AIRPORTS_DIR))
+
+            for path in paths:
+                for i in range(3):
+                    path = os.path.join(path, icao[i])
+                if os.path.isdir(path):
+                    files = os.listdir(path)
+                    parking = '.'.join([icao, 'parking.xml'])
+                    groundnet = '.'.join([icao, 'groundnet.xml'])
+                    for f in files:
+                        file_path = os.path.join(path, f)
+                        if f == parking or f == groundnet and not res:
+                            res = fgdata.parking.readGroundnetFile(file_path)
+        # If airport data source is set to: Standard...
         else:
-            return []
+            path = os.path.join(self.config.ai_path, DEFAULT_AIRPORTS_DIR)
+            if os.path.isdir(path):
+                dirs = os.listdir(path)
+                if icao in dirs:
+                    path = os.path.join(path, icao)
+                    file_path = os.path.join(path, 'parking.xml')
+                    if os.path.exists(file_path):
+                        res = fgdata.parking.readGroundnetFile(file_path)
 
-        for p in parking_list.iterfind('Parking'):
-            name = p.get('name', '')
-            # Some parking positions have no 'number' attribute
-            number = p.get('number', '')
-            fullName = name + number
-            if fullName:
-                s.add(fullName)
-
-        return sorted(list(s))
+        return res
 
     def read_scenario(self, scenario):
         """Read description from a scenario."""

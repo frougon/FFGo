@@ -9,7 +9,11 @@
 # it at <http://www.wtfpl.net/>.
 
 import re
+from xml.etree import ElementTree
+
+from ..constants import PROGNAME
 from .. import misc
+from ..logging import logger
 
 
 class error(Exception):
@@ -103,3 +107,60 @@ class Parking:
             l.insert(0, "")
 
         return l
+
+
+def readGroundnetFile(xmlFilePath):
+    """Read parking positions from XML file."""
+    logger.info("Reading parking positions from '{}'".format(xmlFilePath))
+    res = {}
+
+    tree = ElementTree.parse(xmlFilePath)
+    root = tree.getroot()
+
+    for eltName in ('parkingList', 'parkinglist'):
+        parking_list = root.find(eltName)
+        if parking_list is not None:
+            break
+    else:
+        return res
+
+    parkings = {}
+
+    for pElt in parking_list.iterfind('Parking'):
+        try:
+            p = Parking.fromElement(pElt)
+        except error as e:
+            logger.error("while parsing '{}': {}".format(xmlFilePath, e))
+            message = _('Error parsing a groundnet file')
+            detail = _("In '{file}': {errmsg}.").format(
+                file=xmlFilePath, errmsg=e)
+            showerror(_('{prg}').format(prg=PROGNAME), message, detail=detail)
+            continue
+
+        if not str(p):
+            logger.warning("'{}': empty parking name (index='{}')".format(
+                xmlFilePath, p.index))
+        elif str(p) in parkings:
+            logger.warning("'{}': duplicate parking name '{}' "
+                           "(index='{}'); keeping the first found only "
+                           "(index='{}')"
+                           .format(xmlFilePath, p, p.index,
+                                   parkings[str(p)].index))
+        else:
+            parkings[str(p)] = p
+
+    for p in parkings.values():
+        if not p.type in res:
+            res[p.type] = []
+
+        # We have already removed the eventual duplicates
+        res[p.type].append(p)
+
+    for parkList in res.values():
+        # Sort parking names properly (A1 < A2 < ... A9 < A10, even if the
+        # number is part of the 'name' attribute). Also handles weird stuff
+        # such as A10BCD9ef.12, using the integral and non-integral parts
+        # as successive sort keys.
+        parkList.sort(key=Parking.fullNameSortKey)
+
+    return res
