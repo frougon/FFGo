@@ -34,13 +34,24 @@ http://sam.zoy.org/wtfpl/COPYING for more details.
 """
 # User's home directory.
 HOME_DIR = expanduser('~')
-# Default directory for user data files.
+# Default directories for user data files and FlightGear configuration
+# (defaults for FG_HOME according to <http://wiki.flightgear.org/$FG_HOME>).
 if platform.system() == "Windows":
-    # normpath() converts / to \ on Windows, which can be useful when
-    # displaying paths to users.
-    USER_DATA_DIR = normpath(join(os.getenv("APPDATA", "C:/"), "FFGo"))
+    USER_DATA_DIR = join(os.getenv("APPDATA", "C:/"), "FFGo")
+    FG_HOME = join(os.getenv("HOME"), "Documents", "FlightGear")
+elif platform.system() == "Darwin":
+    USER_DATA_DIR = join(HOME_DIR, '.ffgo')
+    FG_HOME = join(
+        os.getenv("HOME"), "Library", "Application Support", "FlightGear")
 else:
     USER_DATA_DIR = join(HOME_DIR, '.ffgo')
+    FG_HOME = join(HOME_DIR, '.fgfs')
+
+# normpath() converts / to \ on Windows, which can be useful when
+# displaying paths to users.
+USER_DATA_DIR = normpath(USER_DATA_DIR)
+FG_HOME = normpath(FG_HOME)
+
 # Place to store FG output logs.
 LOG_DIR = join(USER_DATA_DIR, 'Logs')
 # Path to airport data file.
@@ -115,6 +126,8 @@ AI_DIR = 'AI'
 DEFAULT_AIRCRAFT_DIR = 'Aircraft'
 # FG_DATA(or FG_SCENERY)/Airports directory name.
 DEFAULT_AIRPORTS_DIR = 'Airports'
+# Default directory for TerraSync-downloaded data
+DEFAULT_TERRASYNC_DIR = join(FG_HOME, 'TerraSync')
 # FG_DATA/Airports/apt.dat.gz file path.
 APT_DAT = join('Airports', 'apt.dat.gz')
 # FG_DATA/Airports/apt.dat.gz file path.
