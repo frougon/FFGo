@@ -188,9 +188,15 @@ detached, are saved when choosing "Save & Quit".
 
 TIPS & TRICKS
 
-* If the airport data source is set to "Scenery", then information about
-  airports parking positions may not be available until the
-  corresponding scenery is installed.
+* If the airport data source is set to "Scenery" (now the default), then
+  information about airports parking positions won't be available until
+  the corresponding scenery is installed.
+
+  In such a case, if you use TerraSync, just run FlightGear once at the
+  airport you want; this will automatically download the scenery for
+  this airport. And make sure your TerraSync directory is listed (maybe
+  along with others) in FFGo's FG_SCENERY setting in the Preferences
+  dialog.
 
 * For serious editing of the configuration, the builtin text widget in
   the FFGo interface may not be as convenient as a real text editor

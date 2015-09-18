@@ -30,7 +30,7 @@ class ConfigWindow:
         if self.config.apt_data_source.get():
             self.apt_data_source.set(_('Scenery'))
         else:
-            self.apt_data_source.set(_('Default'))
+            self.apt_data_source.set(_('Old default'))
 
         if self.config.auto_update_apt.get():
             self.auto_update_apt.set(_('Automatic'))
@@ -223,27 +223,24 @@ Choose other language. If not selected, {prg} will try to choose the
 system language.""").format(prg=PROGNAME)
         self.tooltip_aptMenu = _("""\
 Select data source where {prg} will be looking for information about
-runways or parking positions. There are two options:
+parking positions. There are two options:
 
-Default - {prg} will show runway numbers based on $USER_DATA_DIR/apt
-    file, which is generated from FG_ROOT/Airports/apt.dat.gz
-    database. Parking names will be taken from FG_ROOT/AI/Airports
-    directory.
+Scenery - Parking data will be read from
+    $FG_SCENERY/Airports/[I]/[C]/[A]/[ICAO].groundnet.xml. {prg} will
+    use the first match if FG_SCENERY contains several paths.
 
-Scenery - {prg} will show runway numbers based on $USER_DATA_DIR/apt
-    file, which is generated from FG_ROOT/Airports/apt.dat.gz
-    database. Parking names will be taken from FG_SCENERY/Airports
-    folder - or folders - if multiple scenery paths are provided.
+Old default - Parking data will be read from
+    $FG_ROOT/AI/Airports/[ICAO]/parking.xml.
 
-Generally speaking: "Default" option will tell {prg} to show the same
-data that FlightGear uses by default when selecting starting location,
-while "Scenery" option will tell {prg} to look for that data
-directly in scenery folder. In that latter case, you may add
---prop:/sim/paths/use-custom-scenery-data=true argument into command
-line options window to tell FlightGear to use the same data.
+(for example, for the EDDF airport, [ICAO] should be replaced with
+EDDF, [I] with E, [C] with D, [A] with D and [O] with F)
 
-If not sure which option you should choose, the best is to stick
-with the default setting.""").format(prg=PROGNAME)
+With FlightGear 2.6 and later, it is advised to choose "Scenery"; it
+is now the default in {prg}.
+
+For more infomation, you may consult:
+
+  <http://wiki.flightgear.org/About_Scenery/Airports>""").format(prg=PROGNAME)
         self.tooltip_autoAptMenu = _("""\
 Automatic - {prg} will try to keep track of changes of
     FG_ROOT/Airports/apt.dat.gz file, and will rebuild its airport
@@ -519,7 +516,7 @@ When this option is unchecked, only the main window size is stored.""")
         self.apt_label.pack(side='left')
 
         self.aptMenu = OptionMenu(self.frame_misc_22, self.apt_data_source,
-                                  *(_('Default'), _('Scenery')))
+                                  _('Scenery'), _('Old default'))
         ToolTip(self.aptMenu, self.tooltip_aptMenu)
         self.aptMenu.pack(side='left')
 

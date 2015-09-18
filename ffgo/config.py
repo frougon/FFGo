@@ -243,7 +243,7 @@ class Config:
 
         self.aircraft.set(DEFAULT_AIRCRAFT)
         self.airport.set(DEFAULT_AIRPORT)
-        self.apt_data_source.set(0)
+        self.apt_data_source.set(1)
         self.auto_update_apt.set(0)
         self.carrier.set('None')
         self.FG_aircraft.set('')

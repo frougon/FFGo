@@ -41,10 +41,6 @@
 ## Limit fps to the specified number.
 # --prop:/sim/frame-rate-throttle-hz=35
 
-## Use custom scenery data. Useful if, e.g., the airport data source is set to
-## scenery.
-# --prop:/sim/paths/use-custom-scenery-data=true
-
 ## More information about 'fgfs' (FlightGear) command line options
 ## can be found:
 ##   - with the command 'fgfs --help --verbose';

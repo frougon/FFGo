@@ -28,11 +28,6 @@
 ## Limitare la frequenza dei fotogrammi (fps) a uno specifico valore.
 # --prop:/sim/frame-rate-throttle-hz=35
 
-## Utilizzare scenari personalizzati. Opzione utile nel caso in cui la sorgente
-## dei dati degli aeroporti è impostata su "Scenario".
-# --prop:/sim/paths/use-custom-scenery-data=true
-
-
 ## Maggiori informazioni sulle opzioni a linea di comando si possono trovare
 ## nella documentazione di FlightGear, oppure consultando il sito:
 ## http://wiki.flightgear.org/index.php/Command_Line_Options

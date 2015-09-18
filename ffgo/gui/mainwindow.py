@@ -784,7 +784,7 @@ class App:
     def readParkingData(self, icao):
         res = {}
 
-        # If airport data source is set to: From scenery...
+        # If airport data source is set to "Scenery"
         if self.config.apt_data_source.get():
             paths = [ os.path.join(path, DEFAULT_AIRPORTS_DIR)
                       for path in self.config.FG_scenery.get().split(':') ]
@@ -797,7 +797,7 @@ class App:
                 if os.path.isfile(groundnetPath):
                     res = fgdata.parking.readGroundnetFile(groundnetPath)
                     break
-        # If airport data source is set to: Standard...
+        # If airport data source is set to "Old default"
         else:
             path = os.path.join(self.config.ai_path, DEFAULT_AIRPORTS_DIR)
             if os.path.isdir(path):

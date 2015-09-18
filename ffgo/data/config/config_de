@@ -28,11 +28,6 @@
 ## Begrenze fps auf angegebene Anzahl.
 # --prop:/sim/frame-rate-throttle-hz=35
 
-## Benutze eine spezielle Szenerie-Datenquelle. Sinnvoll, falls z.Bsp.
-## die Flughafen-Datenquelle auf Szenerie gesetzt ist.
-# --prop:/sim/paths/use-custom-scenery-data=true
-
-
 ## Mehr Informationen über die Kommandozeilen-Optionen
 ## findet man in der FlightGear-Dokumentation oder im Web:
 ## http://wiki.flightgear.org/index.php/Command_Line_Options

@@ -28,11 +28,6 @@
 ## Limite le nombre d'images par seconde à un nombre fixe.
 # --prop:/sim/frame-rate-throttle-hz=35
 
-## Utilise des données de scènes personnalisées. Intéressant si, par exemple,
-## la source des données des aéroports est positionnée à "Scènes".
-# --prop:/sim/paths/use-custom-scenery-data=true
-
-
 ## Des informations complémentaires à propos des options de ligne de commande
 ## peuvent être obtenues dans la documentation FlightGear, ou à l'adresse
 ## http://wiki.flightgear.org/index.php/Command_Line_Options

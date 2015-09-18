@@ -20,14 +20,13 @@
 # FFGo specific options:
 # AI_SCENARIOS=scenario_name    - List of scenario names (without xml
 #                                 extension) separated by spaces.
-# APT_DATA_SOURCE=boolean       - 0 or 1 (defaults to 0). Select data source
+# APT_DATA_SOURCE=boolean       - 0 or 1 (defaults to 1). Select data source
 #                                 where FFGo will be looking for information
-#                                 about runways or parking positions. 0 means
-#                                 default, and 1 means scenery. Remember that
-#                                 you may need to also add
-#                                 --prop:/sim/paths/use-custom-scenery-data=true
-#                                 argument to tell FlightGear to use
-#                                 the same data if scenery source is selected.
+#                                 about parking positions. 0 tells FFGo to
+#                                 look into FG_ROOT/AI/Airports (for FlightGear
+#                                 2.4.0 or earlier), and 1 tells to look into
+#                                 FG_SCENERY/Airports (for contemporary
+#                                 FlightGear versions).
 # AUTO_UPDATE_APT=boolean       - 0 or 1 (defaults to 0). Keep track of
 #                                 changes of FG_ROOT/Airports/apt.dat.gz file,
 #                                 and rebuild its own airport database
