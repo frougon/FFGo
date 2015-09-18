@@ -796,11 +796,10 @@ class App:
                     path = os.path.join(path, icao[i])
                 if os.path.isdir(path):
                     files = os.listdir(path)
-                    parking = '.'.join([icao, 'parking.xml'])
                     groundnet = '.'.join([icao, 'groundnet.xml'])
                     for f in files:
                         file_path = os.path.join(path, f)
-                        if f == parking or f == groundnet and not res:
+                        if f == groundnet and not res:
                             res = fgdata.parking.readGroundnetFile(file_path)
         # If airport data source is set to: Standard...
         else:
