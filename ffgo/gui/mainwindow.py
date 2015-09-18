@@ -786,21 +786,17 @@ class App:
 
         # If airport data source is set to: From scenery...
         if self.config.apt_data_source.get():
-            paths = []
-            L = self.config.FG_scenery.get().split(':')
-            for path in L:
-                paths.append(os.path.join(path, DEFAULT_AIRPORTS_DIR))
+            paths = [ os.path.join(path, DEFAULT_AIRPORTS_DIR)
+                      for path in self.config.FG_scenery.get().split(':') ]
 
             for path in paths:
                 for i in range(3):
                     path = os.path.join(path, icao[i])
-                if os.path.isdir(path):
-                    files = os.listdir(path)
-                    groundnet = '.'.join([icao, 'groundnet.xml'])
-                    for f in files:
-                        file_path = os.path.join(path, f)
-                        if f == groundnet and not res:
-                            res = fgdata.parking.readGroundnetFile(file_path)
+                groundnet = '{}.groundnet.xml'.format(icao)
+                groundnetPath = os.path.join(path, groundnet)
+                if os.path.isfile(groundnetPath):
+                    res = fgdata.parking.readGroundnetFile(groundnetPath)
+                    break
         # If airport data source is set to: Standard...
         else:
             path = os.path.join(self.config.ai_path, DEFAULT_AIRPORTS_DIR)
