@@ -370,7 +370,7 @@ class App:
         self.old_airport_search = ''
         # Will set self.FGCommand.{argList,lastConfigParsingExc}
         # appropriately (actually, self.FGCommand.builder.*).
-        self.reset(first_run=True)
+        self.reset(readCfgFile=False)
         self.registerTracedVariables()
         # Lock used to prevent concurent calls of self._runFG()
         # (disabling the "Run FG" button is not enough, as self.runFG()
@@ -845,11 +845,11 @@ class App:
         self.config.park.trace('w', self.FGCommand.update)
         self.config.rwy.trace('w', self.FGCommand.update)
 
-    def reset(self, event=None, path=None, first_run=False):
+    def reset(self, event=None, path=None, readCfgFile=True):
         """Reset data"""
         # Don't call config.update() at application initialization
         # as config object is updated at its creation anyway.
-        if not first_run:
+        if readCfgFile:
             self.config.update(path)
         self.aircraftSearch.delete(0, 'end')
         self.airportSearch.delete(0, 'end')
