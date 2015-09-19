@@ -305,15 +305,21 @@ class Config:
         self.airport_icao, self.airport_name, self.airport_rwy = \
             self._readApt()
 
-    def write(self, text, path=None):
-        """Write options to a file.
+    def write(self, text=None, path=None):
+        """Write the configuration to a file.
 
-        text argument should be the content of text window
-        path is a path to different than default config file.
+        text -- content of text window processed by CondConfigParser
+                (pass None to use the value of Config.text)
+        path -- path to the file the config will be written to
+                (the default config file is used if this argument is
+                empty or None)
 
         """
         if not path:
             path = CONFIG
+        if text is None:
+            text = self.text
+
         options = []
         keys = list(self.keywords.keys())
         keys.sort()
