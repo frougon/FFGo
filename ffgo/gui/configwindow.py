@@ -251,12 +251,13 @@ For more infomation, you may consult:
 
   <http://wiki.flightgear.org/About_Scenery/Airports>""").format(prg=PROGNAME)
         self.tooltip_autoAptMenu = _("""\
-Automatic - {prg} will try to keep track of changes of
-    FG_ROOT/Airports/apt.dat.gz file, and will rebuild its airport
-    database when need it.
+Automatic - {prg} will try to keep track of changes to
+    FG_ROOT/Airports/apt.dat.gz file, and will automatically rebuild
+    its own airport database when this happens.
 
-Manual - "Rebuild Airport Database" button needs to be used every time
-    FG_ROOT/Airports/apt.dat.gz is changed.""").format(prg=PROGNAME)
+Manual - The “Rebuild Airport Database” button needs to be used every
+    time FG_ROOT/Airports/apt.dat.gz is changed (for instance, this is
+    likely to happen when FlightGear is updated).""").format(prg=PROGNAME)
         self.tooltip_rebuildApt = _("""\
 Build new airport database from current FG_ROOT/Airports/apt.dat.gz.
 Useful when apt.dat.gz file has been updated.""")
@@ -542,7 +543,7 @@ When this option is unchecked, only the main window size is stored.""")
         self.auto_apt_label.pack(side='left')
 
         self.autoAptMenu = OptionMenu(self.frame_misc_31, self.auto_update_apt,
-                                      *(_('Automatic'), _('Manual')))
+                                      _('Automatic'), _('Manual'))
         ToolTip(self.autoAptMenu, self.tooltip_autoAptMenu)
         self.autoAptMenu.pack(side='left')
 

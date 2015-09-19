@@ -248,7 +248,7 @@ class Config:
         self.airport.set(DEFAULT_AIRPORT)
         self.alreadyProposedChanges.set('')
         self.apt_data_source.set(1)
-        self.auto_update_apt.set(0)
+        self.auto_update_apt.set(1)
         self.carrier.set('None')
         self.FG_aircraft.set('')
         self.FG_bin.set('')
