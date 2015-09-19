@@ -436,6 +436,35 @@ available for this airport in $FG_SCENERY, allowing {prg} to use it.""")
             # This must be written to the config file
             writeConfig = True
 
+        if not (self.config.auto_update_apt.get() or
+                "AUTO_UPDATE_APT_to_Automatic" in alreadyProposedChanges):
+            message = _('Change “Airport database update” to “Automatic”?')
+            detail = (_("""\
+Whenever FlightGear's FG_ROOT/Airports/apt.dat.gz file is updated, {prg}
+must rebuild its own airport database for proper operation. This can be
+done manually with the “Rebuild Airport Database” button from the
+Preferences dialog, or automatically whenever {prg} detects a timestamp
+change for FlightGear's apt.dat.gz.""")
+            .replace('\n', ' ') + "\n\n" + _("""\
+The default setting in {prg} for this option is now “Automatic”, because
+it is convenient, with no significant drawback in my opinion. Do you
+want to follow this new default and set “Airport database update” to
+“Automatic”?""")
+            .replace('\n', ' ')
+                     ).format(prg=PROGNAME)
+
+            if askyesno(_('{prg}').format(prg=PROGNAME), message,
+                        detail=detail, parent=self.master):
+                self.config.auto_update_apt.set('1')
+                # The config file will have to be reread (to be on the safe
+                # side; not sure it is really necessary in this case).
+                res = True
+
+            # Make sure the question is not asked again
+            alreadyProposedChanges.add("AUTO_UPDATE_APT_to_Automatic")
+            # This must be written to the config file
+            writeConfig = True
+
         if writeConfig:
             self.config.alreadyProposedChanges.set(', '.join(
                 sorted(alreadyProposedChanges)))
