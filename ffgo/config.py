@@ -52,6 +52,7 @@ class Config:
 
         self.aircraft = StringVar()
         self.airport = StringVar()
+        self.alreadyProposedChanges = StringVar()
         self.apt_data_source = IntVar()
         self.auto_update_apt = IntVar()
         self.carrier = StringVar()
@@ -87,6 +88,8 @@ class Config:
                          '--parkpos=': self.park,
                          '--runway=': self.rwy,
                          'AI_SCENARIOS=': self.scenario,
+                         'ALREADY_PROPOSED_CHANGES=':
+                                             self.alreadyProposedChanges,
                          'APT_DATA_SOURCE=': self.apt_data_source,
                          'AUTO_UPDATE_APT=': self.auto_update_apt,
                          'FG_BIN=': self.FG_bin,
@@ -243,6 +246,7 @@ class Config:
 
         self.aircraft.set(DEFAULT_AIRCRAFT)
         self.airport.set(DEFAULT_AIRPORT)
+        self.alreadyProposedChanges.set('')
         self.apt_data_source.set(1)
         self.auto_update_apt.set(0)
         self.carrier.set('None')

@@ -20,6 +20,10 @@
 # FFGo specific options:
 # AI_SCENARIOS=scenario_name    - List of scenario names (without xml
 #                                 extension) separated by spaces.
+# ALREADY_PROPOSED_CHANGES=list - Comma-separated list of identifiers for
+#                                 questions FFGo should normally ask at most
+#                                 once to the user. The initial value for a
+#                                 fresh configuration should be empty.
 # APT_DATA_SOURCE=boolean       - 0 or 1 (defaults to 1). Select data source
 #                                 where FFGo will be looking for information
 #                                 about parking positions. 0 tells FFGo to

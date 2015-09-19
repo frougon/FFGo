@@ -17,7 +17,7 @@ from tkinter import *
 import tkinter.filedialog as fd
 from tkinter.scrolledtext import ScrolledText
 from xml.etree import ElementTree
-from tkinter.messagebox import showerror
+from tkinter.messagebox import askyesno, showerror
 import condconfigparser
 
 from ..logging import logger
@@ -368,9 +368,10 @@ class App:
         self.old_park = self.config.park.get()
         self.old_aircraft_search = ''
         self.old_airport_search = ''
+        rereadCfgFile = self.proposeConfigChanges()
         # Will set self.FGCommand.{argList,lastConfigParsingExc}
         # appropriately (actually, self.FGCommand.builder.*).
-        self.reset(readCfgFile=False)
+        self.reset(readCfgFile=rereadCfgFile)
         self.registerTracedVariables()
         # Lock used to prevent concurent calls of self._runFG()
         # (disabling the "Run FG" button is not enough, as self.runFG()
@@ -378,6 +379,69 @@ class App:
         self.runFGLock = threading.Lock()
         self.setupKeyboardShortcuts()
         self.startLoops()
+
+    # Regexp to split on commas, ignoring spaces before or after each comma
+    _alreadyProposedChangesSplit_cre = re.compile(r" *, *")
+    # Regexp to ignore empty or whitespace-only elements
+    _alreadyProposedChangesIgnore_cre = re.compile(r"^\s*$")
+
+    def proposeConfigChanges(self):
+        # res: whether the config will need to be reread after the changes
+        # writeConfig: whether we make config changes that should be written
+        #              before the function returns
+        res = writeConfig = False
+        l =  self._alreadyProposedChangesSplit_cre.split(
+            self.config.alreadyProposedChanges.get())
+        alreadyProposedChanges = set()
+        # Don't include whitespace-only (or empty) elements into
+        # alreadyProposedChanges
+        for s in l:
+            if not self._alreadyProposedChangesIgnore_cre.match(s):
+                alreadyProposedChanges.add(s)
+
+        if not (self.config.apt_data_source.get() or
+                "APT_DATA_SOURCE_to_Scenery" in alreadyProposedChanges):
+            message = _('Change “Airport data source” to “Scenery”?')
+            detail = (_("""\
+In old FlightGear versions (up to 2.4.0 according to
+<http://wiki.flightgear.org/About_Scenery/Airports>), parking data was read
+from $FG_ROOT/AI/Airports/. Up to version 1.2.1, the default {prg} setting
+for “Airport data source” used to match this behavior.""")
+            .replace('\n', ' ') + "\n\n" + _("""\
+In contemporary versions of FlightGear, this parking data is read from
+$FG_SCENERY/Airports/ instead (which is automatically updated if you use
+TerraSync and have included its download directory into $FG_SCENERY). In
+order to match this behavior, the default value for “Airport data
+source” in {prg} has been changed to “Scenery”.""")
+            .replace('\n', ' ') + "\n\n" + _("""\
+Your “Airport data source” setting is currently set to the old default.
+Do you want to change it to “Scenery”? Unless you are using FlightGear
+2.4 or earlier, it is recommended to say “Yes”.""")
+            .replace('\n', ' ') + "\n\n" + _("""\
+Note: you may need to go to an airport first, let TerraSync download
+scenery for a few minutes, then quit FlightGear before parking data is
+available for this airport in $FG_SCENERY, allowing {prg} to use it.""")
+            .replace('\n', ' ')
+                      ).format(prg=PROGNAME)
+
+            if askyesno(_('{prg}').format(prg=PROGNAME), message,
+                        detail=detail, parent=self.master):
+                self.config.apt_data_source.set('1')
+                # The config file will have to be reread (to be on the safe
+                # side; not sure it is really necessary in this case).
+                res = True
+
+            # Make sure the question is not asked again
+            alreadyProposedChanges.add("APT_DATA_SOURCE_to_Scenery")
+            # This must be written to the config file
+            writeConfig = True
+
+        if writeConfig:
+            self.config.alreadyProposedChanges.set(', '.join(
+                sorted(alreadyProposedChanges)))
+            self.config.write()
+
+        return res
 
     def testStuff(self, event=None):
         pass
