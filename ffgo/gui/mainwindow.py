@@ -380,8 +380,6 @@ class App:
         self.setupKeyboardShortcuts()
         self.startLoops()
 
-    # Regexp to split on commas, ignoring spaces before or after each comma
-    _alreadyProposedChangesSplit_cre = re.compile(r" *, *")
     # Regexp to ignore empty or whitespace-only elements
     _alreadyProposedChangesIgnore_cre = re.compile(r"^\s*$")
 
@@ -390,8 +388,8 @@ class App:
         # writeConfig: whether we make config changes that should be written
         #              before the function returns
         res = writeConfig = False
-        l =  self._alreadyProposedChangesSplit_cre.split(
-            self.config.alreadyProposedChanges.get())
+        l = [ s.strip() for s in
+              self.config.alreadyProposedChanges.get().split(',') ]
         alreadyProposedChanges = set()
         # Don't include whitespace-only (or empty) elements into
         # alreadyProposedChanges
