@@ -67,7 +67,17 @@ class Parking:
 
         return float(radiusStr[:i])
 
-    _airlineCodesSplit_cre = re.compile(r" *, *")
+    @classmethod
+    def _splitAirlineCodes(cls, airlineCodes):
+        l = [ s.strip() for s in airlineCodes.split(',') ]
+        airlines = set()
+
+        # Don't include empty names and duplicates that are in 'l'
+        for s in l:
+            if s:
+                airlines.add(s)
+
+        return sorted(airlines)
 
     @classmethod
     def fromElement(cls, parkingElt):
@@ -82,7 +92,7 @@ class Parking:
                            ("lon", misc.mixedToDecimalCoords),
                            ("heading", float),
                            ("radius", cls._convRadius),
-                           ("airlineCodes", cls._airlineCodesSplit_cre.split),
+                           ("airlineCodes", cls._splitAirlineCodes),
                            ("pushBackRoute", int)):
             cls._setAttr(attrs, parkingElt, attr, conv)
 
