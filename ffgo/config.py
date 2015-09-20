@@ -112,7 +112,7 @@ class Config:
         self._earlyTranslationsSetup()
         self._createUserDirectories()
         self._maybeMigrateFromFGoConfig()
-        self.update(first_run=True)
+        self.update()
 
         self.setTkDefaultFontSize()
         self.setupFonts(init=True)
@@ -222,11 +222,10 @@ class Config:
         """Rebuild apt file."""
         self._makeApt()
 
-    def update(self, path=None, first_run=False):
+    def update(self, path=None):
         """Read config file and update variables.
 
         path is a path to different than default config file
-        first_run specifies if filtered airports list will be updated.
 
         """
         del self.settings
@@ -268,8 +267,7 @@ class Config:
         self.park.set('None')
         self.rwy.set('Default')
         self.scenario.set('')
-        if first_run:
-            self.filtredAptList.set(0)
+        self.filtredAptList.set(0)
 
         self.settings, self.text = self._read(path)
 
@@ -282,11 +280,8 @@ class Config:
 
                 if value:
                     if name in self.keywords:
-                        if name == 'FILTER_APT_LIST=' and not first_run:
-                            pass
-                        else:
-                            var = self.keywords[name]
-                            var.set(value)
+                        var = self.keywords[name]
+                        var.set(value)
 
         self._setLanguage(self.language.get())
 
