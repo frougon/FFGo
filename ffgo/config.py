@@ -61,7 +61,7 @@ class Config:
         self.FG_root = StringVar()
         self.FG_scenery = StringVar()
         self.FG_working_dir = StringVar()
-        self.filtredAptList = IntVar()
+        self.filteredAptList = IntVar()
         self.language = StringVar()
         self.park = StringVar()
         self.rwy = StringVar()
@@ -95,7 +95,7 @@ class Config:
                          'FG_BIN=': self.FG_bin,
                          'FG_AIRCRAFT=': self.FG_aircraft,
                          'FG_WORKING_DIR=': self.FG_working_dir,
-                         'FILTER_APT_LIST=': self.filtredAptList,
+                         'FILTER_APT_LIST=': self.filteredAptList,
                          'LANG=': self.language,
                          'WINDOW_GEOMETRY=': self.mainWindowGeometry,
                          'SAVE_WINDOW_POSITION=': self.saveWindowPosition,
@@ -267,7 +267,7 @@ class Config:
         self.park.set('None')
         self.rwy.set('Default')
         self.scenario.set('')
-        self.filtredAptList.set(0)
+        self.filteredAptList.set(0)
 
         self.settings, self.text = self._read(path)
 
@@ -640,7 +640,7 @@ configurations are kept separate.""")
             logger.info("Opening apt file '{}' for reading".format(APT))
 
             with open(APT, "r", encoding="utf-8") as fin:
-                if self.filtredAptList.get():
+                if self.filteredAptList.get():
                     installed_apt = self._readInstalledAptList()
                     for line in fin:
                         line = line.strip().split('=')

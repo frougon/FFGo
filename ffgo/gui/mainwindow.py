@@ -126,7 +126,7 @@ class App:
 
         self.settmenu = Menu(self.menubar, tearoff=0)
         self.settmenu.add_checkbutton(label=_('Show installed airports only'),
-                                      variable=self.config.filtredAptList,
+                                      variable=self.config.filteredAptList,
                                       command=self.filterAirports)
         self.settmenu.add_command(label=_('Update list of installed airports'),
                                   command=self.updateInstalledAptList)
@@ -649,7 +649,7 @@ want to follow this new default and set “Airport database update” to
     def filterAirports(self):
         """Update airportList.
 
-        Apply filter to airportList if self.config.filtredAptList is True.
+        Apply filter to airportList if self.config.filteredAptList is True.
 
         """
         message = _("Building airport lists (this may take some time)...")
@@ -1412,7 +1412,7 @@ want to follow this new default and set “Airport database update” to
 
     def updateInstalledAptList(self):
         """Rebuild installed airports list."""
-        if self.config.filtredAptList.get():
+        if self.config.filteredAptList.get():
             self.config.makeInstalledAptList()
             self.filterAirports()
 
