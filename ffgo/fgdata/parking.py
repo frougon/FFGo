@@ -55,8 +55,9 @@ class Parking:
             try:
                 d[attr] = conv(val)
             except ValueError as e:
-                raise error(_("invalid value for the {!r} attribute: {!r}")
-                            .format(attr, val)) from e
+                raise error(_(
+                    "invalid value for the {attr!r} attribute: {val!r}").format(
+                        attr=attr, val=val)) from e
 
     @classmethod
     def _convRadius(cls, radiusStr):
@@ -140,7 +141,8 @@ def readGroundnetFile(xmlFilePath):
         try:
             p = Parking.fromElement(pElt)
         except error as e:
-            logger.error("while parsing '{}': {}".format(xmlFilePath, e))
+            logger.error(_("while parsing '{file}': {errmsg}").format(
+                file=xmlFilePath, errmsg=e))
             message = _('Error parsing a groundnet file')
             detail = _("In '{file}': {errmsg}.").format(
                 file=xmlFilePath, errmsg=e)
@@ -148,14 +150,15 @@ def readGroundnetFile(xmlFilePath):
             continue
 
         if not str(p):
-            logger.warning("'{}': empty parking name (index='{}')".format(
-                xmlFilePath, p.index))
+            logger.warning(_("'{file}': empty parking name (index='{idx}')")
+                           .format(file=xmlFilePath, idx=p.index))
         elif str(p) in parkings:
-            logger.warning("'{}': duplicate parking name '{}' "
-                           "(index='{}'); keeping the first found only "
-                           "(index='{}')"
-                           .format(xmlFilePath, p, p.index,
-                                   parkings[str(p)].index))
+            logger.warning(
+                _("'{file}': duplicate parking name '{parkName}' "
+                  "(index='{idxDup}'); keeping the first found only "
+                  "(index='{idx1}')").format(
+                      file=xmlFilePath, parkName=p, idxDup=p.index,
+                      idx1=parkings[str(p)].index))
         else:
             parkings[str(p)] = p
 

@@ -80,7 +80,7 @@ def mixedToDecimalCoords(s):
         sign = -1
     else:
         raise ValueError(_("unexpected first character in mixed-style "
-                           "coordinate string: {!r}").format(s[0]))
+                           "coordinate string: {char!r}").format(char=s[0]))
 
     degree = int(s[1:s.index(' ', 1)])
     minutes = float(s[s.index(' ', 1) + 1:])

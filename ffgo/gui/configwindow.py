@@ -247,9 +247,9 @@ EDDF, [I] with E, [C] with D, [A] with D and [O] with F)
 With FlightGear 2.6 and later, it is advised to choose "Scenery"; it
 is now the default in {prg}.
 
-For more infomation, you may consult:
+For more information, you may consult:
 
-  <http://wiki.flightgear.org/About_Scenery/Airports>""").format(prg=PROGNAME)
+  http://wiki.flightgear.org/About_Scenery/Airports""").format(prg=PROGNAME)
         self.tooltip_autoAptMenu = _("""\
 Automatic - {prg} will try to keep track of changes to
     FG_ROOT/Airports/apt.dat.gz file, and will automatically rebuild
