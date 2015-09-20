@@ -125,11 +125,37 @@ class App:
         self.menubar.add_cascade(label=_('File'), menu=self.filemenu)
 
         self.settmenu = Menu(self.menubar, tearoff=0)
+        # BEWARE: when adding new entries to this menu, don't forget to update
+        #         the INDEX_OF_INSTALLED_APT_LIST_MENU_ENTRY variable below.
         self.settmenu.add_checkbutton(label=_('Show installed airports only'),
                                       variable=self.config.filteredAptList,
                                       command=self.filterAirports)
         self.settmenu.add_command(label=_('Update list of installed airports'),
                                   command=self.updateInstalledAptList)
+        # Index of the menu entry just added, starting from 0
+        INDEX_OF_INSTALLED_APT_LIST_MENU_ENTRY = 1
+
+        def _updUpdateInstalledAptListMenuEntryState(*args, **kwargs):
+            """
+            Update the state of the 'Update list of installed airports' menu entry.
+
+            Enable or disable the menu entry depending on the value of
+            self.config.filteredAptList.
+
+            """
+            if self.config.filteredAptList.get():
+                newState = "normal"
+            else:
+                newState = "disabled"
+            self.settmenu.entryconfigure(
+                INDEX_OF_INSTALLED_APT_LIST_MENU_ENTRY, state=newState)
+
+        # This will be needed in reset()
+        self._updUpdateInstalledAptListMenuEntryState = \
+                                      _updUpdateInstalledAptListMenuEntryState
+        self.config.filteredAptList.trace(
+            'w', _updUpdateInstalledAptListMenuEntryState)
+
         self.settmenu.add_separator()
         self.settmenu.add_checkbutton(
             label=_('Show FlightGear arguments'),
@@ -944,6 +970,7 @@ want to follow this new default and set “Airport database update” to
             self.config.update(path)
         self.aircraftSearch.delete(0, 'end')
         self.airportSearch.delete(0, 'end')
+        self._updUpdateInstalledAptListMenuEntryState()
         self.resetLists()
         self.updateImage()
         self.resetText()
