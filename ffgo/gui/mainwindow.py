@@ -320,7 +320,7 @@ class App:
         self.frame4.pack(side='top', fill='x')
 
         self.frame41 = Frame(self.frame4, borderwidth=4)
-        self.frame41.pack(side='right')
+        self.frame41.pack(side='right', fill='x')
 
         # FlightGear process status
         self.fgStatusText = StringVar()
@@ -338,13 +338,13 @@ class App:
         self.sq_button.pack(side='left')
 
         self.reset_button = Button(self.frame41, text=_('Reload config'),
-                                   width=10, command=self.reset)
+                                   command=self.reset)
         ToolTip(self.reset_button,
                 _("Reload the configuration file ({cfg_file})").format(
                     cfg_file=CONFIG))
         self.reset_button.pack(side='left')
 
-        self.run_button = Button(self.frame41, text=_('Run FG'), width=10,
+        self.run_button = Button(self.frame41, text=_('Run FG'),
                                  command=self.runFG)
         self.run_button.pack(side='left')
 #------ Text windows ----------------------------------------------------------
