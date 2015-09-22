@@ -21,6 +21,7 @@ from tkinter.messagebox import askyesno, showerror
 import condconfigparser
 
 from ..logging import logger
+from .. import misc
 from ..misc import resourceExists, textResourceStream, binaryResourceStream
 from .tooltip import ToolTip
 from .metar import Metar
@@ -527,8 +528,13 @@ want to follow this new default and set “Airport database update” to
         else:
             translator = '\n\n' + _('Translation:')
         authors = _('Authors:')
-        about_text = '{0}\n\n{1}\n{2}{3}'.format(COPYRIGHT, authors, AUTHORS,
-                                                 translator)
+        using = _('Using Python {pyVer} and CondConfigParser {ccpVer}').format(
+            pyVer=misc.pythonVersionString(),
+            ccpVer=condconfigparser.__version__)
+        about_text = ('{copyright}\n\n{authorsLabel}\n{authors}{transl}\n\n'
+                      '{using}.').format(
+                          copyright=COPYRIGHT, authorsLabel=authors,
+                          authors=AUTHORS, transl=translator, using=using)
 
         self.aboutWindow = Toplevel(borderwidth=4)
         self.aboutWindow.title(_('About'))
