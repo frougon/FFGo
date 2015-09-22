@@ -233,3 +233,63 @@ you may want to consult the Git repository log.
 1.2.1
 [BUGFIX]  Fix crash at initialization when Pillow is not installed (bug
           introduced in 1.2.0). (Florent Rougon)
+
+1.3.0
+[FEATURE] Improve gathering and handling of parking data. All of the parking
+          metadata is available internally through a Parking class. Errors in
+          groundnet files generate warnings on the terminal and a popup window
+          if particularly serious. Refactoring of this part of FFGo.
+          (Florent Rougon)
+[FEATURE] Better sorting of parking positions in the parking popup menu (by
+          flight type first, then by name using a better algorithm than before,
+          so that A9 comes before A10, which itself comes before A10a, A10b,
+          A11, etc.). Here, "flight type" corresponds to the 'type' attribute
+          value of Parking elements in groundnet files: ga, cargo, gate,
+          mil-fighter, mil-cargo, vtol. (Florent Rougon)
+[BUGFIX]  Change the default for “Airport data source” to “Scenery”.
+          This reflects FlightGear's current behavior when processing
+          --parkpos and should provide much better parking data for people
+          using TerraSync. The old default didn't make use of the TerraSync
+          data, which was a pity.
+
+          As indicated in ffgo/data/help/help_en, it is necessary to have
+          downloaded data for the desired airport in one of the FG_SCENERY
+          components before parking positions can be shown for this airport
+          with the new default setting.
+
+          Actually, “Airport data source” is a misnomer. What it really means
+          is “Parking data source”. But since it corresponds to the
+          APT_DATA_SOURCE parameter in the config file, and has been so for
+          years (in FGo!), I'll leave it as is for now and just try to
+          describe the effects as clearly as possible in the associated
+          tooltip. (Florent Rougon)
+[BUGFIX]  When “Airport data source” is set to “Scenery”, stop at the first
+          groundnet file found in FG_SCENERY for the selected airport, even if
+          it doesn't declare any parking position. This is what FlightGear
+          (3.7) does, therefore doing otherwise and offer, in case of
+          redundant FG_SCENERY components, parking positions that FlightGear
+          won't find is not a good idea IMHO. (Florent Rougon)
+[USABILITY] Change the default for “Airport database update” to “Automatic”. I
+          think this is more likely to improve user experience than to degrade
+          it. (Florent Rougon)
+[FEATURE] Interactive dialogs proposing to change the “Airport data source”
+          and “Airport database update” settings to their new defaults. Each
+          question is asked only once (if applicable). Give an empty value to
+          ALREADY_PROPOSED_CHANGES in the config file if you want to see the
+          questions again. (Florent Rougon)
+[BUGFIX]  Don't special-case FILTER_APT_LIST in Config.update(). It seems
+          counter-intuitive to me that the “Reload config” button reloads
+          everything from the config file, except the FILTER_APT_LIST setting
+          (which corresponds to the “Show installed airports only” entry of
+          the Settings menu). Remove this special case. (Florent Rougon)
+[USABILITY] Enabled/disabled state for the “Update list of installed airports”
+          menu entry. Since this menu entry is only applicable when “Show
+          installed airports only” is selected, enable or disable it as
+          appropriate. (Florent Rougon)
+[BUGFIX]  Fix button size (“Reload config” & Co). In non-English translations,
+          some buttons were too narrow for the text to fit. This should be
+          better now. (Florent Rougon)
+[FEATURE] Print the Python and CondConfigParser versions in the About dialog
+          box. This should make it easier to help users or even to help them
+          help themselves. :-)
+[FEATURE] Update the French translation of the interface. (Florent Rougon)
