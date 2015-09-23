@@ -147,7 +147,7 @@ def main():
         timeFormatString = "%a, %d %b %Y %H:%M:%S %z"
         logger.logToFile("Starting {prg_with_ver} at {date}\n"
                          "Platform is {platform}\n"
-                         "Python is {python_version}\n".format(
+                         "Python version is {python_version}\n".format(
             prg_with_ver=constants.NAME_WITH_VERSION,
             date=time.strftime(timeFormatString),
             platform=platform.platform(),

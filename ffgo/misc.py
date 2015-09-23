@@ -14,11 +14,16 @@ import enum
 
 
 def pythonVersionString():
-    return "{major}.{minor}.{micro} {releaseLevel}".format(
+    if sys.version_info[3] == "final":
+        compl = ""
+    else:
+        compl = " " + sys.version_info[3]
+
+    return "{major}.{minor}.{micro}{compl}".format(
         major=sys.version_info[0],
         minor=sys.version_info[1],
         micro=sys.version_info[2],
-        releaseLevel=sys.version_info[3])
+        compl=compl)
 
 
 # Based on an example from the 'enum' documentation
