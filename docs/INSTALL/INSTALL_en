@@ -317,7 +317,9 @@ Then prepare the source (icons and translation files) with:
 
 This 'make' run in the top-level directory must be done after each 'git clone'
 or 'git pull' operation. From this point on, you can follow the instructions
-given in the MANUAL INSTALLATION section.
+given in the MANUAL INSTALLATION section. The most straightforward way to
+start FFGo, assuming you have installed all dependencies, would be to run the
+ffgo-launcher.py script located in the top-level directory of the repository.
 
 Optional:
 
