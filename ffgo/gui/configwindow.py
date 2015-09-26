@@ -207,7 +207,7 @@ option. You may consult <http://wiki.flightgear.org/$FG_ROOT> for
 details.""")
         self.tooltip_scenery = _("""\
 Path(s) to scenery directories.
-You can specify more than one path (separated by a colon), ordered
+You can specify more than one path (separated by {separator!r}), ordered
 from highest to lowest priority. Typical configuration is to have
 the TerraSync directory first, followed by custom scenery directories
 if you have installed any.
@@ -217,11 +217,12 @@ Note:
   The default TerraSync directory in FlightGear 3.6 should be
   '{defaultTSdir}' on your
   operating system (otherwise, please report a bug for {prg}).""").format(
-          prg=PROGNAME, defaultTSdir=DEFAULT_TERRASYNC_DIR)
+      prg=PROGNAME, defaultTSdir=DEFAULT_TERRASYNC_DIR, separator=os.pathsep)
         self.tooltip_aircraft = _("""\
 Path(s) to additional aircraft directories.
-Multiple directories separated by a colon can be included. Leave it
-empty if you are not using additional aircraft directories.""")
+Multiple directories separated by {separator!r} may be specified. Leave
+this field empty if you are not using additional aircraft directories.""") \
+        .format(separator=os.pathsep)
         self.tooltip_working_dir = _("""\
 Optional parameter specifying FlightGear's working directory.
 That is the directory FlightGear will be run from. It can affect the

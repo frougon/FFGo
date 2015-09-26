@@ -39,9 +39,10 @@
 #                                 from MIN_BASE_FONT_SIZE to MAX_BASE_FONT_SIZE
 #                                 defined in ffgo/constants.py; or 0, which is
 #                                 platform-dependent default size.
-# FG_AIRCRAFT=path              - Path to additional aircraft directory.
-#                                 Multiple paths, separated by a colon can be
-#                                 provided.
+# FG_AIRCRAFT=path_list         - Path(s) to additional aircraft directories.
+#                                 Multiple paths can be specified, separated by
+#                                 a colon on Unix-like systems, a semicolon on
+#                                 Windows.
 # FG_BIN=path                   - Path to fgfs executable.
 # FG_WORKING_DIR=path           - Use this option if you want to set different
 #                                 than user's home folder as working directory

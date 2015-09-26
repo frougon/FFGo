@@ -909,8 +909,9 @@ want to follow this new default and set “Airport database update” to
 
         # If airport data source is set to "Scenery"
         if self.config.apt_data_source.get():
-            paths = [ os.path.join(path, DEFAULT_AIRPORTS_DIR)
-                      for path in self.config.FG_scenery.get().split(':') ]
+            paths = [
+                os.path.join(path, DEFAULT_AIRPORTS_DIR)
+                for path in self.config.FG_scenery.get().split(os.pathsep) ]
 
             for path in paths:
                 for i in range(3):

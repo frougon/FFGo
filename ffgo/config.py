@@ -350,7 +350,7 @@ class Config:
 
         """
         coord_dict = {}
-        sceneries = self.FG_scenery.get().split(':')
+        sceneries = self.FG_scenery.get().split(os.pathsep)
 
         for scenery in sceneries:
             path = os.path.join(scenery, 'Terrain')
@@ -619,7 +619,7 @@ configurations are kept separate.""")
                 n.append([name.lower(), name, path])
 
     def _readAircraftDirs(self):
-        return self.FG_aircraft.get().split(':')
+        return self.FG_aircraft.get().split(os.pathsep)
 
     def _readApt(self):
         """Read apt list (makes new one if non exists).
