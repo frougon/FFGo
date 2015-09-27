@@ -31,7 +31,6 @@ class Config:
 
         self.ai_path = ''  # Path to FG_ROOT/AI directory.
         self.apt_path = ''  # Path to FG_ROOT/Airports/apt.dat.gz file.
-        self.default_aircraft_dir = ''  # Path to FG_ROOT/Aircraft directory.
         self.metar_path = ''  # Path to FG_ROOT/Airports/metar.dat.gz file.
 
         self.aircraft_dirs = []  # List of aircraft directories.
@@ -222,6 +221,21 @@ class Config:
         """Rebuild apt file."""
         self._makeApt()
 
+    def _computeAircraftDirList(self):
+        FG_AIRCRAFT_env = os.getenv("FG_AIRCRAFT", "")
+        if FG_AIRCRAFT_env:
+            FG_AIRCRAFT_envList = FG_AIRCRAFT_env.split(os.pathsep)
+        else:
+            FG_AIRCRAFT_envList = []
+
+        # FG_ROOT/Aircraft
+        defaultAircraftDir = os.path.join(self.FG_root.get(),
+                                          DEFAULT_AIRCRAFT_DIR)
+
+        aircraft_dirs = (self.FG_aircraft.get().split(os.pathsep)
+                         + FG_AIRCRAFT_envList + [defaultAircraftDir])
+        return aircraft_dirs
+
     def update(self, path=None):
         """Read config file and update variables.
 
@@ -231,7 +245,6 @@ class Config:
         del self.settings
         del self.text
         del self.aircraft_dirs
-        del self.default_aircraft_dir
         del self.apt_path
         del self.ai_path
         del self.metar_path
@@ -285,11 +298,7 @@ class Config:
 
         self._setLanguage(self.language.get())
 
-        self.default_aircraft_dir = os.path.join(self.FG_root.get(),
-                                                 DEFAULT_AIRCRAFT_DIR)
-        self.aircraft_dirs = self._readAircraftDirs()
-        self.aircraft_dirs = [self.default_aircraft_dir] + self.aircraft_dirs
-
+        self.aircraft_dirs = self._computeAircraftDirList()
         self.apt_path = os.path.join(self.FG_root.get(), APT_DAT)
         self.ai_path = os.path.join(self.FG_root.get(), AI_DIR)
         self.metar_path = os.path.join(self.FG_root.get(), METAR_DAT)
@@ -617,9 +626,6 @@ configurations are kept separate.""")
                     f != 'carrier-set.xml'):
                 name = f[:-8]
                 n.append([name.lower(), name, path])
-
-    def _readAircraftDirs(self):
-        return self.FG_aircraft.get().split(os.pathsep)
 
     def _readApt(self):
         """Read apt list (makes new one if non exists).
