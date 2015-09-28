@@ -118,11 +118,26 @@ def run(master, params):
 
 
 def reportTkinterCallbackException(type_, val, tb):
+    # This import requires the translation system [_() function] to be in
+    # place.
+    from .exceptions import FFGoException
+
     message = 'Error in a Tkinter callback'
     detail = ''.join(traceback.format_exception(type_, val, tb))
+
+    if isinstance(val, FFGoException):
+        # Don't display the full traceback in the GUI dialog box; what follows
+        # should provide enough details. The full traceback will be written to
+        # the log file anyway.
+        guiMessage = val.ExceptionShortDescription
+        guiDetail = val.message
+    else:
+        guiMessage = message
+        guiDetail = detail
+
     logger.criticalNP('\n{}:\n{}'.format(message, detail))
-    tkinter.messagebox.showerror(_('{prg}').format(prg=PROGNAME), message,
-                                 detail=detail)
+    tkinter.messagebox.showerror(_('{prg}').format(prg=PROGNAME), guiMessage,
+                                 detail=guiDetail)
 
 
 def rotateLogFiles():
