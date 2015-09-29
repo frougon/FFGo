@@ -535,9 +535,16 @@ want to follow this new default and set “Airport database update” to
         # Refresh the version info in case the user fixed his fgfs executable
         # since the last time we tried to run 'fgfs --version'.
         self.config.getFlightGearVersion(ignoreFGVersionError=True)
-        FG_version = self.config.FG_version
-        detected = _('Detected FlightGear version: {}').format(
-            FG_version if FG_version is not None else _('none'))
+        if self.config.FG_version is not None:
+            FG_version = self.config.FG_version
+            comment = ""
+        else:
+            FG_version =  _('none')
+            comment =  '\n' +_(
+                "(you may want to check the 'fgfs' executable as defined "
+                "in Settings → Preferences)")
+        detected = _('Detected FlightGear version: {ver}{comment}').format(
+            ver=FG_version, comment=comment)
 
         about_text = ('{copyright}\n\n{authorsLabel}\n{authors}{transl}\n\n'
                       '{using}.\n\n{detected}.').format(
