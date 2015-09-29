@@ -531,10 +531,19 @@ want to follow this new default and set “Airport database update” to
         using = _('Using Python {pyVer} and CondConfigParser {ccpVer}').format(
             pyVer=misc.pythonVersionString(),
             ccpVer=condconfigparser.__version__)
+
+        # Refresh the version info in case the user fixed his fgfs executable
+        # since the last time we tried to run 'fgfs --version'.
+        self.config.getFlightGearVersion(ignoreFGVersionError=True)
+        FG_version = self.config.FG_version
+        detected = _('Detected FlightGear version: {}').format(
+            FG_version if FG_version is not None else _('none'))
+
         about_text = ('{copyright}\n\n{authorsLabel}\n{authors}{transl}\n\n'
-                      '{using}.').format(
+                      '{using}.\n\n{detected}.').format(
                           copyright=COPYRIGHT, authorsLabel=authors,
-                          authors=AUTHORS, transl=translator, using=using)
+                          authors=AUTHORS, transl=translator, using=using,
+                          detected=detected)
 
         self.aboutWindow = Toplevel(borderwidth=4)
         self.aboutWindow.title(_('About'))

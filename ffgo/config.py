@@ -111,7 +111,9 @@ class Config:
         self._earlyTranslationsSetup()
         self._createUserDirectories()
         self._maybeMigrateFromFGoConfig()
-        self.update()
+        # Not having the FlightGear version at this point is not important
+        # enough to justify pestering the user about it. :-)
+        self.update(ignoreFGVersionError=True)
 
         self.setTkDefaultFontSize()
         self.setupFonts(init=True)
@@ -236,7 +238,21 @@ class Config:
                          + FG_AIRCRAFT_envList + [defaultAircraftDir])
         return aircraft_dirs
 
-    def update(self, path=None):
+    def getFlightGearVersion(self, ignoreFGVersionError=False):
+        # This import requires the translation system [_() function] to be in
+        # place.
+        from .fgdata import fgversion
+
+        self.FG_version = None  # in case an exception is raised below
+        FG_bin = self.FG_bin.get()
+        if FG_bin:
+            try:
+                self.FG_version = fgversion.getFlightGearVersion(FG_bin)
+            except fgversion.error:
+                if not ignoreFGVersionError:
+                    raise
+
+    def update(self, path=None, ignoreFGVersionError=False):
         """Read config file and update variables.
 
         path is a path to different than default config file
@@ -306,6 +322,8 @@ class Config:
         self.aircraft_list, self.aircraft_path = self._readAircraft()
         self.scenario_list, self.carrier_list = self._readScenarios()
         self.updateAptLists()
+
+        self.getFlightGearVersion(ignoreFGVersionError=ignoreFGVersionError)
 
     def updateAptLists(self):
         if self.auto_update_apt.get() and os.path.exists(self.apt_path):
