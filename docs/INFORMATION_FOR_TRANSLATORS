@@ -81,8 +81,10 @@ hope) tips:
   "FFGo.pot" file located in the "ffgo/data/locale" directory, and then
   save it as "FFGo.po" into the folder you created.
 
-  At the end, open "FFGo.po" with a simple text editor and edit some
-  comments:
+  Note: you may also download "FFGo.pot" from the FFGo Git repository at
+        <https://github.com/frougon/FFGo>.
+
+  In the end, open "FFGo.po" in a text editor and edit some comments:
 
     * in the first line, replace the word LANGUAGE with the actual name
       of your language.
