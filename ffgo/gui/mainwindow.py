@@ -85,20 +85,11 @@ class MyEntry(Entry, PassShortcutsToApp):
 class App:
 
     def __init__(self, master, config, params):
-        logger.notice(_("{prg_with_ver} started\n"
-                        "Using CondConfigParser {ccp_ver}").format(
-                            prg_with_ver=NAME_WITH_VERSION,
-                            ccp_ver=condconfigparser.__version__))
-        # We can't print a translated version of the warning when the import
-        # test is done at module initialization; thus, do it now.
-        if not HAS_PIL:
-            logger.warningNP(
-                _("[{prg} warning] {libName} library not found. Aircraft "
-                  "thumbnails won't be displayed.").format(prg=PROGNAME,
-                                                           libName="Pillow"))
         self.params = params
         self.master = master
         self.config = config
+
+        self.LogStartupMessages()
 
         self.translatedPark = StringVar()
         self.translatedRwy = StringVar()
@@ -407,6 +398,23 @@ class App:
         self.setupKeyboardShortcuts()
         self.startLoops()
 
+    def LogStartupMessages(self):
+        # Same string as in the About box
+        using = _('Using Python {pyVer} and CondConfigParser {ccpVer}').format(
+            pyVer=misc.pythonVersionString(),
+            ccpVer=condconfigparser.__version__)
+        logger.notice(_("{prgWithVer} started\n{using}").format(
+            prgWithVer=NAME_WITH_VERSION, using=using))
+
+        # We can't print a translated version of the warning when the import
+        # test is done at module initialization; thus, do it now.
+        if not HAS_PIL:
+            logger.warningNP(
+                _("[{prg} warning] {libName} library not found. Aircraft "
+                  "thumbnails won't be displayed.").format(prg=PROGNAME,
+                                                           libName="Pillow"))
+        self.config.logDetectedFlightGearVersion()
+
     # Regexp to ignore empty or whitespace-only elements
     _alreadyProposedChangesIgnore_cre = re.compile(r"^\s*$")
 
@@ -528,6 +536,7 @@ want to follow this new default and set “Airport database update” to
         else:
             translator = '\n\n' + _('Translation:')
         authors = _('Authors:')
+        # Same string as in App.LogStartupMessages()
         using = _('Using Python {pyVer} and CondConfigParser {ccpVer}').format(
             pyVer=misc.pythonVersionString(),
             ccpVer=condconfigparser.__version__)
@@ -543,8 +552,9 @@ want to follow this new default and set “Airport database update” to
             comment =  '\n' +_(
                 "(you may want to check the 'fgfs' executable as defined "
                 "in Settings → Preferences)")
-        detected = _('Detected FlightGear version: {ver}{comment}').format(
-            ver=FG_version, comment=comment)
+        # Uses the same string as in Config.logDetectedFlightGearVersion()
+        detected = _('Detected FlightGear version: {ver}').format(
+            ver=FG_version) + comment
 
         about_text = ('{copyright}\n\n{authorsLabel}\n{authors}{transl}\n\n'
                       '{using}.\n\n{detected}.').format(

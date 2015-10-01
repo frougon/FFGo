@@ -15,7 +15,7 @@ import tkinter.font
 from .gui.infowindow import InfoWindow
 from .misc import resourceExists, textResourceStream
 from .constants import *
-from .logging import logger
+from .logging import logger, LogLevel
 
 
 class AbortConfig(Exception):
@@ -113,7 +113,9 @@ class Config:
         self._maybeMigrateFromFGoConfig()
         # Not having the FlightGear version at this point is not important
         # enough to justify pestering the user about it. :-)
-        self.update(ignoreFGVersionError=True)
+        # Defer logging of the detected FG version to fit nicely with
+        # the other startup messages.
+        self.update(ignoreFGVersionError=True, logFGVersion=False)
 
         self.setTkDefaultFontSize()
         self.setupFonts(init=True)
@@ -238,7 +240,19 @@ class Config:
                          + FG_AIRCRAFT_envList + [defaultAircraftDir])
         return aircraft_dirs
 
-    def getFlightGearVersion(self, ignoreFGVersionError=False):
+    def logDetectedFlightGearVersion(self, logLevel=LogLevel.notice,
+                                     prefix=True):
+        if self.FG_version is not None:
+            FG_version = str(self.FG_version)
+        else:
+            FG_version = _("none")
+
+        # Uses the same string as in App.about()
+        message = _("Detected FlightGear version: {ver}").format(
+            ver=FG_version)
+        logger.log(logLevel, prefix, message)
+
+    def getFlightGearVersion(self, ignoreFGVersionError=False, log=False):
         # This import requires the translation system [_() function] to be in
         # place.
         from .fgdata import fgversion
@@ -246,13 +260,19 @@ class Config:
         self.FG_version = None  # in case an exception is raised below
         FG_bin = self.FG_bin.get()
         if FG_bin:
+            exc = None
             try:
                 self.FG_version = fgversion.getFlightGearVersion(FG_bin)
-            except fgversion.error:
-                if not ignoreFGVersionError:
-                    raise
+            except fgversion.error as e:
+                exc = e         # may need to be raised later
 
-    def update(self, path=None, ignoreFGVersionError=False):
+        if log:
+            self.logDetectedFlightGearVersion()
+
+        if exc is not None and not ignoreFGVersionError:
+            raise exc
+
+    def update(self, path=None, ignoreFGVersionError=False, logFGVersion=True):
         """Read config file and update variables.
 
         path is a path to different than default config file
@@ -323,7 +343,8 @@ class Config:
         self.scenario_list, self.carrier_list = self._readScenarios()
         self.updateAptLists()
 
-        self.getFlightGearVersion(ignoreFGVersionError=ignoreFGVersionError)
+        self.getFlightGearVersion(ignoreFGVersionError=ignoreFGVersionError,
+                                  log=logFGVersion)
 
     def updateAptLists(self):
         if self.auto_update_apt.get() and os.path.exists(self.apt_path):
