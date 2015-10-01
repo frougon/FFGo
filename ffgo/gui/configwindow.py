@@ -428,7 +428,7 @@ When this option is unchecked, only the main window size is stored.""")
         self.frame_FG_41.pack(side='top', fill='x', expand=True)
 
         self.FG_aircraftLabel = Label(self.frame_FG_41,
-                                      text=_('Additional aircraft path:'))
+                                      text=_('Additional aircraft path(s):'))
         self.FG_aircraftLabel.pack(side='left')
 
         self.frame_FG_42 = Frame(self.frame_FG_4)
