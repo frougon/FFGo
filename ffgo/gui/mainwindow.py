@@ -776,9 +776,7 @@ want to follow this new default and set “Airport database update” to
 
     def getImage(self, aircraft):
         """Find thumbnail in aircraft directory."""
-        if aircraft is None:
-            image = None
-        elif HAS_PIL:
+        if HAS_PIL and aircraft is not None:
             try:
                 path = os.path.join(aircraft.dir, 'thumbnail.jpg')
                 image = ImageTk.PhotoImage(Image.open(path))
@@ -1503,9 +1501,8 @@ want to follow this new default and set “Airport database update” to
 
     def updateImage(self):
         aircraft = self.config.getCurrentAircraft()
-        if aircraft is not None:
-            self.image = self.getImage(aircraft)
-            self.thumbnail.config(image=self.image)
+        self.image = self.getImage(aircraft)
+        self.thumbnail.config(image=self.image)
 
     def updateInstalledAptList(self):
         """Rebuild installed airports list."""
