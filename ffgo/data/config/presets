@@ -20,6 +20,12 @@
 # FFGo specific options:
 # AI_SCENARIOS=scenario_name    - List of scenario names (without xml
 #                                 extension) separated by spaces.
+# AIRCRAFT_DIR=directory        - Passed as --aircraft-dir to FlightGear. Used
+#                                 to distinguish between identically-named
+#                                 aircrafts. If left empty, FFGo will use the
+#                                 highest priority aircraft with the chosen
+#                                 name, according to the order of aircraft
+#                                 paths in FG_AIRCRAFT.
 # ALREADY_PROPOSED_CHANGES=list - Comma-separated list of identifiers for
 #                                 questions FFGo should normally ask at most
 #                                 once to the user. The initial value for a

@@ -8,10 +8,13 @@
 # have received a copy of this license along with this file. You can also find
 # it at <http://www.wtfpl.net/>.
 
+import os
 import re
 import functools
 import operator
 import condconfigparser
+
+from .fgdata.fgversion import FlightGearVersion
 
 
 class InvalidEscapeSequenceInOptionLine(Exception):
@@ -188,8 +191,26 @@ class FGCommandBuilder:
         if scenery_dirs and scenery_dirs != 'None':
             options.append('--fg-scenery=' + scenery_dirs)
 
-        for opt, cfg in (('--aircraft=', self.app.config.aircraft.get()),
-                         ('--carrier=', self.app.config.carrier.get()),
+        aircraftOpts = [('--aircraft=', self.app.config.aircraft.get())]
+
+        aircraftDir = self.app.config.aircraftDir.get()
+        if aircraftDir:
+            # Not refreshing the version now: this method must be very fast, as
+            # it is basically called after every change to the Options Window.
+            FG_version = self.app.config.FG_version
+            # The fgfs --aircraft-dir option has been fixed in FlightGear's
+            # commit 7198dec355144fbb0eaccb39f0c241dd07ebaee0, between versions
+            # 3.6 and 3.8.
+            if FG_version is None or FG_version < FlightGearVersion([3, 8]):
+                aircraftDir = os.path.realpath(aircraftDir)
+
+            aircraftOpts.append(('--aircraft-dir=', aircraftDir))
+
+        for opt, cfg in aircraftOpts:
+            if cfg:
+                options.append(opt + cfg)
+
+        for opt, cfg in (('--carrier=', self.app.config.carrier.get()),
                          ('--airport=', self.app.config.airport.get()),
                          ('--parkpos=', self.app.config.park.get())):
             if cfg != 'None':
@@ -210,9 +231,10 @@ class FGCommandBuilder:
 
         try:
             condConfig = condconfigparser.RawConditionalConfig(
-                t, extvars=("aircraft", "airport", "parking", "runway",
-                            "carrier", "scenarios"))
+                t, extvars=("aircraft", "aircraftDir", "airport", "parking",
+                            "runway", "carrier", "scenarios"))
             context = {"aircraft": self.app.config.aircraft.get(),
+                       "aircraftDir": self.app.config.aircraftDir.get(),
                        "airport": self.app.config.airport.get(),
                        "parking": self.app.config.park.get(),
                        "runway": self.app.config.rwy.get(),

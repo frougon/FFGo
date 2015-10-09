@@ -23,12 +23,12 @@ import condconfigparser
 from ..logging import logger
 from .. import misc
 from ..misc import resourceExists, textResourceStream, binaryResourceStream
+from . import tooltip
 from .tooltip import ToolTip
 from .metar import Metar
 from .configwindow import ConfigWindow
 from . import infowindow
 from ..constants import *
-from .. import fgcmdbuilder
 from .. import fgdata
 
 try:
@@ -207,8 +207,13 @@ class App:
         self.scrollbar.config(command=self.aircraftList.yview, takefocus=0)
         self.aircraftList.pack(side='left', fill='both', expand=True)
         self.scrollbar.pack(side='left', fill='y')
-        self.aircraftList.see(self.getIndex('a'))
         self.aircraftList.bind('<Button-1>', self.focusAircraftList)
+
+        def aircraftListTooltipFunc(index):
+            return self.shownAircrafts[index].dir
+
+        self.aircraftTooltip = tooltip.ListBoxToolTip(self.aircraftList,
+                                                      aircraftListTooltipFunc)
 
         self.frame12 = Frame(self.frame1, borderwidth=1)
         self.frame12.pack(side='top', fill='x')
@@ -639,11 +644,34 @@ want to follow this new default and set “Airport database update” to
             return
 
     def buildAircraftList(self):
+        # The current tooltip won't match the aircraft under the mouse pointer
+        # after the list is rebuilt.
+        self.aircraftTooltip.hide_tooltip()
+
         if self.aircraftList:
             self.aircraftList.delete(0, 'end')
 
-        for i in self.config.aircraft_list:
-            self.aircraftList.insert('end', i)
+        self.aircraftList.insert(
+                'end', *[ ac.name for ac in self.config.aircraftList ])
+        # Cheap, but self.shownAircrafts must not be modified in-place!
+        self.shownAircrafts = self.config.aircraftList
+
+    def searchAircrafts(self):
+        searchText = self.aircraftSearch.get().lower()
+        if searchText:
+            self.aircraftList.delete(0, 'end')
+            self.shownAircrafts = []
+
+            for aircraft in self.config.aircraftList:
+                if searchText in aircraft.name.lower():
+                    self.aircraftList.insert('end', aircraft.name)
+                    self.shownAircrafts.append(aircraft)
+        else:
+            self.buildAircraftList()
+
+        # Select the first result, if any
+        if self.aircraftList.size():
+            self.aircraftList.selection_set(0)
 
     def buildAirportList(self):
         L = list(zip(self.config.airport_icao, self.config.airport_name))
@@ -727,15 +755,14 @@ want to follow this new default and set “Airport database update” to
         self.airportList.focus_set()
 
     def getAircraft(self):
-        """Get aircraftList current selection and return aircraft name."""
-        index = self.aircraftList.curselection()
-        if index:
-            return self.aircraftList.get(index)
-
-        aircraft = self.aircraftList.get(ACTIVE)
-        if not aircraft:
-            aircraft = 'None'
-        return aircraft
+        """Return the Aircraft instance selected via self.aircraftList."""
+        indices = self.aircraftList.curselection()
+        if indices:
+            return self.shownAircrafts[int(indices[0])]
+        else:
+            # No aircraft selected. Should only happen when no aircraft is
+            # available.
+            return None
 
     def getAirport(self):
         """Get airportList current selection and return airport ICAO."""
@@ -747,14 +774,13 @@ want to follow this new default and set “Airport database update” to
         except IndexError:
             return self.config.airport.get()
 
-    def getImage(self):
+    def getImage(self, aircraft):
         """Find thumbnail in aircraft directory."""
-        if HAS_PIL:
+        if aircraft is None:
+            image = None
+        elif HAS_PIL:
             try:
-                name = self.config.aircraft.get()
-                index = self.config.aircraft_list.index(name)
-                path = os.path.join(self.config.aircraft_path[index],
-                                    'thumbnail.jpg')
+                path = os.path.join(aircraft.dir, 'thumbnail.jpg')
                 image = ImageTk.PhotoImage(Image.open(path))
             except:
                 with binaryResourceStream(NO_THUMBNAIL_PIC) as f:
@@ -768,14 +794,29 @@ want to follow this new default and set “Airport database update” to
         """Get aircraft name ('a') or airport ICAO ('p')
         and return its index."""
         if type_ == 'a':
-            name = self.config.aircraft.get()
+            aircraft = self.config.getCurrentAircraft()
+
             try:
-                return self.config.aircraft_list.index(name)
+                return self.shownAircrafts.index(aircraft)
             except ValueError:
                 try:
-                    return self.config.aircraft_list.index(DEFAULT_AIRCRAFT)
+                    dfltAircrafts = self.config.aircraftDict[DEFAULT_AIRCRAFT]
+                except KeyError:
+                    return 0
+
+                try:
+                    dfltAircraft = dfltAircrafts[0]
+                except IndexError: # should never happen
+                    logger.warning(_(
+                        "Empty list for the default aircraft. Please report "
+                        "a bug."))
+                    return 0
+
+                try:
+                    return self.shownAircrafts.index(dfltAircraft)
                 except ValueError:
                     return 0
+
         if type_ == 'p':
             name = self.config.airport.get()
             try:
@@ -987,6 +1028,7 @@ want to follow this new default and set “Airport database update” to
     def registerTracedVariables(self):
         self.options.trace('w', self.FGCommand.update)
         self.config.aircraft.trace('w', self.FGCommand.update)
+        self.config.aircraftDir.trace('w', self.FGCommand.update)
         self.config.airport.trace('w', self.FGCommand.update)
         self.config.scenario.trace('w', self.FGCommand.update)
         self.config.carrier.trace('w', self.FGCommand.update)
@@ -1318,13 +1360,6 @@ want to follow this new default and set “Airport database update” to
         else:
             build_method()
 
-    def searchAircrafts(self):
-        entry = self.aircraftSearch.get()
-        list_ = self.aircraftList
-        build_method = self.buildAircraftList
-
-        self.search(entry, list_, build_method)
-
     def searchAirports(self):
         entry = self.airportSearch.get()
         list_ = self.airportList
@@ -1422,8 +1457,8 @@ want to follow this new default and set “Airport database update” to
         """Update aircraft selection."""
         now = self.getAircraft()
 
-        if now != self.config.aircraft.get():
-            self.config.aircraft.set(now)
+        if now != self.config.getCurrentAircraft():
+            self.config.setCurrentAircraft(now)
             self.updateImage()
 
         if self.mainLoopIsRuning:
@@ -1467,8 +1502,10 @@ want to follow this new default and set “Airport database update” to
             return
 
     def updateImage(self):
-        self.image = self.getImage()
-        self.thumbnail.config(image=self.image)
+        aircraft = self.config.getCurrentAircraft()
+        if aircraft is not None:
+            self.image = self.getImage(aircraft)
+            self.thumbnail.config(image=self.image)
 
     def updateInstalledAptList(self):
         """Rebuild installed airports list."""
@@ -1677,8 +1714,11 @@ class FGCommand(DetachableWindowManagerBase):
         DetachableWindowManagerBase.__init__(
             self, app, showVariable, parent, title,
             show, windowDetached, geomVariable)
+
+        # Can only be imported once the translation system is set up
+        from ..fgcmdbuilder import FGCommandBuilder
         # Manages the logic of command building (independently of the GUI)
-        self.builder = fgcmdbuilder.FGCommandBuilder(app)
+        self.builder = FGCommandBuilder(app)
 
     @property
     def argList(self):

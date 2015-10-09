@@ -16,6 +16,7 @@ from .gui.infowindow import InfoWindow
 from .misc import resourceExists, textResourceStream
 from .constants import *
 from .logging import logger, LogLevel
+from .fgdata.aircraft import Aircraft
 
 
 class AbortConfig(Exception):
@@ -33,12 +34,13 @@ class Config:
         self.apt_path = ''  # Path to FG_ROOT/Airports/apt.dat.gz file.
         self.metar_path = ''  # Path to FG_ROOT/Airports/metar.dat.gz file.
 
-        self.aircraft_dirs = []  # List of aircraft directories.
-        self.aircraft_list = []  # List of aircraft names.
-        self.aircraft_path = []  # List of paths to each aircraft.
+        self.aircraft_dirs = [] # List of aircraft directories.
+        self.aircraftDict = {}  # Keys: aircraft names; values: Aircraft
+                                # instances.
+        self.aircraftList = []  # Sorted list of Aircraft instances.
         self.airport_icao = []  # List of ICAO codes for each airport.
         self.airport_name = []  # List of airport names.
-        self.airport_rwy = []  # List of runways present in each airport.
+        self.airport_rwy = []   # List of runways present in each airport.
 
         self.scenario_list = []  # List of selected scenarios.
         # List of all aircraft carriers found in AI scenario folder.
@@ -50,6 +52,7 @@ class Config:
         self.text = ''  # String to be shown in command line options window.
 
         self.aircraft = StringVar()
+        self.aircraftDir = StringVar()
         self.airport = StringVar()
         self.alreadyProposedChanges = StringVar()
         self.apt_data_source = IntVar()
@@ -86,6 +89,7 @@ class Config:
                          '--carrier=': self.carrier,
                          '--parkpos=': self.park,
                          '--runway=': self.rwy,
+                         'AIRCRAFT_DIR=': self.aircraftDir,
                          'AI_SCENARIOS=': self.scenario,
                          'ALREADY_PROPOSED_CHANGES=':
                                              self.alreadyProposedChanges,
@@ -272,6 +276,18 @@ class Config:
         if exc is not None and not ignoreFGVersionError:
             raise exc
 
+    def getCurrentAircraft(self):
+        return self.currentAircraft
+
+    def setCurrentAircraft(self, ac):
+        self.currentAircraft = ac
+        if ac is not None:
+            self.aircraft.set(self.currentAircraft.name)
+            self.aircraftDir.set(self.currentAircraft.dir)
+        else:
+            self.aircraft.set(DEFAULT_AIRCRAFT)
+            self.aircraftDir.set('')
+
     def update(self, path=None, ignoreFGVersionError=False, logFGVersion=True):
         """Read config file and update variables.
 
@@ -284,15 +300,15 @@ class Config:
         del self.apt_path
         del self.ai_path
         del self.metar_path
-        del self.aircraft_list
-        del self.aircraft_path
+        del self.aircraftDict
+        del self.aircraftList
         del self.airport_icao
         del self.airport_name
         del self.airport_rwy
         del self.scenario_list
         del self.carrier_list
 
-        self.aircraft.set(DEFAULT_AIRCRAFT)
+        self.setCurrentAircraft(None) # sets self.aircraft and self.aircraftDir
         self.airport.set(DEFAULT_AIRPORT)
         self.alreadyProposedChanges.set('')
         self.apt_data_source.set(1)
@@ -339,7 +355,9 @@ class Config:
         self.ai_path = os.path.join(self.FG_root.get(), AI_DIR)
         self.metar_path = os.path.join(self.FG_root.get(), METAR_DAT)
 
-        self.aircraft_list, self.aircraft_path = self._readAircraft()
+        self.aircraftDict, self.aircraftList = self._readAircraft()
+        self.setCurrentAircraft(self._findAircraft(self.aircraft.get()))
+
         self.scenario_list, self.carrier_list = self._readScenarios()
         self.updateAptLists()
 
@@ -631,32 +649,43 @@ configurations are kept separate.""")
         return (settings, ''.join(condConfLines))
 
     def _readAircraft(self):
-        """Walk through Aircraft directories and return two sorted lists:
-        list of aircraft names and list of paths to them."""
-        n, p = [], []
+        """
+        Walk through Aircraft directories and return the available aircrafts.
+
+        Return a tuple (aircraftDict, aircraftList) listing all
+        aircrafts found via self.aircraft_dirs.
+
+        aircraftDict is a dictionary whose keys are the names (derived
+        from the -set.xml files) of all aircrafts. For each aircraft
+        name 'n', aircraftDict[n] is the list, in self.aircraft_dirs
+        priority order, of all Aircraft instances with that name.
+
+        aircraftList is the sorted list of all Aircraft instances,
+        suitable for quick building of the aircraft list in the GUI.
+
+        """
+        aircraftDict = {}
         for dir_ in self.aircraft_dirs:
             if os.path.isdir(dir_):
-                self._readAircraftData(dir_, dir_, n)
                 for d in os.listdir(dir_):
-                    self._readAircraftData(dir_, d, n)
-        n.sort()
+                    self._readAircraftData(dir_, d, aircraftDict)
 
-        for i in range(len(n)):
-            p.append(n[i][2])
-            n[i] = n[i][1]
+        aircraftList = []
+        # First sort by lowercased aircraft name
+        sortFunc = lambda s: (s.lower(), s)
+        for acName in sorted(aircraftDict.keys(), key=sortFunc):
+            # Then sort by position in self.aircraft_dirs
+            aircraftList.extend(aircraftDict[acName])
 
-        return n, p
+        return (aircraftDict, aircraftList)
 
-    def _readAircraftData(self, dir_, d, n):
+    def _readAircraftData(self, dir_, d, aircraftDict):
         path = os.path.join(dir_, d)
         if os.path.isdir(path):
-            try:
-                for f in os.listdir(path):
-                    self._appendAircraft(f, n, path)
-            except OSError:
-                pass
+            for f in os.listdir(path):
+                self._appendAircraft(f, aircraftDict, path)
 
-    def _appendAircraft(self, f, n, path):
+    def _appendAircraft(self, f, aircraftDict, path):
         if f.endswith('-set.xml'):
             # Dirty and ugly hack to prevent carrier-set.xml in
             # seahawk directory to be attached to the aircraft
@@ -664,7 +693,42 @@ configurations are kept separate.""")
             if (not path.startswith('seahawk') and
                     f != 'carrier-set.xml'):
                 name = f[:-8]
-                n.append([name.lower(), name, path])
+                if name not in aircraftDict:
+                    aircraftDict[name] = []
+
+                aircraft = Aircraft(name, path)
+                aircraftDict[name].append(aircraft)
+
+    def _findAircraft(self, acName):
+        if acName in self.aircraftDict:
+            for ac in self.aircraftDict[acName]:
+                if ac.dir == self.aircraftDir.get():
+                    aircraft = ac
+                    break
+            else:
+                aircraft = self.aircraftDict[acName][0]
+                logger.notice(
+                    _("Could not find aircraft '{aircraft}' under '{dir}', "
+                      "taking it from '{fallback}' instead").format(
+                          aircraft=acName, dir=self.aircraftDir.get(),
+                          fallback=aircraft.dir))
+        else:
+            try:
+                defaultAircrafts = self.aircraftDict[DEFAULT_AIRCRAFT]
+            except KeyError:
+                aircraft = None
+                logger.warning(
+                    _("Could not find the default aircraft: {aircraft}")
+                    .format(aircraft=DEFAULT_AIRCRAFT))
+            else:
+                aircraft = defaultAircrafts[0]
+                logger.notice(
+                    _("Could not find aircraft '{aircraft}', using "
+                      "'{fallback}' from '{dir}' instead").format(
+                          aircraft=acName, fallback=aircraft.name,
+                          dir=aircraft.dir))
+
+        return aircraft
 
     def _readApt(self):
         """Read apt list (makes new one if non exists).

@@ -160,9 +160,9 @@ This example uses one external variable: ``airport``. It is said to be
 *external* because it is not defined in this configuration, but
 automatically set by FFGo when it interprets the configuration to compute
 the argument list for the :program:`fgfs` command. The complete list of
-external variables that `CondConfigParser`_ obtains from FFGo is, at the time
-of this writing: ``aircraft``, ``airport``, ``parking``, ``runway``,
-``carrier`` and ``scenarios``.
+external variables that `CondConfigParser`_ obtains from FFGo is, at the
+time of this writing: ``aircraft``, ``aircraftDir``, ``airport``,
+``parking``, ``runway``, ``carrier`` and ``scenarios``.
 
 While external variables get their values from user selections in the FFGo
 graphical user interface, other variables must be explicitely defined at the
