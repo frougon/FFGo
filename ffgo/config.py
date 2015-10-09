@@ -263,8 +263,9 @@ class Config:
 
         self.FG_version = None  # in case an exception is raised below
         FG_bin = self.FG_bin.get()
+        exc = None
+
         if FG_bin:
-            exc = None
             try:
                 self.FG_version = fgversion.getFlightGearVersion(FG_bin)
             except fgversion.error as e:
