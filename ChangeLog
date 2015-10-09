@@ -269,6 +269,10 @@ you may want to consult the Git repository log.
           (3.7) does, therefore doing otherwise and offer, in case of
           redundant FG_SCENERY components, parking positions that FlightGear
           won't find is not a good idea IMHO. (Florent Rougon)
+[BUGFIX]  For the same reason, don't attempt to read parking data from
+          FG_SCENERY/Airports/I/C/A/ICAO.parking.xml. This was used when
+          "Airport data source" was set to Scenery, but FlightGear doesn't
+          read these files. (Florent Rougon)
 [USABILITY] Change the default for “Airport database update” to “Automatic”. I
           think this is more likely to improve user experience than to degrade
           it. (Florent Rougon)
@@ -291,5 +295,51 @@ you may want to consult the Git repository log.
           better now. (Florent Rougon)
 [FEATURE] Print the Python and CondConfigParser versions in the About dialog
           box. This should make it easier to help users or even to help them
-          help themselves. :-)
+          help themselves. :-) (Florent Rougon)
 [FEATURE] Update the French translation of the interface. (Florent Rougon)
+
+1.4.0
+[BUGFIX]  Don't hardcode ':' as path list separator for FG_AIRCRAFT and
+          FG_SCENERY. Use os.pathsep instead, which should work better on
+          Windows a least (normally uses ';' since ':' appears in things suchs
+          as 'C:\path\to\foobar'). Having received no single report from users
+          using FFGo to run FlightGear under a non-Linux OS, the only way I
+          can find such portability issues is via code analysis.
+          (Florent Rougon)
+[BUGFIX]  Support use of the FG_AIRCRAFT environment variable. Mix its
+          contents with that of the 'Additional aircraft path(s)' setting from
+          the Preferences dialog, which is mapped to --fg-aircraft. This
+          better reflects what FlightGear does. (Florent Rougon)
+[FEATURE] Detect, log and display in Help → About the FlightGear version that
+          FFGo is going to run based on the FG_bin setting from the
+          Preferences dialog. Nicer display of the Python version too.
+          (Florent Rougon)
+[BUGFIX]  Hide tooltips when the mouse pointer is moved. (Florent Rougon)
+[FEATURE] Tooltip refactoring. New ListBoxToolTip allowing to have a tooltip
+          that depends on the ListBox item under the mouse pointer, using a
+          function of the item index. (Florent Rougon)
+[FEATURE] Distinguish between identically-named aircrafts; aircraft tooltips.
+          FFGo stops using only the aircraft name to identify an aircraft.
+          From now on, it uses the aircraft name in combination with the
+          directory containing its -set.xml file. This directory is stored in
+          a new config file parameter (AIRCRAFT_DIR) to allow reliably using
+          the same aircraft between sessions even if there are other aircrafts
+          with the same name in the aircraft paths. The aircraft list now has
+          tooltips showing the aircraft directory, i.e. the directory
+          containing the -set.xml file for the aircraft under the mouse
+          pointer.
+
+          Pass the --aircraft-dir option to fgfs (FlightGear) according to the
+          selected aircraft. If the FlightGear version is lower than 3.8, use
+          os.path.realpath() on its value (workaround for the FlightGear bug
+          fixed in commit 7198dec355144fbb0eaccb39f0c241dd07ebaee0, dated
+          October 6, 2015).
+
+          New 'aircraftDir' external variable that can be used in the
+          configuration processed by CondConfigParser. This variable contains
+          the selected aircraft's directory. (Florent Rougon)
+[BUGFIX]  Slightly more efficient aircraft search. Make sure there is always a
+          selected item in the aircraft list except when it is empty, in
+          particular after doing a search (an aircraft could previously be
+          selected for FFGo but not highlighted in the aircraft list).
+          (Florent Rougon)
