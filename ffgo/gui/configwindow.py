@@ -198,13 +198,12 @@ using download_and_compile.sh scripts.
 
 Note: this path corresponds to FG_BIN in the configuration file.""")
         self.tooltip_root = _("""\
-Path to FlightGear's main data directory.
-Before FlightGear 3.6, that could be something like
-/usr/share/games/flightgear. From 3.6 onwards (i.e., after the FGData
-split), it might be something like /usr/share/games/flightgear/fgdata
-instead. This will be passed to fgfs as the value for the --fg-root=
-option. You may consult <http://wiki.flightgear.org/$FG_ROOT> for
-details.""")
+Path to FlightGear's main data directory, containing the “base package”.
+On Linux, this directory is likely to be something like
+/usr/share/games/flightgear if FlightGear was installed using your
+distribution package manager. This will be passed to fgfs as the value
+for the --fg-root= option. You may consult
+<http://wiki.flightgear.org/$FG_ROOT> for details.""")
         self.tooltip_scenery = _("""\
 Path(s) to scenery directories.
 You can specify more than one path (separated by {separator!r}), ordered
