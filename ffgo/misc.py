@@ -11,6 +11,7 @@
 import os
 import sys
 import enum
+import gettext
 
 
 def pythonVersionString():
@@ -129,3 +130,41 @@ def textResourceString(path, encoding='utf-8'):
 
 def resourceFilename(path):
     return _localPath(path)
+
+
+# **********************************************************************
+# *               Context-sensitive translation support                *
+# **********************************************************************
+
+class TranslationHelper:
+    """Class providing context-sensitive translations.
+
+    At the time of this writing, GNU gettext supports this, but not the
+    gettext module of the Python standard library.
+
+    """
+    def __init__(self, config):
+        """Constructor for TranslationHelper instances.
+
+        config -- a Config instance
+
+        """
+        from .constants import MESSAGES, LOCALE_DIR
+        langCode = (
+            config.language.get() or
+            gettext.translation(MESSAGES, LOCALE_DIR).info()['language'])
+        self.translator = gettext.translation(
+            MESSAGES, LOCALE_DIR, languages=[langCode])
+
+    def pgettext(self, context, msgid):
+        s = "{}\x04{}".format(context, msgid)
+
+        try:
+            transl = self.translator._catalog[s]
+        except KeyError:
+            if self.translator._fallback:
+                return self.translator._fallback.pgettext(context, msgid)
+            else:
+                return msgid
+
+        return transl

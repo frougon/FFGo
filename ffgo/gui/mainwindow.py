@@ -38,6 +38,13 @@ except ImportError:
     HAS_PIL = False
 
 
+def setupTranslationHelper(config):
+    global pgettext
+
+    translationHelper = misc.TranslationHelper(config)
+    pgettext = translationHelper.pgettext
+
+
 class PassShortcutsToApp:
     """Mixin class to override some bindings of standard Tkinter widgets.
 
@@ -89,6 +96,7 @@ class App:
         self.master = master
         self.config = config
 
+        setupTranslationHelper(config)
         self.LogStartupMessages()
 
         self.translatedPark = StringVar()
@@ -1041,6 +1049,8 @@ want to follow this new default and set “Airport database update” to
         # as config object is updated at its creation anyway.
         if readCfgFile:
             self.config.update(path)
+
+        setupTranslationHelper(self.config) # the language may have changed
         self.aircraftSearch.delete(0, 'end')
         self.airportSearch.delete(0, 'end')
         self._updUpdateInstalledAptListMenuEntryState()
