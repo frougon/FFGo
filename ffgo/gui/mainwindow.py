@@ -558,7 +558,7 @@ want to follow this new default and set “Airport database update” to
             FG_version = self.config.FG_version
             comment = ""
         else:
-            FG_version =  _('none')
+            FG_version =  pgettext('FlightGear version', 'none')
             comment =  '\n' +_(
                 "(you may want to check the 'fgfs' executable as defined "
                 "in Settings → Preferences)")

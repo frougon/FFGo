@@ -10,12 +10,21 @@ from .tooltip import ToolTip
 from ..constants import *
 
 
+def setupTranslationHelper(config):
+    global pgettext
+
+    translationHelper = misc.TranslationHelper(config)
+    pgettext = translationHelper.pgettext
+
+
 class ConfigWindow:
 
     def __init__(self, master, config, text):
         self.master = master
         self.config = config
         self.text = text
+
+        setupTranslationHelper(config)
 
         self.apt_data_source = StringVar()
         self.auto_update_apt = StringVar()
@@ -508,7 +517,8 @@ When this option is unchecked, only the main window size is stored.""")
         ToolTip(self.fontsize_entry, self.tooltip_fontSize)
         self.fontsize_entry.pack(side='left')
 
-        fontsize_reset_button = Button(frame_misc_12, text=_('Default'),
+        fontsize_reset_button = Button(frame_misc_12,
+                                       text=pgettext('font size', 'Default'),
                                        command=self.resetBaseFontSize)
         ToolTip(fontsize_reset_button, self.tooltip_fontSize)
         fontsize_reset_button.pack(side='left')
