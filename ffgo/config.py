@@ -314,7 +314,7 @@ class Config:
         self.alreadyProposedChanges.set('')
         self.apt_data_source.set(1)
         self.auto_update_apt.set(1)
-        self.carrier.set('None')
+        self.carrier.set('')
         self.FG_aircraft.set('')
         self.FG_bin.set('')
         self.FG_root.set('')
@@ -330,8 +330,8 @@ class Config:
         self.showFGOutput.set('1')
         self.showFGOutputInSeparateWindow.set('0')
         self.FGOutputGeometry.set('')
-        self.park.set('None')
-        self.rwy.set('Default')
+        self.park.set('')
+        self.rwy.set('')
         self.scenario.set('')
         self.filteredAptList.set(0)
 
@@ -392,7 +392,10 @@ class Config:
 
         for k in keys:
             v = self.keywords[k]
-            if v.get() not in ('Default', 'None'):
+            if k in ('--carrier=', '--airport=', '--parkpos=', '--runway='):
+                if v.get():
+                    options.append(k + v.get())
+            else:
                 options.append(k + str(v.get()))
 
         s = '\n'.join(options)

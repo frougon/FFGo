@@ -206,18 +206,14 @@ class FGCommandBuilder:
 
             aircraftOpts.append(('--aircraft-dir=', aircraftDir))
 
-        for opt, cfg in aircraftOpts:
+        for opt, cfg in aircraftOpts + [
+                ('--carrier=', self.app.config.carrier.get()),
+                ('--airport=', self.app.config.airport.get()),
+                ('--parkpos=', self.app.config.park.get()),
+                ('--runway=', self.app.config.rwy.get())]:
             if cfg:
                 options.append(opt + cfg)
 
-        for opt, cfg in (('--carrier=', self.app.config.carrier.get()),
-                         ('--airport=', self.app.config.airport.get()),
-                         ('--parkpos=', self.app.config.park.get())):
-            if cfg != 'None':
-                options.append(opt + cfg)
-
-        if self.app.config.rwy.get() != 'Default':
-            options.append('--runway=' + self.app.config.rwy.get())
         if self.app.config.scenario.get() != '':
             for scenario in self.app.config.scenario.get().split():
                 options.append('--ai-scenario=' + scenario)

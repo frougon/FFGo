@@ -99,12 +99,9 @@ class App:
         setupTranslationHelper(config)
         self.LogStartupMessages()
 
+        self.options = StringVar()
         self.translatedPark = StringVar()
         self.translatedRwy = StringVar()
-        self.options = StringVar()
-        self.translatedPark.set(_('None'))
-        self.translatedRwy.set(_('Default'))
-        self.options.set('')
 #------ Menu ------------------------------------------------------------------
         self.menubar = Menu(self.master)
 
@@ -838,7 +835,8 @@ want to follow this new default and set “Airport database update” to
         # Take focus out of search entry to stop search loop.
         self.master.focus()
         popup = Menu(tearoff=0)
-        popup.add_command(label=_('None'), command=self.resetCarrier)
+        popup.add_command(label=pgettext('carrier', 'None'),
+                          command=self.resetCarrier)
         for i in self.config.carrier_list:
             popup.add_command(label=i[0],
                               command=lambda i=i: self.setCarrier(i))
@@ -863,11 +861,11 @@ want to follow this new default and set “Airport database update” to
         # Background color for column headers
         headerBgColor = "#000066"
 
-        if self.config.airport.get() != 'None':
+        if self.config.airport.get():
             popup.add_command(label='', state=DISABLED,
                               background=headerBgColor)
-            popup.add_command(label=_('None'),
-                              command=lambda: self.config.park.set('None'))
+            popup.add_command(label=pgettext('parking position', 'None'),
+                              command=lambda: self.config.park.set(''))
 
             d = self.readParkingData(self.config.airport.get())
 
@@ -897,10 +895,10 @@ want to follow this new default and set “Airport database update” to
         """Make pop up menu."""
         # Take focus out of search entry to stop search loop.
         self.master.focus()
-        if self.config.airport.get() != 'None':
+        if self.config.airport.get():
             popup = Menu(tearoff=0)
-            popup.add_command(label=_('Default'),
-                              command=lambda: self.config.rwy.set('Default'))
+            popup.add_command(label=pgettext('runway', 'Default'),
+                              command=lambda: self.config.rwy.set(''))
             for i in self.readRunwayData(self.config.airport.get()):
                 popup.add_command(label=i, command=lambda i=i:
                                   self.config.rwy.set(i))
@@ -1057,12 +1055,15 @@ want to follow this new default and set “Airport database update” to
         self.resetLists()
         self.updateImage()
         self.resetText()
-        # Update selected carrier
-        if self.config.carrier.get() != 'None':
 
-            for i in range(len(self.config.carrier_list)):
-                if self.config.carrier.get() == self.config.carrier_list[i][0]:
-                    self.currentCarrier = self.config.carrier_list[i]
+        self.updateRunwayAndParkingLabels()
+
+        # Update selected carrier
+        if self.config.carrier.get():
+            for carrierData in self.config.carrier_list:
+                # Check the carrier name
+                if self.config.carrier.get() == carrierData[0]:
+                    self.currentCarrier = carrierData
 
             self.setCarrier(self.currentCarrier)
         else:
@@ -1087,9 +1088,9 @@ want to follow this new default and set “Airport database update” to
         self.FGCommand.update()
 
     def resetCarrier(self):
-        if self.config.carrier.get() != 'None':
-            self.config.park.set('None')
-        self.config.carrier.set('None')
+        if self.config.carrier.get():
+            self.config.park.set('')
+        self.config.carrier.set('')
         self.airport_label.config(text=_('Airport:'))
         self.airportLabel.config(textvariable=self.config.airport,
                                  bg=self.default_bg)
@@ -1380,7 +1381,7 @@ want to follow this new default and set “Airport database update” to
         if self.currentCarrier:
             old_scenario = self.currentCarrier[-1]
         if self.config.carrier.get() != L[0]:
-            self.config.park.set('None')
+            self.config.park.set('')
         self.config.carrier.set(L[0])
         self.currentCarrier = L
         self.airport_label.config(text=_('Carrier:'))
@@ -1388,8 +1389,8 @@ want to follow this new default and set “Airport database update” to
                                  bg=CARRIER_COL)
         self.rwy_label.config(fg=GRAYED_OUT_COL)
         self.rwyLabel.config(fg=GRAYED_OUT_COL)
-        self.config.rwy.set('Default')
-        self.config.airport.set('None')
+        self.config.rwy.set('')
+        self.config.airport.set('')
         scenario = self.currentCarrier[-1]
 
         if scenario not in self.config.scenario.get().split():
@@ -1476,38 +1477,51 @@ want to follow this new default and set “Airport database update” to
 
     def updateAirport(self):
         """Update airport selection."""
-        if self.config.airport.get() != 'None':
+        if self.config.airport.get():
             selected_apt = self.getAirport()
 
             if selected_apt != self.config.airport.get():
-                self.config.park.set('None')
-                self.config.rwy.set('Default')
+                self.config.park.set('')
+                self.config.rwy.set('')
                 self.config.airport.set(selected_apt)
 
             # Let user select only one option: rwy or park position.
-            if self.config.rwy.get() != 'Default':
+            if self.config.rwy.get():
                 if self.config.rwy.get() != self.old_rwy:
                     self.old_rwy = self.config.rwy.get()
-                    self.config.park.set('None')
-            if self.config.park.get() != 'None':
+                    self.config.park.set('')
+            if self.config.park.get():
                 if self.config.park.get() != self.old_park:
                     self.old_park = self.config.park.get()
-                    self.config.rwy.set('Default')
+                    self.config.rwy.set('')
             else:
                 self.old_park = self.config.park.get()
                 self.old_rwy = self.config.rwy.get()
 
-            if self.old_rwy != 'Default' and self.old_park != 'None':
-                self.old_rwy = 'Default'
+            if self.old_rwy and self.old_park:
+                self.old_rwy = ''
 
-        # Translate rwy and park buttons
-        self.translatedPark.set(_(self.config.park.get()))
-        self.translatedRwy.set(_(self.config.rwy.get()))
+        self.updateRunwayAndParkingLabels()
 
         if self.mainLoopIsRuning:
             self.master.after(250, self.updateAirport)
         else:
             return
+
+    def updateRunwayAndParkingLabels(self):
+        """Update runway and parking button labels.
+
+        Update self.translatedPark and translatedRwy based on
+        self.config.park and self.config.rwy. In each case, only the
+        default value is translated.
+
+        """
+        for cfgVarName, labelVarName, default in (
+              ('park', 'translatedPark', pgettext('parking position', 'None')),
+              ('rwy', 'translatedRwy', pgettext('runway', 'Default'))):
+            cfgValue = getattr(self.config, cfgVarName).get()
+            labelVar = getattr(self, labelVarName)
+            labelVar.set(cfgValue if cfgValue else default)
 
     def updateImage(self):
         aircraft = self.config.getCurrentAircraft()

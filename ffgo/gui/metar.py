@@ -96,7 +96,7 @@ class Metar:
     def _fetch(self):
         """Fetch METAR report."""
         icao = self._getIcao()
-        if icao == 'None':
+        if not icao:
             return
 
         self.nearest_station.set('')
