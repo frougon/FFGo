@@ -686,19 +686,13 @@ want to follow this new default and set “Airport database update” to
             self.aircraftList.selection_set(0)
 
     def buildAirportList(self):
-        L = list(zip(self.config.airport_icao, self.config.airport_name))
         if self.airportList:
             self.airportList.delete(0, 'end')
 
-        for i in L:
-            if len(i[0]) == 3:
-                i = list(i)
-                i[1] = ' ' + i[1]
-            try:
-                i = '   '.join(i)
-            except TypeError:
-                i = i[0]
-            self.airportList.insert('end', i)
+        for i in range(len(self.config.airport_icao)):
+            s = "{:7}{}".format(self.config.airport_icao[i],
+                                self.config.airport_name[i])
+            self.airportList.insert('end', s)
 
     def commentText(self):
         """Highlight comments in text window."""
