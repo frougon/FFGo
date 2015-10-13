@@ -1107,12 +1107,14 @@ want to follow this new default and set “Airport database update” to
         self.updateImage()
 
         try:
-            c = self.config.scenario.get().split()
-            if self.currentCarrier[-1] in c:
-                c.pop(c.index(self.currentCarrier[-1]))
-                self.config.scenario.set(' '.join(c))
+            scenario = self.currentCarrier[-1]
         except IndexError:
             pass
+        else:
+            c = self.config.scenario.get().split()
+            if scenario in c:
+                c.pop(c.index(scenario))
+                self.config.scenario.set(' '.join(c))
 
     def resetLists(self):
         # Take focus out of search entry to stop search loop.
