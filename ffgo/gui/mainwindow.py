@@ -392,15 +392,22 @@ class App:
         self.aircraftSearchIsRunning = False
         self.airportSearchIsRunning = False
         self.currentCarrier = []
-        self.old_rwy = self.config.rwy.get()
-        self.old_park = self.config.park.get()
         self.old_aircraft_search = ''
         self.old_airport_search = ''
+
         rereadCfgFile = self.proposeConfigChanges()
         # Will set self.FGCommand.{argList,lastConfigParsingExc}
         # appropriately (actually, self.FGCommand.builder.*).
         self.reset(readCfgFile=rereadCfgFile)
+
         self.registerTracedVariables()
+        # Config.rwy and Config.park have not been updated since their
+        # creation, unless the config file has been reread (except maybe in
+        # Config.sanityChecks(), before the creation of the App object anyway).
+        # Therefore, calling registerTracedVariables() before reset() wouldn't
+        # be enough to render this call unnecessary.
+        self.updateRunwayAndParkingLabels()
+
         # Lock used to prevent concurent calls of self._runFG()
         # (disabling the "Run FG" button is not enough, as self.runFG()
         # can be invoked through a keyboard shortcut).
@@ -1039,7 +1046,9 @@ want to follow this new default and set “Airport database update” to
         self.config.FG_root.trace('w', self.FGCommand.update)
         self.config.FG_scenery.trace('w', self.FGCommand.update)
         self.config.park.trace('w', self.FGCommand.update)
+        self.config.park.trace('w', self.onParkingUpdate)
         self.config.rwy.trace('w', self.FGCommand.update)
+        self.config.rwy.trace('w', self.onRunwayUpdate)
 
     def reset(self, event=None, path=None, readCfgFile=True):
         """Reset data"""
@@ -1055,8 +1064,6 @@ want to follow this new default and set “Airport database update” to
         self.resetLists()
         self.updateImage()
         self.resetText()
-
-        self.updateRunwayAndParkingLabels()
 
         # Update selected carrier
         if self.config.carrier.get():
@@ -1485,28 +1492,26 @@ want to follow this new default and set “Airport database update” to
                 self.config.rwy.set('')
                 self.config.airport.set(selected_apt)
 
-            # Let user select only one option: rwy or park position.
-            if self.config.rwy.get():
-                if self.config.rwy.get() != self.old_rwy:
-                    self.old_rwy = self.config.rwy.get()
-                    self.config.park.set('')
-            if self.config.park.get():
-                if self.config.park.get() != self.old_park:
-                    self.old_park = self.config.park.get()
-                    self.config.rwy.set('')
-            else:
-                self.old_park = self.config.park.get()
-                self.old_rwy = self.config.rwy.get()
-
-            if self.old_rwy and self.old_park:
-                self.old_rwy = ''
-
-        self.updateRunwayAndParkingLabels()
-
         if self.mainLoopIsRuning:
             self.master.after(250, self.updateAirport)
         else:
             return
+
+    def onRunwayUpdate(self, *args):
+        """Method run when self.config.rwy is changed."""
+        # Let the user select only one option: rwy or park position.
+        if self.config.rwy.get():
+            self.config.park.set('')
+
+        self.updateRunwayAndParkingLabels()
+
+    def onParkingUpdate(self, *args):
+        """Method run when self.config.park is changed."""
+        # Let the user select only one option: rwy or park position.
+        if self.config.park.get():
+            self.config.rwy.set('')
+
+        self.updateRunwayAndParkingLabels()
 
     def updateRunwayAndParkingLabels(self):
         """Update runway and parking button labels.

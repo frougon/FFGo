@@ -289,6 +289,12 @@ class Config:
             self.aircraft.set(DEFAULT_AIRCRAFT)
             self.aircraftDir.set('')
 
+    def sanityChecks(self):
+        if self.rwy.get() and self.park.get():
+            # Impossible to at the same time set a non-default runway and a
+            # parking position. The latter wins. :-)
+            self.rwy.set('')
+
     def update(self, path=None, ignoreFGVersionError=False, logFGVersion=True):
         """Read config file and update variables.
 
@@ -361,6 +367,8 @@ class Config:
 
         self.scenario_list, self.carrier_list = self._readScenarios()
         self.updateAptLists()
+
+        self.sanityChecks()
 
         self.getFlightGearVersion(ignoreFGVersionError=ignoreFGVersionError,
                                   log=logFGVersion)
