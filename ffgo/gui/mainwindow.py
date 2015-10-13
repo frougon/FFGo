@@ -850,13 +850,14 @@ want to follow this new default and set “Airport database update” to
         popup.tk_popup(event.x_root, event.y_root, 0)
 
     def _flightTypeDisplayName(self, flightType):
-        d = {"cargo":       _("Cargo"),
-             "ga":          _("General aviation"),
-             "gate":        _("Gate"),
-             "mil-cargo":   _("Mil. cargo"),
-             "mil-fighter": _("Mil. fighter"),
-             "vtol":        _("VTOL"), # Vertical Take-Off and Landing
-             "":            _("Unspecified")}
+        d = {"cargo":       pgettext("flight type", "Cargo"),
+             "ga":          pgettext("flight type", "General aviation"),
+             "gate":        pgettext("flight type", "Gate"),
+             "mil-cargo":   pgettext("flight type", "Mil. cargo"),
+             "mil-fighter": pgettext("flight type", "Mil. fighter"),
+             # Vertical Take-Off and Landing
+             "vtol":        pgettext("flight type", "VTOL"),
+             "":            pgettext("flight type", "Unspecified")}
 
         return d.get(flightType, flightType)
 
