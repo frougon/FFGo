@@ -685,14 +685,24 @@ want to follow this new default and set “Airport database update” to
         if self.aircraftList.size():
             self.aircraftList.selection_set(0)
 
-    def buildAirportList(self):
+    def buildAirportList(self, applySearchfilter=False):
         if self.airportList:
             self.airportList.delete(0, 'end')
 
+        searchText = self.airportSearch.get().lower()
+
         for i in range(len(self.config.airport_icao)):
-            s = "{:7}{}".format(self.config.airport_icao[i],
-                                self.config.airport_name[i])
-            self.airportList.insert('end', s)
+            text = "{:6} {}".format(self.config.airport_icao[i],
+                                    self.config.airport_name[i])
+            if not filter or searchText in text.lower():
+                self.airportList.insert('end', text)
+
+    def searchAirports(self):
+        self.buildAirportList(applySearchfilter=True)
+
+        # Select the first result, if any
+        if self.airportList.size():
+            self.airportList.selection_set(0)
 
     def commentText(self):
         """Highlight comments in text window."""
@@ -1355,30 +1365,6 @@ want to follow this new default and set “Airport database update” to
 
     def scenarioDescriptionClose(self, event=None):
         self.descriptionWindow.destroy()
-
-    def search(self, entry, list_, build_method):
-        entry = entry.lower()
-        if entry != '':
-            build_method()
-            L = []
-
-            for i in range(list_.size()):
-                if entry in list_.get(i).lower():
-                    L.append(list_.get(i))
-
-            list_.delete(0, 'end')
-            for i in L:
-                list_.insert('end', i)
-
-        else:
-            build_method()
-
-    def searchAirports(self):
-        entry = self.airportSearch.get()
-        list_ = self.airportList
-        build_method = self.buildAirportList
-
-        self.search(entry, list_, build_method)
 
     def setCarrier(self, L):
         old_scenario = ''
