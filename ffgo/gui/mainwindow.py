@@ -396,7 +396,7 @@ class App:
         self.default_fg = self.rwyLabel.cget('fg')
         self.default_bg = self.master.cget('bg')
         self.scenarioListOpen = False
-        self.mainLoopIsRuning = False
+        self.mainLoopIsRunning = False
         self.currentCarrier = []
 
         rereadCfgFile = self.proposeConfigChanges()
@@ -696,7 +696,7 @@ want to follow this new default and set “Airport database update” to
                 index = str(int(line) + 1) + '.0'
             else:
                 index = None
-        if self.mainLoopIsRuning:
+        if self.mainLoopIsRunning:
             self.master.after(500, self.commentText)
         else:
             return
@@ -1417,14 +1417,14 @@ want to follow this new default and set “Airport database update” to
 
     def startLoops(self):
         """Activate all loops."""
-        self.mainLoopIsRuning = True
+        self.mainLoopIsRunning = True
         self.commentText()
         self.updateAircraft()
         self.updateAirport()
 
     def stopLoops(self):
         """Stop all loops."""
-        self.mainLoopIsRuning = False
+        self.mainLoopIsRunning = False
 
     def updateAircraft(self):
         """Update aircraft selection."""
@@ -1434,7 +1434,7 @@ want to follow this new default and set “Airport database update” to
             self.config.setCurrentAircraft(now)
             self.updateImage()
 
-        if self.mainLoopIsRuning:
+        if self.mainLoopIsRunning:
             self.master.after(100, self.updateAircraft)
         else:
             return
@@ -1449,7 +1449,7 @@ want to follow this new default and set “Airport database update” to
                 self.config.rwy.set('')
                 self.config.airport.set(selected_apt)
 
-        if self.mainLoopIsRuning:
+        if self.mainLoopIsRunning:
             self.master.after(250, self.updateAirport)
         else:
             return
