@@ -651,6 +651,10 @@ want to follow this new default and set “Airport database update” to
     def searchAircrafts(self):
         searchText = self.aircraftSearch.get().lower()
         if searchText:
+            # The current tooltip may not match the aircraft under the mouse
+            # pointer after the list is rebuilt.
+            self.aircraftTooltip.hide_tooltip()
+
             self.aircraftList.delete(0, 'end')
             self.shownAircrafts = []
 
