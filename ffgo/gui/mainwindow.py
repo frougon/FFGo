@@ -212,7 +212,6 @@ class App:
         self.scrollbar.config(command=self.aircraftList.yview, takefocus=0)
         self.aircraftList.pack(side='left', fill='both', expand=True)
         self.scrollbar.pack(side='left', fill='y')
-        self.aircraftList.bind('<Button-1>', self.focusAircraftList)
 
         def aircraftListTooltipFunc(index):
             return self.shownAircrafts[index].dir
@@ -223,10 +222,15 @@ class App:
         self.frame12 = Frame(self.frame1, borderwidth=1)
         self.frame12.pack(side='top', fill='x')
 
-        self.aircraftSearch = MyEntry(self, self.frame12, bg=TEXT_BG_COL)
+        self.aircraftSearchText = StringVar()
+        # Trigger a new search whenever the search text is modified (a set()
+        # call setting the same value as already present doesn't count as a
+        # modification).
+        self.aircraftSearchText.trace('w', self.searchAircrafts)
+
+        self.aircraftSearch = MyEntry(self, self.frame12, bg=TEXT_BG_COL,
+                                      textvariable=self.aircraftSearchText)
         self.aircraftSearch.pack(side='left', fill='x', expand=True)
-        self.aircraftSearch.bind('<FocusIn>', self.aircraftSearchStart)
-        self.aircraftSearch.bind('<FocusOut>', self.aircraftSearchStop)
         self.aircraftSearchButton = Button(self.frame12, text=_('Clear'),
                                            command=self.aircraftSearchClear)
         self.aircraftSearchButton.pack(side='left')
@@ -393,9 +397,7 @@ class App:
         self.default_bg = self.master.cget('bg')
         self.scenarioListOpen = False
         self.mainLoopIsRuning = False
-        self.aircraftSearchIsRunning = False
         self.currentCarrier = []
-        self.old_aircraft_search = ''
 
         rereadCfgFile = self.proposeConfigChanges()
         # Will set self.FGCommand.{argList,lastConfigParsingExc}
@@ -613,28 +615,6 @@ want to follow this new default and set “Airport database update” to
         self.aboutTitle.destroy()
         self.aboutLicense.destroy()
 
-    def aircraftSearchClear(self):
-        self.aircraftSearch.delete('0', 'end')
-        self.old_aircraft_search = ''
-        self.searchAircrafts()
-
-    def aircraftSearchStart(self, event=None):
-        self.aircraftSearchIsRunning = True
-        self.aircraftSearchUpdate()
-
-    def aircraftSearchStop(self, event=None):
-        self.aircraftSearchIsRunning = False
-
-    def aircraftSearchUpdate(self):
-        if self.aircraftSearchIsRunning:
-            if self.old_aircraft_search != self.aircraftSearch.get():
-                self.searchAircrafts()
-            self.old_aircraft_search = self.aircraftSearch.get()
-            self.master.after(100, self.aircraftSearchUpdate)
-        else:
-            self.old_aircraft_search = ''
-            return
-
     def buildAircraftList(self):
         # The current tooltip won't match the aircraft under the mouse pointer
         # after the list is rebuilt.
@@ -648,7 +628,8 @@ want to follow this new default and set “Airport database update” to
         # Cheap, but self.shownAircrafts must not be modified in-place!
         self.shownAircrafts = self.config.aircraftList
 
-    def searchAircrafts(self):
+    # Accept any arguments to allow safe use as a Tkinter variable observer
+    def searchAircrafts(self, *args):
         searchText = self.aircraftSearch.get().lower()
         if searchText:
             # The current tooltip may not match the aircraft under the mouse
@@ -668,6 +649,9 @@ want to follow this new default and set “Airport database update” to
         # Select the first result, if any
         if self.aircraftList.size():
             self.aircraftList.selection_set(0)
+
+    def aircraftSearchClear(self):
+        self.aircraftSearch.delete('0', 'end')
 
     def buildAirportList(self, applySearchfilter=False):
         if self.airportList:
@@ -751,9 +735,6 @@ want to follow this new default and set “Airport database update” to
 
         self.airportList.see(self.getIndex('p'))
         self.airportList.select_set(self.getIndex('p'))
-
-    def focusAircraftList(self, event=None):
-        self.aircraftList.focus_set()
 
     def getAircraft(self):
         """Return the Aircraft instance selected via self.aircraftList."""
@@ -1048,12 +1029,16 @@ want to follow this new default and set “Airport database update” to
             self.config.update(path)
 
         setupTranslationHelper(self.config) # the language may have changed
-        self.aircraftSearch.delete(0, 'end')
-        # This doesn't trigger a rebuild of the airport list at application
-        # startup, because self.airportSearchText is initially empty.
-        # Therefore, the buildAirportList() call in resetLists() is not
+
+        # This doesn't trigger a rebuild of the aircraft list at application
+        # startup, because self.aircraftSearchText is initially empty.
+        # Therefore, the buildAircraftList() call in resetLists() is not
         # redundant with the following line.
+        self.aircraftSearch.delete(0, 'end')
+        # Ditto with “airport list”, self.airportSearchText and
+        # buildAirportList().
         self.airportSearch.delete(0, 'end')
+
         self._updUpdateInstalledAptListMenuEntryState()
         self.resetLists()
         self.updateImage()
