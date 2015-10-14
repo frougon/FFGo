@@ -652,6 +652,7 @@ want to follow this new default and set “Airport database update” to
 
     def aircraftSearchClear(self):
         self.aircraftSearch.delete('0', 'end')
+        self.aircraftSearch.focus_set()
 
     def buildAirportList(self, applySearchfilter=False):
         if self.airportList:
@@ -675,6 +676,7 @@ want to follow this new default and set “Airport database update” to
 
     def airportSearchClear(self):
         self.airportSearch.delete('0', 'end')
+        self.airportSearch.focus_set()
 
     def commentText(self):
         """Highlight comments in text window."""
