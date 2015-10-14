@@ -305,15 +305,19 @@ class App:
         self.airportList.pack(side='left', fill='both', expand=True)
         self.sAirports.pack(side='left', fill='y')
         self.airportList.see(self.getIndex('p'))
-        self.airportList.bind('<Button-1>', self.focusAirportList)
 
         self.frame32 = Frame(self.frame3, borderwidth=1)
         self.frame32.pack(side='top', fill='x')
 
-        self.airportSearch = MyEntry(self, self.frame32, bg=TEXT_BG_COL)
+        self.airportSearchText = StringVar()
+        # Trigger a new search whenever the search text is modified (a set()
+        # call setting the same value as already present doesn't count as a
+        # modification).
+        self.airportSearchText.trace('w', self.searchAirports)
+
+        self.airportSearch = MyEntry(self, self.frame32, bg=TEXT_BG_COL,
+                                     textvariable=self.airportSearchText)
         self.airportSearch.pack(side='left', fill='x', expand=True)
-        self.airportSearch.bind('<FocusIn>', self.airportSearchStart)
-        self.airportSearch.bind('<FocusOut>', self.airportSearchStop)
         self.airportSearchButton = Button(self.frame32, text=_('Clear'),
                                           command=self.airportSearchClear)
         self.airportSearchButton.pack(side='left')
@@ -390,10 +394,8 @@ class App:
         self.scenarioListOpen = False
         self.mainLoopIsRuning = False
         self.aircraftSearchIsRunning = False
-        self.airportSearchIsRunning = False
         self.currentCarrier = []
         self.old_aircraft_search = ''
-        self.old_airport_search = ''
 
         rereadCfgFile = self.proposeConfigChanges()
         # Will set self.FGCommand.{argList,lastConfigParsingExc}
@@ -633,28 +635,6 @@ want to follow this new default and set “Airport database update” to
             self.old_aircraft_search = ''
             return
 
-    def airportSearchClear(self):
-        self.airportSearch.delete('0', 'end')
-        self.old_airport_search = ''
-        self.searchAirports()
-
-    def airportSearchStart(self, event=None):
-        self.airportSearchIsRunning = True
-        self.airportSearchUpdate()
-
-    def airportSearchStop(self, event=None):
-        self.airportSearchIsRunning = False
-
-    def airportSearchUpdate(self):
-        if self.airportSearchIsRunning:
-            if self.old_airport_search != self.airportSearch.get():
-                self.searchAirports()
-            self.old_airport_search = self.airportSearch.get()
-            self.master.after(100, self.airportSearchUpdate)
-        else:
-            self.old_airport_search = ''
-            return
-
     def buildAircraftList(self):
         # The current tooltip won't match the aircraft under the mouse pointer
         # after the list is rebuilt.
@@ -697,12 +677,16 @@ want to follow this new default and set “Airport database update” to
             if not filter or searchText in text.lower():
                 self.airportList.insert('end', text)
 
-    def searchAirports(self):
+    # Accept any arguments to allow safe use as a Tkinter variable observer
+    def searchAirports(self, *args):
         self.buildAirportList(applySearchfilter=True)
 
         # Select the first result, if any
         if self.airportList.size():
             self.airportList.selection_set(0)
+
+    def airportSearchClear(self):
+        self.airportSearch.delete('0', 'end')
 
     def commentText(self):
         """Highlight comments in text window."""
@@ -766,9 +750,6 @@ want to follow this new default and set “Airport database update” to
 
     def focusAircraftList(self, event=None):
         self.aircraftList.focus_set()
-
-    def focusAirportList(self, event=None):
-        self.airportList.focus_set()
 
     def getAircraft(self):
         """Return the Aircraft instance selected via self.aircraftList."""
@@ -1064,6 +1045,10 @@ want to follow this new default and set “Airport database update” to
 
         setupTranslationHelper(self.config) # the language may have changed
         self.aircraftSearch.delete(0, 'end')
+        # This doesn't trigger a rebuild of the airport list at application
+        # startup, because self.airportSearchText is initially empty.
+        # Therefore, the buildAirportList() call in resetLists() is not
+        # redundant with the following line.
         self.airportSearch.delete(0, 'end')
         self._updUpdateInstalledAptListMenuEntryState()
         self.resetLists()
