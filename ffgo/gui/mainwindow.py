@@ -18,6 +18,7 @@ import tkinter.filedialog as fd
 from tkinter.scrolledtext import ScrolledText
 from xml.etree import ElementTree
 from tkinter.messagebox import askyesno, showerror
+import shlex
 import condconfigparser
 
 from ..logging import logger
@@ -178,6 +179,8 @@ class App:
         self.toolsmenu = Menu(self.menubar, tearoff=0)
         self.toolsmenu.add_command(label='METAR',
                                    command=self.showMETARWindow)
+        self.toolsmenu.add_command(label=_('Copy FG shell-equivalent command'),
+                                   command=self.copyFGCommandToClipboard)
         if self.params.test_mode:
             self.toolsmenu.add_command(label=_('Test stuff'),
                                        accelerator=_('Ctrl-T'),
@@ -1416,6 +1419,27 @@ want to follow this new default and set “Airport database update” to
             pass
 
         self.metar = Metar(self.master, self.config, MESSAGE_BG_COL)
+
+    def copyFGCommandToClipboard(self, event=None):
+        # FGCommand.argList is None in case errors prevented its preparation
+        args = self.FGCommand.argList or []
+        command = ' '.join(map(shlex.quote,
+                               [self.config.FG_bin.get()] + args))
+        self.master.clipboard_clear()
+
+        # Tkinter/Tk doesn't seem fantastic for clipboard management...
+        try:
+            bCommand = command.encode('latin-1')
+        except UnicodeEncodeError as e:
+            message = _('Impossible to copy the current FlightGear command')
+            detail = _("The current FlightGear command cannot be copied "
+                       "to the clipboard, because the encoding to ISO 8859-1 "
+                       "(also known as “Latin 1”) failed:\n\n{exc}") \
+                       .format(exc=e)
+            showerror(_('{prg}').format(prg=PROGNAME), message,
+                      detail=detail)
+        else:
+            self.master.clipboard_append(bCommand)
 
     def startLoops(self):
         """Activate all loops."""
