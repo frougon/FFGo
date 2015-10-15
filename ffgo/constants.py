@@ -116,6 +116,8 @@ GRAYED_OUT_COL = '#b2b2b2'
 MESSAGE_BG_COL = '#fffeb2'
 # Background color for various text windows.
 TEXT_BG_COL = '#ffffff'
+# Background color of the FlightGear Command Window
+FG_COMMAND_BG_COL = '#eeeeec'
 
 
 # FG related constants.

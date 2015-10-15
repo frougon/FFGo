@@ -1771,7 +1771,7 @@ class FGCommand(DetachableWindowManagerBase):
         commandWindow_sh = Scrollbar(innerFrame, orient='horizontal')
         commandWindow = MyText(self.app,
                                innerFrame, wrap='none', height=10,
-                               relief='flat', bg=GRAYED_OUT_COL,
+                               relief='flat', bg=FG_COMMAND_BG_COL,
                                yscrollcommand=commandWindow_sv.set,
                                xscrollcommand=commandWindow_sh.set,
                                state='disabled')
