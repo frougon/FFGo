@@ -3,6 +3,7 @@
 
 import os
 import sys
+import locale
 import subprocess
 import threading
 import socket
@@ -14,11 +15,13 @@ from gettext import translation
 import threading
 import queue as queue_mod       # keep 'queue' available for variable bindings
 from tkinter import *
+from tkinter import constants as tkc
 import tkinter.filedialog as fd
 from tkinter.scrolledtext import ScrolledText
 from xml.etree import ElementTree
 from tkinter.messagebox import askyesno, showerror
 import shlex
+import textwrap
 import condconfigparser
 
 from ..logging import logger
@@ -836,8 +839,92 @@ want to follow this new default and set “Airport database update” to
 
         return d.get(flightType, flightType)
 
+    def airportParkingTooltip(self, p):
+        """Prepare the tooltip for an airport parking position."""
+        l = []
+
+        if abs(p.radius - round(p.radius)) < 0.01:
+            radiusStr = locale.format("%d", round(p.radius))
+        else:
+            radiusStr = locale.format("%.02f", p.radius)
+        l.append(
+            pgettext('parking position', 'Radius: {} m').format(radiusStr))
+
+        if p.airlineCodes:
+            s = pgettext('parking position', 'Airlines: {}').format(
+                ', '.join(p.airlineCodes))
+            l.append(textwrap.fill(s, width=50, subsequent_indent='  '))
+
+        l.append(pgettext('parking position', 'Latitude: {}').format(p.lat))
+        l.append(pgettext('parking position', 'Longitude: {}').format(p.lon))
+        l.append(pgettext('parking position', 'Heading: {}').format(
+            int(p.heading)))
+
+        return '\n'.join(l)
+
+    def populateAirportParkingPopup(self, popup, headerBgColor):
+        """Populate the popup menu for an airport parking."""
+        # The Menu.xposition() method was added in Tk 8.5
+        tooltipEnabled = hasattr(popup, "xposition")
+        # First column: empty header, and one 'None' button
+        popup.add_command(label='', state=DISABLED,
+                          background=headerBgColor)
+        popup.add_command(label=pgettext('parking position', 'None'),
+                          command=lambda: self.config.park.set(''))
+
+        d = self.readParkingData(self.config.airport.get())
+        if tooltipEnabled:
+            # One element per column, each of which is a sequence giving the
+            # position and associated data for each item of the table
+            # represented by the menu. This is explained in detail in
+            # ArrayToolTip's documentation.
+            columns = []
+
+        for flightType in sorted(d.keys()):
+            for i, parking in enumerate(d[flightType]):
+                parkName = str(parking)
+                if not (i % 20):
+                    # New column: add the column header
+                    popup.add_command(
+                        label=self._flightTypeDisplayName(flightType),
+                        state=DISABLED,
+                        background=headerBgColor,
+                        columnbreak=True)
+                    if tooltipEnabled:
+                        # Add items for the header line that produce no
+                        # tooltip: this will allow the ArrayToolTip to
+                        # compute the height of an item even if all
+                        # parkings fit on a single line of the “table”
+                        # (i.e., no more than one parking position per
+                        # flight type).
+                        idx = popup.index(tkc.END)
+                        itemData = (popup.xposition(idx),
+                                    popup.yposition(idx),
+                                    None)
+                        columns.append([itemData])
+
+                popup.add_command(
+                    label=parkName,
+                    command=lambda x=parkName: self.config.park.set(x))
+
+                if tooltipEnabled:
+                    idx = popup.index(tkc.END)
+                    itemData = (popup.xposition(idx), popup.yposition(idx),
+                                parking)
+                    columns[-1].append(itemData)
+
+        if tooltipEnabled and columns:
+            def parkingTooltipFunc(itemPayload):
+                if itemPayload is None:
+                    return None # no tooltip for this item
+                else:
+                    return self.airportParkingTooltip(itemPayload)
+
+            self.parkingTooltip = tooltip.ArrayToolTip(
+                popup, columns, parkingTooltipFunc)
+
     def popupPark(self, event):
-        """Make pop up menu."""
+        """Make popup menu for airport parking or carrier start position."""
         # Take focus out of search entry to stop search loop.
         self.master.focus()
         popup = Menu(tearoff=0)
@@ -845,27 +932,7 @@ want to follow this new default and set “Airport database update” to
         headerBgColor = "#000066"
 
         if self.config.airport.get():
-            popup.add_command(label='', state=DISABLED,
-                              background=headerBgColor)
-            popup.add_command(label=pgettext('parking position', 'None'),
-                              command=lambda: self.config.park.set(''))
-
-            d = self.readParkingData(self.config.airport.get())
-
-            for flightType in sorted(d.keys()):
-                for i, parking in enumerate(d[flightType]):
-                    parkName = str(parking)
-                    if not (i % 20):
-                        # Column header
-                        popup.add_command(
-                            label=self._flightTypeDisplayName(flightType),
-                            state=DISABLED,
-                            background=headerBgColor,
-                            columnbreak=True)
-
-                    popup.add_command(
-                        label=parkName,
-                        command=lambda x=parkName: self.config.park.set(x))
+            self.populateAirportParkingPopup(popup, headerBgColor)
         else:
             L = self.currentCarrier[1:-1]
             for i in L:
