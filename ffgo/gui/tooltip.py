@@ -191,3 +191,116 @@ class ListBoxToolTip(ToolTipBase):
 
     def setItemTextFunc(self, itemTextFunc):
         self.itemTextFunc = itemTextFunc
+
+
+class ArrayToolTip(ToolTipBase):
+    def __init__(self, master=None, columns=(), itemTextFunc=lambda x: None,
+                 **kwargs):
+        """Constructor for ArrayToolTip instances.
+
+        master       -- the master widget for the tooltip (e.g., a Menu
+                        instance)
+
+        columns      -- an iterable of sequences, each of which decribes
+                        the menu items of a column. columns[0] describes
+                        the leftmost column, etc. For each row number i
+                        and column number j (both starting from 0),
+                        columns[j][i] should be a sequence 'itemData'
+                        such that:
+
+                        - itemData[0] is the x coordinate of the
+                          top-left corner of the item, relative to the
+                          top-left corner of the widget;
+
+                        - itemData[1] is the y coordinate of the
+                          top-left corner of the item, relative to the
+                          top-left corner of the widget;
+
+                        - itemData[2] is the object that will be passed
+                          to 'itemTextFunc' for this item.
+
+        itemTextFunc -- a function taking one argument that corresponds
+                        to a particular item (this is 'itemData[2]'
+                        above). If the function returns None, no tooltip
+                        will be shown for this item; otherwise, the
+                        return value should be a string that will be
+                        used as the tooltip for this item.
+
+        Additional keyword arguments are passed to ToolTipBase's
+        constructor.
+
+        """
+        kwargs['master'] = master
+        ToolTipBase.__init__(self, **kwargs)
+        self.columns = columns
+        self.itemTextFunc = itemTextFunc
+        self.textVar = StringVar()
+        self.postInit()
+
+    def createLabel(self):
+        return Label(self, textvariable=self.textVar, bg=self.bgColor,
+                     justify=LEFT)
+
+    def prepareText(self):
+        if self.lastPos is None:
+            return False
+
+        # The Menu widget only gives us the coordinates of the top-left
+        # corner of each item, so we have to use the other items to
+        # determine the bounding box of each item. Let's start with the
+        # height of a row, which we need to determine how far to the
+        # bottom the last item of a short column goes (since there is no
+        # item below it).
+        for col in self.columns:
+            if len(col) > 1:
+                approxItemHeight = col[1][1] - col[0][1]
+                break
+        else:
+            # There is no column with at least two rows, so it is
+            # impossible to estimate the height of an item (or a row,
+            # for that matter: we don't make any difference here).
+            approxItemHeight = None
+
+        # Whether we have found the item under the mouse pointer
+        found = False
+        for j, col in enumerate(self.columns):
+            if self.lastPos[0] < col[0][0]:
+                # This column is already too far to the right, finished.
+                return False
+            elif (j+1 < len(self.columns)
+                  and self.lastPos[0] >= self.columns[j+1][0][0]):
+                # The mouse pointer is right of the left edge of the
+                # next column, so it can't be in the current column.
+                #   → let's skip to the next column.
+                continue
+            else:
+                for i, itemData in enumerate(col):
+                    if self.lastPos[1] < itemData[1]:
+                        # This row is already too far to the bottom, finished.
+                        return False
+                    elif (i+1 < len(col)
+                          and self.lastPos[1] >= col[i+1][1]):
+                            # The mouse pointer is below the top edge of the
+                            # next row, so it can't be in the current row.
+                            #   → let's skip to the next row.
+                            continue
+                    elif (i+1 < len(col) or
+                          approxItemHeight is None or
+                          self.lastPos[1] < itemData[1] + approxItemHeight):
+                        text = self.itemTextFunc(itemData[2])
+                        found = True
+                        break
+                if found:
+                    break
+
+        if not found or text is None:
+            # The mouse pointer is not on any item of the array
+            # or
+            # there is no tooltip to show for this item.
+            return False
+        else:
+            self.textVar.set(text) # set the tooltip text
+            return True            # tell the caller the tooltip must be shown
+
+    def setItemTextFunc(self, itemTextFunc):
+        self.itemTextFunc = itemTextFunc
