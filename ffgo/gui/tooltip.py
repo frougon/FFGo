@@ -27,31 +27,56 @@ class ToolTipBase(Toplevel):
         self.id = None
         self.lastPos = None
         self.bgColor = MESSAGE_BG_COL
+        # With some widgets as the master (e.g., Menu under Tk 8.6), the Motion
+        # event may occur even if the mouse pointer is outside the widget area.
+        # Therefore, we use a boolean to keep track of whether the pointer is
+        # inside the widget or outside, and thus whether the tooltip can be
+        # shown or not.
+        self.canBeShown = False
 
     def postInit(self):
         self.create_window()
         self.bind_to_master()
 
     def bind_to_master(self):
-        self.master.bind('<Enter>', self.schedule_tooltip)
-        self.master.bind('<Motion>', self.set_position)
-        self.master.bind('<Leave>', self.hide_tooltip)
+        self.master.bind('<Enter>', self.onEnter)
+        self.master.bind('<Motion>', self.onMotion)
+        self.master.bind('<Leave>', self.onLeave)
         self.master.bind('<Button>', self.hide_tooltip)
 
     def schedule_tooltip(self, event=None):
-        self.id = self.master.after(self.delay, self.show_tooltip)
+        self.id = self.master.after(self.delay, self.prepareAndShow)
 
     def create_window(self):
         self.overrideredirect(True)
         self.createLabel().pack()
         self.withdraw()
 
-    def set_position(self, event):
-        self.hide_tooltip()
+    def prepareText(self):
+        """Prepare the tooltip text.
+
+        This is one of methods subclasses are likely to need to
+        override, along with __init__() and createLabel().
+
+        """
+        # This means: don't show the tooltip this time
+        return False
+
+    def prepareAndShow(self):
+        if self.prepareText():
+            # The tooltip text is ready and we are “authorized” to show it
+            self.show()
+
+    def show(self):
+        self.update()
+        self.deiconify()
+
+    def adjustPosition(self, event):
+        # Last known position of the mouse pointer, relative to the
+        # top-left corner of the widget.
         self.lastPos = (event.x, event.y)
         self.geometry('+{0}+{1}'.format(event.x_root + self.offsetx,
                                         event.y_root + self.offsetx))
-        self.schedule_tooltip()
 
     def hide_tooltip(self, event=None):
         self.withdraw()
@@ -62,12 +87,27 @@ class ToolTipBase(Toplevel):
             self.master.after_cancel(self.id)
             self.id = None
 
+    def onEnter(self, event=None):
+        self.canBeShown = True
+        self.adjustPosition(event)
+        self.schedule_tooltip()
+
+    def onMotion(self, event):
+        self.hide_tooltip()
+        if self.canBeShown:
+            self.adjustPosition(event)
+            self.schedule_tooltip()
+
+    def onLeave(self, event=None):
+        self.canBeShown = False
+        self.hide_tooltip()
+
 
 class ToolTip(ToolTipBase):
-    """A Tooltip widget
+    """A static Tooltip widget.
 
-    Display tooltip message at mouse cursor when it is over master
-    widget.
+    Display the same tooltip text at mouse position when the mouse
+    pointer is over the master widget.
 
     Arguments are:
       master:   parent widget
@@ -76,9 +116,13 @@ class ToolTip(ToolTipBase):
       offsetx, offsety:  offset from cursor position
       delay:    delay in milliseconds
 
-    Warning: ToolTip does not work properly with Frame widget.
-    It seems that '<Motion>' event have some problems with getting
-    updated cursor position there.
+    Old note: ToolTip might not work properly with the Frame widget. It
+    seems that '<Motion>' events have some problems with getting updated
+    cursor position there.
+
+    Update: this is probably worked around now since the addition of
+    ToolTipBase.canBeShown in Oct 2015 for the Menu widget, which
+    received Motion events even after the mouse pointer left the widget.
 
     """
 
@@ -91,16 +135,29 @@ class ToolTip(ToolTipBase):
     def createLabel(self):
         return Label(self, text=self.text, bg=self.bgColor, justify=LEFT)
 
-    def show_tooltip(self):
-        try:
-            self.update()
-            self.deiconify()
-        except AttributeError:
-            self.hide_tooltip()
+    def prepareText(self):
+        # Always show the toolip. The text was already prepared in
+        # __init__() (it is always the same for this tooltip), so there
+        # is nothing left to prepare.
+        return True
 
 
 class ListBoxToolTip(ToolTipBase):
-    def __init__(self, master=None, itemTextFunc=lambda i: "", **kwargs):
+    def __init__(self, master=None, itemTextFunc=lambda i: None, **kwargs):
+        """Constructor for ListBoxToolTip instances.
+
+        master       -- a Menu instance
+        itemTextFunc -- a function taking one argument. When called, the
+                        function will be passed the index of an item in
+                        the ListBox (starting from 0). If it returns
+                        None, no tooltip will be shown for this item;
+                        otherwise, the return value should be a string
+                        that will be used as the tooltip for this item.
+
+        Additional keyword arguments are passed to ToolTipBase's
+        constructor.
+
+        """
         kwargs['master'] = master
         ToolTipBase.__init__(self, **kwargs)
         self.itemTextFunc = itemTextFunc
@@ -111,27 +168,26 @@ class ListBoxToolTip(ToolTipBase):
         return Label(self, textvariable=self.textVar, bg=self.bgColor,
                      justify=LEFT)
 
-    def show_tooltip(self):
+    def prepareText(self):
         if self.lastPos is None:
-            return
+            return False
 
         nearestIdx = self.master.nearest(self.lastPos[1])
         bbox = self.master.bbox(nearestIdx)
         if bbox is None:
-            return
+            return False
 
         xOffset, yOffset, width, height = bbox
         # Is the mouse pointer on the row of an item?
         if not (yOffset <= self.lastPos[1] < yOffset + height):
-            return
+            return False
 
-        self.textVar.set(self.itemTextFunc(nearestIdx))
-
-        try:
-            self.update()
-            self.deiconify()
-        except AttributeError:
-            self.hide_tooltip()
+        text = self.itemTextFunc(nearestIdx)
+        if text is not None:
+            self.textVar.set(text)
+            return True
+        else:
+            return False
 
     def setItemTextFunc(self, itemTextFunc):
         self.itemTextFunc = itemTextFunc
