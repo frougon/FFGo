@@ -12,6 +12,7 @@ import os
 import sys
 import enum
 import gettext
+import locale
 
 
 def pythonVersionString():
@@ -67,6 +68,10 @@ class OrderedEnum(enum.Enum):
         return NotImplemented
 
 
+class DecimalCoord(float):
+    def __str__(self):
+        return locale.format("%.06f", self)
+
 # Similar to processPosition() in src/Airports/dynamicloader.cxx of the
 # FlightGear source code (version 3.7)
 def mixedToDecimalCoords(s):
@@ -91,7 +96,7 @@ def mixedToDecimalCoords(s):
     degree = int(s[1:s.index(' ', 1)])
     minutes = float(s[s.index(' ', 1) + 1:])
 
-    return sign * (degree + minutes/60.0)
+    return DecimalCoord(sign * (degree + minutes/60.0))
 
 
 # ****************************************************************************
