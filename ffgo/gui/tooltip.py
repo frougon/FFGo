@@ -146,7 +146,7 @@ class ListBoxToolTip(ToolTipBase):
     def __init__(self, master=None, itemTextFunc=lambda i: None, **kwargs):
         """Constructor for ListBoxToolTip instances.
 
-        master       -- a Menu instance
+        master       -- a ListBox instance
         itemTextFunc -- a function taking one argument. When called, the
                         function will be passed the index of an item in
                         the ListBox (starting from 0). If it returns
