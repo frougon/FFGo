@@ -216,6 +216,7 @@ class App:
                                     yscrollcommand=self.scrollbar.set,
                                     height=14)
         self.scrollbar.config(command=self.aircraftList.yview, takefocus=0)
+        self.aircraftList.bind('<<ListboxSelect>>', self.updateAircraft)
         self.aircraftList.pack(side='left', fill='both', expand=True)
         self.scrollbar.pack(side='left', fill='y')
 
@@ -312,6 +313,7 @@ class App:
                                    yscrollcommand=self.sAirports.set,
                                    height=14)
         self.sAirports.config(command=self.airportList.yview, takefocus=0)
+        self.airportList.bind('<<ListboxSelect>>', self.updateAirport)
         self.airportList.pack(side='left', fill='both', expand=True)
         self.sAirports.pack(side='left', fill='y')
         self.airportList.see(self.getIndex('p'))
@@ -402,7 +404,6 @@ class App:
         self.default_fg = self.rwyLabel.cget('fg')
         self.default_bg = self.master.cget('bg')
         self.scenarioListOpen = False
-        self.mainLoopIsRunning = False
         self.currentCarrier = []
 
         rereadCfgFile = self.proposeConfigChanges()
@@ -423,7 +424,6 @@ class App:
         # can be invoked through a keyboard shortcut).
         self.runFGLock = threading.Lock()
         self.setupKeyboardShortcuts()
-        self.startLoops()
 
     def LogStartupMessages(self):
         # Same string as in the About box
@@ -655,7 +655,11 @@ want to follow this new default and set “Airport database update” to
 
         # Select the first result, if any
         if self.aircraftList.size():
+            # This does not trigger the <<ListboxSelect>> event (tested with
+            # Tk 8.6)...
             self.aircraftList.selection_set(0)
+            # ... therefore, we have do do it ourselves.
+            self.updateAircraft()
 
     def aircraftSearchClear(self):
         self.aircraftSearch.delete('0', 'end')
@@ -679,7 +683,11 @@ want to follow this new default and set “Airport database update” to
 
         # Select the first result, if any
         if self.airportList.size():
+            # This does not trigger the <<ListboxSelect>> event (tested with
+            # Tk 8.6)...
             self.airportList.selection_set(0)
+            # ... therefore, we have do do it ourselves.
+            self.updateAirport()
 
     def airportSearchClear(self):
         self.airportSearch.delete('0', 'end')
@@ -1070,6 +1078,12 @@ want to follow this new default and set “Airport database update” to
 
         setupTranslationHelper(self.config) # the language may have changed
 
+        # Save these parameters, because deleting the search entries modifies
+        # them, since it causes the first (aircraft or airport) list entry to
+        # be selected.
+        aircraft = self.config.getCurrentAircraft()
+        airport = self.config.airport.get()
+
         # This doesn't trigger a rebuild of the aircraft list at application
         # startup, because self.aircraftSearchText is initially empty.
         # Therefore, the buildAircraftList() call in resetLists() is not
@@ -1078,6 +1092,10 @@ want to follow this new default and set “Airport database update” to
         # Ditto with “airport list”, self.airportSearchText and
         # buildAirportList().
         self.airportSearch.delete(0, 'end')
+
+        # Restore the parameters saved above
+        self.config.setCurrentAircraft(aircraft)
+        self.config.airport.set(airport)
 
         self._updUpdateInstalledAptListMenuEntryState()
         self.resetLists()
@@ -1221,7 +1239,6 @@ want to follow this new default and set “Airport database update” to
             self.runFGErrorMessage(e)
             return False
 
-        self.stopLoops()
         self.FGOutput.clear()
 
         # One queue for fgfs' stdout and stderr, the other for its exit
@@ -1322,7 +1339,6 @@ want to follow this new default and set “Airport database update” to
         self.fgStatusText.set(_('Ready ({0})').format(complement))
         self.fgStatusLabel.config(background="#88ff88")
         self.run_button.configure(state='normal')
-        self.startLoops()
         self.runFGLock.release()
 
     def saveWindowsGeometry(self):
@@ -1477,17 +1493,7 @@ want to follow this new default and set “Airport database update” to
         else:
             self.master.clipboard_append(bCommand)
 
-    def startLoops(self):
-        """Activate all loops."""
-        self.mainLoopIsRunning = True
-        self.updateAircraft()
-        self.updateAirport()
-
-    def stopLoops(self):
-        """Stop all loops."""
-        self.mainLoopIsRunning = False
-
-    def updateAircraft(self):
+    def updateAircraft(self, event=None):
         """Update aircraft selection."""
         now = self.getAircraft()
 
@@ -1495,12 +1501,7 @@ want to follow this new default and set “Airport database update” to
             self.config.setCurrentAircraft(now)
             self.updateImage()
 
-        if self.mainLoopIsRunning:
-            self.master.after(100, self.updateAircraft)
-        else:
-            return
-
-    def updateAirport(self):
+    def updateAirport(self, event=None):
         """Update airport selection."""
         if self.config.airport.get():
             # self.config.airport not empty: we are not in “carrier mode”
@@ -1510,11 +1511,6 @@ want to follow this new default and set “Airport database update” to
                 self.config.park.set('')
                 self.config.rwy.set('')
                 self.config.airport.set(selected_apt)
-
-        if self.mainLoopIsRunning:
-            self.master.after(250, self.updateAirport)
-        else:
-            return
 
     def onRunwayUpdate(self, *args):
         """Method run when self.config.rwy is changed."""
