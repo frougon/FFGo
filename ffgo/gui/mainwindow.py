@@ -814,8 +814,6 @@ want to follow this new default and set “Airport database update” to
 
     def popupCarrier(self, event):
         """Make pop up menu."""
-        # Take focus out of search entry to stop search loop.
-        self.master.focus()
         popup = Menu(tearoff=0)
         popup.add_command(label=pgettext('carrier', 'None'),
                           command=self.resetCarrier)
@@ -922,8 +920,6 @@ want to follow this new default and set “Airport database update” to
 
     def popupPark(self, event):
         """Make popup menu for airport parking or carrier start position."""
-        # Take focus out of search entry to stop search loop.
-        self.master.focus()
         popup = Menu(tearoff=0)
         # Background color for column headers
         headerBgColor = "#000066"
@@ -940,9 +936,6 @@ want to follow this new default and set “Airport database update” to
 
     def popupRwy(self, event):
         """Make pop up menu."""
-        # Take focus out of search entry to stop search loop.
-        self.master.focus()
-
         if self.config.airport.get():
             # self.config.airport not empty: we are not in “carrier mode”
             popup = Menu(tearoff=0)
@@ -956,8 +949,6 @@ want to follow this new default and set “Airport database update” to
     def popupScenarios(self, event):
         """Make pop up list."""
         if not self.scenarioListOpen:
-            # Take focus out of search entry to stop search loop.
-            self.master.focus()
             self.scenarioListOpen = True
             self.scenarioList = Toplevel(borderwidth=1, relief='raised')
             self.scenarioList.overrideredirect(True)
@@ -1167,8 +1158,6 @@ want to follow this new default and set “Airport database update” to
                 self.config.scenario.set(' '.join(c))
 
     def resetLists(self):
-        # Take focus out of search entry to stop search loop.
-        self.master.focus()
         self.buildAircraftList()
         self.buildAirportList()
         self.aircraftList.select_set(self.getIndex('a'))
