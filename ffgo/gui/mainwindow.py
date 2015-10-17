@@ -316,7 +316,6 @@ class App:
         self.airportList.bind('<<ListboxSelect>>', self.updateAirport)
         self.airportList.pack(side='left', fill='both', expand=True)
         self.sAirports.pack(side='left', fill='y')
-        self.airportList.see(self.getIndex('p'))
 
         self.frame32 = Frame(self.frame3, borderwidth=1)
         self.frame32.pack(side='top', fill='x')
@@ -665,7 +664,7 @@ want to follow this new default and set “Airport database update” to
         self.aircraftSearch.delete('0', 'end')
         self.aircraftSearch.focus_set()
 
-    def buildAirportList(self, applySearchfilter=False):
+    def buildAirportList(self, applySearchFilter=False):
         if self.airportList:
             self.airportList.delete(0, 'end')
 
@@ -674,12 +673,12 @@ want to follow this new default and set “Airport database update” to
         for i in range(len(self.config.airport_icao)):
             text = "{:6} {}".format(self.config.airport_icao[i],
                                     self.config.airport_name[i])
-            if not filter or searchText in text.lower():
+            if not applySearchFilter or searchText in text.lower():
                 self.airportList.insert('end', text)
 
     # Accept any arguments to allow safe use as a Tkinter variable observer
     def searchAirports(self, *args):
-        self.buildAirportList(applySearchfilter=True)
+        self.buildAirportList(applySearchFilter=True)
 
         # Select the first result, if any
         if self.airportList.size():
