@@ -35,19 +35,19 @@ class ToolTipBase(Toplevel):
         self.canBeShown = False
 
     def postInit(self):
-        self.create_window()
-        self.bind_to_master()
+        self.createWindow()
+        self.bindToMaster()
 
-    def bind_to_master(self):
+    def bindToMaster(self):
         self.master.bind('<Enter>', self.onEnter)
         self.master.bind('<Motion>', self.onMotion)
         self.master.bind('<Leave>', self.onLeave)
-        self.master.bind('<Button>', self.hide_tooltip)
+        self.master.bind('<Button>', self.hideTooltip)
 
-    def schedule_tooltip(self, event=None):
+    def scheduleTooltip(self, event=None):
         self.id = self.master.after(self.delay, self.prepareAndShow)
 
-    def create_window(self):
+    def createWindow(self):
         self.overrideredirect(True)
         self.createLabel().pack()
         self.withdraw()
@@ -78,11 +78,11 @@ class ToolTipBase(Toplevel):
         self.geometry('+{0}+{1}'.format(event.x_root + self.offsetx,
                                         event.y_root + self.offsetx))
 
-    def hide_tooltip(self, event=None):
+    def hideTooltip(self, event=None):
         self.withdraw()
-        self.cancel_id()
+        self.cancelId()
 
-    def cancel_id(self):
+    def cancelId(self):
         if self.id is not None:
             self.master.after_cancel(self.id)
             self.id = None
@@ -90,17 +90,17 @@ class ToolTipBase(Toplevel):
     def onEnter(self, event=None):
         self.canBeShown = True
         self.adjustPosition(event)
-        self.schedule_tooltip()
+        self.scheduleTooltip()
 
     def onMotion(self, event):
-        self.hide_tooltip()
+        self.hideTooltip()
         if self.canBeShown:
             self.adjustPosition(event)
-            self.schedule_tooltip()
+            self.scheduleTooltip()
 
     def onLeave(self, event=None):
         self.canBeShown = False
-        self.hide_tooltip()
+        self.hideTooltip()
 
 
 class ToolTip(ToolTipBase):

@@ -624,7 +624,7 @@ want to follow this new default and set “Airport database update” to
     def buildAircraftList(self):
         # The current tooltip won't match the aircraft under the mouse pointer
         # after the list is rebuilt.
-        self.aircraftTooltip.hide_tooltip()
+        self.aircraftTooltip.hideTooltip()
 
         if self.aircraftList:
             self.aircraftList.delete(0, 'end')
@@ -640,7 +640,7 @@ want to follow this new default and set “Airport database update” to
         if searchText:
             # The current tooltip may not match the aircraft under the mouse
             # pointer after the list is rebuilt.
-            self.aircraftTooltip.hide_tooltip()
+            self.aircraftTooltip.hideTooltip()
 
             self.aircraftList.delete(0, 'end')
             self.shownAircrafts = []
