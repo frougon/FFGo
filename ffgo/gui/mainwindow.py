@@ -650,6 +650,7 @@ want to follow this new default and set “Airport database update” to
                     self.aircraftList.insert('end', aircraft.name)
                     self.shownAircrafts.append(aircraft)
         else:
+            # Optimized for speed and memory usage
             self.buildAircraftList()
 
         # Select the first result, if any
@@ -945,7 +946,9 @@ want to follow this new default and set “Airport database update” to
         """Make pop up menu."""
         # Take focus out of search entry to stop search loop.
         self.master.focus()
+
         if self.config.airport.get():
+            # self.config.airport not empty: we are not in “carrier mode”
             popup = Menu(tearoff=0)
             popup.add_command(label=pgettext('runway', 'Default'),
                               command=lambda: self.config.rwy.set(''))
@@ -1417,7 +1420,10 @@ want to follow this new default and set “Airport database update” to
         if self.currentCarrier:
             old_scenario = self.currentCarrier[-1]
         if self.config.carrier.get() != L[0]:
+            # The carrier described by L is different from the current carrier
+            # (if any) → reset parking pos.
             self.config.park.set('')
+
         self.config.carrier.set(L[0])
         self.currentCarrier = L
         self.airport_label.config(text=_('Carrier:'))
@@ -1535,6 +1541,7 @@ want to follow this new default and set “Airport database update” to
     def updateAirport(self):
         """Update airport selection."""
         if self.config.airport.get():
+            # self.config.airport not empty: we are not in “carrier mode”
             selected_apt = self.getAirport()
 
             if selected_apt != self.config.airport.get():
