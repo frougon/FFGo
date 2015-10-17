@@ -381,7 +381,7 @@ class App:
                                     xscrollcommand=option_window_sh.set)
         option_window_sv.config(command=self.option_window.yview, takefocus=0)
         option_window_sh.config(command=self.option_window.xview, takefocus=0)
-        self.option_window.bind('<<Modified>>', self.updateOptions)
+        self.option_window.bind('<<Modified>>', self.onOptionWindowModified)
         option_window_sh.pack(side='bottom', fill='x')
         self.option_window.pack(side='left', fill='both', expand=True)
         option_window_sv.pack(side='left', fill='y')
@@ -705,10 +705,6 @@ want to follow this new default and set “Airport database update” to
                 index = str(int(line) + 1) + '.0'
             else:
                 index = None
-        if self.mainLoopIsRunning:
-            self.master.after(500, self.commentText)
-        else:
-            return
 
     def configLoad(self):
         p = fd.askopenfilename(
@@ -1517,7 +1513,6 @@ want to follow this new default and set “Airport database update” to
     def startLoops(self):
         """Activate all loops."""
         self.mainLoopIsRunning = True
-        self.commentText()
         self.updateAircraft()
         self.updateAirport()
 
@@ -1596,7 +1591,8 @@ want to follow this new default and set “Airport database update” to
             self.config.makeInstalledAptList()
             self.filterAirports()
 
-    def updateOptions(self, event=None):
+    def onOptionWindowModified(self, event=None):
+        self.commentText()
         self.options.set(self.option_window.get('1.0', 'end'))
         self.option_window.edit_modified(False)
 
