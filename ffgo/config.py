@@ -257,7 +257,7 @@ class Config:
         if self.FG_version is not None:
             FG_version = str(self.FG_version)
         else:
-            FG_version = _("none")
+            FG_version = pgettext("FlightGear version", "none")
 
         # Uses the same string as in App.about()
         message = _("Detected FlightGear version: {ver}").format(
