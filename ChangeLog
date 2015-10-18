@@ -343,3 +343,65 @@ you may want to consult the Git repository log.
           particular after doing a search (an aircraft could previously be
           selected for FFGo but not highlighted in the aircraft list).
           (Florent Rougon)
+
+1.5.0
+[FEATURE] Add support for context-sensitive translations. (Florent Rougon)
+[MAINT]   Clean up handling of airport, parking, runway and carrier settings.
+          (Florent Rougon)
+[MAINT]   Cleaner handling of runway and parking changes. Most notably,
+          replace old code checking for runway and parking changes every
+          250 ms by event handlers (observers in Tkinter-speak). This
+          increases the interface responsiveness and reduces FFGo's CPU usage.
+          (Florent Rougon)
+[MAINT]   Simplify and accelerate the airport list build process. Rewrite the
+          airport and aircraft search code using Tkinter observers to make the
+          interface more reactive and reduce CPU usage at the same time.
+          (Florent Rougon)
+[USABILITY] When clicking on the Clear button for the aircraft or airport
+          search, set focus to the corresponding entry widget to allow
+          immediate typing of the search text. (Florent Rougon)
+[FEATURE] New function, under the Tools menu, to copy a POSIX shell command
+          equivalent to the current FG command to the clipboard. Due to
+          limitations in Tk/Tkinter as it seems, this new function can only
+          copy FG commands that can be encoded to ISO 8859-1 (which should be
+          sufficient in most cases). An error dialog is displayed if this is
+          not possible. On X11, the Tkinter clipboard functions used here seem
+          to use the PRIMARY selection. (Florent Rougon)
+[USABILITY] Use a lighter background color for the FlightGear Command Window.
+[MAINT]   Overhaul of the tooltip infrastructure. New tooltip class:
+          MenuToolTip. (Florent Rougon)
+[BUGFIX]  Tooltips could be displayed outside their master widget due to the
+          fact that (at least with Tk 8.6 and Python 3.4.3) Tkinter sometimes
+          sends Motion events even though the mouse pointer is largely out of
+          the master widget. Work around this problem. (Florent Rougon)
+[FEATURE] Add airport parking tooltips in the parking popup. The newly-added
+          tooltips contain most of the metadata available for parking
+          positions (i.e., everything pilots are likely to be concerned about,
+          but not FlightGear implementation details such as the parking
+          'index' or its 'pushBackRoute'). The parking name/number and its
+          associated flight type are not repeated in the tooltip since they
+          are already displayed in the parking popup. (Florent Rougon)
+[MAINT]   Remove polling for:
+            - comments highlighting in the Option Window;
+            - the code that updates various elements when a different aircraft
+              is selected in the aircraft list;
+            - the code that updates various elements when a different airport
+              is selected in the airport list.
+
+          Again, replace this mechanism by Tkinter observers that are called
+          immediately after the relevant change without causing unjustified
+          overhead. Together with the previous optimizations, this causes the
+          FFGo CPU load when idle to drop from about 2-3 % in version 1.4.0 to
+          0.0 % in this version on my computer.
+
+          Note: in previous versions, the FFGo CPU load was already very low
+                while FlightGear was running because certain functions were
+                disabled in this case to save CPU time for FlightGear.
+          (Florent Rougon)
+[BUGFIX]  Thanks to the previously-mentioned changes, changing the aircraft or
+          airport in FFGo, or comment out/decommenting text in the Options
+          Window while FlightGear is running should work perfectly now,
+          without leaving related fields unchanged (such as the aircraft
+          thumbnail when selecting a different aircraft). All this should now
+          work exactly the same as when FlightGear is not running.
+          (Florent Rougon)

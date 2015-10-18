@@ -47,14 +47,14 @@ CONFIGURATION
 
 In order to use FFGo, you need to first set it up. Open the preferences
 window (in menu choose: Settings => Preferences) and fill in the empty
-entry fields. Filling the first three entries in the "FlightGear
-settings" tab is necessary for proper operation of the program---the
+entry fields. Filling the first three entries in the “FlightGear
+settings” tab is necessary for proper operation of the program---the
 rest is optional.
 
 Tip: Hover the mouse pointer over any option to see its description.
 
-Changes in the "FlightGear settings" tab are immediately applied after
-clicking on the "Save Settings" button, however changes in other tabs
+Changes in the “FlightGear settings” tab are immediately applied after
+clicking on the “Save Settings” button, however changes in other tabs
 may require restarting FFGo for them to be applied. Most notably,
 changing the interface language requires restarting FFGo to be fully
 effective---as far as the chosen translation is complete, of course.
@@ -72,7 +72,7 @@ File:
 
     Save as...  -- save settings to the specified config file
 
-    Run FlightGear -- self-explanatory; same effect as the "Run FG" button
+    Run FlightGear -- self-explanatory; same effect as the “Run FG” button
 
     Save & Quit -- save settings and quit the application
 
@@ -86,7 +86,7 @@ Settings:
 
     Update list of installed airports -- scan hard drive for installed
                    scenery and update the airport list. It works only if
-                   "Show installed airports only" is selected.
+                   “Show installed airports only” is selected.
 
     ========================== Four check buttons ==========================
 
@@ -113,9 +113,9 @@ Tools:
 
 Help:
 
-    Help        -- open the "Help" window
+    Help        -- open the “Help” window
 
-    About       -- open the "About" window
+    About       -- open the “About” window
 
 -------------------------------------------------------------------------------
 
@@ -153,7 +153,7 @@ COMMAND WINDOW
 
 This window, normally located at the bottom of the FFGo main window,
 indicates in real time which exact arguments will be passed to 'fgfs' if
-the "Run FG" button is pressed (i.e., after evaluation of the conditions
+the “Run FG” button is pressed (i.e., after evaluation of the conditions
 allowed by CondConfigParser, that you may have included in the Command
 Line Options window). The contents of this window is updated every time
 you change the aircraft, airport, parking position, etc. as well as
@@ -162,7 +162,7 @@ after every change in the Command Line Options window.
 The Command Window can be detached from the main window, reattached to
 it or completely hidden. This can be done from the Settings menu. The
 current setting, as well as the geometry of the window if it is
-detached, are saved when choosing "Save & Quit".
+detached, are saved when choosing “Save & Quit”.
 
 -------------------------------------------------------------------------------
 
@@ -172,23 +172,23 @@ The main text box in this window contains FlightGear's output on stdout
 and stderr. It is updated in real time and can be useful to file bug
 reports to FlightGear.
 
-The "Save Log" button allows one to save the entire output of the last
+The “Save Log” button allows one to save the entire output of the last
 FlightGear run to a file of your choice.
 
-The "Open Log Directory" button is just a shortcut to open the default
+The “Open Log Directory” button is just a shortcut to open the default
 log directory in a file manager. This is done with the 'xdg-open'
 command to allow you to configure the file manager of your choice.
 
 The Output Window can be detached from the main window, reattached to it
 or completely hidden. This can be done from the Settings menu. The
 current setting, as well as the geometry of the window if it is
-detached, are saved when choosing "Save & Quit".
+detached, are saved when choosing “Save & Quit”.
 
 -------------------------------------------------------------------------------
 
 TIPS & TRICKS
 
-* If the airport data source is set to "Scenery" (now the default), then
+* If the airport data source is set to “Scenery” (now the default), then
   information about airports parking positions won't be available until
   the corresponding scenery is installed.
 
@@ -212,15 +212,15 @@ TIPS & TRICKS
   click on the current airport ICAO code (right under the aircraft
   picture) and choose one from the available ships. The ICAO code will
   then change to the selected ship's name, and will be highlighted in
-  blue to indicate that you're now in "carrier mode". The corresponding
+  blue to indicate that you're now in “carrier mode”. The corresponding
   scenario will be automatically selected. To be able to choose airports
   again, you need to click on the carrier name, and from the pop-up list
-  select "None".
+  select “None”.
 
-* In the "Select Scenario" list, you can right click on any scenario to
+* In the “Select Scenario” list, you can right click on any scenario to
   see its description (if available).
 
-* Window dimensions are saved when the "Save & Quit" button is clicked.
+* Window dimensions are saved when the “Save & Quit” button is clicked.
 
   More precisely, for the Command Window and Output Window, the whole
   geometry is always saved, i.e.: the size and offsets from the screen
