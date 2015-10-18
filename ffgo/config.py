@@ -13,10 +13,18 @@ from tkinter.messagebox import askyesno, showinfo, showerror
 import tkinter.font
 
 from .gui.infowindow import InfoWindow
+from . import misc
 from .misc import resourceExists, textResourceStream
 from .constants import *
 from .logging import logger, LogLevel
 from .fgdata.aircraft import Aircraft
+
+
+def setupTranslationHelper(config):
+    global pgettext
+
+    translationHelper = misc.TranslationHelper(config)
+    pgettext = translationHelper.pgettext
 
 
 class AbortConfig(Exception):
@@ -356,6 +364,7 @@ class Config:
                         var.set(value)
 
         self._setLanguage(self.language.get())
+        setupTranslationHelper(self)
 
         self.aircraft_dirs = self._computeAircraftDirList()
         self.apt_path = os.path.join(self.FG_root.get(), APT_DAT)
