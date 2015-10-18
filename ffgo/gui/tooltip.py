@@ -14,11 +14,11 @@
 
 from tkinter import *
 
-from ..constants import MESSAGE_BG_COL, TOOLTIP_DELAY
+from ..constants import TOOLTIP_BG_COL, TOOLTIP_DELAY
 
 
 class ToolTipBase(Toplevel):
-    def __init__(self, master=None, bgColor=MESSAGE_BG_COL,
+    def __init__(self, master=None, bgColor=TOOLTIP_BG_COL,
                  offsetx=10, offsety=10, delay=TOOLTIP_DELAY):
         Toplevel.__init__(self, master)
         self.offsetx = offsetx
@@ -26,7 +26,7 @@ class ToolTipBase(Toplevel):
         self.delay = delay
         self.id = None
         self.lastPos = None
-        self.bgColor = MESSAGE_BG_COL
+        self.bgColor = bgColor
         # With some widgets as the master (e.g., Menu under Tk 8.6), the Motion
         # event may occur even if the mouse pointer is outside the widget area.
         # Therefore, we use a boolean to keep track of whether the pointer is

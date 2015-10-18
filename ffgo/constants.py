@@ -114,9 +114,14 @@ COMMENT_COL = '#0014a7'
 GRAYED_OUT_COL = '#b2b2b2'
 # Background color for various messages.
 MESSAGE_BG_COL = '#fffeb2'
+# Background color for tooltips.
+TOOLTIP_BG_COL = '#ffffde'
 # Background color for various text windows.
 TEXT_BG_COL = '#ffffff'
-# Background color of the FlightGear Command Window
+# Colors for the FlightGear Output Window.
+FG_OUTPUT_FG_COL = '#0014a7'
+FG_OUTPUT_BG_COL = '#fffeb2'
+# Background color of the FlightGear Command Window.
 FG_COMMAND_BG_COL = '#eeeeec'
 
 

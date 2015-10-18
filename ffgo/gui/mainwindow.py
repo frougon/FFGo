@@ -1944,8 +1944,8 @@ class FGOutput(DetachableWindowManagerBase):
         outputWindow_sv = Scrollbar(self.frame2, orient='vertical')
         outputWindow_sh = Scrollbar(self.frame2, orient='horizontal')
         outputWindow = MyText(self.app,
-                              self.frame2, foreground=COMMENT_COL,
-                              bg=MESSAGE_BG_COL, wrap='none',
+                              self.frame2, foreground=FG_OUTPUT_FG_COL,
+                              bg=FG_OUTPUT_BG_COL, wrap='none',
                               yscrollcommand=outputWindow_sv.set,
                               xscrollcommand=outputWindow_sh.set,
                               state='disabled')
