@@ -5,7 +5,6 @@ import os
 import sys
 import locale
 import subprocess
-import threading
 import socket
 import re
 import abc
