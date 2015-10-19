@@ -23,7 +23,8 @@ DEBUG_LEVEL = 0
 
 class Metar:
 
-    def __init__(self, master, config, background):
+    def __init__(self, app, master, config, background):
+        self.app = app
         self.master = master
         self.background = background
 
@@ -88,16 +89,9 @@ class Metar:
         self._welcomeMessage()
 
     def quit(self, event=None):
-        """Clean up data and destroy this window."""
-        del self.metar_list
-        del self.apt_path
-        del self.metar_path
-        del self.icao
-        del self.master
-        del self.background
-        del self.apt_dict
-
+        """Destroy this window and tell the App object about it."""
         self.top.destroy()
+        self.app.setMetarToNone()
 
     def _compare_pos(self, a, b):
         return sqrt((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2)

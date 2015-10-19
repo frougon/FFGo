@@ -403,6 +403,7 @@ class App:
         self.default_bg = self.master.cget('bg')
         self.scenarioListOpen = False
         self.currentCarrier = []
+        self.setMetarToNone() # Initialize self.metar to None
 
         rereadCfgFile = self.proposeConfigChanges()
         # Will set self.FGCommand.{argList,lastConfigParsingExc}
@@ -1463,12 +1464,14 @@ want to follow this new default and set “Airport database update” to
         self.helpWindow.destroy()
 
     def showMETARWindow(self, event=None):
-        try:
+        if self.metar is not None:
             self.metar.quit()
-        except AttributeError:
-            pass
 
-        self.metar = Metar(self.master, self.config, MESSAGE_BG_COL)
+        self.metar = Metar(self, self.master, self.config, MESSAGE_BG_COL)
+
+    # Method called from Metar.quit() (otherwise, that would be ridiculous)
+    def setMetarToNone(self):
+        self.metar = None
 
     def copyFGCommandToClipboard(self, event=None):
         # FGCommand.argList is None in case errors prevented its preparation
