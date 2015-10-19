@@ -1,17 +1,21 @@
+# -*- coding: utf-8 -*-
+
 """Simple widget to display METAR reports from weather.noaa.gov/."""
 
 
 from math import sqrt
-from socket import setdefaulttimeout, timeout
+import socket
 from urllib.request import Request, build_opener, HTTPHandler
 from urllib.error import URLError
-from _thread import start_new_thread
+import threading
+import queue as queue_mod       # keep 'queue' available for variable bindings
+import functools
 from tkinter import *
 
 from ..constants import USER_AGENT
 
 
-setdefaulttimeout(5.0)
+socket.setdefaulttimeout(5.0)
 
 
 DEBUG_LEVEL = 0
@@ -23,20 +27,39 @@ class Metar:
         self.master = master
         self.background = background
 
+        self.fetchUrlBase = 'http://weather.noaa.gov/'
+        self.fetchUrlTemplate = (
+            self.fetchUrlBase +
+            'pub/data/observations/metar/{reportType}/{icao}.TXT')
+
         self.icao = config.airport
         self.apt_path = config.apt_path
         self.metar_path = config.metar_path
 
         self.decoded = IntVar()
-        self.nearest_station = StringVar()
-        self.report = StringVar()
+        self.decoded.trace('w', self.onDecodedChanged)
 
-        self.decoded.set(0)
-        self.nearest_station.set('')
-        self.report.set('')
+        self.report = StringVar()
+        self.report.trace('w', self._updateLabelSize)
 
         self.metar_list = config.readMetarDat()
         self.apt_dict = config.readCoord()
+
+        # Lock used to prevent impatient users from making concurrent requests
+        # to the site providing the METAR data, due to frenetic clicking on the
+        # main label.
+        self.fetchLock = threading.Lock()
+        # Queue used to allow the worker thread to safely send its results to
+        # the main thread.
+        self.queue = queue_mod.Queue()
+        # Blocking on the queue would freeze the interface; polling it would be
+        # bad (waste of CPU time, poor reactivity...). So, the worker thread
+        # uses a virtual event to tell the main thread when there is new data
+        # in the queue. Emitting the event is known to be thread-safe, contrary
+        # to most other Tkinter calls.
+        self.master.bind("<<FFGoMETARQueueUpdated>>",
+                         functools.partial(self._onQueueUpdated,
+                                           queue=self.queue))
 
 #------- Main Window ----------------------------------------------------------
         self.top = Toplevel(self.master, borderwidth=4)
@@ -64,14 +87,6 @@ class Metar:
 #------------------------------------------------------------------------------
         self._welcomeMessage()
 
-    def fetch(self, event=None):
-        """Fetch METAR report."""
-        self.text.unbind('<Button-1>')
-        self.report.set(_('Fetching report...'))
-        # Wait until text is updated.
-        self.master.update()
-        start_new_thread(self._fetch, ())
-
     def quit(self, event=None):
         """Clean up data and destroy this window."""
         del self.metar_list
@@ -84,63 +99,112 @@ class Metar:
 
         self.top.destroy()
 
-    def _bindButton(self):
-        try:
-            self.text.bind('<Button-1>', self.fetch)
-        except TclError:
-            return
-
     def _compare_pos(self, a, b):
         return sqrt((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2)
 
-    def _fetch(self):
-        """Fetch METAR report."""
-        icao = self._getIcao()
-        if not icao:
-            return
+    # Accept any arguments to allow safe use as a Tkinter variable observer
+    def onDecodedChanged(self, *args):
+        self.fetch()
 
-        self.nearest_station.set('')
+    def fetch(self, event=None):
+        """Fetch METAR report."""
+        icao = self.icao.get()
+        if not icao:
+            self.report.set(_('No airport is selected.'))
+            return              # carrier mode
+
         if self._isOnMetarList(icao):
-            decoded = self._getDecoded()
-            url = \
-                ('http://weather.noaa.gov/pub/data/observations/metar/%s/%s.TXT' %
-                 (decoded, icao))
+            station = icao
+        else:
+            station = self._nearestMetar(icao)
+            if not station:
+                self.report.set(_('No nearby station found.'))
+                return
+
+        # This would probably be unsafe to do in the worker thread because of
+        # the 'self.decoded.get()' Tkinter call.
+        reportType = 'decoded' if self.decoded.get() else 'stations'
+        url = self.fetchUrlTemplate.format(reportType=reportType,
+                                           icao=station.upper())
+        t = threading.Thread(name="METAR_fetcher",
+                             target=self._fetchThreadFunc,
+                             args=(self.queue, url),
+                             daemon=True)
+
+        # Don't do anything if a request is already being processed (user too
+        # impatient!)
+        if self.fetchLock.acquire(blocking=False):
+            try:
+                t.start()
+            except BaseException:
+                self.fetchLock.release()
+                raise
+
+            self.report.set(_('Fetching report from {site}...').format(
+                site=self.fetchUrlBase))
+
+    def _doFetch(self, url):
+        """Fetch METAR report.
+
+        Beware: this method may be run from a thread that is *not* the
+        main thread.
+
+        """
+        try:
             try:
                 request = Request(url)
                 request.add_header('User-Agent', USER_AGENT)
                 opener = build_opener(HTTPHandler(debuglevel=DEBUG_LEVEL))
                 report = opener.open(request).read()
-                report = report.decode('ascii')
-                report = report.strip()
-            except timeout:
+            except (socket.timeout, URLError):
                 report = _('Unable to download data.')
-            except URLError:
-                report = _('Unable to download data.')
-            self.report.set(report)
-            self._setLabelSize()
-        else:
-            self.nearest_station.set(self._nearestMetar(icao))
-            self.fetch()
-        # Bind button to text widget after some delay to avoid double clicking.
-        self.master.after(1000, self._bindButton)
+            else:
+                report = report.decode('ascii').strip()
+        except BaseException as e: # catch *all* exceptions
+            report = str(e)
 
-    def _getIcao(self):
-        if self.nearest_station.get() and \
-           self.nearest_station.get() == self._nearestMetar(self.icao.get()):
-            return self.nearest_station.get()
-        else:
-            return self.icao.get()
+        return report
 
-    def _getDecoded(self):
-        if self.decoded.get():
-            return 'decoded'
-        else:
-            return 'stations'
+    def _fetchThreadFunc(self, queue, url):
+        # Thread function → no GUI calls allowed here!
+        try:
+            report = self._doFetch(url)
+            queue.put(report)
+        except BaseException:
+            self.fetchLock.release()
+
+        try:
+            # This particular method, when passed 'when="tail"', is supposed to
+            # be safe to call from other threads than the Tk GUI thread
+            # (cf. <http://stackoverflow.com/questions/7141509/tkinter-wait-for-item-in-queue#comment34432041_14809246>
+            # and
+            # <https://mail.python.org/pipermail/tkinter-discuss/2013-November/003519.html>).
+            # Other Tk functions are usually considered unsafe to call from
+            # these other threads.
+            self.master.event_generate("<<FFGoMETARQueueUpdated>>",
+                                       when="tail")
+        # In case Tk is not here anymore
+        except TclError:
+            return
+
+    def _onQueueUpdated(self, event, queue=None):
+        try:
+            report = None
+            while True:         # Pop all elements present in the queue
+                try:
+                    # Only use the last report stored in the queue
+                    report = queue.get_nowait()
+                except queue_mod.Empty:
+                    break
+
+            if report is not None:
+                self.report.set(report)
+        finally:
+            self.fetchLock.release()
 
     def _isOnMetarList(self, icao):
         """Return True if selected airport is on METAR station list."""
-        if icao in self.metar_list:
-            return True
+        return icao in self.metar_list
 
     def _nearestMetar(self, icao):
         """Find nearest METAR station"""
@@ -161,16 +225,13 @@ class Metar:
                 pass
         return nearest_metar
 
-    def _setLabelSize(self):
+    # Accept any arguments to allow safe use as a Tkinter variable observer
+    def _updateLabelSize(self, *args):
         """Adjust label dimensions according to text size."""
-        report = self.report.get()
-        report = report.splitlines()
+        report = self.report.get().splitlines()
         width = max(len(n) for n in report)
         height = len(report) + 2
-        try:
-            self.text.configure(width=width, height=height)
-        except TclError:
-            pass
+        self.text.configure(width=width, height=height)
 
     def _welcomeMessage(self):
         """Show message at widget's initialization"""
@@ -183,4 +244,3 @@ class Metar:
                         'for selected (or nearest) airport.')
 
         self.report.set(message)
-        self._setLabelSize()
