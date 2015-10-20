@@ -755,43 +755,38 @@ configurations are kept separate.""")
         information about the same airport at given index.
 
         """
-        try:
-            # Make new file.
-            if not os.path.exists(APT):
-                self._makeApt()
+        if not os.path.exists(APT):
+            self._makeApt()     # create a new file
 
-            icao, name, rwy = [], [], []
-            logger.info("Opening apt file '{}' for reading".format(APT))
+        icao, name, rwy = [], [], []
+        logger.info("Opening apt file '{}' for reading".format(APT))
 
-            with open(APT, "r", encoding="utf-8") as fin:
-                if self.filteredAptList.get():
-                    installed_apt = self._readInstalledAptList()
-                    for line in fin:
-                        line = line.strip().split('=')
-                        if line[0] in installed_apt:
-                            installed_apt.remove(line[0])
-                            icao.append(line[0])
-                            name.append(line[1])
-                            rwy_list = []
-                            for i in line[2:-1]:
-                                rwy_list.append(i)
-                            rwy_list.sort()
-                            rwy.append(rwy_list)
-
-                else:
-                    for line in fin:
-                        line = line.strip().split('=')
+        with open(APT, "r", encoding="utf-8") as fin:
+            if self.filteredAptList.get():
+                installed_apt = self._readInstalledAptList()
+                for line in fin:
+                    line = line.strip().split('=')
+                    if line[0] in installed_apt:
+                        installed_apt.remove(line[0])
                         icao.append(line[0])
                         name.append(line[1])
                         rwy_list = []
                         for i in line[2:-1]:
                             rwy_list.append(i)
+                        rwy_list.sort()
                         rwy.append(rwy_list)
 
-            return icao, name, rwy
+            else:
+                for line in fin:
+                    line = line.strip().split('=')
+                    icao.append(line[0])
+                    name.append(line[1])
+                    rwy_list = []
+                    for i in line[2:-1]:
+                        rwy_list.append(i)
+                    rwy.append(rwy_list)
 
-        except IOError:
-            return [], [], []
+        return (icao, name, rwy)
 
     def _readInstalledAptList(self):
         """Read locally installed airport list.
