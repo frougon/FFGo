@@ -197,26 +197,23 @@ class Config:
         Return dictionary of ICAO codes and its coordinates.
 
         """
-        try:
-            # Make new file.
-            if not os.path.exists(APT):
-                self._makeApt()
+        # Make new file.
+        if not os.path.exists(APT):
+            self._makeApt()
 
-            res = {}
-            logger.info("Opening apt file for reading: '{}'".format(APT))
+        res = {}
+        logger.info("Opening apt file for reading: '{}'".format(APT))
 
-            with open(APT, encoding='utf-8') as fin:
-                for line in fin:
-                    line = line.strip().split('=')
-                    icao = line[0]
-                    # Read coordinates.
-                    coords_line = line[-1].split(';')
-                    coords = (float(coords_line[0]), float(coords_line[1]))
-                    res[icao] = coords
-            return res
+        with open(APT, encoding='utf-8') as fin:
+            for line in fin:
+                line = line.strip().split('=')
+                icao = line[0]
+                # Read coordinates.
+                coords_line = line[-1].split(';')
+                coords = (float(coords_line[0]), float(coords_line[1]))
+                res[icao] = coords
 
-        except IOError:
-            return None
+        return res
 
     def readMetarDat(self):
         """Fetch METAR station list from metar.dat.gz file"""
