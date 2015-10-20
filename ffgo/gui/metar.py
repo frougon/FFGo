@@ -10,15 +10,15 @@ from urllib.error import URLError
 import threading
 import queue as queue_mod       # keep 'queue' available for variable bindings
 import functools
+import traceback
 from tkinter import *
 
-from ..constants import USER_AGENT
+from .. import constants
+from ..logging import logger
 
 
 socket.setdefaulttimeout(5.0)
-
-
-DEBUG_LEVEL = 0
+HTTP_DEBUG_LEVEL = 0
 
 
 class Metar:
@@ -131,6 +131,7 @@ class Metar:
             try:
                 t.start()
             except BaseException:
+                logger.errorNP(traceback.format_exc())
                 self.fetchLock.release()
                 raise
 
@@ -147,14 +148,17 @@ class Metar:
         try:
             try:
                 request = Request(url)
-                request.add_header('User-Agent', USER_AGENT)
-                opener = build_opener(HTTPHandler(debuglevel=DEBUG_LEVEL))
-                report = opener.open(request).read()
+                request.add_header('User-Agent', constants.USER_AGENT)
+                opener = build_opener(HTTPHandler(debuglevel=HTTP_DEBUG_LEVEL))
+                with opener.open(request) as sock:
+                    report = sock.read()
             except (socket.timeout, URLError):
+                logger.errorNP(traceback.format_exc())
                 report = _('Unable to download data.')
             else:
                 report = report.decode('ascii').strip()
         except BaseException as e: # catch *all* exceptions
+            logger.errorNP(traceback.format_exc())
             report = str(e)
 
         return report
@@ -165,6 +169,7 @@ class Metar:
             report = self._doFetch(url)
             queue.put(report)
         except BaseException:
+            logger.errorNP(traceback.format_exc())
             self.fetchLock.release()
 
         try:
@@ -179,9 +184,11 @@ class Metar:
                                        when="tail")
         # In case Tk is not here anymore
         except TclError:
+            logger.errorNP(traceback.format_exc())
             return
 
     def _onQueueUpdated(self, event, queue=None):
+        # The caller must pass a real queue object, not None.
         try:
             report = None
             while True:         # Pop all elements present in the queue
@@ -204,19 +211,23 @@ class Metar:
         """Find nearest METAR station"""
         nearest_metar = ''
         nearest_dist = 999
+
         try:
             airport_pos = self.apt_dict[icao]
         except KeyError:
             return ''
+
         for icao in self.metar_list:
             try:
                 metar_pos = self.apt_dict[icao]
-                distance = self._compare_pos(airport_pos, metar_pos)
-                if distance < nearest_dist:
-                    nearest_metar = icao
-                    nearest_dist = distance
             except KeyError:
-                pass
+                continue
+
+            distance = self._compare_pos(airport_pos, metar_pos)
+            if distance < nearest_dist:
+                nearest_metar = icao
+                nearest_dist = distance
+
         return nearest_metar
 
     # Accept any arguments to allow safe use as a Tkinter variable observer
