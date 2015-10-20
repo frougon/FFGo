@@ -220,18 +220,15 @@ class Config:
 
     def readMetarDat(self):
         """Fetch METAR station list from metar.dat.gz file"""
-        try:
-            logger.info("Opening '{}' for reading".format(self.metar_path))
-            fin = gzip.open(self.metar_path, mode='rt', encoding='utf-8')
-            res = []
+        logger.info("Opening '{}' for reading".format(self.metar_path))
+        res = []
+
+        with gzip.open(self.metar_path, mode='rt', encoding='utf-8') as fin:
             for line in fin:
                 if not line.startswith('#'):
-                    line = line.strip()
-                    res.append(line)
-            fin.close()
-            return res
-        except IOError:
-            return ['IOError']
+                    res.append(line.strip())
+
+        return res
 
     def rebuildApt(self):
         """Rebuild apt file."""

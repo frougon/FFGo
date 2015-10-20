@@ -229,12 +229,6 @@ class Metar:
 
     def _welcomeMessage(self):
         """Show message at widget's initialization"""
-        # Disable widget in case of IOError.
-        if self.metar_list[0] == 'IOError':
-            self.text.unbind('<Button-1>')
-            message = ' ' * 30
-        else:
-            message = _('Click here to download the METAR report\n'
-                        'for selected (or nearest) airport.')
-
+        message = _('Click here to download the METAR report\n'
+                    'for the selected (or nearest) airport.')
         self.report.set(message)
