@@ -31,10 +31,15 @@ class FFGoException(Exception):
         return "{0}.{1}({2!r})".format(__name__, type(self).__name__,
                                        self.message)
 
+    # Typically overridden by subclasses with a custom constructor
+    def detail(self):
+        return self.message
+
     def completeMessage(self):
         if self.message:
-            return "{0}: {1}".format(self.ExceptionShortDescription,
-                                     self.message)
+            return _("{shortDesc}: {detail}").format(
+                shortDesc=self.ExceptionShortDescription,
+                detail=self.detail())
         else:
             return self.ExceptionShortDescription
 

@@ -130,7 +130,7 @@ def reportTkinterCallbackException(type_, val, tb):
         # should provide enough details. The full traceback will be written to
         # the log file anyway.
         guiMessage = val.ExceptionShortDescription
-        guiDetail = val.message
+        guiDetail = val.detail()
     else:
         guiMessage = message
         guiDetail = detail
