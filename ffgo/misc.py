@@ -72,6 +72,13 @@ class DecimalCoord(float):
     def __str__(self):
         return locale.format("%.06f", self)
 
+    def precisionRepr(self):
+        # Used when passing --lat or --lon options to make sure we don't
+        # lose any precision because of the __str__() above. 10 should
+        # be largely enough, otherwise there is nothing magical about
+        # this value.
+        return "{:.010f}".format(self)
+
 # Similar to processPosition() in src/Airports/dynamicloader.cxx of the
 # FlightGear source code (version 3.7)
 def mixedToDecimalCoords(s):

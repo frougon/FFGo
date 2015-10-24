@@ -206,13 +206,25 @@ class FGCommandBuilder:
 
             aircraftOpts.append(('--aircraft-dir=', aircraftDir))
 
-        for opt, cfg in aircraftOpts + [
-                ('--carrier=', self.app.config.carrier.get()),
-                ('--airport=', self.app.config.airport.get()),
-                ('--parkpos=', self.app.config.park.get()),
-                ('--runway=', self.app.config.rwy.get())]:
+        parkStatus, parkName, parkOpts = self.app.config.decodeParkingSetting(
+            self.app.config.park.get())
+
+        # Parking positions from apt.dat use --lat and --lon, so don't pass
+        # --airport/--runway/--carrier in such a case.
+        if parkStatus == "apt.dat":
+            locationOpts = []
+        else:
+            locationOpts = [('--carrier=', self.app.config.carrier.get()),
+                            ('--airport=', self.app.config.airport.get()),
+                            ('--runway=', self.app.config.rwy.get())]
+
+        for opt, cfg in aircraftOpts + locationOpts:
             if cfg:
                 options.append(opt + cfg)
+
+        if parkStatus != "invalid":
+            # Add either --parkpos, or --lat/--lon/--heading or nothing.
+            options.extend(parkOpts)
 
         if self.app.config.scenario.get() != '':
             for scenario in self.app.config.scenario.get().split():

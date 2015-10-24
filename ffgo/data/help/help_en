@@ -190,7 +190,8 @@ TIPS & TRICKS
 
 * If the airport data source is set to “Scenery” (now the default), then
   information about airports parking positions won't be available until
-  the corresponding scenery is installed.
+  the corresponding scenery is installed (except for the apt.dat.gz
+  fallback).
 
   In such a case, if you use TerraSync, just run FlightGear once at the
   airport you want; this will automatically download the scenery for

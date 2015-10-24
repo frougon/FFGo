@@ -9,6 +9,7 @@
 # it at <http://www.wtfpl.net/>.
 
 import re
+import enum
 from xml.etree import ElementTree
 
 from ..constants import PROGNAME
@@ -20,6 +21,12 @@ class error(Exception):
     pass
 
 
+@enum.unique
+class ParkingSource(enum.Enum):
+    """Indicate where parking metadata comes from."""
+    groundnet, apt_dat = range(2)
+
+
 # cf. FGAirportDynamicsXMLLoader::startParking() in
 # src/Airports/dynamicloader.cxx of the FlightGear source code (version 3.7)
 class Parking:
@@ -27,9 +34,11 @@ class Parking:
 
     def __init__(self, index=0, type='', name='', number='',
                  lat=None, lon=None, heading=0.0, radius=1.0,
-                 airlineCodes=(), pushBackRoute=0):
+                 airlineCodes=(), pushBackRoute=0,
+                 source=ParkingSource.groundnet):
         self._attrs = ("index", "name", "number", "type", "lat", "lon",
-                       "heading", "radius", "airlineCodes", "pushBackRoute")
+                       "heading", "radius", "airlineCodes", "pushBackRoute",
+                       "source")
         for attr in self._attrs:
             setattr(self, attr, locals()[attr])
 

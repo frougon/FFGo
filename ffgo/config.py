@@ -7,6 +7,7 @@ import gzip
 import contextlib
 import gettext
 import traceback
+import collections
 from xml.etree import ElementTree
 from tkinter import IntVar, StringVar
 from tkinter.messagebox import askyesno, showinfo, showerror
@@ -119,6 +120,11 @@ class Config:
                          'SHOW_FG_OUTPUT_IN_SEPARATE_WINDOW=':
                          self.showFGOutputInSeparateWindow,
                          'FG_OUTPUT_GEOMETRY=': self.FGOutputGeometry}
+
+        # In order to avoid using a lot of memory, parking data, *when taken
+        # from apt.dat*, is only loaded on demand. Since this is quite slow,
+        # keep a cache of the last retrieved data.
+        self.aptDatParkingCache = collections.deque(maxlen=50)
 
         self._earlyTranslationsSetup()
         self._createUserDirectories()
@@ -292,6 +298,13 @@ class Config:
             self.aircraftDir.set('')
 
     def sanityChecks(self):
+        status, *rest = self.decodeParkingSetting(self.park.get())
+        if status == "invalid":
+            logger.warning(
+                _("Invalid syntax for the parking setting ({setting!r}), "
+                  "resetting it.").format(setting=self.park.get()))
+            self.park.set('')
+
         if self.rwy.get() and self.park.get():
             # Impossible to at the same time set a non-default runway and a
             # parking position. The latter wins. :-)
@@ -861,6 +874,45 @@ configurations are kept separate.""")
         data.append(scenario_name)
         return data
 
+    # The '1' is the version number of this custom format for the contents of
+    # Config.park, in case we need to change it.
+    aptDatParkConfStart_cre = re.compile(r"::apt\.dat::1::(?P<nameLen>\d+),")
+    aptDatParkConfEnd_cre = re.compile(
+        r"""lat=(?P<lat>{floatRegexp}),
+            lon=(?P<lon>{floatRegexp}),
+            heading=(?P<heading>{floatRegexp})$""".format(
+            floatRegexp=r"-?\d+(\.\d*)?"),
+        re.VERBOSE)
+
+    def decodeParkingSetting(self, parkConf):
+        status = "invalid"      # will be overridden if correct in the end
+        parkName = None
+        options = []
+
+        if not parkConf:
+            status = "none"     # no parking position
+        else:
+            mo = self.aptDatParkConfStart_cre.match(parkConf)
+            if mo:
+                # Length of the following parking name (after the comma)
+                nameLen = int(mo.group("nameLen"))
+                i = mo.end("nameLen") + 1 + nameLen
+
+                if len(parkConf) > i and parkConf[i] == ";":
+                    mo2 = self.aptDatParkConfEnd_cre.match(parkConf[i+1:])
+                    if mo2:
+                        parkName = parkConf[mo.end("nameLen")+1:i]
+                        options = ["--lat=" + mo2.group("lat"),
+                                   "--lon=" + mo2.group("lon"),
+                                   "--heading=" + mo2.group("heading")]
+                        status = "apt.dat"
+            else:                   # plain parking name
+                parkName = parkConf
+                options = ["--parkpos=" + parkName]
+                status = "groundnet"
+
+        return (status, parkName, options)
+
     def _earlyTranslationsSetup(self):
         """Setup translations before the config file has been read.
 
@@ -930,6 +982,15 @@ configurations are kept separate.""")
         if old_timestamp != self._getAptModTime():
             self._makeApt(head=_('Modification of apt.dat.gz detected.'))
             self._writeAptTimestamp(self._getAptModTime())
+            # The new apt.dat may invalidate the current parking
+            status, *rest = self.decodeParkingSetting(self.park.get())
+            if status == "apt.dat":
+                # This was a parking position obtained from apt.dat; it may be
+                # invalid with the new file, reset.
+                self.park.set('')
+
+            # This is also outdated with respect to the new apt.dat.
+            self.aptDatParkingCache.clear()
 
 
 class _ProcessApt:

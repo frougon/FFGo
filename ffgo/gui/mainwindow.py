@@ -33,6 +33,7 @@ from .configwindow import ConfigWindow
 from . import infowindow
 from ..constants import *
 from .. import fgdata
+from ..fgdata.parking import ParkingSource
 
 try:
     from PIL import Image, ImageTk
@@ -837,6 +838,13 @@ want to follow this new default and set “Airport database update” to
              "mil-fighter": pgettext("flight type", "Mil. fighter"),
              # Vertical Take-Off and Landing
              "vtol":        pgettext("flight type", "VTOL"),
+             # X-Plane categories
+             "hangar":      pgettext("flight type", "Hangar"),
+             "misc":        pgettext("flight type", "Misc"),
+             "tie-down":    pgettext("flight type", "Tie-down"),
+             # There are inconsistencies between apt.dat and its spec...
+             "tie_down":    pgettext("flight type", "Tie-down"),
+             # Fallback
              "":            pgettext("flight type", "Unspecified")}
 
         return d.get(flightType, flightType)
@@ -887,9 +895,22 @@ want to follow this new default and set “Airport database update” to
                         background=headerBgColor,
                         columnbreak=True)
 
+                if parking.source == ParkingSource.groundnet:
+                    setParkFunc = lambda x=parkName: self.config.park.set(x)
+                else:
+                    assert parking.source == ParkingSource.apt_dat, \
+                        parking.source
+                    def setParkFunc(parking=parking, parkName=parkName):
+                        s = "::apt.dat::1::{},{};lat={},lon={},heading={}" \
+                            .format(len(parkName), parkName,
+                                    parking.lat.precisionRepr(),
+                                    parking.lon.precisionRepr(),
+                                    parking.heading)
+                        self.config.park.set(s)
+
                 popup.add_command(
                     label=parkName,
-                    command=lambda x=parkName: self.config.park.set(x))
+                    command=setParkFunc)
                 idx = popup.index(tkc.END) # index of the last item added
                 parkingForItem[idx] = parking
 
@@ -1027,6 +1048,28 @@ want to follow this new default and set “Airport database update” to
                     file_path = os.path.join(path, 'parking.xml')
                     if os.path.exists(file_path):
                         res = fgdata.parking.readGroundnetFile(file_path)
+
+        if not res:
+            foundInCache = False
+            for cachedIcao, parkings in self.config.aptDatParkingCache:
+                if cachedIcao == icao:
+                    res = parkings
+                    foundInCache = True
+                    break
+
+            if not foundInCache:
+                from ..fgdata.apt_dat import AptDat
+
+                aptPath = os.path.join(self.config.FG_root.get(), APT_DAT)
+                with AptDat(aptPath) as aptDat:
+                    logger.notice(_("Looking for parking positions for {icao} "
+                                    "in {aptDat}").format(icao=icao,
+                                                          aptDat=aptPath))
+                    # This is *slow*, especially for ICAOs that sort late in
+                    # the alphabet.
+                    res = aptDat.readParkingForIcao(icao)
+
+                self.config.aptDatParkingCache.append((icao, res))
 
         return res
 
@@ -1532,7 +1575,7 @@ want to follow this new default and set “Airport database update” to
     def updateRunwayAndParkingLabels(self):
         """Update runway and parking button labels.
 
-        Update self.translatedPark and translatedRwy based on
+        Update self.translatedPark and self.translatedRwy based on
         self.config.park and self.config.rwy. In each case, only the
         default value is translated.
 
@@ -1541,6 +1584,23 @@ want to follow this new default and set “Airport database update” to
               ('park', 'translatedPark', pgettext('parking position', 'None')),
               ('rwy', 'translatedRwy', pgettext('runway', 'Default'))):
             cfgValue = getattr(self.config, cfgVarName).get()
+
+            # Special case for the parking name because of the special format
+            # used to represent parkings obtained from apt.dat in Config.park.
+            if cfgVarName == 'park':
+                status, parkName, *rest = self.config.decodeParkingSetting(
+                    cfgValue)
+                if status == "apt.dat":
+                    cfgValue = parkName
+                    # Safety measure in case parkName were the empty string,
+                    # which should not be the case unless there is a bug.
+                    if not cfgValue:
+                        logger.notice(
+                            "Empty parking name obtained from apt.dat. Bug?")
+                        cfgValue = '?'
+                elif status == "invalid":
+                    cfgValue = pgettext('parking position', 'Invalid')
+
             labelVar = getattr(self, labelVarName)
             labelVar.set(cfgValue if cfgValue else default)
 

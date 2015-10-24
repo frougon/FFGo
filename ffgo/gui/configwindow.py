@@ -240,8 +240,8 @@ If left blank, the working directory is the user's home directory.""")
 Choose other language. If not selected, {prg} will try to choose the
 system language.""").format(prg=PROGNAME)
         self.tooltip_aptMenu = _("""\
-Select data source where {prg} will be looking for information about
-parking positions. There are two options:
+Select the primary data source where {prg} will be looking for
+information about parking positions. There are two options:
 
 Scenery - Parking data will be read from
     $FG_SCENERY/Airports/[I]/[C]/[A]/[ICAO].groundnet.xml. {prg} will
@@ -252,6 +252,11 @@ Old default - Parking data will be read from
 
 (for example, for the EDDF airport, [ICAO] should be replaced with
 EDDF, [I] with E, [C] with D, [A] with D and [O] with F)
+
+Note:
+
+  In both cases, if no parking position is found, {prg} will look into
+  apt.dat.gz as a fallback, but this is much slower.
 
 With FlightGear 2.6 and later, it is advised to choose "Scenery"; it
 is now the default in {prg}.
