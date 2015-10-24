@@ -54,8 +54,9 @@ FFGo relies on the following software:
   - `Python`_ 3.4 or later;
   - `Tkinter`_ (part of the Python standard library; often known as
     ``python3-tk`` or ``python-tk`` in Linux package managers);
-  - `CondConfigParser`_.
-  - `Pillow`_ (a PIL fork that supports Python 3) [#]_;
+  - `CondConfigParser`_;
+  - `Pillow`_ (a PIL fork that supports Python 3) [#]_; the
+    corresponding Debian package is ``python3-pil.imagetk``.
 
 .. [#] This library is not mandatory to run FFGo, but aircraft thumbnails
        won't be displayed without it.
