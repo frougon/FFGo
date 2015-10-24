@@ -1,159 +1,297 @@
-!!! WARNING !!!
-
-  This translation dates from FGo! 1.5.5. Please refer to the English version
-  for up-to-date information. If you wish to update this file, please read the
-  'docs/INFORMATION_FOR_TRANSLATORS' file (with many thanks in advance!).
-
-!!! WARNING !!!
-
-
-FFGo - Ein einfacher GUI Starter für FlightGear.
+FFGo -- Ein mächtiger graphischer Starter für FlightGear
 
 -------------------------------------------------------------------------------
 
-SYSTEMVORAUSSETZUNGEN
+Diese Software ist ein Fork (Abspaltung) des exzellenten Programms FGo![1],
+geschrieben von Robert 'erobo' Leda, siehe GESCHICHTE unten für Details.
 
-- Betriebssystem GNU/Linux
-- FlightGear
-- Python 3.4.2 *
-- TKinter
-- Python Imaging Library (PIL) 1.1.7 oder Pillow (PIL fork) 2.5.1
-  mit ImageTk Modul **
-- Tcl/Tk 8.6
+  [1] https://sites.google.com/site/erobosprojects/flightgear/add-ons/fgo
 
-*  FFGo ist nur mit Python Serie 3.x kompatibel.
-** Diese Bibliothek ist nicht unbedingt notwendig um FFGo zu starten
-   aber die Flugzeug-Vorschau wird ohne sie nicht angezeigt.
 
-Diese Versionsnummern stellen die Versionen der verwendeten Softwaredar, die
-zur Entwicklung genutzt wurden. Es ist durchaus möglich, daß FFGo auch mit
-älteren (oder neueren) Versionen funktioniert, aber das Programm wurde damit
-nicht getestet.
+Inhalt
 
--------------------------------------------------------------------------------
+  Anmerkung für FGo! Nutzer
+  Konfiguration
+  Hauptmenüpunkte
+  Kommandozeilenoptionen Windows
+  Kommandofenster
+  Terminalausgabenfenster
+  Tips & Tricks
+  Bekannte Fehler und Einschränkungen
+  Geschichte
 
-INSTALLATION
-
-FFGo braucht nicht installiert zu werden, man braucht nur das Archiv
-zu entpacken und sicherzustellen, daß die Anforderungen erfüllt wurden.
-
-In Debian und Debian-basierten Distributionen werden die folgenden Pakete
-gebraucht: python3, python3-tk, tcl8.x and tk8.x; optional python3-imaging-tk
-oder python3-pil.imagetk, abhängig davon, welches Paket verfügbar ist auf der
-jeweiligen Distribution. Für eine einfache Installation wähle
-python3-imaging-tk oder python3-pil.imagetk im bevorzugten Paketmanager, und
-alle anderen benötigten Abhängigkeiten sollten automatisch mit installiert
-werden.
-
-Für Slackware-basierte Systeme steht ein SlackBuild Paket zu Verfügung. Das
-enthaltene Skript generiert ein kompatibles Slackware Paket, das eine saubere,
-systemweite Installation von FFGo ermöglicht. Das SlackBuild kann von
-der Website http://www.slackbuilds.org heruntergeladen werden. Für standard
-Slackware Installationen (full) ist kein zusätzliches Paket nötig.
 
 -------------------------------------------------------------------------------
 
-GESTARTET
+ANMERKUNG FÜR FGo! NUTZER
 
-Klicke auf die Datei "ffgo" im Hauptverzeichnis des Programms, oder starte es
-aus einer Konsole mit entweder "./ffgo" oder "python3 ffgo".
+Außer in sehr unwahrscheinlichen Fällen[1], sollten FGo! Konfigurationsdateien
+(normalerweise ~/.fgo/config) von FGo! 1.5.5, oder früher, für FFGo benutzbar
+sein. Der Unterschied ist nur, daß FFGo seine Konfigurationsdateien in
+~/.ffgo/config erwartet (%APPDATA%/FFGo/config in Windows). Falls FFGo beim
+ersten Start eine ~/.fgo/config findet, aber keine ~/.ffgo/config, so wird FFGo
+anbieten, die erstere ins FFGo-Verzeichnis zu kopieren, gewissermaßen die FGo!-
+Konfiguration in FFGo zu übernehmen.
+
+  [1] Z.Bsp. wenn sich Zeichen wie '\#' oder '\[' im Kommandozeilenoptionen-
+      fenster befinden; oder Zeilen, die mit '['; oder '{' ganz am Anfang des
+      Inhalts des Fensters befinden.
+
+FFGo bietet erweiterte Möglichkeiten basierend auf Variablen und Boolschen
+Ausdrücken, um die Parameterliste zu beschreiben, die an FlightGear weiter-
+gereicht wird. Mehr darüber kann man in docs/README.conditional-config
+nachlesen.
 
 -------------------------------------------------------------------------------
 
 KONFIGURATION
 
-Um FFGo benutzen zu können, muss man es erst einrichten. Öffnen Sie das
-Einstellungsfenster (im Menü: Einstellungen => Eigenschaften) und füllen Sie
-die leeren Felder aus.
-Das Ausfüllen der ersten drei Felder ist notwendig für die korrekte Ausführung
-des Programmes - der Rest ist optional.
+Um FFGo zu benutzen muß man es erst einrichten. Öffnen Sie das Eigenschaften-
+fenster (wähle im Menü: Einstellungen => Eigenschaften) und füllen Sie die
+leeren Felder aus. Damit FFGo funktionieren kann müssen die ersten drei Felder
+im Tab: “FlightGear Einstellungen” ausgefüllt werden --- der Rest ist optional.
 
-Hinweis: Um eine Beschreibung der jeweiligen Option zu sehen, halten sie die
-Maus kurz über dem entsprechenden Feld.
+Tip: Halten Sie den Mauszeigerüber eine Option um seine Beschreibung
+     anzuzeigen.
 
-Veränderungen in den Einstellungen werden nach "Einstellungen speichern"
-sofort angewendet, allerdings benötigen Veränderungen in den
-Spracheinstellungen einen Neustart von FFGo.
+Änderungen Tab: “FlightGear Einstellungen” werden sofort angewendet, sobald der
+Knopf “Einstellungen speichern” gedrückt wird, Änderungen in den anderen Tabs
+können einen Neustart von FFGo erfordern. Dies ist am spürbarsten beim Ändern
+der Sprache, da muß FFGo neu gestartet werden -- natürlich gesetzt den Fall,
+daß die gewählte Übersetzung vollständig ist.
 
 -------------------------------------------------------------------------------
 
-HAUPTMENÜ EINTRÄGE
+HAUPTMENÜPUNKTE
 
 Datei:
+    Laden...	-- lade eine bestimmte Konfigurationsdatei
 
-    Laden - Lade eine vorhandene Konfigurations-Datei
+    Konfigurationsdatei neu laden
+		-- FFGo's Konfiguration neu aus Datei laden (~/.ffgo/config
+                   auf Unix-ähnlichen Systemen, %APPDATA%/FFGo/config auf
+                   Windows)
 
-    Speichern unter... - Speichere Einstellungen in eine Konfigurations-Datei
+    Speichern unter
+		-- Konfiguration in eine bestimmte Konfigurationsdatei sichern
 
-    Speichern und beenden - Speichere Einstellungen und beende die Anwendung
+    Starte FlightGear
+		-- selbsterklärend; hat die selbe Auswirkung wie der
+		   “Starte FG” Knopf
 
-    Beenden - Beende die Anwendung ohne zu speichern
+    Speichern & beenden
+		-- Sichere Einstellungen und beende FFGo
+
+    Beenden	-- Beende FFGo
 
 Einstellungen:
 
-    Nur installierte Flughäfen anzeigen - Es werden nur die tatsächlich auf
-        der Festplatte vorhandene Flughäfen angezeigt.
+    Nur installierte Flughäfen anzeigen
+		-- Nur Flughäfen, die tatsächlich auf der Festplatte
+		   installiert sind werden in der Flughafenliste angezeigt.
 
-    Liste der Flughäfen auffrischen - Durchsuche die Festplatte nach
-        installierter Szenerie und baue eine neue Flughafen-Liste. Das
-        funktioniert nur wenn "Nur installierte Flughäfen anzeigen" angewählt
-        ist.
+    Liste der Flughäfen auffrischen
+		-- durchsucht die Szenerieordner auf der Festplatte und
+		   erneuert die Flughafenliste. Funktioniert nur, wenn
+		   “Nur installierte Flughäfen anzeigen” aktiviert ist.
 
-    Eigenschaften - öffne das Eigenschaften-Fenster.
+    ========================== Vier Check buttons ==========================
+
+    Zeige FlightGear Parameter
+		-- Anzeigen oder Verstecken des Kommandofensters
+		   (siehe unten)
+
+    Zeige FlightGear Parameter in neuem Fenster
+		-- Abkoppeln oder wieder Eingliedern des Kommandofensters
+
+    Zeige FlightGear Terminalausgaben
+		-- Anzeigen oder Verstecken des Ausgabefensters von
+		   FlightGears stdout und stderr
+		   (“Terminalausgabenfenster”, siehe unten)
+
+    Zeige FlightGear Terminalausgaben in neuem Fenster
+		-- Abkoppeln oder wieder Eingliedern des
+		   Terminalausgabenfensters
+
+    ========================================================================
+
+    Eigenschaften
+		-- Öffnet das Eigenschaftenfenster
 
 Werkzeuge:
 
-    METAR - zeige METAR Report für den gewählten (oder nahesten) Flughafen.
-        Dieser wird von http://weather.noaa.gov/ heruntergeladen.
+    METAR	-- zeige METAR Wetterbericht für den ausgewählten oder nächsten
+                   Flughafen. Diese Wetterberichte werden von
+                   http://weather.noaa.gov/ heruntergeladen.
 
 Hilfe:
 
-    Hilfe - Öffne dieses Hilfe-Fenster.
+    Hilfe	-- Öffnet das Hilfefenster
 
-    Über - Öffne das "Über"-Fenster.
-
--------------------------------------------------------------------------------
-
-KOMMANDOZEILEN OPTIONEN FENSTER
-
-Im Text-Fenster am unteren Ende des FFGo-Fensters kann man Kommandozeilen-
-Optionen angeben, die an FlightGear weitergereicht werden.
-
-Es werden vorerst nur wenige Optionen angezeigt. Für mehr Informationen und
-Beispiele bemühen Sie bitte die FlightGear-Dokumentation, prüfen Sie im
-Terminal "fgfs --help --verbose" oder sehen Sie im Wiki nach:
-http://wiki.flightgear.org/index.php/Command_Line_Options
+    Über	-- Öffnet das “Über” Fenster
 
 -------------------------------------------------------------------------------
 
-TIPS&TRICKS
+KOMMANDOZEILEN OPTIONS FENSTER
 
-* Wenn die Flughafen-Datenquelle auf "Szenerie" gesetzt ist, können
-  Informationen über Parkpositionen solange nicht verfügbar sein, bis die
-  entsprechende Szenerie installiert ist.
+Im Textfenster links im Hauptfenster, unter dem fgfs Statusanzeiger[1], kann
+man jegliche Parameter an FlightGear übergeben (“Kommandozeilenoptionen”), die
+dann an fgfs, FlightGears ausführbare Datei, weitergeleitet werden. Man sollte
+jeden Parameter in eine eigene Zeile schreiben. Leerzeilen werden ignoriert,
+Kommentare beginnen mit einem '#'. Vgl docs/README.conditional-config für
+Einzelheiten.
 
-* Man kann auch von einem Flugzeugträger starten. Klicken Sie im mittleren
-  Abschnitt auf den ICAO-Code des zuletzt gewählten Flughafens (direkt unter
-  dem Flugzeugbild) und wählen Sie eins der verfügbaren Schiffe. Der ICAO-Code
-  wird daraufhin durch den Namen des gewählten Flugzeugträgers ersetzt und
-  blau hervorgehoben, um anzuzeigen dass Sie sich jetzt im "Flugzeugträger-
-  Modus" befinden. Das entsprechende Szenario wird automatisch gewählt.
-  Um wieder auf die Flughäfen zugreifen zu können müssen Sie nur auf den
-  Flugzeugträgernamen klicken und "keine" auswählen.
+    [1] Dieser Anzeiger ist grün und in ihm steht “Bereit”, wenn FlightGear
+        nicht gerade läuft.
 
-* In der Liste "Szenario auswählen" können Sie sich, mit einem Rechtsklick auf
-  ein Szenario, die Beschreibung dessen ansehen (falls verfügbar).
+Als Standard werden nur wenige Optionen vorgegeben, für weitere Beispiele die
+FlightGear Dokumentation oder das Wiki heranziehen:
 
-* Die Fenstergröße wird gespeichert, wenn "Speichern und beenden" betätigt
-  wird.
+    http://wiki.flightgear.org/index.php/Command_Line_Options
+
+Eine komplette Liste der Optionen für die vorliegende FlightGear-Version kann
+mit folgendem Kommando aufgerufen werden:
+
+  fgfs --help --verbose
+
+('fgfs --help --verbose | less' erlaubt es, durch die lange Liste zu scrollen.
+Drücke 'q' um das Programm 'less' zu beenden.)
+
+FFGo bietet erweiterte Möglichkeiten basierend auf Variablen und Boolschen
+Ausdrücken, um die Parameterliste zu beschreiben, die an FlightGear weiter-
+gereicht wird. Mehr darüber kann man in docs/README.conditional-config
+nachlesen.
 
 -------------------------------------------------------------------------------
 
-BEKANNTE FEHLER UND GRENZEN
+KOMMANDOFENSTER
 
-* Sehr lange Parkplatznamen passen nicht in den Parkplatz-Knopf.
+Dieses Fenster, normalerweise unten im FFGo Hauptfenster, zeigt in Echtzeit,
+welche Parameter an 'fgfs' weitergereicht werden, wenn der “Starte FG” Knopf
+gedrückt wird (z.Bsp. nach Auswertung der Konditionen, die CondConfigParser
+bereitstellt, die im Kommandofenster eingefügt wurden.) Der Inhalt dieses
+Fensters wird jedes Mal wenn das Flugzeug, der Flughafen, der Parkplatz usw.
+gewechselt wird, wie auch nach jeder Änderung im Kommandozeilenfenster.
+
+Das Kommandofenster kann vom Hauptfenster abgetrennt, wieder angefügt oder
+komplett versteckt werden. Dies läßt sich aus dem Einstellungsmenü
+bewerkstelligen. Die jeweiligen Einstellungen, sowie die Geometrie des Fensters
+wenn es abgetrennt ist, werden gespeichert, wenn “Speichern & beenden” gewählt
+wird.
 
 -------------------------------------------------------------------------------
 
-                                 Vielen Dank, dass Sie diese Software benutzen,
-                                             Robert 'erobo' Leda  <erobo@wp.pl>
+TERMINALAUSGABENFENSTER
+
+Der Haupttextbereich in diesem Fenster beinhaltet FlightGear's Ausgaben auf
+stout und stderr. Es wird in Echtzeit aufgefrischt und kannhilfreich sein, um
+Fehlermeldungen an FlightGear zu senden.
+
+Der Knopf “Log speichern” erlaubt es, die gesamte Ausgabe des letzten Laufs in
+einer Datei Ihrer Wahl zu speichern.
+
+“Öffne Logverzeichnis” ist eine Verknüpfung um das Standard-Logverzeichnis im
+Dateimanager zu öffnen. Dies wird durch das Kommando 'xdg-open' erreicht, um
+eine Möglichkeit zur Konfiguration des Dateimanagers Ihrer Wahl zu ermöglichen.
+
+Das Terminalausgabenfenster kann vom Hauptfenster abgetrennt, wieder angefügt
+oder komplett versteckt werden. Dies läßt sich aus dem Einstellungsmenü
+bewerkstelligen. Die jeweiligen Einstellungen, sowie die Geometrie des Fensters
+wenn es abgetrennt ist, werden gespeichert, wenn “Speichern & beenden” gewählt
+wird.
+
+-------------------------------------------------------------------------------
+
+TIPS & TRICKS
+
+* Wenn die Flughafendatenquelle auf “Szenerie” gesetzt ist (jetzt der Standard)
+  dann werden Informationen über die Parkplatzpositionen des Flughafens erst
+  verfügbar sein, wenndie entsprechende Szenerie tatsächlich installiert ist
+  (außer bei der apt.dat.gz Notlösung)
+
+  In diesem Fall, wenn TerraSync aktiviert ist, braucht man nur FG einmalig am
+  gewünschten Flughafen zu starten, damit wird automatisch die benötigte
+  Szenerie für diesen Flughafen heruntergeladen. Und stellen Sie sicher, daß
+  das TerraSync-Verzeichnis (evtl neben anderen) aufgeführt ist in FFGo's
+  FG_SCENERY Einstellungen im Eigenschaftendialog.
+
+* Um die Konfiguration schwerwiegend zu bearbeiten mag sich das eingebaute
+  Textfenster als etwas unbequemer als ein echter Texteditor erweisen (Emacs,
+  Vim etc). Man kann aber durchaus jeden Texteditor auf die Konfigurationsdatei
+  anwenden (~/.ffgo/config auf Unix-ähnlichen Systemen, %APPDATA%/FFGo/config
+  auf Windows)! Das Einzige, was man im Hinterkopf behalten sollte ist, jedes
+  Mal “Konfigurationsdatei neu laden” (Strg-R) zu betätigen, bevor man irgend
+  etwas Anderes in FFGo vornimmt (z.Bsp. “Starte FG” or “Speichern & beenden”),
+  was die Konfiguration im Speicher in die Konfigurationsdatei schreibt. So
+  würden alle Änderungen, die man an der Konfigurationsdatei, außerhalb von FFGo
+  vorgenommen hat überschrieben werden.
+
+* Man kann FlightGear auf einem Flugzeugträger starten. Im mittleren Feld auf
+  den ICAO-Code des gewählten Flughafens klicken (direkt unter dem Flugzeugbild)
+  und den gewünschten Flugzeugträger auswählen. Der ICAO-Code wird sich in Namen
+  des Schiffs verändern und das Feld wird in blau untermalt und zeigt damit an,
+  daß wir uns nun im “Flugzeugträger-Modus” befinden. Das entsprechende Szenario
+  wird automatisch ausgewählt. Um wieder einen Flughafen auswählen zu können muß
+  man wieder auf den Flugzeugträgernamen klicken und in der Liste “Keine”
+  auswählen.
+
+* In der “Szenario wählen”-Liste kann man sich mit einem Rechtsklick eine
+  Beschreibung (falls verfügbar) des Szenarios anzeigen lassen.
+
+* Fensterdimensionen werden gespeichert wenn man auf den Knopf “Speichern &
+  beenden” klickt.
+
+  Genau genommen wird für das Kommandozeilenfenster und das Ausgabefenster die
+  gesamte Geometrie gespeichert, z.Bsp. die Größe und Position auf dem
+  Bildschirm. Für das Hauptfenster kann man im Eigenschaftendialog
+  (“Die Hauptfensterposition speichern”) auswählen, ob man nur die Dimensionen
+  oder die gesamte Geometrie speichern will. Die erste Option entspricht dem
+  Verhalten von FGo! 1.5.5. Dies ist vllt sinnvoll für Tiling Fenster Manager?
+  Die zweite Option ist die Voreinstellung in FFGo.
+
+-------------------------------------------------------------------------------
+
+BEKANNTE FEHLER UND EINSCHRÄNKUNGEN
+
+* Sehr lange Parkplatznamen passen nicht in den Parkplatzknopf.
+
+-------------------------------------------------------------------------------
+
+GESCHICHTE
+
+Diese Software ist ein Fork (Abspaltung) des Programms FGo![1], geschrieben von
+Robert 'erobo' Leda <erobo@wp.pl>. Das ursprüngliche Vorhaben war nicht eine
+Abspaltung sondern die Erweiterung von FGo!, jedoch ist genug Zeit verstrichen
+mit interessanten neuen Funktionen und ohne eine Veröffentlichung, daß ich
+(Florent Rougon) letztendlich entschied, die erweiterte Version zu
+veröffentlichen, so daß Anderen diese Arbeit zugute kommt. Nachdem ich viele
+Patches für FGo! eingestellt habe, änderte ich den Namen des Programms zu FFGo,
+um Verwirrungen und verwechselungen bei den Nutzern zu vermeiden, und
+veröffentlichte den Code.
+
+  [1] https://sites.google.com/site/erobosprojects/flightgear/add-ons/fgo
+
+Am Anfang dieser Arbeit stand Roberts Portierung von FGo! 1.5.5 auf Python 3.
+Zuerst wollte ich das 2014 übernehmen, als ein Grundstein für mein Projekt über
+konditionelle Konfigurationsanalyse für FGo!, aber Robert war so freundlich und
+portierte alles selbst und schickte es mir per Email. Das erlaubte mir, meine
+Entwicklungen zu integrieren, beginnend mit der Unterstützung für
+CondConfigParser. Ich setzte ein git-Repository auf, um die Zusammenarbeit mit
+Robert zu erleichtern, entwickelte dort neue Funktionen, integrierte Roberts
+Machbarkeitsstudie für die Kommando- und Ausgabefenster, verbesserte sie, etc
+und jetzt ist dieses Repository öffentlich und wird für FFGos Entwicklung
+genutzt.
+
+-------------------------------------------------------------------------------
+
+
+                                           Danke, daß sie diese Software nutzen,
+                                           Florent Rougon <f.rougon@free.fr>
+
+                                           (original text by FGo!'s author,
+                                           Robert 'erobo' Leda)
+
+Local Variables:
+coding: utf-8
+fill-column: 72
+End:
