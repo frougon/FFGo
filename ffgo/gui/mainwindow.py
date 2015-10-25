@@ -10,6 +10,8 @@ import re
 import abc
 import functools
 import collections
+import enum
+import traceback
 from gettext import translation
 import threading
 import queue as queue_mod       # keep 'queue' available for variable bindings
@@ -91,6 +93,12 @@ class MyEntry(Entry, PassShortcutsToApp):
     def __init__(self, app, *args, **kwargs):
         Entry.__init__(self, *args, **kwargs)
         PassShortcutsToApp.__init__(self, app)
+
+
+@enum.unique
+class AptDatParkingLookupMsgType(enum.Enum):
+    """Message type for thread communication via a queue."""
+    result, exception = range(2)
 
 
 class App:
@@ -405,6 +413,8 @@ class App:
         self.scenarioListOpen = False
         self.currentCarrier = []
         self.setMetarToNone() # Initialize self.metar to None
+        # Window to let the user know a long operation is taking place
+        self.aptDatParkLookupInfoWindow = None
 
         rereadCfgFile = self.proposeConfigChanges()
         # Will set self.FGCommand.{argList,lastConfigParsingExc}
@@ -871,20 +881,27 @@ want to follow this new default and set “Airport database update” to
 
         return '\n'.join(l)
 
-    def populateAirportParkingPopup(self, popup, headerBgColor):
+    def populateAirportParkingPopup(self, origEvent, popup, headerBgColor):
         """Populate the popup menu for an airport parking."""
+        d = self.readParkingData(origEvent, popup, headerBgColor,
+                                 self.config.airport.get())
+        if d is not None:
+            self._populateAirportParkingPopupEnd(origEvent, popup,
+                                                 headerBgColor, d)
+        # If 'd' is None, the rest will be run from an event handler
+
+    def _populateAirportParkingPopupEnd(self, origEvent, popup, headerBgColor,
+                                        parkingData):
         # First column: empty header, and one 'None' button
         popup.add_command(label='', state=DISABLED,
                           background=headerBgColor)
         popup.add_command(label=pgettext('parking position', 'None'),
                           command=lambda: self.config.park.set(''))
 
-        d = self.readParkingData(self.config.airport.get())
         # Mapping from menu item index to fgdata.parking.Parking instance
         parkingForItem = {}
-
-        for flightType in sorted(d.keys()):
-            for i, parking in enumerate(d[flightType]):
+        for flightType in sorted(parkingData.keys()):
+            for i, parking in enumerate(parkingData[flightType]):
                 parkName = str(parking)
                 if not (i % 20):
                     # New column: add the column header
@@ -922,6 +939,7 @@ want to follow this new default and set “Airport database update” to
                 return self.airportParkingTooltip(parking)
 
         self.parkingTooltip = tooltip.MenuToolTip(popup, parkingTooltipFunc)
+        popup.tk_popup(origEvent.x_root, origEvent.y_root, 0)
 
     def popupPark(self, event):
         """Make popup menu for airport parking or carrier start position."""
@@ -930,14 +948,14 @@ want to follow this new default and set “Airport database update” to
         headerBgColor = "#000066"
 
         if self.config.airport.get():
-            self.populateAirportParkingPopup(popup, headerBgColor)
+            self.populateAirportParkingPopup(event, popup, headerBgColor)
         else:
             L = self.currentCarrier[1:-1]
             for i in L:
                 popup.add_command(label=i,
                                   command=lambda i=i: self.config.park.set(i))
 
-        popup.tk_popup(event.x_root, event.y_root, 0)
+            popup.tk_popup(event.x_root, event.y_root, 0)
 
     def popupRwy(self, event):
         """Make pop up menu."""
@@ -1020,7 +1038,63 @@ want to follow this new default and set “Airport database update” to
 
         return res
 
-    def readParkingData(self, icao):
+    def _lookupParkingDataFromAptDatThreadFunc(self, aptPath, icao, queue):
+        try:
+            self._lookupParkingDataFromAptDatThreadFunc0(aptPath, icao, queue)
+        except BaseException:
+            logger.errorNP(traceback.format_exc())
+
+    def _lookupParkingDataFromAptDatThreadFunc0(self, aptPath, icao, queue):
+        try:
+            from ..fgdata.apt_dat import AptDat
+
+            with AptDat(aptPath) as aptDat:
+                logger.notice(_("Looking for parking positions for {icao} "
+                                "in {aptDat}").format(icao=icao,
+                                                      aptDat=aptPath))
+                # This is *slow*, especially for ICAOs that sort late in
+                # the alphabet.
+                parkingData = aptDat.readParkingForIcao(icao)
+        except BaseException as exc:
+            queue.put((AptDatParkingLookupMsgType.exception, exc))
+        else:
+            queue.put((AptDatParkingLookupMsgType.result, (icao, parkingData)))
+
+        # Should be safe even in a thread that is not the GUI thread
+        self.master.event_generate("<<FFGoAptDatParkLookupQueueUpdated>>",
+                                   when="tail")
+
+    def _onAptDatParkLookupQueueUpdated(
+            self, event, origEvent=None, queue=None, popup=None,
+            headerBgColor=None):
+        poppedSomething = False
+
+        while True:         # Pop all elements present in the queue
+            try:
+                msgType, payload = queue.get_nowait()
+            except queue_mod.Empty:
+                break
+
+            if msgType == AptDatParkingLookupMsgType.result:
+                icao, parkingData = payload
+                self.config.aptDatParkingCache.append((icao, parkingData))
+                poppedSomething = True
+            elif msgType == AptDatParkingLookupMsgType.exception:
+                if self.aptDatParkLookupInfoWindow is not None:
+                    self.aptDatParkLookupInfoWindow.destroy()
+                # The exception transmitted by the thread function via the
+                # queue will be handled by
+                # main.reportTkinterCallbackException().
+                raise payload
+
+        if poppedSomething:
+            if self.aptDatParkLookupInfoWindow is not None:
+                self.aptDatParkLookupInfoWindow.destroy()
+
+            self._populateAirportParkingPopupEnd(
+                origEvent, popup, headerBgColor, parkingData)
+
+    def readParkingData(self, origEvent, popup, headerBgColor, icao):
         res = {}
 
         # If airport data source is set to "Scenery"
@@ -1057,18 +1131,28 @@ want to follow this new default and set “Airport database update” to
                     break
 
             if not foundInCache:
-                from ..fgdata.apt_dat import AptDat
+                # Queue for communication with the worker thread
+                queue = queue_mod.Queue()
+                self.master.bind("<<FFGoAptDatParkLookupQueueUpdated>>",
+                                 functools.partial(
+                                     self._onAptDatParkLookupQueueUpdated,
+                                     origEvent=origEvent, queue=queue,
+                                     popup=popup, headerBgColor=headerBgColor))
 
                 aptPath = os.path.join(self.config.FG_root.get(), APT_DAT)
-                with AptDat(aptPath) as aptDat:
-                    logger.notice(_("Looking for parking positions for {icao} "
-                                    "in {aptDat}").format(icao=icao,
-                                                          aptDat=aptPath))
-                    # This is *slow*, especially for ICAOs that sort late in
-                    # the alphabet.
-                    res = aptDat.readParkingForIcao(icao)
+                # A thread will keep the interface responsive during the
+                # possibly looooong lookup in apt.dat.gz.
+                t = threading.Thread(name="AptDatParkingLookup",
+                             target=self._lookupParkingDataFromAptDatThreadFunc,
+                             args=(aptPath, icao, queue),
+                             daemon=True)
+                t.start()
 
-                self.config.aptDatParkingCache.append((icao, res))
+                text = _("Looking up parking positions for {icao} "
+                         "in apt.dat.gz...").format(icao=icao)
+                self.aptDatParkLookupInfoWindow = infowindow.InfoWindow(
+                    self.master, text=text)
+                res = None
 
         return res
 
