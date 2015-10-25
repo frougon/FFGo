@@ -1025,8 +1025,7 @@ class _ProcessApt:
         message = _('Generating airport database,\nthis can take a while...')
         if head:
             message = '\n'.join((head, message))
-        self.window = InfoWindow(self.master, message)
-        self.window.update()
+        self.window = InfoWindow(self.master, text=message)
 
     def makeApt(self):
         self.reset_variables()

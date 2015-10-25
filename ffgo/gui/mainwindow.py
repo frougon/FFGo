@@ -740,8 +740,7 @@ want to follow this new default and set “Airport database update” to
 
         """
         message = _("Building airport lists (this may take some time)...")
-        infoWindow = infowindow.InfoWindow(self.master, message)
-        infoWindow.update()
+        infoWindow = infowindow.InfoWindow(self.master, text=message)
         self.config.updateAptLists()
         self.buildAirportList()
         infoWindow.destroy()
