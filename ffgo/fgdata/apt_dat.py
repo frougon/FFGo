@@ -165,33 +165,33 @@ class AptDat:
     def _readLatitude(self, s):
         try:
             res = misc.DecimalCoord(s)
-        except ValueError:
+        except ValueError as e:
             raise UnableToParseAptDat(
                 self.lineNb,
                 _("unable to parse as a latitude: {0!r} in line {1!r}").format(
-                    s, self.line))
+                    s, self.line)) from e
         else:
             return res
 
     def _readLongitude(self, s):
         try:
             res = misc.DecimalCoord(s)
-        except ValueError:
+        except ValueError as e:
             raise UnableToParseAptDat(
                 self.lineNb,
                 _("unable to parse as a longitude: {0!r} in line {1!r}")
-                .format(s, self.line))
+                .format(s, self.line)) from e
         else:
             return res
 
     def _readHeading(self, s):
         try:
             res = float(s)
-        except ValueError:
+        except ValueError as e:
             raise UnableToParseAptDat(
                 self.lineNb,
                 _("unable to parse as a heading: {0!r} in line {1!r}").format(
-                    s, self.line))
+                    s, self.line)) from e
         else:
             return res
 
