@@ -206,8 +206,8 @@ class AptDat:
             if code is None:    # EOF
                 break
             elif code in (1, 16, 17): # Land airport, seaplane base or heliport
-                l = rest.split()
-                if len(l) < 4:
+                l = rest.split(None, maxsplit=4)
+                if len(l) < 5:
                     raise UnableToParseAptDat(
                         self.lineNb,
                         _("not enough fields in record: {!r}").format(
