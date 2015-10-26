@@ -957,87 +957,6 @@ want to follow this new default and set “Airport database update” to
 
             popup.tk_popup(event.x_root, event.y_root, 0)
 
-    def popupRwy(self, event):
-        """Make pop up menu."""
-        if self.config.airport.get():
-            # self.config.airport not empty: we are not in “carrier mode”
-            popup = Menu(tearoff=0)
-            popup.add_command(label=pgettext('runway', 'Default'),
-                              command=lambda: self.config.rwy.set(''))
-            for i in self.readRunwayData(self.config.airport.get()):
-                popup.add_command(label=i, command=lambda i=i:
-                                  self.config.rwy.set(i))
-            popup.tk_popup(event.x_root, event.y_root, 0)
-
-    def popupScenarios(self, event):
-        """Make pop up list."""
-        if not self.scenarioListOpen:
-            self.scenarioListOpen = True
-            self.scenarioList = Toplevel(borderwidth=1, relief='raised')
-            self.scenarioList.overrideredirect(True)
-            self.scenarioList.geometry('+%d+%d' % (event.x_root, event.y_root))
-            self.master.bind('<Configure>', self.popupScenariosClose)
-            self.master.bind('<Unmap>', self.popupScenariosClose)
-            frame = Frame(self.scenarioList)
-            frame.pack(side='top')
-
-            popupScrollbar = Scrollbar(frame, orient='vertical')
-            self.popup = Listbox(frame, bg=TEXT_BG_COL, exportselection=0,
-                                 selectmode=MULTIPLE, height=15,
-                                 yscrollcommand=popupScrollbar.set)
-            popupScrollbar.config(command=self.popup.yview, takefocus=0)
-            self.popup.pack(side='left')
-            popupScrollbar.pack(side='left', fill='y')
-            self.popup.bind('<Button-3>', self.scenarioDescription)
-
-            frame1 = Frame(self.scenarioList)
-            frame1.pack(side='top', fill='x')
-
-            button = Button(frame1, text=_('OK'),
-                            command=self.popupScenariosClose)
-            button.pack(fill='x')
-
-            for i in self.config.scenario_list:
-                self.popup.insert('end', i)
-
-            self.popupScenariosSelect()
-
-    def popupScenariosClose(self, event=None):
-        try:
-            self.descriptionWindow.destroy()
-        except AttributeError:
-            pass
-
-        L = []
-        for i in self.popup.curselection():
-            L.append(self.config.scenario_list[int(i)])
-        self.config.scenario.set(' '.join(L))
-        self.scenarioList.destroy()
-        self.master.unbind('<Configure>')
-        self.master.unbind('<Unmap>')
-        self.scenarioListOpen = False
-
-    def popupScenariosSelect(self):
-        L = list(self.config.scenario.get().split())
-        for i in L:
-            if i in self.config.scenario_list:
-                self.popup.selection_set(self.config.scenario_list.index(i))
-
-    def quit(self):
-        """Quit application."""
-        self.master.quit()
-
-    def readRunwayData(self, icao):
-        res = []
-        path = os.path.join(self.config.ai_path, DEFAULT_AIRPORTS_DIR)
-        if os.path.isdir(path):
-            index = self.getIndex('p')
-            rwy = self.config.airport_rwy[index]
-            for i in rwy:
-                res.append(i)
-
-        return res
-
     def _lookupParkingDataFromAptDatThreadFunc(self, aptPath, icao, queue):
         try:
             self._lookupParkingDataFromAptDatThreadFunc0(aptPath, icao, queue)
@@ -1153,6 +1072,87 @@ want to follow this new default and set “Airport database update” to
                 self.aptDatParkLookupInfoWindow = infowindow.InfoWindow(
                     self.master, text=text)
                 res = None
+
+        return res
+
+    def popupRwy(self, event):
+        """Make pop up menu."""
+        if self.config.airport.get():
+            # self.config.airport not empty: we are not in “carrier mode”
+            popup = Menu(tearoff=0)
+            popup.add_command(label=pgettext('runway', 'Default'),
+                              command=lambda: self.config.rwy.set(''))
+            for i in self.readRunwayData(self.config.airport.get()):
+                popup.add_command(label=i, command=lambda i=i:
+                                  self.config.rwy.set(i))
+            popup.tk_popup(event.x_root, event.y_root, 0)
+
+    def popupScenarios(self, event):
+        """Make pop up list."""
+        if not self.scenarioListOpen:
+            self.scenarioListOpen = True
+            self.scenarioList = Toplevel(borderwidth=1, relief='raised')
+            self.scenarioList.overrideredirect(True)
+            self.scenarioList.geometry('+%d+%d' % (event.x_root, event.y_root))
+            self.master.bind('<Configure>', self.popupScenariosClose)
+            self.master.bind('<Unmap>', self.popupScenariosClose)
+            frame = Frame(self.scenarioList)
+            frame.pack(side='top')
+
+            popupScrollbar = Scrollbar(frame, orient='vertical')
+            self.popup = Listbox(frame, bg=TEXT_BG_COL, exportselection=0,
+                                 selectmode=MULTIPLE, height=15,
+                                 yscrollcommand=popupScrollbar.set)
+            popupScrollbar.config(command=self.popup.yview, takefocus=0)
+            self.popup.pack(side='left')
+            popupScrollbar.pack(side='left', fill='y')
+            self.popup.bind('<Button-3>', self.scenarioDescription)
+
+            frame1 = Frame(self.scenarioList)
+            frame1.pack(side='top', fill='x')
+
+            button = Button(frame1, text=_('OK'),
+                            command=self.popupScenariosClose)
+            button.pack(fill='x')
+
+            for i in self.config.scenario_list:
+                self.popup.insert('end', i)
+
+            self.popupScenariosSelect()
+
+    def popupScenariosClose(self, event=None):
+        try:
+            self.descriptionWindow.destroy()
+        except AttributeError:
+            pass
+
+        L = []
+        for i in self.popup.curselection():
+            L.append(self.config.scenario_list[int(i)])
+        self.config.scenario.set(' '.join(L))
+        self.scenarioList.destroy()
+        self.master.unbind('<Configure>')
+        self.master.unbind('<Unmap>')
+        self.scenarioListOpen = False
+
+    def popupScenariosSelect(self):
+        L = list(self.config.scenario.get().split())
+        for i in L:
+            if i in self.config.scenario_list:
+                self.popup.selection_set(self.config.scenario_list.index(i))
+
+    def quit(self):
+        """Quit application."""
+        self.master.quit()
+
+    def readRunwayData(self, icao):
+        res = []
+        path = os.path.join(self.config.ai_path, DEFAULT_AIRPORTS_DIR)
+        if os.path.isdir(path):
+            index = self.getIndex('p')
+            rwy = self.config.airport_rwy[index]
+            for i in rwy:
+                res.append(i)
 
         return res
 
