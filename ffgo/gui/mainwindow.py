@@ -971,8 +971,9 @@ want to follow this new default and set “Airport database update” to
                 logger.notice(_("Looking for parking positions for {icao} "
                                 "in {aptDat}").format(icao=icao,
                                                       aptDat=aptPath))
-                # This is *slow*, especially for ICAOs that sort late in
-                # the alphabet.
+                # This is *slow*, which is why we created a separate thread
+                # (otherwise, this would freeze the interface for a significant
+                # time).
                 parkingData = aptDat.readParkingForIcao(icao)
         except BaseException as exc:
             queue.put((AptDatParkingLookupMsgType.exception, exc))
