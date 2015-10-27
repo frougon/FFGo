@@ -251,7 +251,8 @@ Old default - Parking data will be read from
     $FG_ROOT/AI/Airports/[ICAO]/parking.xml.
 
 (for example, for the EDDF airport, [ICAO] should be replaced with
-EDDF, [I] with E, [C] with D, [A] with D and [O] with F)
+EDDF, [I] with E, [C] with D, [A] with D and [O] with F:
+[I]/[C]/[A]/[ICAO].groundnet.xml → E/D/D/EDDF.groundnet.xml)
 
 Note:
 
