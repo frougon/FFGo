@@ -769,9 +769,13 @@ configurations are kept separate.""")
 
         """
         if not os.path.exists(APT):
-            self._makeApt()     # create a new file
+            # Create a new file if self.FG_root is non-empty
+            self._makeApt()
 
         icao, name, rwy = [], [], []
+        if not os.path.isfile(APT): # may happen if self.FG_root was empty
+            return (icao, name, rwy)
+
         logger.info("Opening apt file '{}' for reading".format(APT))
 
         with open(APT, "r", encoding="utf-8") as fin:
