@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FFGo 1.6.0\n"
 "Report-Msgid-Bugs-To: f.rougon@free.fr\n"
-"POT-Creation-Date: 2015-10-27 12:20+0100\n"
+"POT-Creation-Date: 2015-10-28 13:41+0100\n"
 "PO-Revision-Date: 2014-11-11 20:28+0200\n"
 "Last-Translator: Canseco <machaquiro@yahoo.es>\n"
 "Language-Team: \n"
@@ -864,8 +864,8 @@ msgstr ""
 "Por favor, asegurate que las rutas: FG_BIN and FG_ROOT\n"
 "en el submenu \"Preferencias\" apuntan a los directorios correctos."
 
-#: ffgo/gui/mainwindow.py:1397 ffgo/config.py:1222 ffgo/config.py:1226
-#: ffgo/config.py:1230
+#: ffgo/gui/mainwindow.py:1397 ffgo/config.py:1226 ffgo/config.py:1230
+#: ffgo/config.py:1234
 msgid "Error"
 msgstr "Error"
 
@@ -1072,11 +1072,11 @@ msgid ""
 "Could not find aircraft '{aircraft}', using '{fallback}' from '{dir}' instead"
 msgstr ""
 
-#: ffgo/config.py:983
+#: ffgo/config.py:987
 msgid "Modification of apt.dat.gz detected."
 msgstr "Modificacion detectada en apt.dat.gz."
 
-#: ffgo/config.py:1025
+#: ffgo/config.py:1029
 msgid ""
 "Generating airport database,\n"
 "this can take a while..."
@@ -1084,7 +1084,7 @@ msgstr ""
 "Generando base de datos de aeropuertos,\n"
 "puede llevar un tiempo..."
 
-#: ffgo/config.py:1217
+#: ffgo/config.py:1221
 #, fuzzy, python-brace-format
 msgid ""
 "Cannot read version number of apt.dat database.\n"
@@ -1096,11 +1096,11 @@ msgstr ""
 "FGo! necesita un encabezamiento correcto al principio de apt.dat. Para\n"
 "mas informaciones visita http://data.x-plane.com/designers.html#Formats"
 
-#: ffgo/config.py:1225
+#: ffgo/config.py:1229
 msgid "Cannot read apt.dat database."
 msgstr "No se puede leer la base de datos apt.dat."
 
-#: ffgo/config.py:1229
+#: ffgo/config.py:1233
 msgid "Cannot find apt.dat database."
 msgstr "No se puede encontrar la base de datos apt.dat."
 

@@ -8,16 +8,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FFGo 1.6.0\n"
 "Report-Msgid-Bugs-To: f.rougon@free.fr\n"
-"POT-Creation-Date: 2015-10-27 12:20+0100\n"
+"POT-Creation-Date: 2015-10-28 13:41+0100\n"
 "PO-Revision-Date: 2015-10-27 12:22+0100\n"
 "Last-Translator: chris_blues <chris@musicchris.de>\n"
+"Language-Team: \n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.8.6\n"
-"Language-Team: \n"
 
 #: ffgo/exceptions.py:40 ffgo/fgdata/apt_dat.py:53
 #, python-brace-format
@@ -935,8 +935,8 @@ msgstr ""
 "Bitte stellen sie sicher, daß die Pfade FG_BIN und FG_ROOT\n"
 "im \"Eigenschaften\"-Fenster auf die richtigen Verzeichnisse verweisen."
 
-#: ffgo/gui/mainwindow.py:1397 ffgo/config.py:1222 ffgo/config.py:1226
-#: ffgo/config.py:1230
+#: ffgo/gui/mainwindow.py:1397 ffgo/config.py:1226 ffgo/config.py:1230
+#: ffgo/config.py:1234
 msgid "Error"
 msgstr "Fehler"
 
@@ -1183,11 +1183,11 @@ msgstr ""
 "Flugzeug '{aircraft}' nicht auffindbar! Benutze statt dessen '{fallback}' "
 "aus '{dir}'"
 
-#: ffgo/config.py:983
+#: ffgo/config.py:987
 msgid "Modification of apt.dat.gz detected."
 msgstr "apt.dat.gz wurde verändert."
 
-#: ffgo/config.py:1025
+#: ffgo/config.py:1029
 msgid ""
 "Generating airport database,\n"
 "this can take a while..."
@@ -1195,7 +1195,7 @@ msgstr ""
 "Generiere Flughafen Datenbank.\n"
 "(das kann etwas dauern...)"
 
-#: ffgo/config.py:1217
+#: ffgo/config.py:1221
 #, python-brace-format
 msgid ""
 "Cannot read version number of apt.dat database.\n"
@@ -1209,11 +1209,11 @@ msgstr ""
 "weiterführende Informationen über das Datenformat siehe: http://data.x-plane."
 "com/designers.html#Formats"
 
-#: ffgo/config.py:1225
+#: ffgo/config.py:1229
 msgid "Cannot read apt.dat database."
 msgstr "apt.dat Datenbank kann nicht gelesen werden."
 
-#: ffgo/config.py:1229
+#: ffgo/config.py:1233
 msgid "Cannot find apt.dat database."
 msgstr "apt.dat Datenbank wurde nicht gefunden."
 
