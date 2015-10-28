@@ -405,3 +405,33 @@ you may want to consult the Git repository log.
           thumbnail when selecting a different aircraft). All this should now
           work exactly the same as when FlightGear is not running.
           (Florent Rougon)
+
+1.6.0
+[FEATURE] New parser for apt.dat/apt.dat.gz. Should be compliant with the
+          v1000 spec. Currently, it is only used to lookup fallback parking
+          positions for a given airport as described below. (Florent Rougon)
+[FEATURE] Read parking positions from apt.dat.gz as a fallback. If the
+          standard lookup from the groundnet files gives no result, look up
+          the parking data in apt.dat.gz. This is slow, but the last 50
+          results are cached in memory to mitigate the inconvenience.
+
+          With the apt.dat.gz file distributed with current FlightGear 3.7
+          (which is identical to the latest file distributed on
+          <http://data.x-plane.com/get_data.html> [and very outdated with
+          respect to contributions by FlightGear users]), the number of
+          airports having at least one startup location declared in apt.dat.gz
+          is 3437. This means that FFGo can offer parking positions/startup
+          locations for at least this number of airports (the parking data
+          from FlightGear groundnet files is used preferentially to this data
+          from apt.dat.gz, but it is maybe possible that some airports have
+          parking positions declared in a groundnet file but not in
+          apt.dat.gz). (Florent Rougon)
+[USABILITY] Small color changes. (Florent Rougon)
+[MAINT]   Cleanup of code related to the METAR widget (most notably, threading
+          code). Apart from possible more or less random crashes which should
+          not happen anymore, the most user-visible result of these changes is
+          that the widget contents is automatically updated whenever the state
+          of the “Decoded” checkbox is changed (and every such update is the
+          result of a new HTTP request). (Florent Rougon)
+[MAINT]   Various InfoWindow improvements. (Florent Rougon)
+[FEATURE] Update the German translation. (chris_blues)
