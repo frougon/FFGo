@@ -238,6 +238,48 @@ FlightGear forum at the following address:
   http://forum.flightgear.org/viewtopic.php?f=18&t=27054
 
 
+Bugs
+----
+
+If you think you have found a bug, you can `file an issue on GitHub
+<https://github.com/frougon/FFGo/issues>`_. If you are not sure that
+what you are seeing is actually a bug, I suggest to discuss it instead
+in the `FFGo forum thread`_. In either case, be very precise telling:
+
+  - your operating system;
+
+  - the versions of FFGo and its dependencies (Python, CondConfigParser,
+    FlightGear... also Pillow if the problem is image-related);
+
+  - how you installed FFGo (with `pip`_, or a distribution package,
+    or...);
+
+  - the exact contents of the FFGo log file, which is
+    ``~/.ffgo/Logs/FFGo.log`` on every operating system except Windows,
+    and ``%APPDATA%/FFGo/Logs/FFGo.log`` on Windows.
+
+    Note for Windows users:
+
+      Since Windows seems to hide the ``%APPDATA%`` folder nowadays,
+      Windows users may have to use their favorite search engine in
+      order to find how to access this folder on their computer (hint:
+      maybe
+      `<http://www.blogtechnika.com/what-is-application-data-folder-in-windows-7/>`_,
+      `<https://www.youtube.com/watch?v=Xa0H8lND9Qs>`_
+      and
+      `<http://windows.microsoft.com/en-us/windows-8/what-appdata-folder>`_
+      can be helpful);
+
+  - step-by-step instructions describing what you did to trigger the bug.
+
+The FFGo log file normally contains the versions of all major
+dependencies of FFGo, therefore the second instruction above should be a
+no-brainer if you carried out the fourth one correctly. These versions
+should also be available using Help → About in FFGo.
+
+.. _FFGo forum thread: http://forum.flightgear.org/viewtopic.php?f=18&t=27054
+
+
 License
 -------
 
