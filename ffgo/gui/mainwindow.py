@@ -968,9 +968,9 @@ want to follow this new default and set “Airport database update” to
             from ..fgdata.apt_dat import AptDat
 
             with AptDat(aptPath) as aptDat:
-                logger.notice(_("Looking for parking positions for {icao} "
-                                "in {aptDat}").format(icao=icao,
-                                                      aptDat=aptPath))
+                logger.info(_("Looking for parking positions for {icao} "
+                              "in {aptDat}").format(icao=icao,
+                                                    aptDat=aptPath))
                 # This is *slow*, which is why we created a separate thread
                 # (otherwise, this would freeze the interface for a significant
                 # time).
