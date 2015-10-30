@@ -77,9 +77,13 @@ class AptDat:
             self.file = open(self.path, mode=mode, encoding=encoding,
                              errors=errors)
 
-        self.lineNb = 0
-        self._readHeader()
-        return self
+        try:
+            self.lineNb = 0
+            self._readHeader()
+            return self
+        except:
+            self.file.close()
+            raise
 
     def __exit__(self, excType, excVal, excTb):
         self.file.close()
