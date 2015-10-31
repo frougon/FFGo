@@ -63,19 +63,19 @@ class AptDat:
     def __init__(self, path):
         self.path = os.path.abspath(path)
 
-    def __enter__(self):
+    def open(self, mode="rt", encoding="latin_1", errors="replace"):
         logger.info("Opening '{}' for reading".format(self.path))
-
-        mode = "rt"
-        encoding = "latin_1"
-        errors = "replace"
-
         if self.path.endswith(".gz"):
             self.file = gzip.open(self.path, mode=mode, encoding=encoding,
                                   errors=errors)
         else:
             self.file = open(self.path, mode=mode, encoding=encoding,
                              errors=errors)
+
+        return self.file
+
+    def __enter__(self):
+        self.open()
 
         try:
             self.lineNb = 0
