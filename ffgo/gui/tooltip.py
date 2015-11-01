@@ -104,14 +104,18 @@ class ToolTipBase(Toplevel):
 
 
 class ToolTip(ToolTipBase):
-    """A static Tooltip widget.
+    """A Tooltip widget.
 
-    Display the same tooltip text at mouse position when the mouse
-    pointer is over the master widget.
+    Display a tooltip text at mouse position when the mouse pointer is
+    over the master widget.
 
     Arguments are:
       master:   parent widget
-      text:     message to display
+      text:     message to display, or None if using 'textvariable'.
+                This is for static tooltips.
+      textvariable: StringVar corresponding to a message to display, or
+                None if using 'text'. This allows to easily change the
+                tooltip text without having to create a new tooltip.
       bgColor:  background color
       offsetx, offsety:  offset from cursor position
       delay:    delay in milliseconds
@@ -126,14 +130,20 @@ class ToolTip(ToolTipBase):
 
     """
 
-    def __init__(self, master=None, text=None, **kwargs):
+    def __init__(self, master=None, text=None, textvariable=None, **kwargs):
         kwargs['master'] = master
         ToolTipBase.__init__(self, **kwargs)
         self.text = text
+        self.textvariable = textvariable
         self.postInit()
 
     def createLabel(self):
-        return Label(self, text=self.text, bg=self.bgColor, justify=LEFT)
+        if self.text is not None:
+            kwargs = {"text": self.text}
+        else:
+            kwargs = {"textvariable": self.textvariable}
+
+        return Label(self, bg=self.bgColor, justify=LEFT, **kwargs)
 
     def prepareText(self):
         # Always show the toolip. The text was already prepared in
