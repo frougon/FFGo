@@ -216,16 +216,21 @@ for the --fg-root= option. You may consult
         self.tooltip_scenery = _("""\
 Path(s) to scenery directories.
 You can specify more than one path (separated by {separator!r}), ordered
-from highest to lowest priority. Typical configuration is to have
-the TerraSync directory first, followed by custom scenery directories
-if you have installed any.
+from highest to lowest priority. You may want to include your TerraSync
+directory (if any) in this list in order to specify its priority
+relatively to any custom scenery directories you may have installed.
+
+This setting will be passed to fgfs (the FlightGear executable) as the
+--fg-scenery option and is documented at
+<http://wiki.flightgear.org/$FG_SCENERY>.
 
 Note:
 
   The default TerraSync directory in FlightGear 3.6 should be
-  '{defaultTSdir}' on your
-  operating system (otherwise, please report a bug for {prg}).""").format(
-      prg=PROGNAME, defaultTSdir=DEFAULT_TERRASYNC_DIR, separator=os.pathsep)
+  $FG_HOME/TerraSync. You may consult
+  <http://wiki.flightgear.org/TerraSync> and
+  <http://wiki.flightgear.org/$FG_HOME> for more information.""").format(
+      prg=PROGNAME, separator=os.pathsep)
         self.tooltip_aircraft = _("""\
 Path(s) to additional aircraft directories.
 Multiple directories separated by {separator!r} may be specified. Leave

@@ -339,7 +339,7 @@ class Config:
         self.FG_aircraft.set('')
         self.FG_bin.set('')
         self.FG_root.set('')
-        self.FG_scenery.set(DEFAULT_TERRASYNC_DIR)
+        self.FG_scenery.set('')
         self.FG_working_dir.set('')
         self.language.set('')
         self.baseFontSize.set(DEFAULT_BASE_FONT_SIZE)
