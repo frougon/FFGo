@@ -253,7 +253,7 @@ class AptDat:
                         if len(l) < 6:
                             raise UnableToParseAptDat(
                                 self.lineNb,
-                                ("not enough fields in record: {!r}").format(
+                                _("not enough fields in record: {!r}").format(
                                     self.line))
 
                         locType = l[3]
