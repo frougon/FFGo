@@ -435,3 +435,14 @@ you may want to consult the Git repository log.
           result of a new HTTP request). (Florent Rougon)
 [MAINT]   Various InfoWindow improvements. (Florent Rougon)
 [FEATURE] Update the German translation. (chris_blues)
+
+1.6.1
+[BUGFIX]  Apparently, the HOME environment variable is not always defined on
+          Windows. This prevents FFGo from starting in such a case
+          (<https://sourceforge.net/p/flightgear/mailman/message/34584497/>).
+          Remove FG_HOME and DEFAULT_TERRASYNC_DIR from ffgo/constants.py as
+          well as the default setting to DEFAULT_TERRASYNC_DIR for
+          Config.FG_scenery. The default value for Config.FG_scenery is now
+          empty, as it used to be some time ago... (Florent Rougon)
+[MAINT]   Small changes to the AptDat and ToolTip classes.  (Florent Rougon)
+[FEATURE] Update the German translation. (chris_blues)
