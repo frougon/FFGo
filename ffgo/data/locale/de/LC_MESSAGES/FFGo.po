@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: FFGo 1.6.1\n"
 "Report-Msgid-Bugs-To: f.rougon@free.fr\n"
 "POT-Creation-Date: 2015-11-04 14:41+0100\n"
-"PO-Revision-Date: 2015-10-27 12:22+0100\n"
+"PO-Revision-Date: 2015-11-04 21:54+0100\n"
 "Last-Translator: chris_blues <chris@musicchris.de>\n"
 "Language-Team: \n"
 "Language: de\n"
@@ -22,7 +22,7 @@ msgstr ""
 #: ffgo/exceptions.py:40 ffgo/fgdata/apt_dat.py:53
 #, python-brace-format
 msgid "{shortDesc}: {detail}"
-msgstr "{shortDesc}: {detail}"
+msgstr "{shortDesc} ({detail})"
 
 #: ffgo/exceptions.py:46
 #, python-brace-format
@@ -285,7 +285,6 @@ msgstr ""
 "<http://wiki.flightgear.org/$FG_ROOT> für weitergehenede Details."
 
 #: ffgo/gui/configwindow.py:216
-#, fuzzy
 msgid ""
 "Path(s) to scenery directories.\n"
 "You can specify more than one path (separated by {separator!r}), ordered\n"
@@ -306,16 +305,20 @@ msgid ""
 msgstr ""
 "Pfad(e) zu den Szenerie Verzeichnis(sen)\n"
 "Man kann mehr als einen Pfad angeben (mit {separator!r} voneinander\n"
-"getrennt und von der höchsten zu niedrigsten Priorität sortiert. Eine\n"
-"typische Konfiguration ist, das TerraSync-Verzeichnis zuerst, gefolgt\n"
-"von den Speziellen Szenerien, falls welche installiert sind.\n"
+"getrennt), von der höchsten zu niedrigsten Priorität sortiert. Hier läßt\n"
+"sich die Priorität zu TerraSync Szenerie und spezieller Szenerie relativ\n"
+"angeben.\n"
+"\n"
+"Diese Einstellung wird als --fg-scenery Option an FlightGear weitergegeben.\n"
+"Dokumentation:\n"
+"<http://wiki.flightgear.org/$FG_SCENERY>\n"
 "\n"
 "Anmerkung:\n"
 "\n"
-"  Das Standardverzeichnis für TerrySync sollte\n"
-"  '{defaultTSdir}' in Ihrem\n"
-"  Betriebssystem heißen. Andernfalls melden Sie bitte einen Fehler\n"
-"  (bugreport) für {prg}."
+"  Das Standardverzeichnis für TerraSync in FlightGear 3.6 sollte\n"
+"  $FG_HOME/TerraSync in Ihrem Betriebssystem heißen. Siehe:\n"
+"  <http://wiki.flightgear.org/TerraSync> und\n"
+"  <http://wiki.flightgear.org/$FG_HOME>"
 
 #: ffgo/gui/configwindow.py:234
 msgid ""
