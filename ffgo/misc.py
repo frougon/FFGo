@@ -70,7 +70,15 @@ class OrderedEnum(enum.Enum):
 
 class DecimalCoord(float):
     def __str__(self):
-        return locale.format("%.06f", self)
+        # 8 decimal places, as recommended for latitudes and longitudes in
+        # the apt.dat v1000 spec
+        return locale.format("%.08f", self)
+
+    def __repr__(self):
+        return "{}.{}({!r})".format(__name__, type(self).__name__, float(self))
+
+    def floatRepr(self):
+        return repr(float(self))
 
     def precisionRepr(self):
         # Used when passing --lat or --lon options to make sure we don't
@@ -78,6 +86,33 @@ class DecimalCoord(float):
         # be largely enough, otherwise there is nothing magical about
         # this value.
         return "{:.010f}".format(self)
+
+    def __add__(self, other):
+        if self.__class__ is other.__class__:
+            return DecimalCoord(float(self) + float(other))
+        else:
+            return NotImplemented
+
+    def __sub__(self, other):
+        if self.__class__ is other.__class__:
+            return DecimalCoord(float(self) - float(other))
+        else:
+            return NotImplemented
+
+    def __mul__(self, other):
+        for klass in (int, float):
+            if isinstance(other, klass):
+                return DecimalCoord(float(self) * float(other))
+        else:
+            return NotImplemented
+
+    def __truediv__(self, other):
+        for klass in (int, float):
+            if isinstance(other, klass):
+                return DecimalCoord(float(self) / float(other))
+        else:
+            return NotImplemented
+
 
 # Similar to processPosition() in src/Airports/dynamicloader.cxx of the
 # FlightGear source code (version 3.7)
