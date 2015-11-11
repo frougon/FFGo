@@ -8,6 +8,7 @@ import contextlib
 import gettext
 import traceback
 import collections
+import itertools
 from xml.etree import ElementTree
 from tkinter import IntVar, StringVar
 from tkinter.messagebox import askyesno, showinfo, showerror
@@ -47,9 +48,6 @@ class Config:
         self.aircraftDict = {}  # Keys: aircraft names; values: Aircraft
                                 # instances.
         self.aircraftList = []  # Sorted list of Aircraft instances.
-        self.airport_icao = []  # List of ICAO codes for each airport.
-        self.airport_name = []  # List of airport names.
-        self.airport_rwy = []   # List of runways present in each airport.
 
         self.scenario_list = []  # List of selected scenarios.
         # List of all aircraft carriers found in AI scenario folder.
@@ -121,10 +119,10 @@ class Config:
                          self.showFGOutputInSeparateWindow,
                          'FG_OUTPUT_GEOMETRY=': self.FGOutputGeometry}
 
-        # In order to avoid using a lot of memory, parking data, *when taken
-        # from apt.dat*, is only loaded on demand. Since this is quite slow,
-        # keep a cache of the last retrieved data.
-        self.aptDatParkingCache = collections.deque(maxlen=50)
+        # In order to avoid using a lot of memory, detailed airport data is
+        # only loaded on demand. Since this is quite slow, keep a cache of the
+        # last retrieved data.
+        self.aptDatCache = collections.deque(maxlen=50)
 
         self._earlyTranslationsSetup()
         self._createUserDirectories()
@@ -192,34 +190,10 @@ class Config:
         logger.notice(_("Building the list of installed airports "
                         "(this may take some time)..."))
         # writelines() used below doesn't automatically add line terminators
-        airports = sorted([ icao + '\n' for icao in self._findInstalledApt() ])
+        airports = [ icao + '\n' for icao in self._findInstalledApt() ]
         logger.info("Opening '{}' for writing".format(INSTALLED_APT))
         with open(INSTALLED_APT, "w", encoding="utf-8") as fout:
             fout.writelines(airports)
-
-    def readCoord(self):
-        """Read coordinates list (makes new one if non exists).
-
-        Return dictionary of ICAO codes and its coordinates.
-
-        """
-        # Make new file.
-        if not os.path.exists(APT):
-            self._makeApt()
-
-        res = {}
-        logger.info("Opening apt file for reading: '{}'".format(APT))
-
-        with open(APT, encoding='utf-8') as fin:
-            for line in fin:
-                line = line.strip().split('=')
-                icao = line[0]
-                # Read coordinates.
-                coords_line = line[-1].split(';')
-                coords = (float(coords_line[0]), float(coords_line[1]))
-                res[icao] = coords
-
-        return res
 
     def readMetarDat(self):
         """Fetch METAR station list from metar.dat.gz file"""
@@ -235,7 +209,7 @@ class Config:
 
     def rebuildApt(self):
         """Rebuild apt file."""
-        self._makeApt()
+        self._makeAptDigest()
 
     def _computeAircraftDirList(self):
         FG_AIRCRAFT_env = os.getenv("FG_AIRCRAFT", "")
@@ -324,9 +298,6 @@ class Config:
         del self.metar_path
         del self.aircraftDict
         del self.aircraftList
-        del self.airport_icao
-        del self.airport_name
-        del self.airport_rwy
         del self.scenario_list
         del self.carrier_list
 
@@ -382,18 +353,9 @@ class Config:
         self.setCurrentAircraft(self._findAircraft(self.aircraft.get()))
 
         self.scenario_list, self.carrier_list = self._readScenarios()
-        self.updateAptLists()
-
         self.sanityChecks()
-
         self.getFlightGearVersion(ignoreFGVersionError=ignoreFGVersionError,
                                   log=logFGVersion)
-
-    def updateAptLists(self):
-        if self.auto_update_apt.get() and os.path.exists(self.apt_path):
-            self._autoUpdateApt()
-        self.airport_icao, self.airport_name, self.airport_rwy = \
-            self._readApt()
 
     def write(self, text=None, path=None):
         """Write the configuration to a file.
@@ -440,7 +402,7 @@ class Config:
         Take geographic coordinates from directories names and compare them
         with airports coordinates in apt file.
 
-        The result is a list of matching airports.
+        The result is a sorted list of ICAO codes for matching airports.
 
         """
         coord_dict = {}
@@ -466,16 +428,15 @@ class Config:
                                 _("Ignoring directory '{}' (unexpected name)")
                                 .format(d))
 
-        apt_coords = self.readCoord()
         coords = coord_dict.keys()
-        res = {}
-        for k, v in apt_coords.items():
+        res = []
+        for icao in self.sortedIcao():
+            airport = self.airports[icao]
             for c in coords:
-                if v[0] > c[0][0] and v[0] < c[0][1] and \
-                   v[1] > c[1][0] and v[1] < c[1][1]:
-                    res[k] = None
+                if (c[0][0] < airport.lat < c[0][1] and
+                    c[1][0] < airport.lon < c[1][1]):
+                    res.append(icao)
 
-        res = res.keys()
         return res
 
     def _calculateRange(self, coordinates):
@@ -590,7 +551,7 @@ configurations are kept separate.""")
             else:
                 assert choice == "create default cfg", repr(choice)
 
-    def _makeApt(self, head=None):
+    def _makeAptDigest(self, head=None):
         """Build apt database from apt.dat.gz"""
         if self.FG_root.get():
             _ProcessApt(self.master, self.apt_path, head)
@@ -758,70 +719,61 @@ configurations are kept separate.""")
 
         return aircraft
 
+    def sortedIcao(self):
+        return sorted(self.airports.keys())
+
     def _readApt(self):
-        """Read apt list (makes new one if non exists).
+        """Read the apt digest file (create a new one if none exists).
 
-        Return tuple of three lists:
-        airports ICAO codes, airports names, airports runways
-
-        Take a note that those lists are synchronized - each list holds
-        information about the same airport at given index.
+        Return a list of AirportStub instances.
 
         """
+        from .fgdata import apt_dat
+
         if not os.path.exists(APT):
             # Create a new file if self.FG_root is non-empty
-            self._makeApt()
+            self._makeAptDigest()
 
-        icao, name, rwy = [], [], []
         if not os.path.isfile(APT): # may happen if self.FG_root was empty
-            return (icao, name, rwy)
+            return []
 
-        logger.info("Opening apt file '{}' for reading".format(APT))
-
-        with open(APT, "r", encoding="utf-8") as fin:
-            if self.filteredAptList.get():
-                installed_apt = self._readInstalledAptList()
-                for line in fin:
-                    line = line.strip().split('=')
-                    if line[0] in installed_apt:
-                        installed_apt.remove(line[0])
-                        icao.append(line[0])
-                        name.append(line[1])
-                        rwy_list = []
-                        for i in line[2:-1]:
-                            rwy_list.append(i)
-                        rwy_list.sort()
-                        rwy.append(rwy_list)
-
+        for attempt in itertools.count(start=1):
+            try:
+                self.aptDatSize, self.airports = apt_dat.AptDatDigest.read(APT)
+            except apt_dat.UnableToParseAptDigest:
+                if attempt < 2:
+                    self._makeAptDigest()
+                else:
+                    raise
             else:
-                for line in fin:
-                    line = line.strip().split('=')
-                    icao.append(line[0])
-                    name.append(line[1])
-                    rwy_list = []
-                    for i in line[2:-1]:
-                        rwy_list.append(i)
-                    rwy.append(rwy_list)
+                break
 
-        return (icao, name, rwy)
+        if self.filteredAptList.get():
+            installedApt = self._readInstalledAptSet()
+            res = [ self.airports[icao] for icao in self.sortedIcao()
+                    if icao in installedApt ]
+        else:
+            res = [ self.airports[icao] for icao in self.sortedIcao() ]
 
-    def _readInstalledAptList(self):
-        """Read locally installed airport list.
+        return res
 
-        Make new one if non exists.
+    def _readInstalledAptSet(self):
+        """Read the set of locally installed airports from INSTALLED_APT.
+
+        Create a new INSTALLED_APT file if none exists yet.
+        Return a frozenset(), which offers very fast membership test
+        compared to a list.
 
         """
         if not os.path.exists(INSTALLED_APT):
             self.makeInstalledAptList()
 
-        res = []
         logger.info("Opening installed apt file '{}' for reading".format(
             INSTALLED_APT))
 
-        with open(INSTALLED_APT, "r", encoding="utf-8") as fin:
-            for line in fin:
-                icao = line.strip()
-                res.append(icao)
+        with open(INSTALLED_APT, "r", encoding="utf-8") as f:
+            # Strip the newline char ending every line
+            res = frozenset([ line[:-1] for line in f ])
 
         return res
 
@@ -984,7 +936,8 @@ configurations are kept separate.""")
 
     def _updateApt(self, old_timestamp):
         if old_timestamp != self._getAptModTime():
-            self._makeApt(head=_('Modification of apt.dat.gz detected.'))
+            self._makeAptDigest(head=_('Modification of apt.dat.gz detected.'))
+            # XXX What follows would probably be better in _ProcessApt
             self._writeAptTimestamp(self._getAptModTime())
             # The new apt.dat may invalidate the current parking
             status, *rest = self.decodeParkingSetting(self.park.get())
@@ -994,240 +947,47 @@ configurations are kept separate.""")
                 self.park.set('')
 
             # This is also outdated with respect to the new apt.dat.
-            self.aptDatParkingCache.clear()
+            self.aptDatCache.clear()
 
 
 class _ProcessApt:
 
     """Build apt database from apt.dat.gz"""
 
-    def __init__(self, master, apt_path, head=None):
+    def __init__(self, master, aptPath, head=None):
         self.master = master
-        self.apt_path = apt_path
-        self.data = []
+        self.aptPath = aptPath
         self.main(head)
 
     def main(self, head):
-        if os.path.exists(self.apt_path):
+        if os.path.exists(self.aptPath):
             self.make_window(head)
             try:
-                self.makeApt()
-            except AptdatHeaderError:
-                self.show_aptdat_header_error()
+                self.makeAptDigest()
+            except Exception:
                 self.close_window()
-                return
-            except:
-                logger.errorNP(traceback.format_exc())
-                self.show_aptdat_general_error()
-                self.close_window()
-                return
+                # Will be handled by master.report_callback_exception
+                raise
             self.close_window()
         else:
             self.show_no_aptdat_error()
 
     def make_window(self, head=None):
-        message = _('Generating airport database,\nthis can take a while...')
+        message = _('Generating the airport database,\n'
+                    'this may take a while...')
         if head:
             message = '\n'.join((head, message))
         self.window = InfoWindow(self.master, text=message)
 
-    def makeApt(self):
-        self.reset_variables()
-        version = self.get_apt_version_number()
-        self.process_atp(version)
+    def makeAptDigest(self):
+        from .fgdata import apt_dat
 
-        self.data.sort()
-        self.save_atp_data()
-
-    def reset_variables(self):
-        self.entry = ''
-        self.lat, self.lon = 0.0, 0.0
-        self.runway_count = 0
-
-    def get_apt_version_number(self):
-        """Return version number of apt.dat.gz file.
-
-        It can be found at the beginning of a second line of the header.
-
-        """
-        logger.info("Opening '{}' for reading".format(self.apt_path))
-        with gzip.open(self.apt_path) as fin:
-            origin, number, version = self.read_header(fin)
-            number = self.get_version_number(origin, number, version)
-        return number
-
-    def read_header(self, fin):
-        data = fin.read(24).decode('utf-8')
-        d = data.split()
-        try:
-            origin, number, version = d[0], d[1], d[2]
-            return origin, number, version
-        except:
-            raise AptdatHeaderError
-
-    def get_version_number(self, origin, number, version):
-        if ((origin == 'A' or origin == 'I') and
-                number.isdigit() and version == 'Version'):
-            return number
-        else:
-            raise AptdatHeaderError
-
-    def process_atp(self, version):
-        logger.info("Opening '{}' for reading".format(self.apt_path))
-        with gzip.open(self.apt_path) as fin:
-            for line in fin:
-                # The apt.dat is using iso-8859-1 encoding.
-                line = line.decode('iso-8859-1')
-                e = line.strip().split()
-
-                self.process_airport_data(version, e)
-                self.finalize_processing_airport(line)
-
-    def process_airport_data(self, version, e):
-        if int(version) < 850:
-            self.process_data_v810(e)
-        else:
-            self.process_data_v850(e)
-
-    def process_data_v810(self, e):
-        if e and e[0] in ('1', '16', '17'):
-            self.get_atp_name(e)
-        # Find runways.
-        elif self.entry and e and e[0] == '10':
-            if e[3] != 'xxx':
-                rwy = e[3]
-                if rwy.endswith('x'):
-                    rwy = rwy[:-1]
-
-                lat, lon = e[1], e[2]
-                self.set_rwy_data(rwy, lat, lon, addotherend=True)
-
-                self.runway_count += 1
-
-    def set_rwy_data(self, rwy, lat, lon, addotherend=False):
-        """Set runway data.
-
-        If addotherend is set to True, it computes and adds 
-        other end of given rwy. It is needed for apt.dat v 810 
-        and earlier data format, where only one runway end is provided.
-
-        """
-        self.entry += ('=' + rwy)
-        if addotherend:
-            self.add_other_end(rwy)
-        self.set_position_data(lat, lon)
-
-    def set_position_data(self, lat, lon):
-        self.lat += float(lat)
-        self.lon += float(lon)
-
-    def add_other_end(self, rwy):
-        rwy_number = self.compute_other_end(rwy)
-        if rwy_number:
-            self.entry += ('=' + rwy_number)
-
-    def compute_other_end(self, rwy):
-        if not rwy.startswith('H'):
-            prefix = self.compute_heading(rwy)
-            suffix = self.change_left_right(rwy)
-            return prefix + suffix
-
-    def compute_heading(self, rwy):
-        number = self.get_heading(rwy)
-        if number <= 36 and number > 18:
-            prefix = str(number - 18)
-        elif number > 0 and number <= 18:
-            prefix = str(number + 18)
-        return prefix
-
-    def get_heading(self, rwy):
-        while not rwy.isdigit():
-            rwy = rwy[:-1]
-        return int(rwy)
-
-    def change_left_right(self, rwy):
-        suffix = ''
-        if rwy.endswith('L'):
-            suffix = 'R'
-        elif rwy.endswith('R'):
-            suffix = 'L'
-        elif rwy.endswith('C'):
-            suffix = 'C'
-        return suffix
-
-    def process_data_v850(self, e):
-        if e and e[0] in ('1', '16', '17'):
-            self.get_atp_name(e)
-        # Find runways.
-        elif self.entry and e and e[0] == '100':
-            self.set_first_rwy_v850(e)
-            self.set_second_rwy_v850(e)
-            self.runway_count += 2
-        # Find water runways.
-        elif self.entry and e and e[0] == '101':
-            self.set_first_water_rwy_v850(e)
-            self.set_second_water_rwy_v850(e)
-            self.runway_count += 2
-        # Find helipads.
-        elif self.entry and e and e[0] == '102':
-            self.set_helipad_v850(e)
-            self.runway_count += 1
-
-    def set_first_rwy_v850(self, e):
-        self.set_rwy_data(e[8], e[9], e[10])
-
-    def set_second_rwy_v850(self, e):
-        self.set_rwy_data(e[17], e[18], e[19])
-
-    def set_first_water_rwy_v850(self, e):
-        self.set_rwy_data(e[3], e[4], e[5])
-
-    def set_second_water_rwy_v850(self, e):
-        self.set_rwy_data(e[6], e[7], e[8])
-
-    def set_helipad_v850(self, e):
-        self.set_rwy_data(e[1], e[2], e[3])
-
-    def get_atp_name(self, e):
-        """Get ICAO and airport name."""
-        name = [e[4], ' '.join(e[5:])]
-        name = '='.join(name)
-        self.entry = name
-
-    def finalize_processing_airport(self, line):
-        if self.entry and (line in ['\n', '\r\n'] or line.startswith('99')):
-            self.averaged_coordinates()
-            self.set_coordinates()
-            self.reset_variables()
-
-    def averaged_coordinates(self):
-        if self.runway_count:
-            self.lat /= self.runway_count
-            self.lon /= self.runway_count
-
-    def set_coordinates(self):
-        coords = ';'.join(['{0:.8f}'.format(round(self.lat, 8)),
-                           '{0:.8f}'.format(round(self.lon, 8))])
-        self.entry = '='.join([self.entry, coords])
-        self.data.append(self.entry)
-
-    def save_atp_data(self):
-        logger.info("Opening apt file '{}' for writing".format(APT))
-        with open(APT, "w", encoding="utf-8") as fin:
-            for i in self.data:
-                fin.write(str(i) + '\n')
-
-    def show_aptdat_header_error(self):
-        message = _('Cannot read version number of apt.dat database.\n\n'
-                    '{prg} expects a proper header information at the '
-                    'beginning of apt.dat. For details about data format see '
-                    'http://data.x-plane.com/designers.html#Formats').format(
-                        prg=PROGNAME)
-        showerror(_('Error'), message)
-
-    def show_aptdat_general_error(self):
-        message = _('Cannot read apt.dat database.')
-        showerror(_('Error'), message)
+        with apt_dat.AptDat(self.aptPath) as aptDat:
+            logger.notice(
+                _("Generating {prg}'s apt digest file ('{aptDigest}') from "
+                  "'{aptDat}'...").format(prg=PROGNAME, aptDigest=APT,
+                                          aptDat=self.aptPath))
+            aptDat.makeAptDigest(outputFile=APT)
 
     def show_no_aptdat_error(self):
         message = _('Cannot find apt.dat database.')
@@ -1235,7 +995,3 @@ class _ProcessApt:
 
     def close_window(self):
         self.window.destroy()
-
-
-class AptdatHeaderError(Exception):
-    pass

@@ -115,7 +115,8 @@ FG_OUTPUT_FG_COL = '#0014a7'
 FG_OUTPUT_BG_COL = '#fffeb2'
 # Background color of the FlightGear Command Window.
 FG_COMMAND_BG_COL = '#eeeeec'
-
+# Background color for the header line in popup menus (runway, parking...)
+POPUP_HEADER_BG_COL = "#000066"
 
 # FG related constants.
 

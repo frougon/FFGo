@@ -33,6 +33,7 @@ class Metar:
             self.fetchUrlBase +
             'pub/data/observations/metar/{reportType}/{icao}.TXT')
 
+        self.config = config
         self.icao = config.airport
         self.apt_path = config.apt_path
         self.metar_path = config.metar_path
@@ -44,7 +45,6 @@ class Metar:
         self.report.trace('w', self._updateLabelSize)
 
         self.metar_list = config.readMetarDat()
-        self.apt_dict = config.readCoord()
 
         # Lock used to prevent impatient users from making concurrent requests
         # to the site providing the METAR data, due to frenetic clicking on the
@@ -93,8 +93,8 @@ class Metar:
         self.top.destroy()
         self.app.setMetarToNone()
 
-    def _compare_pos(self, a, b):
-        return sqrt((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2)
+    def _comparePos(self, a, b):
+        return sqrt((a.lat - b.lat) ** 2 + (a.lon - b.lon) ** 2)
 
     # Accept any arguments to allow safe use as a Tkinter variable observer
     def onDecodedChanged(self, *args):
@@ -213,17 +213,17 @@ class Metar:
         nearest_dist = 999
 
         try:
-            airport_pos = self.apt_dict[icao]
+            airport = self.config.airports[icao]
         except KeyError:
             return ''
 
         for icao in self.metar_list:
             try:
-                metar_pos = self.apt_dict[icao]
+                metarCandidate = self.config.airports[icao]
             except KeyError:
                 continue
 
-            distance = self._compare_pos(airport_pos, metar_pos)
+            distance = self._comparePos(airport, metarCandidate)
             if distance < nearest_dist:
                 nearest_metar = icao
                 nearest_dist = distance

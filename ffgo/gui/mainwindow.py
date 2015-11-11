@@ -95,12 +95,6 @@ class MyEntry(Entry, PassShortcutsToApp):
         PassShortcutsToApp.__init__(self, app)
 
 
-@enum.unique
-class AptDatParkingLookupMsgType(enum.Enum):
-    """Message type for thread communication via a queue."""
-    result, exception = range(2)
-
-
 class App:
 
     def __init__(self, master, config, params):
@@ -324,6 +318,46 @@ class App:
         self.airportList.bind('<<ListboxSelect>>', self.updateAirport)
         self.airportList.pack(side='left', fill='both', expand=True)
         self.sAirports.pack(side='left', fill='y')
+
+        def airportListTooltipFunc(index):
+            from ..fgdata.airport import airportTypeStr, RunwayType, \
+                runwayTypeStr
+
+            icao = self.getAirportIcaoAtIndex(index)
+            found, airport = self.readAirportData(icao)
+
+            if found:
+                d = {}
+                for rwy in airport.runways:
+                    if rwy.type not in d:
+                        d[rwy.type] = []
+
+                    d[rwy.type].append(rwy.name)
+
+                rwyTypes = sorted([ rwyType.value for rwyType in d.keys() ])
+                rl = []         # one element per runway type
+                for rwyTypeVal in rwyTypes:
+                    rwyType = RunwayType(rwyTypeVal)
+                    runwayTypeName = runwayTypeStr(rwyType, len(d[rwyType]))
+
+                    s = "{rwyType}: {runways}".format(
+                        rwyType=runwayTypeName,
+                        runways=", ".join(sorted(d[rwyType])))
+                    rl.append(
+                        textwrap.fill(s, width=40, subsequent_indent='  '))
+
+                l = ([airportTypeStr[airport.type],
+                      _("Latitude: {latitude}").format(latitude=airport.lat),
+                      _("Longitude: {longitude}").format(longitude=airport.lon),
+                      _("Elevation: {elevation} feet").format(
+                          elevation=locale.format("%.01f", airport.elevation))]
+                     + rl)
+                return '\n'.join(l)
+            else:
+                return None
+
+        self.airportTooltip = tooltip.ListBoxToolTip(self.airportList,
+                                                     airportListTooltipFunc)
 
         self.frame32 = Frame(self.frame3, borderwidth=1)
         self.frame32.pack(side='top', fill='x')
@@ -676,14 +710,17 @@ want to follow this new default and set “Airport database update” to
         self.aircraftSearch.focus_set()
 
     def buildAirportList(self, applySearchFilter=False):
+        # The current tooltip won't match the airport under the mouse pointer
+        # after the list is rebuilt.
+        self.airportTooltip.hideTooltip()
+
         if self.airportList:
             self.airportList.delete(0, 'end')
 
         searchText = self.airportSearch.get().lower()
 
-        for i in range(len(self.config.airport_icao)):
-            text = "{:6} {}".format(self.config.airport_icao[i],
-                                    self.config.airport_name[i])
+        for airport in self.shownAirports:
+            text = "{:6} {}".format(airport.icao, airport.name)
             if not applySearchFilter or searchText in text.lower():
                 self.airportList.insert('end', text)
 
@@ -702,6 +739,13 @@ want to follow this new default and set “Airport database update” to
     def airportSearchClear(self):
         self.airportSearch.delete('0', 'end')
         self.airportSearch.focus_set()
+
+    def updateAirportList(self):
+        if (self.config.auto_update_apt.get() and
+            os.path.isfile(self.config.apt_path)):
+            self.config._autoUpdateApt()
+
+        self.shownAirports = self.config._readApt()
 
     def commentText(self):
         """Highlight comments in text window."""
@@ -749,9 +793,9 @@ want to follow this new default and set “Airport database update” to
         Apply filter to airportList if self.config.filteredAptList is True.
 
         """
-        message = _("Building airport lists (this may take some time)...")
+        message = _("Building the airport list (this may take a while)...")
         infoWindow = infowindow.InfoWindow(self.master, text=message)
-        self.config.updateAptLists()
+        self.updateAirportList()
         self.buildAirportList()
         infoWindow.destroy()
 
@@ -768,13 +812,23 @@ want to follow this new default and set “Airport database update” to
             # available.
             return None
 
+    def getAirportIcaoAtIndex(self, index):
+        """
+        Return the ICAO code for the airport at 'index' in the airport list.
+
+        As for the Tkinter Listbox widget, 'index' starts from 0.
+
+        """
+        return self.airportList.get(index).split()[0]
+
     def getAirport(self):
         """Get airportList current selection and return airport ICAO."""
         index = self.airportList.curselection()
         if index:
-            return self.airportList.get(index).split()[0]
+            return self.getAirportIcaoAtIndex(index)
+
         try:
-            return self.airportList.get(ACTIVE).split()[0]
+            return self.getAirportIcaoAtIndex(ACTIVE)
         except IndexError:
             return self.config.airport.get()
 
@@ -820,13 +874,15 @@ want to follow this new default and set “Airport database update” to
                     return 0
 
         if type_ == 'p':
-            name = self.config.airport.get()
+            icao = self.config.airport.get()
             try:
-                return self.config.airport_icao.index(name)
-            except ValueError:
+                airport = self.config.airports[icao]
+                return self.shownAirports.index(airport)
+            except (KeyError, ValueError):
                 try:
-                    return self.config.airport_icao.index(DEFAULT_AIRPORT)
-                except ValueError:
+                    airport = self.config.airports[DEFAULT_AIRPORT]
+                    return self.shownAirports.index(airport)
+                except (KeyError, ValueError):
                     return 0
 
     def popupCarrier(self, event):
@@ -883,12 +939,11 @@ want to follow this new default and set “Airport database update” to
 
     def populateAirportParkingPopup(self, origEvent, popup, headerBgColor):
         """Populate the popup menu for an airport parking."""
-        d = self.readParkingData(origEvent, popup, headerBgColor,
-                                 self.config.airport.get())
+        d = self.readParkingData(self.config.airport.get())
         if d is not None:
             self._populateAirportParkingPopupEnd(origEvent, popup,
                                                  headerBgColor, d)
-        # If 'd' is None, the rest will be run from an event handler
+        return d
 
     def _populateAirportParkingPopupEnd(self, origEvent, popup, headerBgColor,
                                         parkingData):
@@ -944,11 +999,12 @@ want to follow this new default and set “Airport database update” to
     def popupPark(self, event):
         """Make popup menu for airport parking or carrier start position."""
         popup = Menu(tearoff=0)
-        # Background color for column headers
-        headerBgColor = "#000066"
 
         if self.config.airport.get():
-            self.populateAirportParkingPopup(event, popup, headerBgColor)
+            data = self.populateAirportParkingPopup(event, popup,
+                                                    POPUP_HEADER_BG_COL)
+            if data is None:    # error doing the parking data lookup
+                popup.destroy() # (the error dialog box has already been shown)
         else:
             L = self.currentCarrier[1:-1]
             for i in L:
@@ -957,64 +1013,81 @@ want to follow this new default and set “Airport database update” to
 
             popup.tk_popup(event.x_root, event.y_root, 0)
 
-    def _lookupParkingDataFromAptDatThreadFunc(self, aptPath, icao, queue):
-        try:
-            self._lookupParkingDataFromAptDatThreadFunc0(aptPath, icao, queue)
-        except BaseException:
-            logger.errorNP(traceback.format_exc())
+    def _readAirportDataWrongIndexErrMsg(self, pbType, icao, aptPath, index):
+        message = _('Unable to load airport data')
 
-    def _lookupParkingDataFromAptDatThreadFunc0(self, aptPath, icao, queue):
-        try:
+        if pbType == "index too large":
+            startOfMsg = _("""\
+Attempt to load data for airport {icao} from apt digest file '{aptDigest}' \
+using index {index}, which is greater than, or equal to the supposed size of \
+uncompressed '{aptDat}' ({aptDatSize} bytes) as recorded in '{aptDigest}'."""
+            ).format(icao=icao, aptDigest=APT, index=index,
+                     aptDat=aptPath, aptDatSize=self.config.aptDatSize)
+        elif pbType == "airport not found at index":
+            startOfMsg = _("""\
+Unable to find data for airport {icao} in apt digest file '{aptDigest}' \
+at index {index}.""").format(icao=icao, aptDigest=APT, index=index)
+        else:
+            assert False, "Bug in {prg}, please report.".format(prg=PROGNAME)
+
+        detail = _("""{startOfMsg} \
+This may be explained by '{aptDigest}' being out of date relatively to \
+'{aptDat}'. In such a case, you should just rebuild the airport database from \
+the Miscellaneous tab of the Preferences dialog.
+
+If you are *sure* this is not the explanation, please report a bug using the \
+instructions on {prg}'s home page including:
+  - a screenshot containing this message;
+  - a copy of the '{aptDat}' and '{aptDigest}' files (DON'T REBUILD THE \
+AIRPORT DATABASE before making a copy of '{aptDigest}', otherwise it will be \
+useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
+                                 aptDigest=APT, aptDat=aptPath)
+        showerror(_('{prg}').format(prg=PROGNAME), message, detail=detail)
+
+    def readAirportData(self, icao):
+        """Read airport data from self.config.aptDatCache or apt.dat.
+
+        Return a tuple of the form (found, airport) where 'found' is a
+        boolean and airport an Airport instance, or None when 'found' is
+        False.
+
+        """
+        for cachedIcao, cachedAirport in self.config.aptDatCache:
+            if cachedIcao == icao:
+                found = True
+                airport = cachedAirport
+                break
+        else:
             from ..fgdata.apt_dat import AptDat
+            aptPath = os.path.join(self.config.FG_root.get(), APT_DAT)
+
+            index = self.config.airports[icao].indexInAptDat
+            if index >= self.config.aptDatSize:
+                self._readAirportDataWrongIndexErrMsg("index too large",
+                                                      icao, aptPath, index)
+                return (False, None)
 
             with AptDat(aptPath) as aptDat:
-                logger.info(_("Looking for parking positions for {icao} "
-                              "in {aptDat}").format(icao=icao,
-                                                    aptDat=aptPath))
-                # This is *slow*, which is why we created a separate thread
-                # (otherwise, this would freeze the interface for a significant
-                # time).
-                parkingData = aptDat.readParkingForIcao(icao)
-        except BaseException as exc:
-            queue.put((AptDatParkingLookupMsgType.exception, exc))
-        else:
-            queue.put((AptDatParkingLookupMsgType.result, (icao, parkingData)))
+                found, airport = aptDat.readAirportDataUsingIndex(icao, index)
 
-        # Should be safe even in a thread that is not the GUI thread
-        self.master.event_generate("<<FFGoAptDatParkLookupQueueUpdated>>",
-                                   when="tail")
+            if found:
+                self.config.aptDatCache.append((icao, airport))
+            else:
+                self._readAirportDataWrongIndexErrMsg(
+                    "airport not found at index", icao, aptPath, index)
 
-    def _onAptDatParkLookupQueueUpdated(
-            self, event, origEvent=None, queue=None, popup=None,
-            headerBgColor=None):
-        poppedSomething = False
+        return (found, airport)
 
-        while True:         # Pop all elements present in the queue
-            try:
-                msgType, payload = queue.get_nowait()
-            except queue_mod.Empty:
-                break
+    def readParkingData(self, icao):
+        """Read parking/startup location data from a groundnet file or apt.dat.
 
-            if msgType == AptDatParkingLookupMsgType.result:
-                icao, parkingData = payload
-                self.config.aptDatParkingCache.append((icao, parkingData))
-                poppedSomething = True
-            elif msgType == AptDatParkingLookupMsgType.exception:
-                if self.aptDatParkLookupInfoWindow is not None:
-                    self.aptDatParkLookupInfoWindow.destroy()
-                # The exception transmitted by the thread function via the
-                # queue will be handled by
-                # main.reportTkinterCallbackException().
-                raise payload
+        Return a dictionary if successful, or None if the apt.dat lookup
+        (done as a last resort) failed. The keys of the dictionary are
+        flight types (if the data was found in a groundnet) or type of
+        location (if it comes from apt.dat). Its values are sequences of
+        Parking instances.
 
-        if poppedSomething:
-            if self.aptDatParkLookupInfoWindow is not None:
-                self.aptDatParkLookupInfoWindow.destroy()
-
-            self._populateAirportParkingPopupEnd(
-                origEvent, popup, headerBgColor, parkingData)
-
-    def readParkingData(self, origEvent, popup, headerBgColor, icao):
+        """
         res = {}
 
         # If airport data source is set to "Scenery"
@@ -1043,49 +1116,33 @@ want to follow this new default and set “Airport database update” to
                         res = fgdata.parking.readGroundnetFile(file_path)
 
         if not res:
-            foundInCache = False
-            for cachedIcao, parkings in self.config.aptDatParkingCache:
-                if cachedIcao == icao:
-                    res = parkings
-                    foundInCache = True
-                    break
-
-            if not foundInCache:
-                # Queue for communication with the worker thread
-                queue = queue_mod.Queue()
-                self.master.bind("<<FFGoAptDatParkLookupQueueUpdated>>",
-                                 functools.partial(
-                                     self._onAptDatParkLookupQueueUpdated,
-                                     origEvent=origEvent, queue=queue,
-                                     popup=popup, headerBgColor=headerBgColor))
-
-                aptPath = os.path.join(self.config.FG_root.get(), APT_DAT)
-                # A thread will keep the interface responsive during the
-                # possibly looooong lookup in apt.dat.gz.
-                t = threading.Thread(name="AptDatParkingLookup",
-                             target=self._lookupParkingDataFromAptDatThreadFunc,
-                             args=(aptPath, icao, queue),
-                             daemon=True)
-                t.start()
-
-                text = _("Looking up parking positions for {icao} "
-                         "in apt.dat.gz...").format(icao=icao)
-                self.aptDatParkLookupInfoWindow = infowindow.InfoWindow(
-                    self.master, text=text)
-                res = None
+            found, airport = self.readAirportData(icao)
+            res = airport.parkings if found else None
 
         return res
 
     def popupRwy(self, event):
-        """Make pop up menu."""
+        """Popup menu offering to select between runways and/or helipads."""
         if self.config.airport.get():
+            runways = self.readRunwayData(self.config.airport.get())
+            if runways is None: # error doing the runway data lookup
+                return          # (the error dialog box has already been shown)
+
             # self.config.airport not empty: we are not in “carrier mode”
             popup = Menu(tearoff=0)
+
+            # This makes the popup menu more visible, visually similar
+            # to the parking popup, and avoids it disappearing in a
+            # flash with the first entry being accidentally selected if
+            # the user just clicked without holding the button down.
+            popup.add_command(label='', state=DISABLED,
+                              background=POPUP_HEADER_BG_COL)
+
             popup.add_command(label=pgettext('runway', 'Default'),
                               command=lambda: self.config.rwy.set(''))
-            for i in self.readRunwayData(self.config.airport.get()):
-                popup.add_command(label=i, command=lambda i=i:
-                                  self.config.rwy.set(i))
+            for r in runways:
+                popup.add_command(label=r, command=lambda x=r:
+                                  self.config.rwy.set(x))
             popup.tk_popup(event.x_root, event.y_root, 0)
 
     def popupScenarios(self, event):
@@ -1147,15 +1204,12 @@ want to follow this new default and set “Airport database update” to
         self.master.quit()
 
     def readRunwayData(self, icao):
-        res = []
-        path = os.path.join(self.config.ai_path, DEFAULT_AIRPORTS_DIR)
-        if os.path.isdir(path):
-            index = self.getIndex('p')
-            rwy = self.config.airport_rwy[index]
-            for i in rwy:
-                res.append(i)
+        found, airport = self.readAirportData(icao)
 
-        return res
+        if found:
+            return [ rwy.name for rwy in airport.runways ]
+        else:
+            return None
 
     def read_scenario(self, scenario):
         """Read description from a scenario."""
@@ -1281,6 +1335,7 @@ want to follow this new default and set “Airport database update” to
 
     def resetLists(self):
         self.buildAircraftList()
+        self.updateAirportList()
         self.buildAirportList()
         self.aircraftList.select_set(self.getIndex('a'))
         self.airportList.select_set(self.getIndex('p'))
