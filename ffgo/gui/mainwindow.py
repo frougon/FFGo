@@ -43,6 +43,12 @@ try:
 except ImportError:
     HAS_PIL = False
 
+try:
+    import geographiclib
+    HAS_GEOGRAPHICLIB = True
+except ImportError:
+    HAS_GEOGRAPHICLIB = False
+
 
 def setupTranslationHelper(config):
     global pgettext
@@ -103,7 +109,7 @@ class App:
         self.config = config
 
         setupTranslationHelper(config)
-        self.LogStartupMessages()
+        self.surveyDependencies()
 
         self.options = StringVar()
         self.translatedPark = StringVar()
@@ -469,13 +475,19 @@ class App:
         self.runFGLock = threading.Lock()
         self.setupKeyboardShortcuts()
 
-    def LogStartupMessages(self):
+    def surveyDependencies(self):
         # Same string as in the About box
-        using = _('Using Python {pyVer} and CondConfigParser {ccpVer}').format(
-            pyVer=misc.pythonVersionString(),
-            ccpVer=condconfigparser.__version__)
+        l = [_('Python {}').format(misc.pythonVersionString()),
+             _('CondConfigParser {}').format(condconfigparser.__version__)]
+
+        if HAS_GEOGRAPHICLIB:
+            l.append(_('GeographicLib {}'.format(geographiclib.__version__)))
+
+        # This attribute is also used in the About dialog.
+        self.using = _("Using:\n") + \
+                     '\n'.join([ textwrap.indent(s, '  - ') for s in l ])
         logger.notice(_("{prgWithVer} started\n{using}").format(
-            prgWithVer=NAME_WITH_VERSION, using=using))
+            prgWithVer=NAME_WITH_VERSION, using=self.using))
 
         # We can't print a translated version of the warning when the import
         # test is done at module initialization; thus, do it now.
@@ -484,6 +496,12 @@ class App:
                 _("[{prg} warning] {libName} library not found. Aircraft "
                   "thumbnails won't be displayed.").format(prg=PROGNAME,
                                                            libName="Pillow"))
+        if not HAS_GEOGRAPHICLIB:
+            logger.warningNP(
+                _("[{prg} warning] {libName} library not found. Some features "
+                  "requiring geodesic calculations may be disabled or provide "
+                  "less accurate results.").format(prg=PROGNAME,
+                                                   libName="GeographicLib"))
         self.config.logDetectedFlightGearVersion()
 
     # Regexp to ignore empty or whitespace-only elements
@@ -606,11 +624,7 @@ want to follow this new default and set “Airport database update” to
             translator = ''
         else:
             translator = '\n\n' + _('Translation:')
-        authors = _('Authors:')
-        # Same string as in App.LogStartupMessages()
-        using = _('Using Python {pyVer} and CondConfigParser {ccpVer}').format(
-            pyVer=misc.pythonVersionString(),
-            ccpVer=condconfigparser.__version__)
+        authors = _('Authors: {}').format(AUTHORS)
 
         # Refresh the version info in case the user fixed his fgfs executable
         # since the last time we tried to run 'fgfs --version'.
@@ -627,10 +641,10 @@ want to follow this new default and set “Airport database update” to
         detected = _('Detected FlightGear version: {ver}').format(
             ver=FG_version) + comment
 
-        about_text = ('{copyright}\n\n{authorsLabel}\n{authors}{transl}\n\n'
-                      '{using}.\n\n{detected}.').format(
+        about_text = ('{copyright}\n\n{authors}{transl}\n\n'
+                      '{using}\n\n{detected}.').format(
                           copyright=COPYRIGHT, authorsLabel=authors,
-                          authors=AUTHORS, transl=translator, using=using,
+                          authors=authors, transl=translator, using=self.using,
                           detected=detected)
 
         self.aboutWindow = Toplevel(borderwidth=4)
@@ -646,7 +660,8 @@ want to follow this new default and set “Airport database update” to
         self.aboutFrame1 = Frame(self.aboutWindow, borderwidth=1,
                                  relief='sunken', padx=8, pady=12)
         self.aboutFrame1.pack(fill='x', expand=True)
-        self.aboutText = Label(self.aboutFrame1, text=about_text)
+        self.aboutText = Label(self.aboutFrame1, text=about_text,
+                               justify='left')
         self.aboutText.pack()
         self.aboutFrame2 = Frame(self.aboutWindow, borderwidth=12)
         self.aboutFrame2.pack()

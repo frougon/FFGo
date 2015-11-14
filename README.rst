@@ -56,13 +56,15 @@ FFGo relies on the following software:
     ``python3-tk`` or ``python-tk`` in Linux package managers);
   - `CondConfigParser`_;
   - `Pillow`_ (a PIL fork that supports Python 3) [#]_; the
-    corresponding Debian package is ``python3-pil.imagetk``.
+    corresponding Debian package is ``python3-pil.imagetk``;
+  - `GeographicLib`_.
 
 .. [#] This library is not mandatory to run FFGo, but aircraft thumbnails
        won't be displayed without it.
 
 .. _Tkinter: https://docs.python.org/3/library/tkinter.html
 .. _Pillow: http://python-pillow.github.io/
+.. _GeographicLib: http://geographiclib.sourceforge.net/
 
 Note:
 
@@ -165,7 +167,11 @@ directory in any release tarball or zip file. In short:
     Besides FFGo, you may want to also install `Pillow`_ in order to see
     the aircraft thumbnails in FFGo. The presence of Pillow is detected
     at run time, therefore it doesn't matter if Pillow is installed
-    before or after FFGo.
+    before or after FFGo. Similarly, if you install `GeographicLib`_ for
+    the Python installation you'll use to run FFGo, you will have more
+    features available (for now, essentially the calculation of runway
+    length and heading for the runway tooltips, probably more in the
+    future).
 
 .. _pip: https://pypi.python.org/pypi/pip
 
@@ -249,7 +255,8 @@ in the `FFGo forum thread`_. In either case, be very precise telling:
   - your operating system;
 
   - the versions of FFGo and its dependencies (Python, CondConfigParser,
-    FlightGear... also Pillow if the problem is image-related);
+    FlightGear... also Pillow and GeographicLib if you have them
+    installed);
 
   - how you installed FFGo (with `pip`_, or a distribution package,
     or...);

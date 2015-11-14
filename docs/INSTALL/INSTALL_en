@@ -38,7 +38,10 @@ FFGo's dependencies are:
   - Python 3.4 or later;
   - Tkinter (for the aforementioned Python interpreter);
   - CondConfigParser;
-  - Pillow (optional, only used to display aircraft thumbnails).
+  - Pillow (optional, only used to display aircraft thumbnails);
+  - GeographicLib (optional, used for geodesic calculations; e.g., to compute
+    a runway length or heading based on the latitude and longitude of the two
+    runway ends).
 
 Let's examine them one by one:
 
@@ -59,10 +62,15 @@ Let's examine them one by one:
   always available in virtual environments created from that interpreter, even
   if you created them without the '--system-site-packages' option.
 
-- CondConfigParser is straightforward to install once you have a "working pip
-  setup" (cf. Appendix A): all that is needed is to run
+- CondConfigParser is straightforward to install once you have a “working pip
+  setup” (cf. Appendix A): all that is needed is to run
   'pip install CondConfigParser'. Otherwise, it is available as a Debian
   package, see its home page for details.
+
+- GeographicLib: the situation is similar in some ways to that of
+  CondConfigParser. Once you have a “working pip setup” (cf. Appendix A), all
+  that is needed is to run 'pip install geographiclib'. This does not require
+  any compilation.
 
 - Pillow can be installed similarly ('pip install Pillow'), but this will only
   work if you have already installed the software required to compile Pillow.
@@ -135,8 +143,8 @@ everything easily. But if you want to cut the procedure as short as possible
 and test FFGo right away, here is how (this method requires an OS supporting
 symbolic links, therefore Windows seems not to qualify):
 
-  0. You may install Pillow through your distribution package manager; it's
-     usually easy, but entirely optional.
+  0. You may install Pillow and/or GeographicLib through your distribution
+     package manager; it's usually easy, but entirely optional.
 
   1. Unpack the CondConfigParser archive wherever you want, under your normal
      user account:
@@ -176,6 +184,7 @@ in order to install a Python package. In short, if you have Internet access
 and your pip is properly setup, all you have to do is 'pip install FFGo'.
 Optionally, you can also install Pillow with 'pip install Pillow', but this
 may fail if you don't have some particular software installed (see below).
+You may also want to install GeographicLib with 'pip install geographiclib'.
 
 Besides being cleaner in concept, the "standard procedure" makes upgrades and
 removals easier than the "easiest procedure" described above, and makes it
@@ -200,10 +209,11 @@ or
 Note: old versions of pip don't support https.
 
 The above commands automatically pull in the required dependencies (i.e.,
-CondConfigParser, but not Pillow since it is optional). After that, you will
-have an 'ffgo' executable in the directory where pip installs scripts ('bin'
-subdirectory of the virtual environment if your pip runs in a venv, something
-such as C:\PythonXX\Scripts on Windows if you ran pip outside a venv).
+CondConfigParser, but not Pillow nor GeographicLib since they are optional).
+After that, you will have an 'ffgo' executable in the directory where pip
+installs scripts ('bin' subdirectory of the virtual environment if your pip
+runs in a venv, something such as C:\PythonXX\Scripts on Windows if you ran
+pip outside a venv).
 
 Note for Windows users:
 
@@ -225,8 +235,8 @@ For more information about pip and venv.py/pyvenv, see "References" at the end
 of this document.
 
 
-Hints concerning installation of CondConfigParser and Pillow
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Hints concerning installation of the dependencies
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 * CondConfigParser
 
@@ -285,6 +295,14 @@ Hints concerning installation of CondConfigParser and Pillow
     * Then, you should be able to run:
 
         pip install Pillow
+
+* GeographicLib
+
+  The situation is similar to that of Pillow, except GeographicLib doesn't
+  need to be compiled. In general, it can be installed with 'pip install
+  geographiclib'. Alternatively, it may be available as a distribution package
+  under a name such as python3-geographiclib. If not, it may be a good idea to
+  request or contribute its packaging for your distribution.
 
 Of course, these are just hints; the authoritative source for installation
 procedures is obviously the documentation for the particular piece of software
@@ -508,9 +526,10 @@ one thing that requires paying attention to before doing so:
 
           % python3 -m venv --system-site-packages foo-venv
 
-    Once you have installed FFGo and maybe Pillow in your venv, you will want
-    to run FFGo using the Python interpreter from this venv. The 'ffgo'
-    executable should be in 'foo-venv/bin'. You may run it like this:
+    Once you have installed FFGo and maybe Pillow and/or GeographicLib in your
+    venv, you will want to run FFGo using the Python interpreter from this
+    venv. The 'ffgo' executable should be in 'foo-venv/bin'. You may run it
+    like this:
 
       % foo-venv/bin/ffgo
 

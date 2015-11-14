@@ -66,7 +66,7 @@ def do_setup():
                                   '*/Makefile', '*/Makefile.py-functions'] },
 
         install_requires=['CondConfigParser'],
-        extras_require = {'images':  ["Pillow"]},
+        extras_require = {'images':  ['Pillow'], 'geo': ['geographiclib']},
         entry_points={'console_scripts': ['ffgo = ffgo.main:main']},
         # We need real files and directories for gettext l10n files, but
         # pkg_resources.resource_filename() doesn't work if the package is
