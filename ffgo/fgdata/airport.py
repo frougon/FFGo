@@ -9,6 +9,17 @@
 # it at <http://www.wtfpl.net/>.
 
 import enum
+import locale
+import textwrap
+
+def setupTranslationHelper(config):
+    global pgettext, ngettext, npgettext
+    from .. import misc
+
+    translationHelper = misc.TranslationHelper(config)
+    pgettext = translationHelper.pgettext
+    ngettext = translationHelper.ngettext
+    npgettext = translationHelper.npgettext
 
 
 class error(Exception):
@@ -22,10 +33,13 @@ class AirportType(enum.Enum):
     seaplaneBase = 16
     heliport = 17
 
-airportTypeStr = {
-    AirportType.landAirport: _("Land airport"),
-    AirportType.seaplaneBase: _("Seaplane base"),
-    AirportType.heliport: _("Heliport") }
+    def capitalizedName(self):
+        d = {
+            AirportType.landAirport: _("Land airport"),
+            AirportType.seaplaneBase: _("Seaplane base"),
+            AirportType.heliport: _("Heliport")
+        }
+        return d[self]
 
 
 class Airport:
@@ -46,6 +60,33 @@ class Airport:
 
     def __str__(self):
         return "{} ({})".format(self.name, self.icao)
+
+    def tooltipText(self):
+        d = {}
+        for rwy in self.runways:
+            if rwy.type not in d:
+                d[rwy.type] = []
+
+            d[rwy.type].append(rwy.name)
+
+        rl = []         # one element per runway type
+        for rwyType in sorted(d.keys(), key=lambda x: x.value):
+            runwayTypeName = rwyType.capitalizedName(len(d[rwyType]))
+
+            s = "{rwyType}: {runways}".format(
+                rwyType=runwayTypeName,
+                runways=", ".join(sorted(d[rwyType])))
+            rl.append(
+                textwrap.fill(s, width=40, subsequent_indent='  '))
+
+        l = ([self.type.capitalizedName(),
+              _("Latitude: {latitude}").format(latitude=self.lat),
+              _("Longitude: {longitude}").format(longitude=self.lon),
+              _("Elevation: {elev_feet} ft ({elev_meters} m)").format(
+                  elev_feet=locale.format("%d", round(self.elevation)),
+                  elev_meters=locale.format("%.01f", self.elevation*0.3048))]
+             + rl)
+        return '\n'.join(l)
 
 
 class AirportStub:
@@ -82,32 +123,174 @@ class AirportStub:
 
 
 @enum.unique
+class SurfaceType(enum.Enum):
+    # Codes used in apt.dat (v1000 spec)
+    asphalt = 1
+    concrete = 2
+    turfOrGrass = 3
+    dirt = 4
+    gravel = 5
+    dryLakebed = 12
+    water = 13
+    snowOrIce = 14
+    transparent = 15
+
+    def __str__(self):
+        d = {
+            SurfaceType.asphalt: pgettext("surface type", "asphalt"),
+            SurfaceType.concrete: pgettext("surface type", "concrete"),
+            SurfaceType.turfOrGrass: pgettext("surface type",
+                                                      "turf or grass"),
+            SurfaceType.dirt: pgettext("surface type", "dirt"),
+            SurfaceType.gravel: pgettext("surface type", "gravel"),
+            SurfaceType.dryLakebed: pgettext("surface type", "dry lake bed"),
+            SurfaceType.water: pgettext("surface type", "water"),
+            SurfaceType.snowOrIce: pgettext("surface type", "snow or ice"),
+            SurfaceType.transparent: pgettext("surface type", "transparent")
+        }
+        return d[self]
+
+
+@enum.unique
+class V810SurfaceType(enum.Enum):
+    # Codes used in apt.dat (v810 spec)
+    asphalt = 1
+    concrete = 2
+    turfOrGrass = 3
+    dirt = 4
+    gravel = 5
+    asphaltHelipad = 6
+    concreteHelipad = 7
+    turfHelipad = 8
+    dirtHelipad = 9
+    asphaltTaxiway = 10
+    concreteTaxiway = 11
+    dryLakebed = 12
+    water = 13
+
+    def __str__(self):
+        # The obsolete codes should not be visible to users → don't
+        # mark the corresonding strings as translatable.
+        d = {
+            V810SurfaceType.asphalt: str(SurfaceType.asphalt),
+            V810SurfaceType.concrete: str(SurfaceType.concrete),
+            V810SurfaceType.turfOrGrass: str(SurfaceType.turfOrGrass),
+            V810SurfaceType.dirt: str(SurfaceType.dirt),
+            V810SurfaceType.gravel: str(SurfaceType.gravel),
+            V810SurfaceType.asphaltHelipad: "asphalt helipad",
+            V810SurfaceType.concreteHelipad: "concrete helipad",
+            V810SurfaceType.turfHelipad: "turf helipad",
+            V810SurfaceType.dirtHelipad: "dirt helipad",
+            V810SurfaceType.asphaltTaxiway: "asphalt taxiway",
+            V810SurfaceType.concreteTaxiway: "concrete taxiway",
+            V810SurfaceType.dryLakebed: str(SurfaceType.dryLakebed),
+            V810SurfaceType.water: str(SurfaceType.water),
+        }
+        return d[self]
+
+    def isWaterRunway(self):
+        return (self is V810SurfaceType.water)
+
+    def isHelipad(self):
+        return (self in (V810SurfaceType.asphaltHelipad,
+                         V810SurfaceType.concreteHelipad,
+                         V810SurfaceType.turfHelipad,
+                         V810SurfaceType.dirtHelipad))
+
+    def isTaxiway(self):
+        return (self in (V810SurfaceType.asphaltTaxiway,
+                         V810SurfaceType.concreteTaxiway))
+
+    def v1000Equivalent(self):
+        """Map v810 surface types to v1000 surface types."""
+        mapping = {6: SurfaceType.asphalt,
+                   7: SurfaceType.concrete,
+                   8: SurfaceType.turf,
+                   9: SurfaceType.dirt,
+                   10: SurfaceType.asphalt,
+                   11: SurfaceType.concrete}
+
+        if self.value in range(1, 6) or self.value in (12, 13):
+            res = SurfaceType(self.value) # same as in the v1000 spec
+        elif self.value in mapping:
+            res = mapping[self.value]
+        else:
+            raise ValueError(
+                _("invalid v810 surface code: {0!r}").format(self.value))
+
+        return res
+
+
+@enum.unique
+class ShoulderSurfaceType(enum.Enum):
+    # Codes used in apt.dat (v1000 spec)
+    none = 0
+    asphalt = 1
+    concrete = 2
+
+    def __str__(self):
+        d = {
+            ShoulderSurfaceType.none:
+              pgettext("runway/helipad shoulder surface type", "none"),
+            ShoulderSurfaceType.asphalt:
+              pgettext("runway/helipad shoulder surface type", "asphalt"),
+            ShoulderSurfaceType.concrete:
+              pgettext("runway/helipad shoulder surface type", "concrete")
+        }
+        return d[self]
+
+
+@enum.unique
 class RunwayType(enum.Enum):
     # Codes used in apt.dat (v1000 spec)
     landRunway = 100
     waterRunway = 101
     helipad = 102
 
-def runwayTypeStr(rwyType, num):
-    # XXX Plurals could be handled with ngettext, but for this we probably need
-    # to have access to the GNUTranslations instance or something like that.
-    if num > 1:
-        d = {RunwayType.landRunway: _("Land runways"),
-             RunwayType.waterRunway: _("Water runways"),
-             RunwayType.helipad: _("Helipads")}
-    else:
-        d = {RunwayType.landRunway: _("Land runway"),
-             RunwayType.waterRunway: _("Water runway"),
-             RunwayType.helipad: _("Helipad")}
-
-    return d[rwyType]
+    def capitalizedName(self, num):
+        d = {RunwayType.landRunway:
+               ngettext("Land runway", "Land runways", num),
+             RunwayType.waterRunway:
+               ngettext("Water runway", "Water runways", num),
+             RunwayType.helipad:
+               ngettext("Helipad", "Helipads", num)
+        }
+        return d[self]
 
 
-class Runway:
-    """Class for representing runway data."""
+@enum.unique
+class RunwayMarkings(enum.Enum):
+    # Codes used in apt.dat (v1000 spec)
+    none = 0
+    visual = 1
+    nonPrecisionApproach = 2
+    precisionApproach = 3
+    ukStyleNonPrecisionApproach = 4
+    ukStylePrecisionApproach = 5
 
-    def __init__(self, name, type):
-        self._attrs = ("name", "type")
+    def __str__(self):
+        d = {
+            RunwayMarkings.none:
+              pgettext("runway markings", "none"),
+            RunwayMarkings.visual:
+              pgettext("runway markings", "visual"),
+            RunwayMarkings.nonPrecisionApproach:
+              pgettext("runway markings", "non-precision approach"),
+            RunwayMarkings.precisionApproach:
+              pgettext("runway markings", "precision approach"),
+            RunwayMarkings.ukStyleNonPrecisionApproach:
+              pgettext("runway markings", "UK-style non-precision approach"),
+            RunwayMarkings.ukStylePrecisionApproach:
+              pgettext("runway markings", "UK-style precision approach")
+        }
+        return d[self]
+
+
+class RunwayBase:
+    """Base class for specific classes representing runway data."""
+
+    def __init__(self, name, latitude, longitude, type):
+        self._attrs = ["name", "latitude", "longitude", "type"]
         for attr in self._attrs:
             setattr(self, attr, locals()[attr])
 
@@ -118,4 +301,174 @@ class Runway:
         return "{}.{}({})".format(__name__, type(self).__name__, argString)
 
     def __str__(self):
-        return self.name
+        return "{} ({})".format(self.name, self.type)
+
+    def formatLength(self, val):
+        return locale.format("%d", round(val))
+
+    def _addLatitude(self, l):
+        if self.latitude is not None:
+            l.append(_("Latitude: {}".format(self.latitude)))
+
+    def _addLongitude(self, l):
+        if self.longitude is not None:
+            l.append(_("Longitude: {}".format(self.longitude)))
+
+    def _addHeading(self, l):
+        if self.heading is not None:
+            l.append(_("Heading: {}".format(self.heading)))
+
+    def _addOrientation(self, l): # for helipads, same as heading
+        if self.orientation is not None:
+            l.append(_("Orientation: {}".format(self.orientation)))
+
+    def _addLength(self, l):
+        if self.length is not None:
+            length_ft = self.length
+            length_meters = self.length * 0.3048
+            l.append(_("Length: {0} ft ({1} m)".format(
+                self.formatLength(length_ft),
+                self.formatLength(length_meters))))
+
+    def _addWidth(self, l):
+        if self.width is not None:
+            width_ft = self.width
+            width_meters = self.width * 0.3048
+            l.append(_("Width: {0} ft ({1} m)".format(
+                self.formatLength(width_ft),
+                self.formatLength(width_meters))))
+
+    def _addSurfaceType(self, l):
+        if self.surfaceType is not None:
+            l.append(_("Surface type: {}".format(self.surfaceType)))
+
+    def _addShoulderSurfaceType(self, l):
+        if self.shoulderSurfaceType is not None:
+            l.append(_("Shoulder surface type: {}".format(
+                self.shoulderSurfaceType)))
+
+    def _addRunwayMarkings(self, l):
+        if self.runwayMarkings is not None:
+            l.append(_("Runway markings: {}".format(self.runwayMarkings)))
+
+    def _addSmoothness(self, l):
+        if self.smoothness is not None:
+            l.append(_("Smoothness: {:.02f}".format(self.smoothness)))
+
+
+class LandRunway(RunwayBase):
+    """Class for representing land runway data."""
+
+    def __init__(self, name, latitude, longitude, heading, length, width,
+                 surfaceType, shoulderSurfaceType, runwayMarkings, smoothness):
+        RunwayBase.__init__(self, name, latitude, longitude,
+                            RunwayType.landRunway)
+        specificAttrs = ["heading", "length", "width", "surfaceType",
+                         "shoulderSurfaceType", "runwayMarkings", "smoothness"]
+        for attr in specificAttrs:
+            setattr(self, attr, locals()[attr])
+        self._attrs = self._attrs + specificAttrs
+
+    def tooltipText(self):
+        l = [str(self.type.capitalizedName(1))]
+
+        self._addLatitude(l)
+        self._addLongitude(l)
+        self._addHeading(l)
+        self._addLength(l)
+        self._addWidth(l)
+        self._addSurfaceType(l)
+        self._addShoulderSurfaceType(l)
+        self._addRunwayMarkings(l)
+        self._addSmoothness(l)
+
+        return '\n'.join(l)
+
+
+@enum.unique
+class PerimeterBuoys(enum.Enum):
+    # Codes used in apt.dat (v1000 spec)
+    no = 0
+    yes = 1
+
+    def __str__(self):
+        d = {
+            PerimeterBuoys.no: _("no"),
+            PerimeterBuoys.yes: _("yes")
+        }
+        return d[self]
+
+
+class WaterRunway(RunwayBase):
+    """Class for representing water runway data."""
+
+    def __init__(self, name, latitude, longitude, heading, length, width,
+                 perimeterBuoys):
+        RunwayBase.__init__(self, name, latitude, longitude,
+                            RunwayType.waterRunway)
+        specificAttrs = ["heading", "length", "width", "perimeterBuoys"]
+        for attr in specificAttrs:
+            setattr(self, attr, locals()[attr])
+        self._attrs = self._attrs + specificAttrs
+
+    def tooltipText(self):
+        l = [str(self.type.capitalizedName(1))]
+
+        self._addLatitude(l)
+        self._addLongitude(l)
+        self._addHeading(l)
+        self._addLength(l)
+        self._addWidth(l)
+
+        if self.perimeterBuoys is not None:
+            l.append(_("Perimeter buoys: {}".format(self.perimeterBuoys)))
+
+        return '\n'.join(l)
+
+
+@enum.unique
+class HelipadEdgeLighting(enum.Enum):
+    # Codes used in apt.dat (v1000 spec)
+    no = 0
+    yes = 1
+
+    def __str__(self):
+        d = {
+            HelipadEdgeLighting.no: _("no"),
+            HelipadEdgeLighting.yes: _("yes")
+        }
+        return d[self]
+
+
+class Helipad(RunwayBase):
+    """Class for representing helipad data."""
+
+    def __init__(self, name, latitude, longitude, orientation, length, width,
+                 surfaceType, shoulderSurfaceType, runwayMarkings, smoothness,
+                 edgeLighting):
+        RunwayBase.__init__(self, name, latitude, longitude, RunwayType.helipad)
+        specificAttrs = [
+            "orientation", "length", "width",
+            "surfaceType", "shoulderSurfaceType", "runwayMarkings",
+            "smoothness", "edgeLighting"]
+        for attr in specificAttrs:
+            setattr(self, attr, locals()[attr])
+        self._attrs = self._attrs + specificAttrs
+
+    def tooltipText(self):
+        l = [str(self.type.capitalizedName(1))]
+
+        self._addLatitude(l)
+        self._addLongitude(l)
+        self._addOrientation(l)
+        self._addLength(l)
+        self._addWidth(l)
+        self._addSurfaceType(l)
+        self._addShoulderSurfaceType(l)
+        self._addRunwayMarkings(l)
+        self._addSmoothness(l)
+
+        if self.edgeLighting is not None:
+            l.append(_("Edge lighting: {}".format(self.edgeLighting)))
+
+        return '\n'.join(l)

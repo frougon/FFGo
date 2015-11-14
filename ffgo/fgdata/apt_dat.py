@@ -15,11 +15,19 @@ import re
 import textwrap
 import bisect
 
+try:
+    from geographiclib.geodesic import Geodesic
+    HAS_GEOGRAPHICLIB = True
+except ImportError:
+    HAS_GEOGRAPHICLIB = False
+
 from .. import constants
 from ..constants import PROGNAME
 from .. import misc
 from ..logging import logger
-from .airport import Airport, AirportStub, AirportType, Runway, RunwayType
+from .airport import Airport, AirportStub, AirportType, LandRunway, \
+    WaterRunway, Helipad, RunwayType, SurfaceType, V810SurfaceType, \
+    ShoulderSurfaceType, RunwayMarkings, PerimeterBuoys, HelipadEdgeLighting
 from . import parking
 from .parking import ParkingSource
 
@@ -264,6 +272,17 @@ class AptDat:
         else:
             return res
 
+    def _readLength(self, s):
+        try:
+            res = float(s)
+        except ValueError as e:
+            raise UnableToParseAptDat(
+                self.lineNb,
+                _("unable to parse as a length: {0!r} in line {1!r}")
+                .format(s, self.line)) from e
+        else:
+            return res
+
     def _readElevation(self, s):
         try:
             res = float(s)
@@ -272,6 +291,102 @@ class AptDat:
                 self.lineNb,
                 _("unable to parse as an elevation: {0!r} in line {1!r}")
                 .format(s, self.line)) from e
+        else:
+            return res
+
+    def _readSurfaceType(self, s):
+        try:
+            res = SurfaceType(int(s))
+        except ValueError as e:
+            raise UnableToParseAptDat(
+                self.lineNb,
+                _("unable to parse as a surface type code: {0!r} in line "
+                  "{1!r}").format(s, self.line)) from e
+        else:
+            return res
+
+    def _readV810SurfaceType(self, s):
+        try:
+            res = V810SurfaceType(int(s))
+        except ValueError as e:
+            raise UnableToParseAptDat(
+                self.lineNb,
+                _("unable to parse as a v810 surface type code: {0!r} in line "
+                  "{1!r}").format(s, self.line)) from e
+        else:
+            return res
+
+    def _readShoulderSurfaceType(self, s):
+        try:
+            res = ShoulderSurfaceType(int(s))
+        except ValueError as e:
+            raise UnableToParseAptDat(
+                self.lineNb,
+                _("unable to parse as a shoulder surface type code: {0!r} in "
+                  "line {1!r}").format(s, self.line)) from e
+        else:
+            return res
+
+    def _readSmoothness(self, s):
+        try:
+            res = float(s)
+            if not (0 <= res <= 1):
+                raise ValueError(_("invalid smoothness value: {0!r}").format(
+                    res))
+        except ValueError as e:
+            raise UnableToParseAptDat(
+                self.lineNb,
+                _("unable to parse as a smoothness value: {0!r} in line {1!r}")
+                .format(s, self.line)) from e
+        else:
+            return res
+
+    def _readRunwayMarkings(self, s):
+        try:
+            res = RunwayMarkings(int(s))
+        except ValueError as e:
+            raise UnableToParseAptDat(
+                self.lineNb,
+                _("unable to parse as a code for runway markings: {0!r} in "
+                  "line {1!r}").format(s, self.line)) from e
+        else:
+            return res
+
+    def _readV810RunwayMarkings(self, s):
+        try:
+            code = int(s)
+            if code in range(0, 4):
+                res = RunwayMarkings(code)
+            else:
+                raise ValueError(_("invalid v810 code for runway markings: "
+                                   "{0!r}").format(code))
+        except ValueError as e:
+            raise UnableToParseAptDat(
+                self.lineNb,
+                _("unable to parse as a v810 code for runway markings: "
+                  "{0!r} in line {1!r}").format(s, self.line)) from e
+        else:
+            return res
+
+    def _readPerimeterBuoysFlag(self, s):
+        try:
+            res = PerimeterBuoys(int(s))
+        except ValueError as e:
+            raise UnableToParseAptDat(
+                self.lineNb,
+                _("unable to parse as a perimeter buoys flag: {0!r} in line "
+                  "{1!r}").format(s, self.line)) from e
+        else:
+            return res
+
+    def _readHelipadEdgeLighting(self, s):
+        try:
+            res = HelipadEdgeLighting(int(s))
+        except ValueError as e:
+            raise UnableToParseAptDat(
+                self.lineNb,
+                _("unable to parse as an helipad edge lighting flag: {0!r} in "
+                  "line {1!r}").format(s, self.line)) from e
         else:
             return res
 
@@ -401,7 +516,8 @@ class AptDat:
                 icao, type_, name, elev = self._processAirportHeader(code,
                                                                      payload)
                 eof, nextIndex, code, payload, avgLat, avgLon, runways, \
-                    parkings = self._readAirportData(calcCoords=True)
+                    parkings = self._readAirportData(calcCoords=True,
+                                                     readDetails=False)
                 # This should be better than sorting the list once complete
                 # from an algorithmic point of view, however the difference is
                 # hardly measurable with apt.dat 2013.10, build 20131335,
@@ -460,7 +576,7 @@ class AptDat:
         return (icao, type_, name, elev)
 
     def _readAirportData(self, calcCoords=False, readRunways=False,
-                         readParkings=False):
+                         readParkings=False, readDetails=True):
         runways = []
         avgLat, avgLon = None, None
         # Will give the coordinates of the centroid of all runway ends +
@@ -482,7 +598,8 @@ class AptDat:
             else:
                 if calcCoords or readRunways:
                     isRwyRecord, latSum0, lonSum0 = \
-                        self._processPotentialRunwayRow(code, payload, runways)
+                        self._processPotentialRunwayRow(
+                            code, payload, runways, readDetails=readDetails)
                     if isRwyRecord:
                         latSum += latSum0
                         lonSum += lonSum0
@@ -504,11 +621,15 @@ class AptDat:
 
         return (eof, index, code, payload, avgLat, avgLon, runways, parkings)
 
-    def _processPotentialRunwayRow(self, code, payload, runways):
+    def _processPotentialRunwayRow(self, code, payload, runways,
+                                   readDetails=True):
         """Read runway information from (code, payload) if applicable.
 
         'runways' should behave like a list and is *modified in-place*,
-        the runways found being appended.
+        the runways found being appended. When 'readDetails' is False,
+        None is used instead of elements of a subclass of RunwayBase
+        (but the number of None objects added does correspond to the
+        number of runways found).
 
         Return a tuple of the form (isRwyRecord, latSum, lonSum) where:
           - 'isRwyRecord' is a boolean indicating whether 'code' is
@@ -532,23 +653,29 @@ class AptDat:
             if len(e) >= 3 and e[2] != 'xxx':
                 # “Latitude/longitude [...] of runway or
                 # taxiway segment center” according to the APT810 spec
-                lat, lon, rwys = self._processV810Runway(e)
-                latSum = lat*2 # These coordinates count for the two
-                lonSum = lon*2 # opposite runway ends.
+                lat, lon, rwys = self._processV810Runway(
+                    e, readDetails=readDetails)
+                if len(rwys) > 1:  # Two reciprocal runway ends
+                    latSum = lat + lat
+                    lonSum = lon + lon
+                else:              # Helipad
+                    latSum = lat
+                    lonSum = lon
             else:
                 isRwyRecord = False
         elif code == 100:
             lat1, lon1, lat2, lon2, rwys = self.processLandRunway(
-                payload)
+                payload, readDetails=readDetails)
             latSum = lat1 + lat2
             lonSum = lon1 + lon2
         elif code == 101:
             lat1, lon1, lat2, lon2, rwys = self.processWaterRunway(
-                payload)
+                payload, readDetails=readDetails)
             latSum = lat1 + lat2
             lonSum = lon1 + lon2
         elif code == 102:
-            latSum, lonSum, rwys = self.processHelipad(payload)
+            latSum, lonSum, rwys = self.processHelipad(payload,
+                                                       readDetails=readDetails)
         else:
             isRwyRecord = False
 
@@ -561,7 +688,9 @@ class AptDat:
 
     _v810Helipad_cre = re.compile(r"(?P<name>H(?P<number>\d+))x$")
 
-    def processV810Runway(self, e):
+    def processV810Runway(self, e, readDetails=True):
+        # This whole method is untested, as apt.dat 2013.10 (build 20131335)
+        # does not contain any runway declared in this old format...
         if len(e) < 14:
             raise UnableToParseAptDat(
                 self.lineNb,
@@ -570,49 +699,75 @@ class AptDat:
 
         lat = self._readLatitude(e[0])
         lon = self._readLongitude(e[1])
-        name = e[2]
+        v810SurfaceType = self._readV810SurfaceType(e[9])
 
-        mo = self._v810Helipad_cre.match(name) # Helipad?
-        if mo:
-            rwy = Runway(mo.group("name"), RunwayType.helipad)
-            runways = (rwy,)
-        else:
-            try:
-                surfaceCode = int(e[9])
-            except ValueError as e:
-                raise UnableToParseAptDat(
-                    self.lineNb,
-                    _("invalid runway surface code: {code!r} (line: {line!r})")
-                    .format(code=e[9], line=self.line))
+        if readDetails:
+            name = e[2]
+            heading = self._readHeading(e[3])
+            length = self._readLength(e[4])
+            width = self._readLength(e[5])
+            surfaceType = v810SurfaceType.v1000Equivalent()
+            shoulderSurfaceType = self._readShoulderSurfaceType(e[10])
+            runwayMarkings = self._readV810RunwayMarkings(e[11])
+            smoothness = self._readSmoothness(e[12])
 
-            if surfaceCode == 13:
-                rwyType = RunwayType.waterRunway
+        if v810SurfaceType.isHelipad():
+            if readDetails:
+                mo = self._v810Helipad_cre.match(name) # Helipad?
+                if mo:
+                    # Override 'name' (remove trailing "x")
+                    name = mo.group("name")
+
+                runways = (Helipad(name, lat, lon, heading, length, width,
+                                   surfaceType, shoulderSurfaceType, None,
+                                   smoothness, None),)
             else:
-                rwyType = RunwayType.landRunway
-
+                runways = (None,)
+        elif readDetails:
             if name.endswith('x'): # rwy with no L, R, C, S... suffix
                 name = name[:-1]
 
-            otherRwy = self.otherRunway(name)
-            if otherRwy is not None:
-                # Two runways, differing in heading by 180°
-                runways = (Runway(name, rwyType), Runway(otherRwy, rwyType))
+            num1 = self.getRwyNum(name)
+            num2, name2 = self.otherRunway(name)
+            azimuth1 = self.correctRwyHeadingBasedOnRwyNum(num1)
+            azimuth2 = self.correctRwyHeadingBasedOnRwyNum(num2)
+
+            if HAS_GEOGRAPHICLIB:
+                halfLength_m = 0.5*(length * 0.3048) # in meters
+                g1 = Geodesic.WGS84.Direct(lat, lon, azimuth2, halfLength_m)
+                g2 = Geodesic.WGS84.Direct(lat, lon, azimuth1, halfLength_m)
+                lat1, lon1 = g1['lat2'], g1['lon2']
+                lat2, lon2 = g2['lat2'], g2['lon2']
             else:
-                # Should not happen if apt.dat conforms to the v810 spec
-                runways = (Runway(name, rwyType))
+                lat1 = lon1 = lat2 = lon2 = None
+
+            if v810SurfaceType.isWaterRunway():
+                rwy1 = WaterRunway(name, lat1, lon1, azimuth1, length, width,
+                                   None)
+                rwy2 = WaterRunway(name2, lat2, lon2, azimuth2, length, width,
+                                   None)
+            else:
+                rwy1 = LandRunway(
+                    name, lat1, lon1, azimuth1, length, width, surfaceType,
+                    shoulderSurfaceType, runwayMarkings, smoothness)
+                rwy2 = LandRunway(
+                    name2, lat2, lon2, azimuth2, length, width, surfaceType,
+                    shoulderSurfaceType, runwayMarkings, smoothness)
+
+            # Two runways, differing in azimuth by 180°
+            runways = (rwy1, rwy2)
+        else:
+            # Ditto
+            runways = (None, None)
 
         return (lat, lon, runways)
 
-    def otherRunway(self, rwy):
-        if not rwy.startswith('H'):
-            prefix = self.computeRwyHeading(rwy)
-            suffix = self.changeRwyLeftRight(rwy)
-            return prefix + suffix
-        else:
-            return None
+    def otherRunway(self, num, suffix):
+        otherNum = self.computeOtherRwyNum(num)
+        otherSuffix = self.otherRwySuffix(suffix)
+        return (otherNum, "{:02d}{}".format(otherNum, otherSuffix))
 
-    def computeRwyHeading(self, rwy):
-        number = self.getRwyHeading(rwy)
+    def computeOtherRwyNum(self, number):
         if 18 < number <= 36:
             other = number - 18
         elif 0 < number <= 18:
@@ -620,14 +775,14 @@ class AptDat:
         else:
             raise UnableToParseAptDat(
                 self.lineNb,
-                _("unexpected runway name: {rwy!r} "
-                  "(line: {line!r})").format(rwy=rwy, line=self.line))
+                _("unexpected runway number: {num!r} "
+                  "(line: {line!r})").format(num=number, line=self.line))
 
-        return "{:02d}".format(other)
+        return other
 
     _rwyNum_cre = re.compile(r"(?P<num>\d+)")
 
-    def getRwyHeading(self, rwy):
+    def getRwyNum(self, rwy):
         mo = self._rwyNum_cre.match(rwy)
         if not mo:
             raise UnableToParseAptDat(
@@ -637,48 +792,140 @@ class AptDat:
 
         return int(mo.group("num"))
 
-    def changeRwyLeftRight(self, rwy):
-        suffix = ''
-        if rwy.endswith('L'):
-            suffix = 'R'
-        elif rwy.endswith('R'):
-            suffix = 'L'
-        elif rwy.endswith('C'):
-            suffix = 'C'
-        return suffix
+    def otherRwySuffix(self, suffix):
+        if suffix == 'L':
+            return 'R'
+        elif suffix == 'R':
+            return 'L'
+        else:
+            return suffix
 
-    def processLandRunway(self, payload):
+    @classmethod
+    def correctRwyHeadingBasedOnRwyNum(self, azimuth, rwyNum):
+        """
+        Find the precise runway heading based on 'azimuth' and the runway number.
+
+        If 'azimuth' is in the "wrong direction", the return value will
+        correct that; otherwise 'azimuth' is simply normalized with
+        normalizeHeading().
+
+        """
+        angularDiff = min(abs(10*rwyNum - azimuth),
+                          abs(10*(36 + rwyNum) - azimuth),
+                          abs(10*rwyNum - (360.0+azimuth)))
+
+        if angularDiff > 90:
+            return self.normalizeHeading(azimuth + 180.0)
+        else:
+            return self.normalizeHeading(azimuth)
+
+    @classmethod
+    def normalizeHeading(cls, azimuth):
+        # x % y always has the sign of y
+        a = round(azimuth % 360.0)
+
+        return a if a else 360
+
+    @classmethod
+    def computeLengthAndAzimuth(self, lat1, lon1, lat2, lon2):
+        if HAS_GEOGRAPHICLIB:
+            g = Geodesic.WGS84.Inverse(lat1, lon1, lat2, lon2)
+            azi1 = self.normalizeHeading(g["azi1"])
+            azi2 = self.normalizeHeading(g["azi2"] + 180.0)
+            # Convert meters to feet
+            return (g["s12"] / 0.3048, azi1, azi2)
+        else:
+            return (None, None, None)
+
+    def processLandRunway(self, payload, readDetails=True):
         """Process a runway record with code 100."""
         e = payload.split()
+        if len(e) < 22:
+            raise UnableToParseAptDat(
+                self.lineNb,
+                _("not enough fields in record: {!r}").format(self.line))
+
         lat1 = self._readLatitude(e[8])
         lon1 = self._readLongitude(e[9])
         lat2 = self._readLatitude(e[17])
         lon2 = self._readLongitude(e[18])
-        rwys = (Runway(e[7], RunwayType.landRunway),
-                Runway(e[16], RunwayType.landRunway))
 
-        return (lat1, lon1, lat2, lon2, rwys)
+        if readDetails:
+            name1, name2 = e[7], e[16]
+            length, azimuth1, azimuth2 = self.computeLengthAndAzimuth(
+                lat1, lon1, lat2, lon2)
+            width = self._readLength(e[0])
+            surfaceType = self._readSurfaceType(e[1])
+            shoulderSurfaceType = self._readShoulderSurfaceType(e[2])
+            smoothness = self._readSmoothness(e[3])
+            runwayMarkings1 = self._readRunwayMarkings(e[12])
+            runwayMarkings2 = self._readRunwayMarkings(e[21])
+            rwy1 = LandRunway(name1, lat1, lon1, azimuth1, length, width,
+                              surfaceType, shoulderSurfaceType,
+                              runwayMarkings1, smoothness)
+            rwy2 = LandRunway(name2, lat2, lon2, azimuth2, length, width,
+                              surfaceType, shoulderSurfaceType,
+                              runwayMarkings2, smoothness)
+            return (lat1, lon1, lat2, lon2, (rwy1, rwy2))
+        else:
+            return (lat1, lon1, lat2, lon2, (None, None))
 
-    def processWaterRunway(self, payload):
+    def processWaterRunway(self, payload, readDetails=True):
         """Process a runway record with code 101."""
         e = payload.split()
+        if len(e) < 8:
+            raise UnableToParseAptDat(
+                self.lineNb,
+                _("not enough fields in record: {!r}").format(self.line))
+
         lat1 = self._readLatitude(e[3])
         lon1 = self._readLongitude(e[4])
         lat2 = self._readLatitude(e[6])
         lon2 = self._readLongitude(e[7])
-        rwys = (Runway(e[2], RunwayType.waterRunway),
-                Runway(e[5], RunwayType.waterRunway))
 
-        return (lat1, lon1, lat2, lon2, rwys)
+        if readDetails:
+            width = self._readLength(e[0])
+            # apt.dat 2013.10 (build 20131335) has 35 runways with a buggy
+            # 'perimeter buoys' flag (set to -1), and all other water runways
+            # have this flag set to 0 (= no buoys) → skip it.
+            # perimeterBuoys = self._readPerimeterBuoysFlag(e[1])
+            name1, name2 = e[2], e[5]
+            length, azimuth1, azimuth2 = self.computeLengthAndAzimuth(
+                lat1, lon1, lat2, lon2)
+            rwy1 = WaterRunway(name1, lat1, lon1, azimuth1, length, width, None)
+            rwy2 = WaterRunway(name2, lat2, lon2, azimuth2, length, width, None)
+            return (lat1, lon1, lat2, lon2, (rwy1, rwy2))
+        else:
+            return (lat1, lon1, lat2, lon2, (None, None))
 
-    def processHelipad(self, payload):
+    def processHelipad(self, payload, readDetails=True):
         """Process a “runway” record with code 102 (i.e., a helipad)."""
         e = payload.split()
+        if len(e) < 11:
+            raise UnableToParseAptDat(
+                self.lineNb,
+                _("not enough fields in record: {!r}").format(self.line))
+
         lat = self._readLatitude(e[1])
         lon = self._readLongitude(e[2])
-        rwys = (Runway(e[0], RunwayType.helipad),)
 
-        return (lat, lon, rwys)
+        if readDetails:
+            name = e[0]
+            orientation = self.normalizeHeading(
+                self._readHeading(e[3])) # true heading in degrees
+            length = self._readLength(e[4])
+            width = self._readLength(e[5])
+            surfaceType = self._readSurfaceType(e[6])
+            shoulderSurfaceType = self._readShoulderSurfaceType(e[8])
+            smoothness = self._readSmoothness(e[9])
+            edgeLighting = self._readHelipadEdgeLighting(e[10])
+            rwy = Helipad(name, lat, lon, orientation, length, width,
+                          surfaceType, shoulderSurfaceType, None, smoothness,
+                          edgeLighting)
+        else:
+            rwy = None
+
+        return (lat, lon, (rwy,))
 
     def readAirportDataUsingIndex(self, icao, index):
         """Read detailed airport data from apt.dat using an index.
@@ -711,12 +958,70 @@ class AptDat:
         if foundIcao == icao:
             eof, nextIndex, code, payload, avgLat, avgLon, runways, parkings = \
                  self._readAirportData(calcCoords=True, readRunways=True,
-                                       readParkings=True)
+                                       readParkings=True, readDetails=True)
             airport = Airport(icao, name, type_, avgLat, avgLon, elev, index,
                               runways, parkings)
             return (True, airport)
         else:
             return (False, None)
+
+    # Method largely based on makeAptDigest()
+    def testAllAirports(self, outputFile):
+        self.reset()
+        airports = []
+        eof = False
+        index = self.file.tell() # start index for this airport header
+        code, payload = self._readRecord()
+
+        while not eof:
+            if code in (1, 16, 17): # Land airport, seaplane base or heliport
+                icao, type_, name, elev = self._processAirportHeader(code,
+                                                                     payload)
+                try:
+                    eof, nextIndex, code, payload, avgLat, avgLon, runways, \
+                        parkings = self._readAirportData(calcCoords=True,
+                                                         readDetails=True)
+                except UnableToParseAptDat as e:
+                    logger.error("in airport {}: {}".format(icao, e))
+                    # Skip to the next airport
+                    while True:
+                        code, payload = self._readRecord()
+                        if code in (1, 16, 17):
+                            index = self.file.tell()
+                            break
+                        elif code in (None, 99):
+                            break
+                else:
+                    bisect.insort_right(airports,
+                                        (icao, type_.value, name, elev, avgLat,
+                                         avgLon, index, runways, parkings))
+                    index = nextIndex
+            elif code in (None, 99): # None: EOF; 99: X-Plane's convention
+                break
+            else:
+                raise UnableToParseAptDat(
+                    self.lineNb,
+                    _("unexpected row code: {code} (line: {line!r})").format(
+                        code=code, line=self.line))
+
+        with open(outputFile, "w", encoding="utf-8") as f:
+            first = True
+            for icao, type_, name, elev, avgLat, avgLon, index, runways, \
+                parkings, in airports:
+                if first:
+                    first = False
+                    l = []
+                else:
+                    l = ['']
+
+                airport = Airport(icao, name, type_, avgLat, avgLon, elev,
+                                  index, runways, parkings)
+                l.append("* {} ({})\n".format(icao, airport.name))
+                for rwy in airport.runways:
+                    l.append(rwy.name + '\n'
+                             + textwrap.indent(rwy.tooltipText(), '  ')
+                             + '\n')
+                f.write('\n'.join(l))
 
 
 class AptDatDigest:

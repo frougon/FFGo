@@ -56,6 +56,10 @@ def setupTranslationHelper(config):
     translationHelper = misc.TranslationHelper(config)
     pgettext = translationHelper.pgettext
 
+def setupTranslationHelperInOtherModules(config):
+    from ..fgdata import airport as airport_mod
+    airport_mod.setupTranslationHelper(config)
+
 
 class PassShortcutsToApp:
     """Mixin class to override some bindings of standard Tkinter widgets.
@@ -109,6 +113,7 @@ class App:
         self.config = config
 
         setupTranslationHelper(config)
+        setupTranslationHelperInOtherModules(config)
         self.surveyDependencies()
 
         self.options = StringVar()
@@ -326,39 +331,11 @@ class App:
         self.sAirports.pack(side='left', fill='y')
 
         def airportListTooltipFunc(index):
-            from ..fgdata.airport import airportTypeStr, RunwayType, \
-                runwayTypeStr
-
             icao = self.getAirportIcaoAtIndex(index)
             found, airport = self.readAirportData(icao)
 
             if found:
-                d = {}
-                for rwy in airport.runways:
-                    if rwy.type not in d:
-                        d[rwy.type] = []
-
-                    d[rwy.type].append(rwy.name)
-
-                rwyTypes = sorted([ rwyType.value for rwyType in d.keys() ])
-                rl = []         # one element per runway type
-                for rwyTypeVal in rwyTypes:
-                    rwyType = RunwayType(rwyTypeVal)
-                    runwayTypeName = runwayTypeStr(rwyType, len(d[rwyType]))
-
-                    s = "{rwyType}: {runways}".format(
-                        rwyType=runwayTypeName,
-                        runways=", ".join(sorted(d[rwyType])))
-                    rl.append(
-                        textwrap.fill(s, width=40, subsequent_indent='  '))
-
-                l = ([airportTypeStr[airport.type],
-                      _("Latitude: {latitude}").format(latitude=airport.lat),
-                      _("Longitude: {longitude}").format(longitude=airport.lon),
-                      _("Elevation: {elevation} feet").format(
-                          elevation=locale.format("%.01f", airport.elevation))]
-                     + rl)
-                return '\n'.join(l)
+                return airport.tooltipText()
             else:
                 return None
 
@@ -1138,27 +1115,43 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
 
     def popupRwy(self, event):
         """Popup menu offering to select between runways and/or helipads."""
-        if self.config.airport.get():
-            runways = self.readRunwayData(self.config.airport.get())
-            if runways is None: # error doing the runway data lookup
-                return          # (the error dialog box has already been shown)
+        if not self.config.airport.get():
+            return
 
-            # self.config.airport not empty: we are not in “carrier mode”
-            popup = Menu(tearoff=0)
+        runways = self.readRunwayData(self.config.airport.get())
+        if runways is None: # error doing the runway data lookup
+            return          # (the error dialog box has already been shown)
 
-            # This makes the popup menu more visible, visually similar
-            # to the parking popup, and avoids it disappearing in a
-            # flash with the first entry being accidentally selected if
-            # the user just clicked without holding the button down.
-            popup.add_command(label='', state=DISABLED,
-                              background=POPUP_HEADER_BG_COL)
+        # Mapping from menu item index to fgdata.airport.RunwayBase instance
+        runwayForItem = {}
+        # self.config.airport not empty: we are not in “carrier mode”
+        popup = Menu(tearoff=0)
 
-            popup.add_command(label=pgettext('runway', 'Default'),
-                              command=lambda: self.config.rwy.set(''))
-            for r in runways:
-                popup.add_command(label=r, command=lambda x=r:
-                                  self.config.rwy.set(x))
-            popup.tk_popup(event.x_root, event.y_root, 0)
+        # This makes the popup menu more visible, visually similar
+        # to the parking popup, and avoids it disappearing in a
+        # flash with the first entry being accidentally selected if
+        # the user just clicked without holding the button down.
+        popup.add_command(label='', state=DISABLED,
+                          background=POPUP_HEADER_BG_COL)
+
+        popup.add_command(label=pgettext('runway', 'Default'),
+                          command=lambda: self.config.rwy.set(''))
+        for r in runways:
+            popup.add_command(label=r.name, command=lambda x=r.name:
+                              self.config.rwy.set(x))
+            idx = popup.index(tkc.END) # index of the last item added
+            runwayForItem[idx] = r
+
+        def runwayTooltipFunc(idx):
+            try:
+                runway = runwayForItem[idx]
+            except KeyError:
+                return None # no tooltip for this item
+            else:
+                return runway.tooltipText()
+
+        self.runwayTooltip = tooltip.MenuToolTip(popup, runwayTooltipFunc)
+        popup.tk_popup(event.x_root, event.y_root, 0)
 
     def popupScenarios(self, event):
         """Make pop up list."""
@@ -1222,7 +1215,7 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
         found, airport = self.readAirportData(icao)
 
         if found:
-            return [ rwy.name for rwy in airport.runways ]
+            return airport.runways
         else:
             return None
 
