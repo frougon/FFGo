@@ -215,3 +215,21 @@ class TranslationHelper:
                 return msgid
 
         return transl
+
+    def ngettext(self, singular, plural, n):
+        return self.translator.ngettext(singular, plural, n)
+
+    def npgettext(self, context, singular, plural, n):
+        s = "{}\x04{}".format(context, singular)
+        pluralForm = self.translator.plural(n)
+
+        try:
+            transl = self.translator._catalog[(s, pluralForm)]
+        except KeyError:
+            if self._fallback:
+                return self.translator._fallback.npgettext(
+                    context, singular, plural, n)
+            else:
+                return (singular if n == 1 else plural)
+
+        return transl

@@ -48,7 +48,7 @@ REL_PY_FILES := ffgo-launcher.py \
 # translatable strings, and he would end up with locally-modified files).
 update-pot:
 	xgettext --directory=../../.. --language=Python --from-code=UTF-8 \
-                 --keyword=pgettext:1c,2 \
+                 --keyword=pgettext:1c,2 --keyword=npgettext:1c,2,3 \
                  --msgid-bugs-address='$(MSGID_BUGS_ADDRESS)' \
                  --output=- $(REL_PY_FILES) | \
           $(PYTHON) -c "$$replace_pot_metadata" >$(PROGNAME).pot
