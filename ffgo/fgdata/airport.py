@@ -307,12 +307,10 @@ class RunwayBase:
         return locale.format("%d", round(val))
 
     def _addLatitude(self, l):
-        if self.latitude is not None:
-            l.append(_("Latitude: {}".format(self.latitude)))
+        l.append(_("Latitude: {}".format(self.latitude)))
 
     def _addLongitude(self, l):
-        if self.longitude is not None:
-            l.append(_("Longitude: {}".format(self.longitude)))
+        l.append(_("Longitude: {}".format(self.longitude)))
 
     def _addHeading(self, l):
         if self.heading is not None:
