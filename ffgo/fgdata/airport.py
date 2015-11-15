@@ -316,10 +316,6 @@ class RunwayBase:
         if self.heading is not None:
             l.append(_("Heading: {}".format(self.heading)))
 
-    def _addOrientation(self, l): # for helipads, same as heading
-        if self.orientation is not None:
-            l.append(_("Orientation: {}".format(self.orientation)))
-
     def _addLength(self, l):
         if self.length is not None:
             length_ft = self.length
@@ -441,14 +437,14 @@ class HelipadEdgeLighting(enum.Enum):
 class Helipad(RunwayBase):
     """Class for representing helipad data."""
 
-    def __init__(self, name, latitude, longitude, orientation, length, width,
+    def __init__(self, name, latitude, longitude, heading, length, width,
                  surfaceType, shoulderSurfaceType, runwayMarkings, smoothness,
                  edgeLighting):
         RunwayBase.__init__(self, name, latitude, longitude, RunwayType.helipad)
         specificAttrs = [
-            "orientation", "length", "width",
-            "surfaceType", "shoulderSurfaceType", "runwayMarkings",
-            "smoothness", "edgeLighting"]
+            "heading", "length", "width", "surfaceType",
+            "shoulderSurfaceType", "runwayMarkings", "smoothness",
+            "edgeLighting"]
         for attr in specificAttrs:
             setattr(self, attr, locals()[attr])
         self._attrs = self._attrs + specificAttrs
@@ -458,7 +454,7 @@ class Helipad(RunwayBase):
 
         self._addLatitude(l)
         self._addLongitude(l)
-        self._addOrientation(l)
+        self._addHeading(l)
         self._addLength(l)
         self._addWidth(l)
         self._addSurfaceType(l)

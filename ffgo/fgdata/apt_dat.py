@@ -913,14 +913,14 @@ class AptDat:
         if readDetails:
             name = e[0]
             # True heading in degrees
-            orientation = normalizeHeading(self._readHeading(e[3]))
+            heading = normalizeHeading(self._readHeading(e[3]))
             length = self._readLength(e[4])
             width = self._readLength(e[5])
             surfaceType = self._readSurfaceType(e[6])
             shoulderSurfaceType = self._readShoulderSurfaceType(e[8])
             smoothness = self._readSmoothness(e[9])
             edgeLighting = self._readHelipadEdgeLighting(e[10])
-            rwy = Helipad(name, lat, lon, orientation, length, width,
+            rwy = Helipad(name, lat, lon, heading, length, width,
                           surfaceType, shoulderSurfaceType, None, smoothness,
                           edgeLighting)
         else:
