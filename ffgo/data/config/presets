@@ -58,6 +58,11 @@
 # LANG=lang_code                - Use short language code, e.g.: en, de, fr, es
 #                                 FFGo will try to use system system language
 #                                 if not set.
+# MAGNETICFIELD_BIN=name_or_path
+#                               - Name or path to GeographicLib's
+#                                 'MagneticField' program. If a simple name is
+#                                 used, the program will be searched
+#                                 according to the PATH environment variable.
 # WINDOW_GEOMETRY=widthxheight or widthxheight+x+y
 #                               - Geometry of the main window. Use only if you
 #                                 are not satisfied with default window size.

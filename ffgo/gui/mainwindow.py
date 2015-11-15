@@ -453,7 +453,8 @@ class App:
         self.setupKeyboardShortcuts()
 
     def surveyDependencies(self):
-        # Same string as in the About box
+        textWidth = 78
+
         l = [_('Python {}').format(misc.pythonVersionString()),
              _('CondConfigParser {}').format(condconfigparser.__version__)]
 
@@ -461,25 +462,40 @@ class App:
             l.append(_("GeographicLib's Python binding {}".format(
                 geographiclib.__version__)))
 
-        # This attribute is also used in the About dialog.
+        if self.config.earthMagneticField is not None:
+            l.append(self.config.earthMagneticField.getBackendDescription())
+
+        # This attribute is also used in the About box.
         self.using = _("Using:\n") + \
                      '\n'.join([ textwrap.indent(s, '  - ') for s in l ])
-        logger.notice(_("{prgWithVer} started\n{using}").format(
+        logger.notice(_("{prgWithVer} started\n{using}\n").format(
             prgWithVer=NAME_WITH_VERSION, using=self.using))
 
         # We can't print a translated version of the warning when the import
         # test is done at module initialization; thus, do it now.
         if not HAS_PIL:
-            logger.warningNP(
-                _("[{prg} warning] {libName} library not found. Aircraft "
+            s = _("[{prg} warning] {libName} library not found. Aircraft "
                   "thumbnails won't be displayed.").format(prg=PROGNAME,
-                                                           libName="Pillow"))
+                                                           libName="Pillow")
+            logger.warningNP(textwrap.fill(s, width=textWidth))
+
         if not HAS_GEOGRAPHICLIB:
-            logger.warningNP(
-                _("[{prg} warning] {libName}'s Python binding not found. Some "
+            s = _("[{prg} warning] {libName}'s Python binding not found. Some "
                   "features requiring geodesic calculations may be disabled "
-                  "or provide less accurate results.").format(prg=PROGNAME,
-                                                   libName="GeographicLib"))
+                  "or provide less accurate results.").format(
+                      prg=PROGNAME, libName="GeographicLib")
+            logger.warningNP(textwrap.fill(s, width=textWidth))
+
+        if self.config.earthMagneticField is None:
+            s = _("[{prg} warning] {libName}'s MagneticField executable not "
+                  "found or not working properly ({reason}). Some features "
+                  "requiring knowledge about the Earth's magnetic field will "
+                  "be disabled (e.g., computing a magnetic heading from a true "
+                  "heading).").format(
+                      prg=PROGNAME, libName="GeographicLib",
+                      reason=self.config.earthMagneticFieldLastProblem)
+            logger.warningNP(textwrap.fill(s, width=textWidth))
+
         self.config.logDetectedFlightGearVersion()
 
     # Regexp to ignore empty or whitespace-only elements
@@ -604,6 +620,18 @@ want to follow this new default and set “Airport database update” to
             translator = '\n\n' + _('Translation:')
         authors = _('Authors: {}').format(AUTHORS)
 
+        missing = ""
+        if self.config.earthMagneticField is None:
+            # Make sure we have up-to-date information before reporting a
+            # missing component.
+            from ..geo.magfield import EarthMagneticField, MagVarUnavailable
+            try:
+                EarthMagneticField(self.config)
+            except MagVarUnavailable as e:
+                s = _("Magnetic variation unavailable: {reason}.").format(
+                    reason=e.message)
+                missing = "\n\n" + textwrap.fill(s, width=60)
+
         # Refresh the version info in case the user fixed his fgfs executable
         # since the last time we tried to run 'fgfs --version'.
         self.config.getFlightGearVersion(ignoreFGVersionError=True)
@@ -620,10 +648,10 @@ want to follow this new default and set “Airport database update” to
             ver=FG_version) + comment
 
         about_text = ('{copyright}\n\n{authors}{transl}\n\n'
-                      '{using}\n\n{detected}.').format(
+                      '{using}{missing}\n\n{detected}.').format(
                           copyright=COPYRIGHT, authorsLabel=authors,
                           authors=authors, transl=translator, using=self.using,
-                          detected=detected)
+                          missing=missing, detected=detected)
 
         self.aboutWindow = Toplevel(borderwidth=4)
         self.aboutWindow.title(_('About'))

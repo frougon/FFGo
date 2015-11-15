@@ -53,6 +53,10 @@ rest is optional.
 
 Tip: Hover the mouse pointer over any option to see its description.
 
+Note: if you have installed GeographicLib's MagneticField program and it
+is not in your PATH, you can indicate its location in the
+“Miscellaneous” tab of the Preferences dialog.
+
 Changes in the “FlightGear settings” tab are immediately applied after
 clicking on the “Save Settings” button, however changes in other tabs
 may require restarting FFGo for them to be applied. Most notably,

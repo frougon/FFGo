@@ -33,6 +33,7 @@ class ConfigWindow:
         self.FG_scenery = StringVar()
         self.FG_aircraft = StringVar()
         self.FG_working_dir = StringVar()
+        self.MagneticField_bin = StringVar()
         self.language = StringVar()
         self.baseFontSize = StringVar()
 
@@ -50,6 +51,7 @@ class ConfigWindow:
         self.FG_scenery.set(self.config.FG_scenery.get())
         self.FG_aircraft.set(self.config.FG_aircraft.get())
         self.FG_working_dir.set(self.config.FG_working_dir.get())
+        self.MagneticField_bin.set(self.config.MagneticField_bin.get())
         if self.config.language.get():
             self.language.set(self.config.language.get())
         else:
@@ -122,16 +124,20 @@ class ConfigWindow:
             pass
 
     def findFG_bin(self):
+        self.chooseExecutable(self.FG_bin)
+
+    def findMagneticField_bin(self):
+        self.chooseExecutable(self.MagneticField_bin)
+
+    def chooseExecutable(self, cfgVar):
         try:
             p = fd.askopenfilename(parent=self.top,
-                                   initialdir=self.getInitialDir(
-                                       self.FG_bin.get()),
+                                   initialdir=self.getInitialDir(cfgVar.get()),
                                    title=_('Path to executable file:'))
             if p:
-                self.FG_bin.set(p)
-
+                cfgVar.set(p)
         except TclError:
-            return
+            pass
 
     def findFG_root(self):
         try:
@@ -285,6 +291,9 @@ Useful when apt.dat.gz file has been updated.""")
 Set the base font size in the range from {0} to {1}. Zero is a special
 value corresponding to a platform-dependent default size.""").format(
     MIN_BASE_FONT_SIZE, MAX_BASE_FONT_SIZE)
+        self.tooltip_MagneticFieldBin = _("""\
+Name or path to GeographicLib's MagneticField executable. If left blank,
+'MagneticField' will be searched in your PATH.""")
         self.tooltip_rememberMainWinPos = _("""\
 When saving the configuration, don't store the main window size only,
 but also its position (i.e., the offsets from the screen borders).
@@ -318,6 +327,7 @@ When this option is unchecked, only the main window size is stored.""")
         self.config.FG_scenery.set(self.FG_scenery.get())
         self.config.FG_aircraft.set(self.FG_aircraft.get())
         self.config.FG_working_dir.set(self.FG_working_dir.get())
+        self.config.MagneticField_bin.set(self.MagneticField_bin.get())
         if self.language.get() == '-':
             self.config.language.set('')
         else:
@@ -581,13 +591,32 @@ When this option is unchecked, only the main window size is stored.""")
         ToolTip(self.rebuildApt, self.tooltip_rebuildApt)
         self.rebuildApt.pack(side='top', fill='x')
 
-        self.frame_misc_5 = Frame(self.frame_misc, borderwidth=8)
-        self.frame_misc_5.pack(side='top', fill='x', expand=True)
-        self.frame_misc_51 = Frame(self.frame_misc_5)
-        self.frame_misc_51.pack(side='top', fill='x', expand=True)
+        # MagneticField executable
+        self.frame_MagField = Frame(self.frame_misc, borderwidth=8)
+        self.frame_MagField.pack(side='top', fill='x', expand=True)
 
+        self.frame_MagField1 = Frame(self.frame_MagField)
+        self.frame_MagField1.pack(side='top', fill='x', expand=True)
+        self.MagneticFieldBinLabel = Label(
+            self.frame_MagField1,
+            text=_("GeographicLib's MagneticField executable:"))
+        self.MagneticFieldBinLabel.pack(side='left')
+
+        self.frame_MagField2 = Frame(self.frame_MagField)
+        self.frame_MagField2.pack(side='top', fill='x', expand=True)
+        self.MagneticFieldBinEntry = Entry(
+            self.frame_MagField2, bg=TEXT_BG_COL, width=50,
+            textvariable=self.MagneticField_bin)
+        ToolTip(self.MagneticFieldBinEntry, self.tooltip_MagneticFieldBin)
+        self.MagneticFieldBinEntry.pack(side='left', fill='x', expand=True)
+
+        self.MagneticFieldBinFind = Button(self.frame_MagField2, text=_('Find'),
+                                           command=self.findMagneticField_bin)
+        self.MagneticFieldBinFind.pack(side='left')
+
+        # “Remember main windows position” checkbox
         self.rememberMainWinPos = Checkbutton(
-            self.frame_misc_51,
+            self.frame_misc,
             text=_('Remember the main window position'),
             variable=self.config.saveWindowPosition)
         ToolTip(self.rememberMainWinPos, self.tooltip_rememberMainWinPos)

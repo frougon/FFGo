@@ -70,6 +70,10 @@ class Config:
         self.FG_root = StringVar()
         self.FG_scenery = StringVar()
         self.FG_working_dir = StringVar()
+
+        self.MagneticField_bin = StringVar()
+        self.MagneticField_bin.trace('w', self.updateMagFieldProvider)
+
         self.filteredAptList = IntVar()
         self.language = StringVar()
         self.park = StringVar()
@@ -105,6 +109,7 @@ class Config:
                          'FG_BIN=': self.FG_bin,
                          'FG_AIRCRAFT=': self.FG_aircraft,
                          'FG_WORKING_DIR=': self.FG_working_dir,
+                         'MAGNETICFIELD_BIN=': self.MagneticField_bin,
                          'FILTER_APT_LIST=': self.filteredAptList,
                          'LANG=': self.language,
                          'WINDOW_GEOMETRY=': self.mainWindowGeometry,
@@ -312,6 +317,7 @@ class Config:
         self.FG_root.set('')
         self.FG_scenery.set('')
         self.FG_working_dir.set('')
+        self.MagneticField_bin.set('')
         self.language.set('')
         self.baseFontSize.set(DEFAULT_BASE_FONT_SIZE)
         self.mainWindowGeometry.set('')
@@ -948,6 +954,15 @@ configurations are kept separate.""")
 
             # This is also outdated with respect to the new apt.dat.
             self.aptDatCache.clear()
+
+    # Accept any arguments to allow safe use as a Tkinter variable observer
+    def updateMagFieldProvider(self, *args):
+        from .geo.magfield import EarthMagneticField, MagVarUnavailable
+        try:
+            self.earthMagneticField = EarthMagneticField(self)
+        except MagVarUnavailable as e:
+            self.earthMagneticField = None
+            self.earthMagneticFieldLastProblem = e.message
 
 
 class _ProcessApt:

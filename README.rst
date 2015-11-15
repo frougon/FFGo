@@ -40,33 +40,41 @@ FFGo's home page is located at:
 Requirements
 ------------
 
-FFGo relies on the following software:
+FFGo requires the following software:
 
   - Operating system:
 
       * GNU/Linux surely works, as should any Unix-like system;
       * Windows should work, please report;
-      * MacOS X should also work, except maybe for MacOS-specific Tcl/Tk
-        bugs as explained at
+      * MacOS X should also work, except *maybe* for MacOS-specific
+        Tcl/Tk bugs as explained at
         `<https://www.python.org/download/mac/tcltk/>`_. Please report.
 
   - `FlightGear`_;
   - `Python`_ 3.4 or later;
   - `Tkinter`_ (part of the Python standard library; often known as
     ``python3-tk`` or ``python-tk`` in Linux package managers);
-  - `CondConfigParser`_;
-  - `Pillow`_ (a PIL fork that supports Python 3) [#optComponent]_; the
-    corresponding Debian package is ``python3-pil.imagetk``;
-  - `GeographicLib`_\'s binding for Python 3 [#optComponent]_
-    (distribution packages may be named ``python3-geographiclib``, may
-    or may not exist yet...).
+  - `CondConfigParser`_.
 
-.. [#optComponent] These components are not mandatory to run FFGo, but
-                   some features will be disabled or work in degraded
-                   mode if they aren't installed. For instance, aircraft
-                   thumbnails won't be displayed if Pillow isn't
-                   installed for the Python interpreter used to run
-                   FFGo.
+In addition to these mandatory dependencies, FFGo will take advantage of
+the following software if installed:
+
+  - `Pillow`_ (a PIL fork that supports Python 3); the corresponding
+    `Debian`_ package is ``python3-pil.imagetk``;
+  - `GeographicLib`_\'s binding for Python 3 (distribution packages may
+    be named ``python3-geographiclib``, may or may not exist yet...);
+  - `GeographicLib`_\'s ``MagneticField`` program, distributed with the
+    GeographicLib C++ library. In Debian, this program is part of the
+    ``geographiclib-tools`` package, but requires specific dataset files
+    to be installed in order to work properly (the
+    ``geographiclib-get-magnetic`` script may be helpful to get them
+    installed).
+
+If some of these optional components are not installed, or if for some
+reason FFGo can't find them, some features will be disabled or work in
+degraded mode. For instance, aircraft thumbnails won't be displayed if
+the Pillow library isn't installed for the Python interpreter used to
+run FFGo.
 
 .. _Tkinter: https://docs.python.org/3/library/tkinter.html
 .. _Pillow: http://python-pillow.github.io/
@@ -177,7 +185,9 @@ directory in any release tarball or zip file. In short:
     the Python installation you'll use to run FFGo, you will have more
     features available (for now, essentially the calculation of runway
     length and heading for the runway tooltips, probably more in the
-    future).
+    future). And if you want to see magnetic variation and magnetic
+    headings in addition to true headings, you'll also need to install
+    GeographicLib's ``MagneticField`` program.
 
 .. _pip: https://pypi.python.org/pypi/pip
 
