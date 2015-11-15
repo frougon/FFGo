@@ -289,8 +289,8 @@ class RunwayMarkings(enum.Enum):
 class RunwayBase:
     """Base class for specific classes representing runway data."""
 
-    def __init__(self, name, latitude, longitude, type):
-        self._attrs = ["name", "latitude", "longitude", "type"]
+    def __init__(self, name, lat, lon, type):
+        self._attrs = ["name", "lat", "lon", "type"]
         for attr in self._attrs:
             setattr(self, attr, locals()[attr])
 
@@ -307,10 +307,10 @@ class RunwayBase:
         return locale.format("%d", round(val))
 
     def _addLatitude(self, l):
-        l.append(_("Latitude: {}".format(self.latitude)))
+        l.append(_("Latitude: {}".format(self.lat)))
 
     def _addLongitude(self, l):
-        l.append(_("Longitude: {}".format(self.longitude)))
+        l.append(_("Longitude: {}".format(self.lon)))
 
     def _addHeading(self, l):
         if self.heading is not None:
