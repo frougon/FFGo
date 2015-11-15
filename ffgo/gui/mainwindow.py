@@ -458,7 +458,8 @@ class App:
              _('CondConfigParser {}').format(condconfigparser.__version__)]
 
         if HAS_GEOGRAPHICLIB:
-            l.append(_('GeographicLib {}'.format(geographiclib.__version__)))
+            l.append(_("GeographicLib's Python binding {}".format(
+                geographiclib.__version__)))
 
         # This attribute is also used in the About dialog.
         self.using = _("Using:\n") + \
@@ -475,9 +476,9 @@ class App:
                                                            libName="Pillow"))
         if not HAS_GEOGRAPHICLIB:
             logger.warningNP(
-                _("[{prg} warning] {libName} library not found. Some features "
-                  "requiring geodesic calculations may be disabled or provide "
-                  "less accurate results.").format(prg=PROGNAME,
+                _("[{prg} warning] {libName}'s Python binding not found. Some "
+                  "features requiring geodesic calculations may be disabled "
+                  "or provide less accurate results.").format(prg=PROGNAME,
                                                    libName="GeographicLib"))
         self.config.logDetectedFlightGearVersion()
 
