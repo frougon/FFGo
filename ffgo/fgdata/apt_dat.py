@@ -25,6 +25,7 @@ except ImportError:
 from .. import constants
 from ..constants import PROGNAME
 from .. import misc
+from ..misc import normalizeHeading
 from ..logging import logger
 from .airport import Airport, AirportStub, AirportType, LandRunway, \
     WaterRunway, Helipad, RunwayType, SurfaceType, V810SurfaceType, \
@@ -822,23 +823,16 @@ class AptDat:
                           abs(10*rwyNum - (360.0+azimuth)))
 
         if angularDiff > 90:
-            return self.normalizeHeading(azimuth + 180.0)
+            return normalizeHeading(azimuth + 180.0)
         else:
-            return self.normalizeHeading(azimuth)
-
-    @classmethod
-    def normalizeHeading(cls, azimuth):
-        # x % y always has the sign of y
-        a = round(azimuth % 360.0)
-
-        return a if a else 360
+            return normalizeHeading(azimuth)
 
     @classmethod
     def computeLengthAndAzimuth(self, lat1, lon1, lat2, lon2):
         if HAS_GEOGRAPHICLIB:
             g = Geodesic.WGS84.Inverse(lat1, lon1, lat2, lon2)
-            azi1 = self.normalizeHeading(g["azi1"])
-            azi2 = self.normalizeHeading(g["azi2"] + 180.0)
+            azi1 = normalizeHeading(g["azi1"])
+            azi2 = normalizeHeading(g["azi2"] + 180.0)
             # Convert meters to feet
             return (g["s12"] / 0.3048, azi1, azi2)
         else:
@@ -918,8 +912,8 @@ class AptDat:
 
         if readDetails:
             name = e[0]
-            orientation = self.normalizeHeading(
-                self._readHeading(e[3])) # true heading in degrees
+            # True heading in degrees
+            orientation = normalizeHeading(self._readHeading(e[3]))
             length = self._readLength(e[4])
             width = self._readLength(e[5])
             surfaceType = self._readSurfaceType(e[6])

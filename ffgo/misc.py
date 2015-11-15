@@ -68,6 +68,13 @@ class OrderedEnum(enum.Enum):
         return NotImplemented
 
 
+def normalizeHeading(azimuth):
+    # x % y always has the sign of y
+    a = round(azimuth % 360.0)
+
+    return a if a else 360
+
+
 class DecimalCoord(float):
     def __str__(self):
         # 8 decimal places, as recommended for latitudes and longitudes in
