@@ -321,13 +321,16 @@ class RunwayBase:
 
     def _addHeading(self, l):
         if self.heading is not None:
+            trueHeading = normalizeHeading(self.heading) # rounding
+
             if magField is not None:
+                # Computation using the heading *before* it is rounded
                 magHeading = normalizeHeading(
                     self.heading - magField.decl(self.lat, self.lon))
                 s = _("Magnetic heading: {mag} (true: {true})").format(
-                    mag=magHeading, true=self.heading)
+                    mag=magHeading, true=trueHeading)
             else:
-                s = _("True heading: {}".format(self.heading))
+                s = _("True heading: {}".format(trueHeading))
 
             l.append(s)
 

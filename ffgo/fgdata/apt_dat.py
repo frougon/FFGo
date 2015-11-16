@@ -25,7 +25,6 @@ except ImportError:
 from .. import constants
 from ..constants import PROGNAME
 from .. import misc
-from ..misc import normalizeHeading
 from ..logging import logger
 from .airport import Airport, AirportStub, AirportType, LandRunway, \
     WaterRunway, Helipad, RunwayType, SurfaceType, V810SurfaceType, \
@@ -813,28 +812,22 @@ class AptDat:
         """
         Find the precise runway heading based on 'azimuth' and the runway number.
 
-        If 'azimuth' is in the "wrong direction", the return value will
-        correct that; otherwise 'azimuth' is simply normalized with
-        normalizeHeading().
+        If 'azimuth' is in the "wrong direction", return
+        (azimuth + 180); otherwise, return 'azimuth'.
 
         """
         angularDiff = min(abs(10*rwyNum - azimuth),
                           abs(10*(36 + rwyNum) - azimuth),
                           abs(10*rwyNum - (360.0+azimuth)))
 
-        if angularDiff > 90:
-            return normalizeHeading(azimuth + 180.0)
-        else:
-            return normalizeHeading(azimuth)
+        return (azimuth + 180) if angularDiff > 90 else azimuth
 
     @classmethod
     def computeLengthAndAzimuth(self, lat1, lon1, lat2, lon2):
         if HAS_GEOGRAPHICLIB:
             g = Geodesic.WGS84.Inverse(lat1, lon1, lat2, lon2)
-            azi1 = normalizeHeading(g["azi1"])
-            azi2 = normalizeHeading(g["azi2"] + 180.0)
             # Convert meters to feet
-            return (g["s12"] / 0.3048, azi1, azi2)
+            return (g["s12"] / 0.3048, g["azi1"], g["azi2"] + 180.0)
         else:
             return (None, None, None)
 
@@ -912,8 +905,7 @@ class AptDat:
 
         if readDetails:
             name = e[0]
-            # True heading in degrees
-            heading = normalizeHeading(self._readHeading(e[3]))
+            heading = self._readHeading(e[3]) # true heading in degrees
             length = self._readLength(e[4])
             width = self._readLength(e[5])
             surfaceType = self._readSurfaceType(e[6])
