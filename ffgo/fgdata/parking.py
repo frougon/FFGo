@@ -11,10 +11,27 @@
 import re
 import enum
 from xml.etree import ElementTree
+import locale
+import textwrap
 
 from ..constants import PROGNAME
 from .. import misc
+from ..misc import normalizeHeading
 from ..logging import logger
+
+
+def setupTranslationHelper(config):
+    global pgettext, ngettext, npgettext
+    from .. import misc
+
+    translationHelper = misc.TranslationHelper(config)
+    pgettext = translationHelper.pgettext
+    ngettext = translationHelper.ngettext
+    npgettext = translationHelper.npgettext
+
+def setupEarthMagneticFieldProvider(provider):
+    global magField
+    magField = provider
 
 
 class error(Exception):
@@ -127,6 +144,40 @@ class Parking:
             l.insert(0, "")
 
         return l
+
+    def tooltipText(self):
+        """Prepare the tooltip for an airport parking position."""
+        l = []
+
+        if abs(self.radius - round(self.radius)) < 0.01:
+            radiusStr = locale.format("%d", round(self.radius))
+        else:
+            radiusStr = locale.format("%.02f", self.radius)
+        l.append(
+            pgettext('parking position', 'Radius: {} m').format(radiusStr))
+
+        if self.airlineCodes:
+            s = pgettext('parking position', 'Airlines: {}').format(
+                ', '.join(self.airlineCodes))
+            l.append(textwrap.fill(s, width=50, subsequent_indent='  '))
+
+        l.append(pgettext('parking position', 'Latitude: {}').format(self.lat))
+        l.append(pgettext('parking position', 'Longitude: {}').format(self.lon))
+
+        trueHeading = normalizeHeading(self.heading) # rounding
+        if magField is not None:
+            # Computation using the heading *before* it is rounded
+            magHeading = normalizeHeading(
+                self.heading - magField.decl(self.lat, self.lon))
+            s = pgettext('parking position',
+                         "Magnetic heading: {mag} (true: {true})").format(
+                mag=magHeading, true=trueHeading)
+        else:
+            s = pgettext('parking position', "True heading: {}").format(
+                trueHeading)
+        l.append(s)
+
+        return '\n'.join(l)
 
 
 def readGroundnetFile(xmlFilePath):

@@ -964,8 +964,11 @@ configurations are kept separate.""")
             self.earthMagneticField = None
             self.earthMagneticFieldLastProblem = e.message
 
-        from .fgdata import airport
-        airport.setupEarthMagneticFieldProvider(self.earthMagneticField)
+        from .fgdata import airport as airport_mod
+        from .fgdata import parking as parking_mod
+
+        for module in (airport_mod, parking_mod):
+            module.setupEarthMagneticFieldProvider(self.earthMagneticField)
 
 
 class _ProcessApt:

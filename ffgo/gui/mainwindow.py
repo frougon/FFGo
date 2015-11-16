@@ -58,7 +58,10 @@ def setupTranslationHelper(config):
 
 def setupTranslationHelperInOtherModules(config):
     from ..fgdata import airport as airport_mod
-    airport_mod.setupTranslationHelper(config)
+    from ..fgdata import parking as parking_mod
+
+    for module in (airport_mod, parking_mod):
+        module.setupTranslationHelper(config)
 
 
 class PassShortcutsToApp:
@@ -935,29 +938,6 @@ want to follow this new default and set “Airport database update” to
 
         return d.get(flightType, flightType)
 
-    def airportParkingTooltip(self, p):
-        """Prepare the tooltip for an airport parking position."""
-        l = []
-
-        if abs(p.radius - round(p.radius)) < 0.01:
-            radiusStr = locale.format("%d", round(p.radius))
-        else:
-            radiusStr = locale.format("%.02f", p.radius)
-        l.append(
-            pgettext('parking position', 'Radius: {} m').format(radiusStr))
-
-        if p.airlineCodes:
-            s = pgettext('parking position', 'Airlines: {}').format(
-                ', '.join(p.airlineCodes))
-            l.append(textwrap.fill(s, width=50, subsequent_indent='  '))
-
-        l.append(pgettext('parking position', 'Latitude: {}').format(p.lat))
-        l.append(pgettext('parking position', 'Longitude: {}').format(p.lon))
-        l.append(pgettext('parking position', 'Heading: {}').format(
-            int(p.heading)))
-
-        return '\n'.join(l)
-
     def populateAirportParkingPopup(self, origEvent, popup, headerBgColor):
         """Populate the popup menu for an airport parking."""
         d = self.readParkingData(self.config.airport.get())
@@ -1012,7 +992,7 @@ want to follow this new default and set “Airport database update” to
             except KeyError:
                 return None # no tooltip for this item
             else:
-                return self.airportParkingTooltip(parking)
+                return parking.tooltipText()
 
         self.parkingTooltip = tooltip.MenuToolTip(popup, parkingTooltipFunc)
         popup.tk_popup(origEvent.x_root, origEvent.y_root, 0)
