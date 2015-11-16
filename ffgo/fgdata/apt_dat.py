@@ -808,7 +808,7 @@ class AptDat:
             return suffix
 
     @classmethod
-    def correctRwyHeadingBasedOnRwyNum(self, azimuth, rwyNum):
+    def correctRwyHeadingBasedOnRwyNum(cls, azimuth, rwyNum):
         """
         Find the precise runway heading based on 'azimuth' and the runway number.
 
