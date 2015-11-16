@@ -12,6 +12,9 @@ import enum
 import locale
 import textwrap
 
+from ..misc import normalizeHeading
+
+
 def setupTranslationHelper(config):
     global pgettext, ngettext, npgettext
     from .. import misc
@@ -20,6 +23,10 @@ def setupTranslationHelper(config):
     pgettext = translationHelper.pgettext
     ngettext = translationHelper.ngettext
     npgettext = translationHelper.npgettext
+
+def setupEarthMagneticFieldProvider(provider):
+    global magField
+    magField = provider
 
 
 class error(Exception):
@@ -314,7 +321,15 @@ class RunwayBase:
 
     def _addHeading(self, l):
         if self.heading is not None:
-            l.append(_("Heading: {}".format(self.heading)))
+            if magField is not None:
+                magHeading = normalizeHeading(
+                    self.heading - magField.decl(self.lat, self.lon))
+                s = _("Magnetic heading: {mag} (true: {true})").format(
+                    mag=magHeading, true=self.heading)
+            else:
+                s = _("True heading: {}".format(self.heading))
+
+            l.append(s)
 
     def _addLength(self, l):
         if self.length is not None:
