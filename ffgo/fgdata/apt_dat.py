@@ -30,6 +30,7 @@ from .airport import Airport, AirportStub, AirportType, LandRunway, \
     ShoulderSurfaceType, RunwayMarkings, PerimeterBuoys, HelipadEdgeLighting
 from . import parking
 from .parking import ParkingSource
+from ..geo import geodesy
 
 # This import requires the translation system [_() function] to be in
 # place.
@@ -95,6 +96,8 @@ class AptDat:
     files is provided by the AptDatDigest class.
 
     """
+
+    geodCalc = geodesy.GeodCalc()
 
     def __init__(self, path):
         self.path = os.path.abspath(path)
@@ -819,13 +822,10 @@ class AptDat:
         return (azimuth + 180) if angularDiff > 90 else azimuth
 
     @classmethod
-    def computeLengthAndAzimuth(self, lat1, lon1, lat2, lon2):
-        if HAS_GEOGRAPHICLIB:
-            g = Geodesic.WGS84.Inverse(lat1, lon1, lat2, lon2)
-            # Convert meters to feet
-            return (g["s12"] / 0.3048, g["azi1"], g["azi2"] + 180.0)
-        else:
-            return (None, None, None)
+    def computeLengthAndAzimuth(cls, lat1, lon1, lat2, lon2):
+        g = cls.geodCalc.inverse(lat1, lon1, lat2, lon2)
+        # Convert meters to feet
+        return (g["s12"] / 0.3048, g["azi1"], g["azi2"] + 180.0)
 
     def processLandRunway(self, payload, readDetails=True):
         """Process a runway record with code 100."""

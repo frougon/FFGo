@@ -38,13 +38,18 @@ FFGo's dependencies are:
   - Python 3.4 or later;
   - Tkinter (for the aforementioned Python interpreter);
   - CondConfigParser;
-  - Pillow (optional, only used to display aircraft thumbnails);
-  - GeographicLib's binding for Python 3 (optional, used for geodesic
-    calculations; e.g., to compute a runway length or heading based on the
-    latitude and longitude of the two runway ends);
-  - GeographicLib's MagneticField  program (optional, used to display the
+  - Pillow (optional; only used to display aircraft thumbnails);
+  - GeographicLib's MagneticField  program (optional; used to display the
     magnetic variation at a particular place and to compute magnetic headings
-    from true headings).
+    from true headings);
+  - GeographicLib's binding for Python 3 (optional; used for geodesic
+    calculations, e.g., to compute a runway length or heading based on the
+    latitude and longitude of the two runway ends as found in apt.dat). FFGo
+    includes algorithms for “basic” geodesic calculations (Vincenty's formula
+    and a few others); these should be sufficient in most cases. However,
+    there are rare cases (calculation of the shortest path between nearly
+    antipodal points) in which these algorithms don't work, whereas Karney's
+    algorithm, implemented in GeographicLib, does.
 
 Let's examine them one by one:
 
@@ -158,8 +163,9 @@ everything easily. But if you want to cut the procedure as short as possible
 and test FFGo right away, here is how (this method requires an OS supporting
 symbolic links, therefore Windows seems not to qualify):
 
-  0. You may install Pillow and/or GeographicLib through your distribution
-     package manager; it's usually easy, but entirely optional.
+  0. You may install Pillow and/or GeographicLib (with the MagneticField tool)
+     through your distribution package manager; it's usually easy, but
+     entirely optional.
 
   1. Unpack the CondConfigParser archive wherever you want, under your normal
      user account:
@@ -199,9 +205,9 @@ in order to install a Python package. In short, if you have Internet access
 and your pip is properly setup, all you have to do is 'pip install FFGo'.
 Optionally, you can also install Pillow with 'pip install Pillow', but this
 may fail if you don't have some particular software installed (see below). You
-may also want to install GeographicLib's binding for Python 3 with
-'pip install geographiclib', and GeographicLib's MagneticField program using
-instructions from GeographicLib's home page.
+may also want to install GeographicLib's binding for Python 3 with 'pip
+install geographiclib', and more importantly GeographicLib's MagneticField
+program using instructions from GeographicLib's home page.
 
 Besides being cleaner in concept, the "standard procedure" makes upgrades and
 removals easier than the "easiest procedure" described above, and makes it

@@ -61,14 +61,14 @@ the following software if installed:
 
   - `Pillow`_ (a PIL fork that supports Python 3); the corresponding
     `Debian`_ package is ``python3-pil.imagetk``;
-  - `GeographicLib`_\'s binding for Python 3 (distribution packages may
-    be named ``python3-geographiclib``, may or may not exist yet...);
   - `GeographicLib`_\'s ``MagneticField`` program, distributed with the
     GeographicLib C++ library. In Debian, this program is part of the
     ``geographiclib-tools`` package, but requires specific dataset files
     to be installed in order to work properly (the
     ``geographiclib-get-magnetic`` script may be helpful to get them
-    installed).
+    installed);
+  - `GeographicLib`_\'s binding for Python 3 (distribution packages may
+    be named ``python3-geographiclib``, may or may not exist yet...).
 
 If some of these optional components are not installed, or if for some
 reason FFGo can't find them, some features will be disabled or work in
@@ -181,13 +181,16 @@ directory in any release tarball or zip file. In short:
     Besides FFGo, you may want to also install `Pillow`_ in order to see
     the aircraft thumbnails in FFGo. The presence of Pillow is detected
     at run time, therefore it doesn't matter if Pillow is installed
-    before or after FFGo. Similarly, if you install `GeographicLib`_ for
-    the Python installation you'll use to run FFGo, you will have more
-    features available (for now, essentially the calculation of runway
-    length and heading for the runway tooltips, probably more in the
-    future). And if you want to see magnetic variation and magnetic
-    headings in addition to true headings, you'll also need to install
-    GeographicLib's ``MagneticField`` program.
+    before or after FFGo. Similarly, if you want to see magnetic
+    variation and magnetic headings in addition to true headings, you'll
+    need to install GeographicLib's ``MagneticField`` program. Finally,
+    `GeographicLib`_ is used for geodetic calculations if installed for
+    the Python interpreter used to run FFGo. In the current state of
+    FFGo, these computations can normally be done without this module,
+    but planned features for future releases will benefit from
+    `GeographicLib`_\'s Python binding in some particular cases
+    (computation of distance and bearings for the shortest path between
+    nearly antipodal points).
 
 .. _pip: https://pypi.python.org/pypi/pip
 
