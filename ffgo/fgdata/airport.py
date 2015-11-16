@@ -86,14 +86,18 @@ class Airport:
             rl.append(
                 textwrap.fill(s, width=40, subsequent_indent='  '))
 
-        l = ([self.type.capitalizedName(),
+        l = [self.type.capitalizedName(),
               _("Latitude: {latitude}").format(latitude=self.lat),
               _("Longitude: {longitude}").format(longitude=self.lon),
               _("Elevation: {elev_feet} ft ({elev_meters} m)").format(
                   elev_feet=locale.format("%d", round(self.elevation)),
                   elev_meters=locale.format("%.01f", self.elevation*0.3048))]
-             + rl)
-        return '\n'.join(l)
+
+        if magField is not None:
+            magVar = locale.format("%.01f", magField.decl(self.lat, self.lon))
+            l.append(_("Magnetic variation: {}°").format(magVar))
+
+        return '\n'.join(l + rl)
 
 
 class AirportStub:
