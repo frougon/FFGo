@@ -318,16 +318,19 @@ class RunwayBase:
         return locale.format("%d", round(val))
 
     def _addLatitude(self, l):
-        l.append(_("Latitude: {}".format(self.lat)))
+        if self.lat is not None:
+            l.append(_("Latitude: {}".format(self.lat)))
 
     def _addLongitude(self, l):
-        l.append(_("Longitude: {}".format(self.lon)))
+        if self.lon is not None:
+            l.append(_("Longitude: {}".format(self.lon)))
 
     def _addHeading(self, l):
         if self.heading is not None:
             trueHeading = normalizeHeading(self.heading) # rounding
 
-            if magField is not None:
+            if (magField is not None and self.lat is not None and
+                self.lon is not None):
                 # Computation using the heading *before* it is rounded
                 magHeading = normalizeHeading(
                     self.heading - magField.decl(self.lat, self.lon))

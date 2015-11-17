@@ -14,7 +14,6 @@ import gzip
 import re
 import textwrap
 import bisect
-from math import radians, cos, sin
 
 try:
     from geographiclib.geodesic import Geodesic
@@ -733,20 +732,17 @@ class AptDat:
             azimuth1 = self.correctRwyHeadingBasedOnRwyNum(num1)
             azimuth2 = self.correctRwyHeadingBasedOnRwyNum(num2)
 
-            # Compute the coordinates of the runway ends based on the
-            # coordinates of their midpoint and the runway length and heading.
             if HAS_GEOGRAPHICLIB:
+                # Compute the coordinates of the runway ends based on:
+                #   - the coordinates of their midpoint;
+                #   - the runway length and heading.
                 halfLength_m = 0.5*(length * 0.3048) # in meters
                 g1 = Geodesic.WGS84.Direct(lat, lon, azimuth2, halfLength_m)
                 g2 = Geodesic.WGS84.Direct(lat, lon, azimuth1, halfLength_m)
                 lat1, lon1 = g1['lat2'], g1['lon2']
                 lat2, lon2 = g2['lat2'], g2['lon2']
             else:
-                # Flat approximation
-                lat1 = lat - 0.5*length*cos(radians(azimuth1))
-                lon1 = lon - 0.5*length*sin(radians(azimuth1))
-                lat2 = lat - 0.5*length*cos(radians(azimuth2))
-                lon2 = lon - 0.5*length*sin(radians(azimuth2))
+                lat1 = lon1 = lat2 = lon2 = None
 
             if v810SurfaceType.isWaterRunway():
                 rwy1 = WaterRunway(name, lat1, lon1, azimuth1, length, width,
