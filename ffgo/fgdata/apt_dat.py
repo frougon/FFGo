@@ -729,8 +729,8 @@ class AptDat:
 
             num1 = self.getRwyNum(name)
             num2, name2 = self.otherRunway(name)
-            azimuth1 = self.correctRwyHeadingBasedOnRwyNum(num1)
-            azimuth2 = self.correctRwyHeadingBasedOnRwyNum(num2)
+            azimuth1 = self.correctRwyHeadingBasedOnRwyNum(heading, num1)
+            azimuth2 = self.correctRwyHeadingBasedOnRwyNum(heading, num2)
 
             if HAS_GEOGRAPHICLIB:
                 # Compute the coordinates of the runway ends based on:
