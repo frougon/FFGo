@@ -68,6 +68,9 @@ FlightGear executable, with suitable arguments.""",
                         help="""\
       enable test mode (useful to test pieces of code from the {prg} GUI)"""
     .format(prg=PROGNAME))
+    parser.add_argument('-T', '--test-only', action='store_true',
+                        help="""\
+      after startup, run the App.testStuff() method and exit""")
     parser.add_argument('--help', action="help",
                         help="display this message and exit")
     # The version text is not wrapped when using

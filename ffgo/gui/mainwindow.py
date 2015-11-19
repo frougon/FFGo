@@ -455,6 +455,10 @@ class App:
         self.runFGLock = threading.Lock()
         self.setupKeyboardShortcuts()
 
+        if self.params.test_only:
+            self.testStuff()
+            self.master.after_idle(self.quit)
+
     def surveyDependencies(self):
         textWidth = 78
 
