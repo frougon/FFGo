@@ -72,6 +72,16 @@ def normAzimuth(azi):
     return azi
 
 
+def normLon(lon):
+    """Normalize a longitude in degrees.
+
+    Return a value x such as -180 <= x < 180 (not sure this is a general
+    convention...).
+
+    """
+    return normAzimuth(lon)
+
+
 def deltaLon(lon1, lon2):
     """Signed difference of two longitudes given in degrees.
 
@@ -160,8 +170,31 @@ class EarthModel:
     f = 1/298.257223563         # flattening of the ellipsoid
     b = (1-f)*a                 # length of semi-minor axis of the ellipsoid
     a2, b2 = a**2, b**2
+    ab2 = a2*b2
     e2 = 1 - b2/a2              # squared eccentricity
     aSqrt1me2 = a*sqrt(1-e2)    # useful for the Gaussian radius of curvature
+
+    @classmethod
+    def meridionalRadius(cls, lat):
+        """Return the meridional radius of curvature for a given latitude.
+
+        The latitude should be given in degrees. This radius of
+        curvature corresponds to the north-south direction and is often
+        referred to as 'M'.
+
+        """
+        return cls.ab2 / ((cls.a*cosd(lat))**2 + (cls.b*sind(lat))**2)**1.5
+
+    @classmethod
+    def normalRadius(cls, lat):
+        """Return the normal radius of curvature for a given latitude.
+
+        The latitude should be given in degrees. This radius of
+        curvature corresponds to the east-west direction and is often
+        referred to as 'N'.
+
+        """
+        return cls.a2 / sqrt((cls.a*cosd(lat))**2 + (cls.b*sind(lat))**2)
 
     @classmethod
     def gaussRadius(cls, lat):

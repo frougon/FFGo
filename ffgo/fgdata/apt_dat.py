@@ -14,6 +14,7 @@ import gzip
 import re
 import textwrap
 import bisect
+from math import degrees, radians, cos, sin
 
 try:
     from geographiclib.geodesic import Geodesic
@@ -31,6 +32,7 @@ from .airport import Airport, AirportStub, AirportType, LandRunway, \
 from . import parking
 from .parking import ParkingSource
 from ..geo import geodesy
+from ..geo.geodesy import cosd, sind, normLon
 
 # This import requires the translation system [_() function] to be in
 # place.
@@ -689,6 +691,51 @@ class AptDat:
 
         return (isRwyRecord, latSum, lonSum)
 
+    def _computeV810RunwayEnds(self, lat, lon, length, azimuth1, azimuth2):
+        """Compute the coordinates of the opposite ends of a v810 runway.
+
+        lat, lon:
+          coordinates of the “runway center” (midpoint of the two runway
+          ends)
+        azimuth1 and azimuth2:
+          headings of each of the reciprocal runways (they should differ
+          by 180°)
+
+        """
+        earth = self.geodCalc.earthModel
+
+        def clampLat(l):
+            if l > 90.0:
+                l = 90.0
+            elif l < -90.0:
+                l = -90.0
+            return l
+
+        tmp = lat - degrees(0.5*length*cosd(azimuth1) /
+                            earth.meridionalRadius(lat))
+        # Of course, this is not good at the poles, but the whole
+        # calculation method is pretty bad there anyway...
+        lat1 = clampLat(tmp)
+        tmp = lat - degrees(0.5*length*cosd(azimuth2) /
+                            earth.meridionalRadius(lat))
+        lat2 = clampLat(tmp)
+
+        cosLat = cosd(lat)
+        try:
+            tmp = lon - degrees(0.5*length*sind(azimuth1) /
+                                (cosLat*earth.normalRadius(lat)))
+            lon1 = normLon(tmp)
+            tmp = lon - degrees(0.5*length*sind(azimuth2) /
+                                (cosLat*earth.normalRadius(lat)))
+            lon2 = normLon(tmp)
+        except ZeroDivisionError:
+            # If the runway center is at the North or South pole, there
+            # is no way to interpret its heading (the north direction
+            # is undefined at these particular places)!
+            lon1 = lon2 = None
+
+        return (lat1, lon1, lat2, lon2)
+
     _v810Helipad_cre = re.compile(r"(?P<name>H(?P<number>\d+))x$")
 
     def processV810Runway(self, e, readDetails=True):
@@ -745,8 +792,12 @@ class AptDat:
                 lat1, lon1 = g1['lat2'], g1['lon2']
                 lat2, lon2 = g2['lat2'], g2['lon2']
             else:
-                lat1 = lon1 = lat2 = lon2 = None
-
+                # Fallback method. It should work decently everywhere except
+                # when very close to the poles, where the direction of "north"
+                # can change infinitely fast with tiny changes in longitude if
+                # one is close enough to either the North or South pole.
+                lat1, lon1, lat2, lon2 = self._computeV810RunwayEnds(
+                    lat, lon, length, azimuth1, azimuth2)
             if v810SurfaceType.isWaterRunway():
                 rwy1 = WaterRunway(name, lat1, lon1, azimuth1, length, width,
                                    None)
