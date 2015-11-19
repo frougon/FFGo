@@ -21,8 +21,20 @@ from .constants import PROGNAME
 
 class FFGoException(Exception):
     """Base class for exceptions in FFGo."""
-    def __init__(self, message=None):
+    def __init__(self, message=None, *, mayCapitalizeMsg=True):
+        """Initialize an FFGoException instance.
+
+        Except in cases where 'message' starts with a proper noun or
+        something like that, its first character should be given in
+        lower case. Automated treatments of this exception may print the
+        message with its first character changed to upper case, unless
+        'mayCapitalizeMsg' is False. In other words, if the case of the
+        first character of 'message' must not be changed under any
+        circumstances, set 'mayCapitalizeMsg' to False.
+
+        """
         self.message = message
+        self.mayCapitalizeMsg = mayCapitalizeMsg
 
     def __str__(self):
         return self.completeMessage()

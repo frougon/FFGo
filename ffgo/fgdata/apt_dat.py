@@ -47,8 +47,8 @@ class UnableToParseAptDat(error):
     ExceptionShortDescription = _(
         "Unable to parse the apt.dat (or apt.dat.gz) file")
     def __init__(self, lineNb, message=None):
+        error.__init__(self, message)
         self.lineNb = lineNb
-        self.message = message
 
     def __repr__(self):
         return "{0}.{1}({2!r}, {3!r})".format(__name__, type(self).__name__,

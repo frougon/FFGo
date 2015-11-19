@@ -134,6 +134,11 @@ def reportTkinterCallbackException(type_, val, tb):
         # the log file anyway.
         guiMessage = val.ExceptionShortDescription
         guiDetail = val.detail()
+        # In the graphical error message, guiDetail starts a new paragraph,
+        # just below the “title”. Therefore, make it start with an uppercase
+        # character unless explicitely forbidden.
+        if guiDetail and val.mayCapitalizeMsg:
+            guiDetail = guiDetail[0].upper() + guiDetail[1:]
     else:
         guiMessage = message
         guiDetail = detail
