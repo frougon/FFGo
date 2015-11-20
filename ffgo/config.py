@@ -560,7 +560,7 @@ configurations are kept separate.""")
     def _makeAptDigest(self, head=None):
         """Build apt database from apt.dat.gz"""
         if self.FG_root.get():
-            _ProcessApt(self.master, self.apt_path, head)
+            _ProcessApt(self.master, self, self.apt_path, head)
 
     def _read(self, path=None):
         """Read the specified or a default configuration file.
@@ -931,7 +931,10 @@ configurations are kept separate.""")
             old_modtime = timestamp.read()
         return old_modtime
 
-    def _writeAptTimestamp(self, s):
+    def _writeAptTimestamp(self, s=None):
+        if s is None:
+            s = self._getAptModTime()
+
         logger.info("Opening apt timestamp file '{}' for writing".format(
             APT_TIMESTAMP))
         with open(APT_TIMESTAMP, "w", encoding="utf-8") as timestamp:
@@ -943,8 +946,6 @@ configurations are kept separate.""")
     def _updateApt(self, old_timestamp):
         if old_timestamp != self._getAptModTime():
             self._makeAptDigest(head=_('Modification of apt.dat.gz detected.'))
-            # XXX What follows would probably be better in _ProcessApt
-            self._writeAptTimestamp(self._getAptModTime())
             # The new apt.dat may invalidate the current parking
             status, *rest = self.decodeParkingSetting(self.park.get())
             if status == "apt.dat":
@@ -975,8 +976,9 @@ class _ProcessApt:
 
     """Build apt database from apt.dat.gz"""
 
-    def __init__(self, master, aptPath, head=None):
+    def __init__(self, master, config, aptPath, head=None):
         self.master = master
+        self.config = config
         self.aptPath = aptPath
         self.main(head)
 
@@ -1009,6 +1011,8 @@ class _ProcessApt:
                   "'{aptDat}'...").format(prg=PROGNAME, aptDigest=APT,
                                           aptDat=self.aptPath))
             aptDat.makeAptDigest(outputFile=APT)
+
+        self.config._writeAptTimestamp()
 
     def show_no_aptdat_error(self):
         message = _('Cannot find apt.dat database.')
