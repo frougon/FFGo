@@ -424,6 +424,10 @@ class GeodCalc:
                       (angle = {ang!r}°)""")
                         .format(f=fName, ang=degrees(angle)),
                                                  width=textWidth))
+                    # This “mean latitude” would be a pretty bad guess
+                    # if the start and end points were located on either
+                    # side of a pole, but this code path should not be
+                    # reachable in such a case.
                     phi_m = 0.5*(lat1 + lat2)
                     dist = self.earthModel.gaussRadius(phi_m)*angle
                     return {"s12": dist, "azi1": azi1, "azi2": azi2}
@@ -505,7 +509,8 @@ class GeodCalc:
         lat1, lon1, lat2, lon2: geodetic coordinates in degrees
 
         This method is supposed to give acceptable results for distances
-        not exceeding 475 km / 295 miles. Return the distance in meters.
+        not exceeding 475 km / 295 miles, when not too close to the
+        North or South pole. Return the distance in meters.
 
         """
         phi_m = radians(0.5*(lat1 + lat2))
