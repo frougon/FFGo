@@ -336,6 +336,14 @@ class GeodCalc:
         fName = "vincentyInverseWithFallback"
         textWidth = 78          # for wrapping of log messages
 
+        if (lat1 == lat2 == 90.0 or lat1 == lat2 == -90.0 or
+            lat1 == lat2 and normLon(lon1) == normLon(lon2)):
+            logger.debugNP("{f}: identical start and end points, "
+                           "short-circuiting the whole process".format(
+                               f=fName))
+            # Make sure the distance returned in this case is exactly zero.
+            return {"s12": 0.0, "azi1": 0.0, "azi2": 0.0}
+
         try:
             res = self.vincentyInverse(lat1, lon1, lat2, lon2,
                                        precision=precision)
