@@ -351,12 +351,27 @@ class GeodCalc:
             # used in NVector.angle() manages to change the sign of the result
             # because of floating point inaccuracy...
             if abs(angle) < 400/6371: # 400 km
-                dist = self.fccDistance(lat1, lon1, lat2, lon2)
-                logger.debugNP(textwrap.fill(textwrap.dedent("""\
-                  {f}: Vincenty method didn't work; points not very far away
-                  from each other (angle = {ang!r}°, dist = {d!r} m obtained
-                  with fccDistance())""").format(
-                        f=fName, ang=degrees(angle), d=dist), width=textWidth))
+                if (lat1 > 80 and lat2 > 80 or lat1 < -80 and lat2 < -80):
+                    # Not accurate here, but the end result shouldn't be worse
+                    # than if using fccDistance().
+                    phi_m = 0.5*(lat1 + lat2)
+                    dist = self.earthModel.gaussRadius(phi_m)*angle
+                    logger.debugNP(textwrap.fill(textwrap.dedent("""\
+                      {f}: Vincenty method didn't work; points not very far
+                      away from each other and close to one of the poles
+                      (angle = {ang!r}°, lat1 = {lat1!r}, lat2 = {lat2!r}),
+                      dist = {d!r} m obtained using the Gaussian radius of
+                      curvature""").format(f=fName, ang=degrees(angle),
+                                           lat1=lat1, lat2=lat2, d=dist),
+                                                 width=textWidth))
+                else:
+                    dist = self.fccDistance(lat1, lon1, lat2, lon2)
+                    logger.debugNP(textwrap.fill(textwrap.dedent("""\
+                      {f}: Vincenty method didn't work; points not very far
+                      away from each other (angle = {ang!r}°), dist = {d!r} m
+                      obtained with fccDistance()""").format(
+                            f=fName, ang=degrees(angle), d=dist),
+                                                 width=textWidth))
 
                 try:
                     azi1, azi2 = self.greatCircleAzimuths(
