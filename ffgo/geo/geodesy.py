@@ -507,3 +507,38 @@ class GeodCalc:
         # Convert from kilometers to meters
         return 1000*hypot(self._fccK1(phi_m)*(lat2 - lat1),
                           self._fccK2(phi_m)*deltaLon(lon2, lon1))
+
+    def modifiedFccDistance(self, lat1, lon1, lat2, lon2):
+        """
+        Approx. distance based on ellipsoidal Earth model projected to a plane.
+
+        This is the same as fccDistance(), except that spherical
+        approximation using the Gaussian radius of curvature will be
+        used if both points are not too far away from one of the poles.
+        fccDistance() would “unroll” a circle of constant latitude
+        instead of “cutting” through the closest pole, which would be
+        pretty far from the shortest path (especially if the longitudes
+        differ by 180° or something not too far).
+
+        """
+        # Actually, the problem with fccDistance() addressed here can
+        # happen at any latitude provided the longitudes differ by 180°
+        # or so (the shortest path passes close to a pole, and the large
+        # difference between the longitudes doesn't by itself contribute
+        # to the length of the path). But if this is the case and the
+        # points are not close to one of the poles, then they must be
+        # quite distant and this method shouldn't be used in the first
+        # place.
+        if (lat1 > 80 and lat2 > 80 or lat1 < -80 and lat2 < -80):
+            n1 = NVector.fromLatLon(lat1, lon1)
+            n2 = NVector.fromLatLon(lat2, lon2)
+            angle = n1.angle(n2)    # radians
+
+            # Not accurate here, but the end result shouldn't be worse
+            # than if using fccDistance().
+            lat_m = 0.5*(lat1 + lat2)
+            dist = self.earthModel.gaussRadius(lat_m)*angle
+        else:
+            dist = self.fccDistance(lat1, lon1, lat2, lon2)
+
+        return dist
