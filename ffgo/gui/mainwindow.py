@@ -30,7 +30,6 @@ from .. import misc
 from ..misc import resourceExists, textResourceStream, binaryResourceStream
 from . import tooltip
 from .tooltip import ToolTip
-from .metar import Metar
 from .configwindow import ConfigWindow
 from . import infowindow
 from ..constants import *
@@ -1669,6 +1668,10 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
         self.helpWindow.destroy()
 
     def showMETARWindow(self, event=None):
+        # This import indirectly requires the translation system to be in
+        # place.
+        from .metar import Metar
+
         if self.metar is not None:
             self.metar.quit()
 

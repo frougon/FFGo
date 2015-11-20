@@ -3,7 +3,7 @@
 """Simple widget to display METAR reports from weather.noaa.gov/."""
 
 
-from math import sqrt
+import sys
 import socket
 from urllib.request import Request, build_opener, HTTPHandler
 from urllib.error import URLError
@@ -11,10 +11,12 @@ import threading
 import queue as queue_mod       # keep 'queue' available for variable bindings
 import functools
 import traceback
+import collections
 from tkinter import *
 
 from .. import constants
 from ..logging import logger
+from ..geo import geodesy
 
 
 socket.setdefaulttimeout(5.0)
@@ -22,6 +24,8 @@ HTTP_DEBUG_LEVEL = 0
 
 
 class Metar:
+
+    geodCalc = geodesy.GeodCalc()
 
     def __init__(self, app, master, config, background):
         self.app = app
@@ -92,9 +96,6 @@ class Metar:
         """Destroy this window and tell the App object about it."""
         self.top.destroy()
         self.app.setMetarToNone()
-
-    def _comparePos(self, a, b):
-        return sqrt((a.lat - b.lat) ** 2 + (a.lon - b.lon) ** 2)
 
     # Accept any arguments to allow safe use as a Tkinter variable observer
     def onDecodedChanged(self, *args):
@@ -208,14 +209,18 @@ class Metar:
         return icao in self.metar_list
 
     def _nearestMetar(self, icao):
-        """Find nearest METAR station"""
-        nearest_metar = ''
-        nearest_dist = 999
+        """Find the nearest METAR station for 'icao'."""
+        shortestDist = sys.float_info.max
+        # We'll do a quick estimation of the distance for all candidates, and a
+        # precise calculation for the 15 closest to 'icao'.
+        closestStations = collections.deque(maxlen=15)
 
         try:
             airport = self.config.airports[icao]
         except KeyError:
             return ''
+
+        aptLat, aptLon = airport.lat, airport.lon # used many times
 
         for icao in self.metar_list:
             try:
@@ -223,12 +228,28 @@ class Metar:
             except KeyError:
                 continue
 
-            distance = self._comparePos(airport, metarCandidate)
-            if distance < nearest_dist:
-                nearest_metar = icao
-                nearest_dist = distance
+            # Fast method, that doesn't give insane results for, e.g., points
+            # located on either side of the ±180° meridian.
+            distance = self.geodCalc.modifiedFccDistance(
+                aptLat, aptLon, metarCandidate.lat, metarCandidate.lon)
+            if distance <= shortestDist:
+                closestStations.append(metarCandidate)
+                shortestDist = distance
 
-        return nearest_metar
+        if closestStations:
+            # Final contest
+            def dist(metarCandidate):
+                # Moderately slow compared to modifiedFccDistance(), but very
+                # accurate. Since we are only using this method for a few
+                # airports, the delay won't be noticeable.
+                return self.geodCalc.inverse(
+                    aptLat, aptLon,
+                    metarCandidate.lat, metarCandidate.lon)["s12"]
+
+            closest = min(closestStations, key=dist)
+            return closest.icao
+        else:
+            return ''
 
     # Accept any arguments to allow safe use as a Tkinter variable observer
     def _updateLabelSize(self, *args):
