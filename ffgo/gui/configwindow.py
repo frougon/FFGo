@@ -277,16 +277,21 @@ For more information, you may consult:
 
   http://wiki.flightgear.org/About_Scenery/Airports""").format(prg=PROGNAME)
         self.tooltip_autoAptMenu = _("""\
-Automatic - {prg} will try to keep track of changes to
+Automatic - {prg} will try to keep track of changes to the
     FG_ROOT/Airports/apt.dat.gz file, and will automatically rebuild
-    its own airport database when this happens.
+    its own airport database ({aptDigest}) when this happens.
 
-Manual - The “Rebuild Airport Database” button needs to be used every
-    time FG_ROOT/Airports/apt.dat.gz is changed (for instance, this is
-    likely to happen when FlightGear is updated).""").format(prg=PROGNAME)
+Manual - The “Rebuild Airport Database” button must be used every time
+    FG_ROOT/Airports/apt.dat.gz is changed (for instance, this is
+    likely to happen when FlightGear is updated).""").format(
+        prg=PROGNAME, aptDigest=APT)
         self.tooltip_rebuildApt = _("""\
-Build new airport database from current FG_ROOT/Airports/apt.dat.gz.
-Useful when apt.dat.gz file has been updated.""")
+Rebuild the airport database from current FG_ROOT/Airports/apt.dat.gz.
+This must be done every time the apt.dat.gz file is changed. If you
+have left “Airport database update” to its default setting of
+Automatic, you don't have to worry about that: the rebuild will be
+done automatically every time the apt.dat.gz file is found with a
+timestamp that is more recent than the last rebuild.""")
         self.tooltip_fontSize = _("""\
 Set the base font size in the range from {0} to {1}. Zero is a special
 value corresponding to a platform-dependent default size.""").format(
