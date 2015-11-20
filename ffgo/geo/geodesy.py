@@ -390,9 +390,7 @@ class GeodCalc:
                       {f}: could not compute azimuths; barring rounding errors,
                       the points should be equal""").format(f=fName, d=dist),
                                                  width=textWidth))
-                    # GeographicLib's Geodesic.WGS84.Inverse() seems to behave
-                    # this way for identical points
-                    return {"s12": 0.0, "azi1": -180.0, "azi2": -180.0}
+                    return {"s12": 0.0, "azi1": 0.0, "azi2": 0.0}
                 else:
                     logger.debugNP("{f}: using spherical approximation to "
                                    "compute the azimuths".format(f=fName))
