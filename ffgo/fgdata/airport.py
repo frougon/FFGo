@@ -334,10 +334,12 @@ class RunwayBase:
                 # Computation using the heading *before* it is rounded
                 magHeading = normalizeHeading(
                     self.heading - magField.decl(self.lat, self.lon))
-                s = _("Magnetic heading: {mag} (true: {true})").format(
+                s = pgettext("runway/helipad",
+                             "Magnetic heading: {mag} (true: {true})").format(
                     mag=magHeading, true=trueHeading)
             else:
-                s = _("True heading: {}").format(trueHeading)
+                s = pgettext("runway/helipad",
+                             "True heading: {}").format(trueHeading)
 
             l.append(s)
 
