@@ -16,7 +16,6 @@
 """
 
 import locale
-import gettext
 import sys
 import os
 import argparse
