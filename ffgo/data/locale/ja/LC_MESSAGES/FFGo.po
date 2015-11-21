@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FFGo 1.7.0\n"
 "Report-Msgid-Bugs-To: f.rougon@free.fr\n"
-"POT-Creation-Date: 2015-11-20 21:32+0100\n"
+"POT-Creation-Date: 2015-11-21 16:13+0100\n"
 "PO-Revision-Date: 2014-11-09 16:40+0900\n"
 "Last-Translator: AOKI kiyohito <sambar.fgfs@gmail.com>\n"
 "Language-Team: FlightGear.jpn.org\n"
@@ -76,7 +76,7 @@ msgstr ""
 msgid "In '{file}': {errmsg}."
 msgstr ""
 
-#: ffgo/fgdata/parking.py:209 ffgo/main.py:147 ffgo/gui/infowindow.py:22
+#: ffgo/fgdata/parking.py:209 ffgo/main.py:148 ffgo/gui/infowindow.py:22
 #: ffgo/gui/mainwindow.py:551 ffgo/gui/mainwindow.py:580
 #: ffgo/gui/mainwindow.py:1051 ffgo/gui/mainwindow.py:1393
 #: ffgo/gui/mainwindow.py:1425 ffgo/gui/mainwindow.py:1700
@@ -136,6 +136,11 @@ msgstr ""
 #, fuzzy
 msgid "Heliport"
 msgstr "空港:"
+
+#: ffgo/fgdata/airport.py:83
+#, python-brace-format
+msgid "{rwyType}: {runways}"
+msgstr ""
 
 #: ffgo/fgdata/airport.py:90
 #, python-brace-format
@@ -276,54 +281,56 @@ msgstr ""
 msgid "Longitude: {}"
 msgstr ""
 
-#: ffgo/fgdata/airport.py:337
+#: ffgo/fgdata/airport.py:338
 #, python-brace-format
+msgctxt "runway/helipad"
 msgid "Magnetic heading: {mag} (true: {true})"
 msgstr ""
 
-#: ffgo/fgdata/airport.py:340
+#: ffgo/fgdata/airport.py:342
+msgctxt "runway/helipad"
 msgid "True heading: {}"
 msgstr ""
 
-#: ffgo/fgdata/airport.py:348
+#: ffgo/fgdata/airport.py:350
 #, python-brace-format
 msgid "Length: {0} ft ({1} m)"
 msgstr ""
 
-#: ffgo/fgdata/airport.py:356
+#: ffgo/fgdata/airport.py:358
 #, python-brace-format
 msgid "Width: {0} ft ({1} m)"
 msgstr ""
 
-#: ffgo/fgdata/airport.py:362
+#: ffgo/fgdata/airport.py:364
 msgid "Surface type: {}"
 msgstr ""
 
-#: ffgo/fgdata/airport.py:366
+#: ffgo/fgdata/airport.py:368
 msgid "Shoulder surface type: {}"
 msgstr ""
 
-#: ffgo/fgdata/airport.py:371
+#: ffgo/fgdata/airport.py:373
 msgid "Runway markings: {}"
 msgstr ""
 
-#: ffgo/fgdata/airport.py:375
-msgid "Smoothness: {:.02f}"
+#: ffgo/fgdata/airport.py:377
+msgid "Smoothness: {}"
 msgstr ""
 
-#: ffgo/fgdata/airport.py:415 ffgo/fgdata/airport.py:456
+#: ffgo/fgdata/airport.py:418 ffgo/fgdata/airport.py:459
 msgid "no"
 msgstr ""
 
-#: ffgo/fgdata/airport.py:416 ffgo/fgdata/airport.py:457
+#: ffgo/fgdata/airport.py:419 ffgo/fgdata/airport.py:460
 msgid "yes"
 msgstr ""
 
-#: ffgo/fgdata/airport.py:443
+#: ffgo/fgdata/airport.py:446
 msgid "Perimeter buoys: {}"
 msgstr ""
 
-#: ffgo/fgdata/airport.py:491
+#: ffgo/fgdata/airport.py:494
 msgid "Edge lighting: {}"
 msgstr ""
 
@@ -518,6 +525,14 @@ msgstr ""
 #: ffgo/main.py:101
 #, python-brace-format
 msgid "{prg}: initialization of the configuration aborted. Exiting."
+msgstr ""
+
+#: ffgo/main.py:146
+#, python-brace-format
+msgid ""
+"\n"
+"{msg}:\n"
+"{details}"
 msgstr ""
 
 #: ffgo/gui/metar.py:81
