@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: FFGo 1.7.0\n"
 "Report-Msgid-Bugs-To: f.rougon@free.fr\n"
 "POT-Creation-Date: 2015-11-21 16:13+0100\n"
-"PO-Revision-Date: 2015-11-21 15:21+0100\n"
+"PO-Revision-Date: 2015-11-21 16:18+0100\n"
 "Last-Translator: Florent Rougon <f.rougon@free.fr>\n"
 "Language-Team: French <kde-i18n-doc@kde.org>\n"
 "Language: fr\n"
@@ -58,7 +58,7 @@ msgstr "Longitude : {}"
 #, python-brace-format
 msgctxt "parking position"
 msgid "Magnetic heading: {mag} (true: {true})"
-msgstr "Cap magnétique : {mag} (vrai: {true})"
+msgstr "Orientation magnétique : {mag} (vraie : {true})"
 
 #: ffgo/fgdata/parking.py:176
 msgctxt "parking position"
@@ -284,13 +284,12 @@ msgid "Longitude: {}"
 msgstr "Longitude : {}"
 
 #: ffgo/fgdata/airport.py:338
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgctxt "runway/helipad"
 msgid "Magnetic heading: {mag} (true: {true})"
 msgstr "Orientation magnétique : {mag} (vraie : {true})"
 
 #: ffgo/fgdata/airport.py:342
-#, fuzzy
 msgctxt "runway/helipad"
 msgid "True heading: {}"
 msgstr "Orientation vraie : {}"
