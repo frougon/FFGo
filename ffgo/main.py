@@ -143,7 +143,8 @@ def reportTkinterCallbackException(type_, val, tb):
         guiMessage = message
         guiDetail = detail
 
-    logger.criticalNP('\n{}:\n{}'.format(message, detail))
+    logger.criticalNP(_('\n{msg}:\n{details}').format(msg=message,
+                                                      details=detail))
     tkinter.messagebox.showerror(_('{prg}').format(prg=PROGNAME), guiMessage,
                                  detail=guiDetail)
 

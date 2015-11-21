@@ -80,7 +80,7 @@ class Airport:
         for rwyType in sorted(d.keys(), key=lambda x: x.value):
             runwayTypeName = rwyType.capitalizedName(len(d[rwyType]))
 
-            s = "{rwyType}: {runways}".format(
+            s = _("{rwyType}: {runways}").format(
                 rwyType=runwayTypeName,
                 runways=", ".join(sorted(d[rwyType])))
             rl.append(
@@ -319,11 +319,11 @@ class RunwayBase:
 
     def _addLatitude(self, l):
         if self.lat is not None:
-            l.append(_("Latitude: {}".format(self.lat)))
+            l.append(_("Latitude: {}").format(self.lat))
 
     def _addLongitude(self, l):
         if self.lon is not None:
-            l.append(_("Longitude: {}".format(self.lon)))
+            l.append(_("Longitude: {}").format(self.lon))
 
     def _addHeading(self, l):
         if self.heading is not None:
@@ -337,7 +337,7 @@ class RunwayBase:
                 s = _("Magnetic heading: {mag} (true: {true})").format(
                     mag=magHeading, true=trueHeading)
             else:
-                s = _("True heading: {}".format(trueHeading))
+                s = _("True heading: {}").format(trueHeading)
 
             l.append(s)
 
@@ -345,34 +345,35 @@ class RunwayBase:
         if self.length is not None:
             length_ft = self.length
             length_meters = self.length * 0.3048
-            l.append(_("Length: {0} ft ({1} m)".format(
+            l.append(_("Length: {0} ft ({1} m)").format(
                 self.formatLength(length_ft),
-                self.formatLength(length_meters))))
+                self.formatLength(length_meters)))
 
     def _addWidth(self, l):
         if self.width is not None:
             width_ft = self.width
             width_meters = self.width * 0.3048
-            l.append(_("Width: {0} ft ({1} m)".format(
+            l.append(_("Width: {0} ft ({1} m)").format(
                 self.formatLength(width_ft),
-                self.formatLength(width_meters))))
+                self.formatLength(width_meters)))
 
     def _addSurfaceType(self, l):
         if self.surfaceType is not None:
-            l.append(_("Surface type: {}".format(self.surfaceType)))
+            l.append(_("Surface type: {}").format(self.surfaceType))
 
     def _addShoulderSurfaceType(self, l):
         if self.shoulderSurfaceType is not None:
-            l.append(_("Shoulder surface type: {}".format(
-                self.shoulderSurfaceType)))
+            l.append(_("Shoulder surface type: {}").format(
+                self.shoulderSurfaceType))
 
     def _addRunwayMarkings(self, l):
         if self.runwayMarkings is not None:
-            l.append(_("Runway markings: {}".format(self.runwayMarkings)))
+            l.append(_("Runway markings: {}").format(self.runwayMarkings))
 
     def _addSmoothness(self, l):
         if self.smoothness is not None:
-            l.append(_("Smoothness: {:.02f}".format(self.smoothness)))
+            l.append(_("Smoothness: {}").format(
+                locale.format("%.02f", self.smoothness)))
 
 
 class LandRunway(RunwayBase):
@@ -440,7 +441,7 @@ class WaterRunway(RunwayBase):
         self._addWidth(l)
 
         if self.perimeterBuoys is not None:
-            l.append(_("Perimeter buoys: {}".format(self.perimeterBuoys)))
+            l.append(_("Perimeter buoys: {}").format(self.perimeterBuoys))
 
         return '\n'.join(l)
 
@@ -488,6 +489,6 @@ class Helipad(RunwayBase):
         self._addSmoothness(l)
 
         if self.edgeLighting is not None:
-            l.append(_("Edge lighting: {}".format(self.edgeLighting)))
+            l.append(_("Edge lighting: {}").format(self.edgeLighting))
 
         return '\n'.join(l)

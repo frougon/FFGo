@@ -465,8 +465,8 @@ class App:
              _('CondConfigParser {}').format(condconfigparser.__version__)]
 
         if HAS_GEOGRAPHICLIB:
-            l.append(_("GeographicLib's Python binding {}".format(
-                geographiclib.__version__)))
+            l.append(_("GeographicLib's Python binding {}").format(
+                geographiclib.__version__))
 
         if self.config.earthMagneticField is not None:
             l.append(self.config.earthMagneticField.getBackendDescription())
