@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FFGo 1.7.0\n"
 "Report-Msgid-Bugs-To: f.rougon@free.fr\n"
-"POT-Creation-Date: 2015-11-21 16:13+0100\n"
+"POT-Creation-Date: 2015-11-22 21:07+0100\n"
 "PO-Revision-Date: 2015-11-21 16:18+0100\n"
 "Last-Translator: Florent Rougon <f.rougon@free.fr>\n"
 "Language-Team: French <kde-i18n-doc@kde.org>\n"
@@ -79,7 +79,7 @@ msgstr "Erreur au cours de l'analyse d'un fichier groundnet"
 msgid "In '{file}': {errmsg}."
 msgstr "Dans '{file}' : {errmsg}."
 
-#: ffgo/fgdata/parking.py:209 ffgo/main.py:148 ffgo/gui/infowindow.py:22
+#: ffgo/fgdata/parking.py:209 ffgo/main.py:147 ffgo/gui/infowindow.py:22
 #: ffgo/gui/mainwindow.py:551 ffgo/gui/mainwindow.py:580
 #: ffgo/gui/mainwindow.py:1051 ffgo/gui/mainwindow.py:1393
 #: ffgo/gui/mainwindow.py:1425 ffgo/gui/mainwindow.py:1700
@@ -532,13 +532,13 @@ msgid "unexpected first character in mixed-style coordinate string: {char!r}"
 msgstr ""
 "premier caractère inattendu dans une coordonnée au format mixte : {char!r}"
 
-#: ffgo/main.py:101
+#: ffgo/main.py:100
 #, python-brace-format
 msgid "{prg}: initialization of the configuration aborted. Exiting."
 msgstr ""
 "{prg}: initialisation de la configuration interrompue. Fin du programme."
 
-#: ffgo/main.py:146
+#: ffgo/main.py:145
 #, python-brace-format
 msgid ""
 "\n"
@@ -1431,7 +1431,7 @@ msgstr ""
 "Vérifiez que les chemins FG_BIN et FG_ROOT\n"
 "dans la fenêtre \"Préférences\" pointent vers les bons répertoires."
 
-#: ffgo/gui/mainwindow.py:1474 ffgo/config.py:1019
+#: ffgo/gui/mainwindow.py:1474 ffgo/config.py:1020
 msgid "Error"
 msgstr "Erreur"
 
@@ -1682,11 +1682,11 @@ msgstr ""
 "Impossible de trouver l'aéronef '{aircraft}', on utilise '{fallback}' depuis "
 "'{dir}' à la place"
 
-#: ffgo/config.py:948
+#: ffgo/config.py:949
 msgid "Modification of apt.dat.gz detected."
 msgstr "Modification de apt.dat.gz détectée."
 
-#: ffgo/config.py:999
+#: ffgo/config.py:1000
 msgid ""
 "Generating the airport database,\n"
 "this may take a while..."
@@ -1694,14 +1694,14 @@ msgstr ""
 "Génération de la base de données des aéroports,\n"
 "ceci peut prendre du temps..."
 
-#: ffgo/config.py:1010
+#: ffgo/config.py:1011
 #, python-brace-format
 msgid "Generating {prg}'s apt digest file ('{aptDigest}') from '{aptDat}'..."
 msgstr ""
 "Génération du fichier « apt digest » de {prg} ('{aptDigest}') à partir de "
 "'{aptDat}'..."
 
-#: ffgo/config.py:1018
+#: ffgo/config.py:1019
 msgid "Cannot find apt.dat database."
 msgstr "Impossible de trouver la base de données apt.dat."
 

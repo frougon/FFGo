@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FFGo 1.7.0\n"
 "Report-Msgid-Bugs-To: f.rougon@free.fr\n"
-"POT-Creation-Date: 2015-11-21 16:13+0100\n"
+"POT-Creation-Date: 2015-11-22 21:07+0100\n"
 "PO-Revision-Date: 2014-11-07 16:48+0100\n"
 "Last-Translator: Robert 'erobo' Leda <erobo@wp.pl>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -77,7 +77,7 @@ msgstr ""
 msgid "In '{file}': {errmsg}."
 msgstr ""
 
-#: ffgo/fgdata/parking.py:209 ffgo/main.py:148 ffgo/gui/infowindow.py:22
+#: ffgo/fgdata/parking.py:209 ffgo/main.py:147 ffgo/gui/infowindow.py:22
 #: ffgo/gui/mainwindow.py:551 ffgo/gui/mainwindow.py:580
 #: ffgo/gui/mainwindow.py:1051 ffgo/gui/mainwindow.py:1393
 #: ffgo/gui/mainwindow.py:1425 ffgo/gui/mainwindow.py:1700
@@ -505,12 +505,12 @@ msgstr ""
 msgid "unexpected first character in mixed-style coordinate string: {char!r}"
 msgstr ""
 
-#: ffgo/main.py:101
+#: ffgo/main.py:100
 #, python-brace-format
 msgid "{prg}: initialization of the configuration aborted. Exiting."
 msgstr ""
 
-#: ffgo/main.py:146
+#: ffgo/main.py:145
 #, python-brace-format
 msgid ""
 "\n"
@@ -1210,7 +1210,7 @@ msgid ""
 "in \"Preferences\" window are pointing to right directories."
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1474 ffgo/config.py:1019
+#: ffgo/gui/mainwindow.py:1474 ffgo/config.py:1020
 msgid "Error"
 msgstr ""
 
@@ -1416,22 +1416,22 @@ msgid ""
 "Could not find aircraft '{aircraft}', using '{fallback}' from '{dir}' instead"
 msgstr ""
 
-#: ffgo/config.py:948
+#: ffgo/config.py:949
 msgid "Modification of apt.dat.gz detected."
 msgstr ""
 
-#: ffgo/config.py:999
+#: ffgo/config.py:1000
 msgid ""
 "Generating the airport database,\n"
 "this may take a while..."
 msgstr ""
 
-#: ffgo/config.py:1010
+#: ffgo/config.py:1011
 #, python-brace-format
 msgid "Generating {prg}'s apt digest file ('{aptDigest}') from '{aptDat}'..."
 msgstr ""
 
-#: ffgo/config.py:1018
+#: ffgo/config.py:1019
 msgid "Cannot find apt.dat database."
 msgstr ""
 

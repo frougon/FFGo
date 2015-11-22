@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FFGo 1.7.0\n"
 "Report-Msgid-Bugs-To: f.rougon@free.fr\n"
-"POT-Creation-Date: 2015-11-21 16:13+0100\n"
+"POT-Creation-Date: 2015-11-22 21:07+0100\n"
 "PO-Revision-Date: 2014-11-09 16:40+0900\n"
 "Last-Translator: AOKI kiyohito <sambar.fgfs@gmail.com>\n"
 "Language-Team: FlightGear.jpn.org\n"
@@ -76,7 +76,7 @@ msgstr ""
 msgid "In '{file}': {errmsg}."
 msgstr ""
 
-#: ffgo/fgdata/parking.py:209 ffgo/main.py:148 ffgo/gui/infowindow.py:22
+#: ffgo/fgdata/parking.py:209 ffgo/main.py:147 ffgo/gui/infowindow.py:22
 #: ffgo/gui/mainwindow.py:551 ffgo/gui/mainwindow.py:580
 #: ffgo/gui/mainwindow.py:1051 ffgo/gui/mainwindow.py:1393
 #: ffgo/gui/mainwindow.py:1425 ffgo/gui/mainwindow.py:1700
@@ -522,12 +522,12 @@ msgstr ""
 msgid "unexpected first character in mixed-style coordinate string: {char!r}"
 msgstr ""
 
-#: ffgo/main.py:101
+#: ffgo/main.py:100
 #, python-brace-format
 msgid "{prg}: initialization of the configuration aborted. Exiting."
 msgstr ""
 
-#: ffgo/main.py:146
+#: ffgo/main.py:145
 #, python-brace-format
 msgid ""
 "\n"
@@ -1269,7 +1269,7 @@ msgstr ""
 "\"Prefernces\"ウインドウから、FG_BIN と FG_ROOT のパスが正しいか確認してくだ"
 "さい。"
 
-#: ffgo/gui/mainwindow.py:1474 ffgo/config.py:1019
+#: ffgo/gui/mainwindow.py:1474 ffgo/config.py:1020
 msgid "Error"
 msgstr "エラー"
 
@@ -1476,11 +1476,11 @@ msgid ""
 "Could not find aircraft '{aircraft}', using '{fallback}' from '{dir}' instead"
 msgstr ""
 
-#: ffgo/config.py:948
+#: ffgo/config.py:949
 msgid "Modification of apt.dat.gz detected."
 msgstr "apt.dat.gz の変更を検出しました。"
 
-#: ffgo/config.py:999
+#: ffgo/config.py:1000
 #, fuzzy
 msgid ""
 "Generating the airport database,\n"
@@ -1489,12 +1489,12 @@ msgstr ""
 "空港データベースを生成しています。\n"
 "しばらくお待ちください・・・"
 
-#: ffgo/config.py:1010
+#: ffgo/config.py:1011
 #, python-brace-format
 msgid "Generating {prg}'s apt digest file ('{aptDigest}') from '{aptDat}'..."
 msgstr ""
 
-#: ffgo/config.py:1018
+#: ffgo/config.py:1019
 msgid "Cannot find apt.dat database."
 msgstr "apt.dat データベース を見つけることができません。"
 
