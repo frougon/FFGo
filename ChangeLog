@@ -425,7 +425,8 @@ you may want to consult the Git repository log.
           from FlightGear groundnet files is used preferentially to this data
           from apt.dat.gz, but it is maybe possible that some airports have
           parking positions declared in a groundnet file but not in
-          apt.dat.gz). (Florent Rougon)
+          apt.dat.gz). (Florent Rougon; thanks to pommesschranke/d-laser for
+          the suggestion)
 [USABILITY] Small color changes. (Florent Rougon)
 [MAINT]   Cleanup of code related to the METAR widget (most notably, threading
           code). Apart from possible more or less random crashes which should
@@ -444,5 +445,147 @@ you may want to consult the Git repository log.
           well as the default setting to DEFAULT_TERRASYNC_DIR for
           Config.FG_scenery. The default value for Config.FG_scenery is now
           empty, as it used to be some time ago... (Florent Rougon)
-[MAINT]   Small changes to the AptDat and ToolTip classes.  (Florent Rougon)
+[MAINT]   Small changes to the AptDat and ToolTip classes. (Florent Rougon)
+[FEATURE] Update the German translation. (chris_blues)
+
+1.7.0
+[FEATURE] New apt.dat parser; new apt digest file format with an index for
+          very fast access to all the data present in apt.dat.gz.
+
+          * Replace the old apt.dat parser with a new parser. This new parser
+            should be compliant with the APT1000 specification[1], provide
+            better error reporting and fix a few small bugs (see below). It
+            also extracts more information about airports and runways, unifies
+            recently added extraction of parking metadata from apt.dat.gz with
+            this airport metadata, and generates an “apt digest file”[2] in a
+            new format bringing the following improvements:
+
+                - more robust (proper header including magic number, encoding
+                  declaration and format version; fields separated by the NUL
+                  char ('\0') instead of '=');
+
+                - contains only the information FFGo must read on startup in
+                  order to make this startup as fast as possible; in
+                  particular, runway names for *all* airports are not read
+                  anymore on startup and held into memory, they are loaded on
+                  demand when needed for the selected airport;
+
+                - since runway and parking metadata are loaded on demand from
+                  apt.dat (after trying the groundnet file in the case of
+                  parkings), the new format includes an index for each airport
+                  allowing to quickly find its data in apt.dat.gz. Of course,
+                  this requires keeping the apt digest file in sync with
+                  apt.dat.gz, which should not be much of a problem since the
+                  default for “Airport database update” is “Automatic” since
+                  version 1.3.0.
+
+                [1] See <http://data.x-plane.com/file_specs/>.
+
+                [2] Also known as “airport database”: ~/.ffgo/apt everywhere
+                    except on Windows, where it is %APPDATA%/FFGo/apt.
+
+          * The creation of the apt digest file is a bit slower than before
+            (about 25 seconds on my system, as opposed to 10 or 11 before),
+            but this should only be necessary when apt.dat.gz changes---which
+            does not happen very often, the current version in FG 3.7 dating
+            from 2013---or if I have to again change the format of the apt
+            digest file.
+
+            Note: the slowdown is essentially caused by gzip.GzipFile.tell()
+                  being slow, however this is necessary to create an efficient
+                  index. So, it's a bit slower once in a while when rebuilding
+                  the airport database, but pays off the rest of the time when
+                  using FFGo and looking at the airport, runway or parking
+                  tooltips, or simply choosing among the newly-available
+                  startup locations read (since version 1.6.0) from
+                  apt.dat.gz.
+
+          * Startup and config reloading should now be significantly faster
+          when the airport list is “filtered” (the configuration option that
+          causes FFGo to only show the airports you already have scenery for).
+          (Florent Rougon)
+[USABILITY] Add a colored, disabled (i.e., not clickable) and empty header to
+          the runway popup menu. This makes it more visible, visually similar
+          to the parking popup, and avoids it disappearing in a flash with the
+          first entry being accidentally selected if the user just clicked
+          without holding the button down. (Florent Rougon)
+[FEATURE] Add tooltips to the airport list giving basic information about the
+          airport under the mouse pointer (type of airport [land airport,
+          seaplane base or heliport], latitude, longitude, elevation and, if
+          applicable, the lists of land runways, water runways and helipads).
+
+          The magnetic variation (also called magnetic declination) at the
+          airport is also displayed in the airport tooltip if GeographicLib's
+          MagneticField program is available. If this program is not in your
+          PATH, you can indicate its location using the Preferences dialog.
+
+          Note: MagneticField requires a particular dataset to be installed in
+                order to work properly. In Debian, it is part of the
+                geographiclib-tools package, which also provides a script
+                called 'geographiclib-get-magnetic'. Running a command such as
+                '/usr/sbin/geographiclib-get-magnetic minimal' with root
+                privileges will automatically download and install a minimal
+                dataset under /usr/share/GeographicLib/magnetic, where it can
+                be found by MagneticField (not registering the added files
+                with dpkg, which is a bit ugly, cf.
+                <https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=687253>).
+          (Florent Rougon)
+[BUGFIX]  Fix slightly incorrect calculations of v810 airport coordinates (two
+          opposite runway ends counted as one). This bugfix comes with the new
+          apt.dat parser. (Florent Rougon)
+[BUGFIX]  Fix computation of runway names from v810 data (“6” instead of “06”
+          for the “other runway” opposed to “24”). This also comes with the
+          new apt.dat parser.
+
+          Note: these fixes are untested, as there is no single runway in v810
+                format in my apt.dat 2013.10, build 20131335. (Florent Rougon)
+[FEATURE] Display magnetic heading in parking tooltips when 'MagneticField' is
+          available (see above for details concerning 'MagneticField').
+          (Florent Rougon)
+[FEATURE] Tooltip for each runway in the runway popup menu, giving: latitude,
+          longitude (of the runway end), heading (true and magnetic if
+          'MagneticField' is available, otherwise only the true heading),
+          length, width, surface type, shoulder surface type, type of
+          markings, smoothness.
+
+          Helipads also have a line specifying whether they have edge
+          lighting. Water runways have less fields because things such as
+          shoulder surface type and smoothness are obviously not applicable.
+          They have all the data that is present for them in apt.dat.gz,
+          except for the “perimeter buoys” flag. The code to handle this flag
+          is ready, but the way it is used in apt.dat.gz is completely bogus
+          and in contradiction with the APT1000 spec. I'll activate the code
+          when this is fixed.
+
+          Since they are not directly available in apt.dat.gz, the length and
+          heading of runways are computed from the latitude and longitude of
+          opposite runway ends. FFGo ships with an implementation of
+          Vincenty's formula to do this with better than 1 mm precision
+          (assuming the coordinates of the runway ends are that accurate in
+          apt.dat.gz!), as well as a few more things to deal with the cases
+          that Vincenty's formula doesn't handle well.
+
+          If GeographicLib's Python implementation is installed, it will be
+          used in preference to these methods, because it is even more
+          accurate (about 5 nanometers according to its website), was written
+          by an expert in geodetic calculations (Charles F. F. Karney), and
+          apparently handles all cases of the geodetic inverse problem,
+          contrary to Vincenty's formula. (Florent Rougon)
+[BUGFIX]  Correct calculation to find the nearest METAR station. The previous
+          code didn't behave properly for points located on either side of the
+          ±180° meridian, or close to one of the poles. Use a fast method
+          (GeodCalc.modifiedFccDistance()) that gives reasonably correct
+          results to find the best 15 candidates for the title of “closest
+          station”, then find the closest among these using GeodCalc.inverse()
+          (which is an FFGo abstraction layer for the algorithms mentioned
+          above: Karney's algorithm from GeographicLib if available, otherwise
+          Vincenty's formula plus a few others for the cases that Vincenty's
+          formula doesn't handle well). (Florent Rougon)
+[BUGFIX]  Always write the timestamp file after rebuilding the apt digest file
+          (i.e., after “rebuilding the airport database”). With the previous
+          code, if the airport database was manually rebuilt and afterwards
+          the “Airport database update” setting was changed from Manual to
+          Automatic, then the database would be unnecessarily rebuilt. This
+          should be fixed now. (Florent Rougon)
+[USABILITY] Improve some tooltips of the Preferences dialog. (Florent Rougon)
 [FEATURE] Update the German translation. (chris_blues)
