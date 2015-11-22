@@ -741,6 +741,7 @@ configurations are kept separate.""")
             self._makeAptDigest()
 
         if not os.path.isfile(APT): # may happen if self.FG_root was empty
+            self.aptDatSize, self.airports = 0, {}
             return []
 
         for attempt in itertools.count(start=1):
