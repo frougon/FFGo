@@ -51,8 +51,12 @@ fenster (wähle im Menü: Einstellungen => Eigenschaften) und füllen Sie die
 leeren Felder aus. Damit FFGo funktionieren kann müssen die ersten drei Felder
 im Tab: “FlightGear Einstellungen” ausgefüllt werden --- der Rest ist optional.
 
-Tip: Halten Sie den Mauszeigerüber eine Option um seine Beschreibung
+Tipp: Halten Sie den Mauszeigerüber eine Option um seine Beschreibung
      anzuzeigen.
+
+Anmerkung: falls GeographicLib's MagneticField Programm installiert sein sollte
+und es sich nicht in der PATH Variable befindet, können Sie den Ort unter
+“Verschiedenes” in den Einstellungen angeben.
 
 Änderungen Tab: “FlightGear Einstellungen” werden sofort angewendet, sobald der
 Knopf “Einstellungen speichern” gedrückt wird, Änderungen in den anderen Tabs

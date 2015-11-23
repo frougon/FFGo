@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: FFGo 1.7.0\n"
 "Report-Msgid-Bugs-To: f.rougon@free.fr\n"
 "POT-Creation-Date: 2015-11-22 21:07+0100\n"
-"PO-Revision-Date: 2015-11-22 18:18+0100\n"
+"PO-Revision-Date: 2015-11-23 16:02+0100\n"
 "Last-Translator: chris_blues <chris@musicchris.de>\n"
 "Language-Team: \n"
 "Language: de\n"
@@ -308,7 +308,7 @@ msgstr "Oberflächentyp: {}"
 
 #: ffgo/fgdata/airport.py:368
 msgid "Shoulder surface type: {}"
-msgstr "Absatzoberflächentyp: {}"
+msgstr "Schulteroberflächentyp: {}"
 
 #: ffgo/fgdata/airport.py:373
 msgid "Runway markings: {}"
@@ -428,7 +428,7 @@ msgstr "Konnte v810 Oberflächentypencode nicht erkennen: {0!r} in Zeile {1!r}"
 
 #: ffgo/fgdata/apt_dat.py:330
 msgid "unable to parse as a shoulder surface type code: {0!r} in line {1!r}"
-msgstr "Konnte Absatzoberflächencode nicht erkennen: {0!r} in Zeile {1!r}"
+msgstr "Konnte Schulteroberflächencode nicht erkennen: {0!r} in Zeile {1!r}"
 
 #: ffgo/fgdata/apt_dat.py:339
 msgid "invalid smoothness value: {0!r}"
