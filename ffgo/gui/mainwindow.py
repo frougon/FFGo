@@ -1976,9 +1976,9 @@ class FGCommand(DetachableWindowManagerBase):
     """Class displaying the fgfs command in a detachable “window”."""
 
     # cf. DetachableWindowManagerBase for a description of the parameters
-    def __init__(self, app, showVariable, parent=None,
-                 title="FlightGear Command", show=True,
+    def __init__(self, app, showVariable, parent=None, show=True,
                  windowDetached=False, geomVariable=None):
+        title = _("FlightGear Command")
         DetachableWindowManagerBase.__init__(
             self, app, showVariable, parent, title,
             show, windowDetached, geomVariable)
@@ -2126,14 +2126,14 @@ class FGOutput(DetachableWindowManagerBase):
 
     """
     # cf. DetachableWindowManagerBase for a description of the parameters
-    def __init__(self, app, showVariable,
-                 parent=None, title="FlightGear Output", show=True,
+    def __init__(self, app, showVariable, parent=None, show=True,
                  windowDetached=False, geomVariable=None):
         # Manages the logic independently of the GUI. It stores all of
         # the FG output, which is essential when the window is hidden or
         # detached/attached (since the widgets are destroy()ed in these
         # cases).
         self.logManager = LogManager(app)
+        title = _("FlightGear Output")
         DetachableWindowManagerBase.__init__(
             self, app, showVariable, parent, title,
             show, windowDetached, geomVariable)
