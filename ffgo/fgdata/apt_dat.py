@@ -195,10 +195,7 @@ class AptDat:
 
         return (int(mo.group("code")), mo.group("rest"))
 
-    _formatLine_cre = re.compile(r"""(?P<version>\d+)
-                                     [ \t]+
-                                     Version
-                                     \b""", re.VERBOSE)
+    _formatLine_cre = re.compile(r"""(?P<version>\d+ (\.\d+)* )""", re.VERBOSE)
     def _readHeader(self):
         """Read the apt.dat header."""
         line = self._readline()
