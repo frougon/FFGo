@@ -1053,6 +1053,8 @@ class AptDat:
 
                 airport = Airport(icao, name, type_, avgLat, avgLon, elev,
                                   index, runways, parkings)
+                logger.notice("Final: processing airport {0} ({1})...".format(
+                    icao, name))
                 l.append("* {} ({})\n".format(icao, airport.name))
                 for rwy in airport.runways:
                     l.append(rwy.name + '\n'
