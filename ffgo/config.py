@@ -13,6 +13,7 @@ from xml.etree import ElementTree
 from tkinter import IntVar, StringVar
 from tkinter.messagebox import askyesno, showinfo, showerror
 import tkinter.font
+from tkinter import ttk
 
 from .gui.infowindow import InfoWindow
 from . import misc
@@ -190,6 +191,17 @@ class Config:
                 family="Helvetica", weight="bold", size=aboutTitleFontSize)
         else:
             self.aboutTitleFont.configure(size=aboutTitleFontSize)
+
+        # For the ttk.Treeview widget
+        treeviewHeadingFontSize = scale(1.)
+        if init:
+            self.treeviewHeadingFont = tkinter.font.Font(
+                weight="normal", size=treeviewHeadingFontSize)
+        else:
+            self.treeviewHeadingFont.configure(size=treeviewHeadingFontSize)
+
+        style = ttk.Style()
+        style.configure("Treeview.Heading", font=self.treeviewHeadingFont)
 
     def makeInstalledAptList(self):
         logger.notice(_("Building the list of installed airports "
