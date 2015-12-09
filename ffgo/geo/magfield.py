@@ -38,10 +38,9 @@ class EarthMagneticField:
 
         """
         # KSFO at 0 meters above the ellipsoid modelling the Earth
-        self._runMagneticField("now", "37.61777", "-122.37526", "0")
+        self._runMagneticField("now 37.61777 -122.37526 0\n")
 
-    def _runMagneticField(self, date=None, lat=None, lon=None, altitude=None,
-                          justGetVersion=False):
+    def _runMagneticField(self, input_=None, justGetVersion=False):
         executable = self.config.MagneticField_bin.get() or "MagneticField"
         args = [executable]
 
@@ -58,8 +57,7 @@ class EarthMagneticField:
                 if justGetVersion:
                     out = proc.stdout.read()
                 else:
-                    out, err = proc.communicate(
-                        ' '.join((date, lat, lon, altitude)))
+                    out, err = proc.communicate(input_)
         except OSError as e:
             raise MagVarUnavailable(
                 _("unable to find or execute '{exec}' ({errMsg})").format(
@@ -86,19 +84,35 @@ class EarthMagneticField:
                 res = out
                 ok = True
             else:
-                decl = out.split()[0]
+                while out.endswith('\n'):
+                    out = out[:-1]
                 try:
-                    res = float(decl)
+                    # List comprehensions are fast. This can be useful in case
+                    # we process many lines at once.
+                    res = [ float(line.split()[0])
+                            for line in out.split('\n') ]
                 except ValueError as e:
-                    problem = _(
-                        "first return value is not a float: {0!r} "
-                        "[complete output: {1!r}]").format(decl, out)
+                    try:
+                        # Slower version of the same loop, that allows to
+                        # access the line that triggered the exception
+                        for line in out.split('\n'):
+                            decl = line.split()[0]
+                            float(decl)
+                    except ValueError:
+                        problem = _(
+                            "returned magnetic declination is not a float: "
+                            "{0!r} [complete output: {1!r}]").format(decl,
+                                                                     line)
+                    else:
+                        assert False, \
+                            "We should have caught an exception here!"
                 else:
                     ok = True
 
         if ok:
             return res
         else:
+            # Don't add "from e" here, as there isn't always an exception...
             raise MagVarUnavailable(
                 _("'{exec}' doesn't seem to work properly ({pb})").format(
                     exec=executable, pb=problem))
@@ -114,14 +128,29 @@ class EarthMagneticField:
         magnetic field varies over time).
 
         """
-        try:
-            lat = lat.floatRepr()
-        except AttributeError:
-            lat = str(lat)
+        return self.batchDecl( ((lat, lon),) )[0]
 
-        try:
-            lon = lon.floatRepr()
-        except AttributeError:
-            lon = str(lon)
+    def batchDecl(self, inputIterable):
+        l = []
 
-        return self._runMagneticField("now", lat, lon, "0")
+        for lat, lon in inputIterable:
+            try:
+                lat = lat.floatRepr()
+            except AttributeError:
+                lat = str(lat)
+
+            try:
+                lon = lon.floatRepr()
+            except AttributeError:
+                lon = str(lon)
+
+            # date, lat, lon, altitude
+            l.append(' '.join(("now", lat, lon, "0")))
+
+        if l:
+            l.append('')        # to obtain a final newline
+            text = '\n'.join(l)
+            return self._runMagneticField(input_=text)
+        else:
+            return []
+
