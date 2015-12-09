@@ -1710,9 +1710,15 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
             self.config.setCurrentAircraft(now)
             self.updateImage()
 
-    def updateAirport(self, event=None):
-        """Update airport selection."""
-        if self.config.airport.get():
+    def updateAirport(self, event=None, allowLeavingCarrierMode=True):
+        """Update airport selection.
+
+        Must be called after changing the selection in the airport list.
+        Exit carrier mode if the airport selected in the airport list is
+        different from self.config.airport.
+
+        """
+        if self.config.airport.get() or allowLeavingCarrierMode:
             # self.config.airport not empty: we are not in “carrier mode”
             selected_apt = self.getAirport()
 
@@ -1720,6 +1726,29 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
                 self.config.park.set('')
                 self.config.rwy.set('')
                 self.config.airport.set(selected_apt)
+
+                if allowLeavingCarrierMode:
+                    self.resetCarrier()
+
+    def selectNewAirport(self, icao):
+        """Select a new airport. Leave carrier mode if necessary.
+
+        Also clear the airport search field to make sure the chosen
+        airport can be shown in the airport list.
+
+        """
+        # Clear the search field, otherwise the new airport may be filtered out
+        # and thus invisible.
+        self.airportSearchClear()
+        # Find the index for 'icao' in the airport list
+        airport = self.config.airports[icao]
+        indexInAptList = self.shownAirports.index(airport)
+        self.airportList.see(indexInAptList)
+        self.airportList.select_clear(0, "end")
+        self.airportList.select_set(indexInAptList)
+        # Must always be done after changing the selection in the airport list.
+        # This will set self.config.airport to 'icao'.
+        self.updateAirport()
 
     def onRunwayUpdate(self, *args):
         """Method run when self.config.rwy is changed."""
