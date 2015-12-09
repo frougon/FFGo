@@ -460,6 +460,10 @@ class GeodCalc:
         """Use Karney's algorithm for the geodetic inverse problem."""
         return Geodesic.WGS84.Inverse(lat1, lon1, lat2, lon2)
 
+    @classmethod
+    def karneyMethodAvailable(cls):
+        return HAS_GEOGRAPHICLIB
+
     def inverse(self, lat1, lon1, lat2, lon2, precision=1e-12):
         """Solve the geodetic inverse problem.
 
