@@ -195,6 +195,8 @@ class App:
         self.menubar.add_cascade(label=_('Settings'), menu=self.settmenu)
 
         self.toolsmenu = Menu(self.menubar, tearoff=0)
+        self.toolsmenu.add_command(label=_('Airport Finder'),
+                                   command=self.showAirportFinder)
         self.toolsmenu.add_command(label='METAR',
                                    command=self.showMETARWindow)
         self.toolsmenu.add_command(label=_('Copy FG shell-equivalent command'),
@@ -1666,6 +1668,14 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
 
     def _destroyHelpWindow(self, event=None):
         self.helpWindow.destroy()
+
+    def showAirportFinder(self, event=None):
+        """Show the Airport Finder dialog."""
+        # This import indirectly requires the translation system to be in
+        # place.
+        from . import airport_finder
+
+        airport_finder.AirportFinder(self.master, self.config, self)
 
     def showMETARWindow(self, event=None):
         # This import indirectly requires the translation system to be in
