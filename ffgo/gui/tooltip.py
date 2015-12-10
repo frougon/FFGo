@@ -42,7 +42,7 @@ class ToolTipBase(Toplevel):
         self.master.bind('<Enter>', self.onEnter)
         self.master.bind('<Motion>', self.onMotion)
         self.master.bind('<Leave>', self.onLeave)
-        self.master.bind('<Button>', self.hideTooltip)
+        self.master.bind('<Button>', self.hide)
 
     def scheduleTooltip(self, event=None):
         self.id = self.master.after(self.delay, self.prepareAndShow)
@@ -78,7 +78,7 @@ class ToolTipBase(Toplevel):
         self.geometry('+{0}+{1}'.format(event.x_root + self.offsetx,
                                         event.y_root + self.offsetx))
 
-    def hideTooltip(self, event=None):
+    def hide(self, event=None):
         self.withdraw()
         self.cancelId()
 
@@ -93,14 +93,14 @@ class ToolTipBase(Toplevel):
         self.scheduleTooltip()
 
     def onMotion(self, event):
-        self.hideTooltip()
+        self.hide()
         if self.canBeShown:
             self.adjustPosition(event)
             self.scheduleTooltip()
 
     def onLeave(self, event=None):
         self.canBeShown = False
-        self.hideTooltip()
+        self.hide()
 
 
 class ToolTip(ToolTipBase):
