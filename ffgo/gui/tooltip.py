@@ -14,12 +14,14 @@
 
 from tkinter import *
 
+from .. import constants
 from ..constants import TOOLTIP_BG_COL, TOOLTIP_DELAY
 
 
 class ToolTipBase(Toplevel):
     def __init__(self, master=None, bgColor=TOOLTIP_BG_COL,
-                 offsetx=10, offsety=10, delay=TOOLTIP_DELAY):
+                 offsetx=10, offsety=10, delay=TOOLTIP_DELAY,
+                 wraplength=0, autowrap=False):
         Toplevel.__init__(self, master)
         self.offsetx = offsetx
         self.offsety = offsety
@@ -27,6 +29,12 @@ class ToolTipBase(Toplevel):
         self.id = None
         self.lastPos = None
         self.bgColor = bgColor
+
+        if autowrap:
+            self.wraplength = constants.AUTOWRAP_TOOLTIP_WIDTH
+        else:
+            self.wraplength = wraplength
+
         # With some widgets as the master (e.g., Menu under Tk 8.6), the Motion
         # event may occur even if the mouse pointer is outside the widget area.
         # Therefore, we use a boolean to keep track of whether the pointer is
@@ -116,6 +124,11 @@ class ToolTip(ToolTipBase):
       textvariable: StringVar corresponding to a message to display, or
                 None if using 'text'. This allows to easily change the
                 tooltip text without having to create a new tooltip.
+      wraplength: width for automatic wrapping of the label text (no
+                automatic wrapping by default)
+      autowrap: if True, set 'wraplength' to
+                constants.AUTOWRAP_TOOLTIP_WIDTH to provide a standard
+                width for automatically-wrapped tooltips
       bgColor:  background color
       offsetx, offsety:  offset from cursor position
       delay:    delay in milliseconds
@@ -135,6 +148,7 @@ class ToolTip(ToolTipBase):
         ToolTipBase.__init__(self, **kwargs)
         self.text = text
         self.textvariable = textvariable
+
         self.postInit()
 
     def createLabel(self):
@@ -143,7 +157,8 @@ class ToolTip(ToolTipBase):
         else:
             kwargs = {"textvariable": self.textvariable}
 
-        return Label(self, bg=self.bgColor, justify=LEFT, **kwargs)
+        return Label(self, bg=self.bgColor, justify=LEFT,
+                     wraplength=self.wraplength, **kwargs)
 
     def prepareText(self):
         # Always show the toolip. The text was already prepared in
@@ -176,7 +191,7 @@ class ListBoxToolTip(ToolTipBase):
 
     def createLabel(self):
         return Label(self, textvariable=self.textVar, bg=self.bgColor,
-                     justify=LEFT)
+                     justify=LEFT, wraplength=self.wraplength)
 
     def prepareText(self):
         if self.lastPos is None:
@@ -237,7 +252,7 @@ class MenuToolTip(ToolTipBase):
 
     def createLabel(self):
         return Label(self, textvariable=self.textVar, bg=self.bgColor,
-                     justify=LEFT)
+                     justify=LEFT, wraplength=self.wraplength)
 
     def prepareText(self):
         if self.highlightedItemIndex is None:

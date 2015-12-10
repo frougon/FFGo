@@ -86,6 +86,8 @@ DEFAULT_AIRCRAFT = 'c172p'
 DEFAULT_AIRPORT = 'KSFO'
 # Tooltip delay in milliseconds.
 TOOLTIP_DELAY = '600'
+# Standard width for automatically-wrapped tooltips.
+AUTOWRAP_TOOLTIP_WIDTH = "400p"
 # Default value for the base font size in points. Should be 0, or in the range
 # from MIN_BASE_FONT_SIZE to MAX_BASE_FONT_SIZE. 0 is special-cased by Tk and
 # corresponds to a platform-dependent default size.
