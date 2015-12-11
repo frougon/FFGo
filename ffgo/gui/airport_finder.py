@@ -17,6 +17,7 @@ from . import widgets
 from ..geo import geodesy
 from ..misc import normalizeHeading
 from . import infowindow
+from .tooltip import ToolTip, TreeviewToolTip
 
 
 def setupTranslationHelper(config):
@@ -108,6 +109,18 @@ class AirportFinder:
 
         self.refAirportSearchTree.grid(row=0, column=1, sticky="nsew")
         refAirportFrame.grid_columnconfigure(1, weight=100)
+
+        def refAirportSearchTreeTooltipFunc(region, itemID, column, self=self):
+            if region == "cell":
+                icao = self.refAirportSearchTree.set(itemID, "icao")
+                found, airport = self.app.readAirportData(icao)
+
+                return airport.tooltipText() if found else None
+            else:
+                return None
+
+        TreeviewToolTip(self.refAirportSearchTree,
+                        refAirportSearchTreeTooltipFunc)
 
         self.refAirportScrollbar = ttk.Scrollbar(
             refAirportFrame, orient='vertical',
@@ -320,7 +333,7 @@ class AirportFinder:
         searchBottomLeftFrame.grid_rowconfigure(
             5, minsize=searchBottomLeftSpacerHeight, weight=100)
 
-        # Calculation method (Vincenty or Karney) XXX add tooltip
+        # Calculation method (Vincenty or Karney)
         searchBottomLeftSubframe4 = ttk.Frame(searchBottomLeftFrame)
         searchBottomLeftSubframe4.grid(row=6, column=0, sticky="nsw")
         searchBottomLeftFrame.grid_rowconfigure(6, weight=0)
@@ -349,8 +362,24 @@ class AirportFinder:
             padding=("10p", 0, "10p", 0))
         vincentyMethodRadioButton.grid(row=1, column=1, sticky="w")
 
-        if not self.geodCalc.karneyMethodAvailable():
+        # Tooltip for the calculation method
+        if self.geodCalc.karneyMethodAvailable():
+            calcMethodHint = ""
+        else:
             karneyMethodRadioButton.state(["disabled"])
+            calcMethodHint = (" "
+                "In order to be able to use it here, you need to have "
+                "installed GeographicLib's implementation for the Python "
+                "installation you are using to run {prg}.").format(prg=PROGNAME)
+
+        calcMethodTooltipText = _(
+            "Vincenty's method is faster than Karney's one, but there are "
+            "some particular cases in which the algorithm can't do the "
+            "computation. Karney's method should handle all possible "
+            "cases.{complement}\n\n"
+            "Note: changing this option won't have any effect until the search "
+            "is restarted.").format(complement=calcMethodHint)
+        ToolTip(calcMethodLabel, calcMethodTooltipText, autowrap=True)
 
         searchBottomLeftSpacer4 = ttk.Frame(searchBottomLeftFrame)
         searchBottomLeftSpacer4.grid(row=7, column=0, sticky="nsew")
@@ -372,12 +401,20 @@ class AirportFinder:
         # Alt-s keyboard shortcut for the 'Search' button
         self.top.bind('<Alt-KeyPress-s>',
                       lambda event, self=self: self.searchButton.invoke())
+        ToolTip(self.searchButton,
+                _("Find all airports matching the specified criteria.\n"
+                  "Can be run with Alt-S."),
+                autowrap=True)
 
         self.chooseSelectedAptButton = ttk.Button(
             searchBottomLeftSubframe5, text=_('Choose selected airport'),
             command=self.chooseSelectedAirport, padding="4p")
         self.chooseSelectedAptButton.grid(row=0, column=1)
         searchBottomLeftSubframe5.grid_columnconfigure(1, weight=100)
+
+        ToolTip(self.chooseSelectedAptButton,
+                _("Choose the selected airport and close this dialog"),
+                autowrap=True)
 
         # Treeview widget used to display the search results
         resultsColumnsList = [
@@ -402,6 +439,17 @@ class AirportFinder:
 
         self.resultsTree.grid(row=0, column=1, sticky="nsew")
         searchBottomFrame.grid_columnconfigure(1, weight=300)
+
+        def resultsTreeTooltipFunc(region, itemID, column, self=self):
+            if region == "cell":
+                icao = self.resultsTree.set(itemID, "icao")
+                found, airport = self.app.readAirportData(icao)
+
+                return airport.tooltipText() if found else None
+            else:
+                return None
+
+        TreeviewToolTip(self.resultsTree, resultsTreeTooltipFunc)
 
         self.resultsScrollbar = ttk.Scrollbar(
             searchBottomFrame, orient='vertical',
