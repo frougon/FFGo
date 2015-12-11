@@ -53,14 +53,14 @@ class ToolTipBase(Toplevel):
         self.master.bind('<Button>', self.hide)
 
     def scheduleTooltip(self, event=None):
-        self.id = self.master.after(self.delay, self.prepareAndShow)
+        self.id = self.master.after(self.delay, self.prepareAndShow, event)
 
     def createWindow(self):
         self.overrideredirect(True)
         self.createLabel().pack()
         self.withdraw()
 
-    def prepareText(self):
+    def prepareText(self, event):
         """Prepare the tooltip text.
 
         This is one of methods subclasses are likely to need to
@@ -70,12 +70,12 @@ class ToolTipBase(Toplevel):
         # This means: don't show the tooltip this time
         return False
 
-    def prepareAndShow(self):
-        if self.prepareText():
+    def prepareAndShow(self, event):
+        if self.prepareText(event):
             # The tooltip text is ready and we are “authorized” to show it
-            self.show()
+            self.show(event)
 
-    def show(self):
+    def show(self, event):
         self.update()
         self.deiconify()
 
@@ -98,13 +98,13 @@ class ToolTipBase(Toplevel):
     def onEnter(self, event=None):
         self.canBeShown = True
         self.adjustPosition(event)
-        self.scheduleTooltip()
+        self.scheduleTooltip(event)
 
     def onMotion(self, event):
         self.hide()
         if self.canBeShown:
             self.adjustPosition(event)
-            self.scheduleTooltip()
+            self.scheduleTooltip(event)
 
     def onLeave(self, event=None):
         self.canBeShown = False
@@ -160,7 +160,7 @@ class ToolTip(ToolTipBase):
         return Label(self, bg=self.bgColor, justify=LEFT,
                      wraplength=self.wraplength, **kwargs)
 
-    def prepareText(self):
+    def prepareText(self, event):
         # Always show the toolip. The text was already prepared in
         # __init__() (it is always the same for this tooltip), so there
         # is nothing left to prepare.
@@ -193,7 +193,7 @@ class ListBoxToolTip(ToolTipBase):
         return Label(self, textvariable=self.textVar, bg=self.bgColor,
                      justify=LEFT, wraplength=self.wraplength)
 
-    def prepareText(self):
+    def prepareText(self, event):
         if self.lastPos is None:
             return False
 
@@ -254,7 +254,7 @@ class MenuToolTip(ToolTipBase):
         return Label(self, textvariable=self.textVar, bg=self.bgColor,
                      justify=LEFT, wraplength=self.wraplength)
 
-    def prepareText(self):
+    def prepareText(self, event):
         if self.highlightedItemIndex is None:
             return False
 
