@@ -170,7 +170,47 @@ class ToolTip(ToolTipBase):
         return True
 
 
-class ListBoxToolTip(ToolTipBase):
+class MapBasedToolTip(ToolTipBase):
+    """Abstract base class for map-based tooltips.
+
+    This means, tooltips whose text is obtained from a function that
+    maps parts of the underlying widget to particular tooltip texts.
+    Typically, the function ('itemTextFunc' below) will take a row,
+    column or more generally item identifier as argument and choose the
+    appropriate text to return (or None) depending on this information.
+
+    """
+    def __init__(self, master, itemTextFunc, **kwargs):
+        """Constructor for MapBasedToolTip instances.
+
+        master       -- a widget
+        itemTextFunc -- a function whose signature may vary among
+                        concrete subclasses of this class. Its
+                        argument(s) should allow to determine an
+                        appropriate tooltip text. If it returns None, no
+                        tooltip will be shown; otherwise, the return
+                        value should be a string that will be used as
+                        tooltip text.
+
+        Additional keyword arguments are passed to ToolTipBase's
+        constructor.
+
+        """
+        ToolTipBase.__init__(self, master, **kwargs)
+        self.itemTextFunc = itemTextFunc
+        self.textVar = StringVar()
+        self.postInit()
+
+    def createLabel(self):
+        return Label(self, textvariable=self.textVar, bg=self.bgColor,
+                     justify=LEFT, wraplength=self.wraplength)
+
+    def setItemTextFunc(self, itemTextFunc):
+        """Replace the existing 'itemTextFunc' callback function."""
+        self.itemTextFunc = itemTextFunc
+
+
+class ListBoxToolTip(MapBasedToolTip):
     def __init__(self, master=None, itemTextFunc=lambda i: None, **kwargs):
         """Constructor for ListBoxToolTip instances.
 
@@ -186,15 +226,7 @@ class ListBoxToolTip(ToolTipBase):
         constructor.
 
         """
-        kwargs['master'] = master
-        ToolTipBase.__init__(self, **kwargs)
-        self.itemTextFunc = itemTextFunc
-        self.textVar = StringVar()
-        self.postInit()
-
-    def createLabel(self):
-        return Label(self, textvariable=self.textVar, bg=self.bgColor,
-                     justify=LEFT, wraplength=self.wraplength)
+        MapBasedToolTip.__init__(self, master, itemTextFunc, **kwargs)
 
     def prepareText(self, event):
         if self.lastPos is None:
@@ -217,11 +249,8 @@ class ListBoxToolTip(ToolTipBase):
         else:
             return False
 
-    def setItemTextFunc(self, itemTextFunc):
-        self.itemTextFunc = itemTextFunc
 
-
-class MenuToolTip(ToolTipBase):
+class MenuToolTip(MapBasedToolTip):
     def __init__(self, master=None, itemTextFunc=lambda i: None, **kwargs):
         """Constructor for MenuToolTip instances.
 
@@ -238,12 +267,8 @@ class MenuToolTip(ToolTipBase):
         constructor.
 
         """
-        kwargs['master'] = master
-        ToolTipBase.__init__(self, **kwargs)
+        MapBasedToolTip.__init__(self, master, itemTextFunc, **kwargs)
         self.highlightedItemIndex = None
-        self.itemTextFunc = itemTextFunc
-        self.textVar = StringVar()
-        self.postInit()
 
     def bindToMaster(self):
         ToolTipBase.bindToMaster(self)
@@ -252,10 +277,6 @@ class MenuToolTip(ToolTipBase):
     def onMenuSelect(self, event):
         # Set to None when the pointer leaves the Menu widget
         self.highlightedItemIndex = event.widget.index('active')
-
-    def createLabel(self):
-        return Label(self, textvariable=self.textVar, bg=self.bgColor,
-                     justify=LEFT, wraplength=self.wraplength)
 
     def prepareText(self, event):
         if self.highlightedItemIndex is None:
@@ -268,6 +289,3 @@ class MenuToolTip(ToolTipBase):
         else:
             # There is no tooltip to show for this item.
             return False
-
-    def setItemTextFunc(self, itemTextFunc):
-        self.itemTextFunc = itemTextFunc
