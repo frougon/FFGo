@@ -52,7 +52,7 @@ class ToolTipBase(Toplevel):
         self.master.bind('<Leave>', self.onLeave)
         self.master.bind('<Button>', self.hide)
 
-    def scheduleTooltip(self, event=None):
+    def scheduleTooltip(self, event):
         self.id = self.master.after(self.delay, self.prepareAndShow, event)
 
     def createWindow(self):
@@ -86,6 +86,9 @@ class ToolTipBase(Toplevel):
         self.geometry('+{0}+{1}'.format(event.x_root + self.offsetx,
                                         event.y_root + self.offsetx))
 
+    # Used as an event handler (requires the 'event' parameter) as well as from
+    # other parts of the program (not necessarily with an event to pass as
+    # argument).
     def hide(self, event=None):
         self.withdraw()
         self.cancelId()
@@ -95,7 +98,7 @@ class ToolTipBase(Toplevel):
             self.master.after_cancel(self.id)
             self.id = None
 
-    def onEnter(self, event=None):
+    def onEnter(self, event):
         self.canBeShown = True
         self.adjustPosition(event)
         self.scheduleTooltip(event)
@@ -106,7 +109,7 @@ class ToolTipBase(Toplevel):
             self.adjustPosition(event)
             self.scheduleTooltip(event)
 
-    def onLeave(self, event=None):
+    def onLeave(self, event):
         self.canBeShown = False
         self.hide()
 
