@@ -19,7 +19,7 @@ from ..constants import TOOLTIP_BG_COL, TOOLTIP_DELAY
 
 
 class ToolTipBase(Toplevel):
-    def __init__(self, master=None, bgColor=TOOLTIP_BG_COL,
+    def __init__(self, master, bgColor=TOOLTIP_BG_COL,
                  offsetx=10, offsety=10, delay=TOOLTIP_DELAY,
                  wraplength=0, autowrap=False):
         Toplevel.__init__(self, master)
@@ -146,9 +146,8 @@ class ToolTip(ToolTipBase):
 
     """
 
-    def __init__(self, master=None, text=None, textvariable=None, **kwargs):
-        kwargs['master'] = master
-        ToolTipBase.__init__(self, **kwargs)
+    def __init__(self, master, text=None, textvariable=None, **kwargs):
+        ToolTipBase.__init__(self, master, **kwargs)
         self.text = text
         self.textvariable = textvariable
 
@@ -211,7 +210,7 @@ class MapBasedToolTip(ToolTipBase):
 
 
 class ListBoxToolTip(MapBasedToolTip):
-    def __init__(self, master=None, itemTextFunc=lambda i: None, **kwargs):
+    def __init__(self, master, itemTextFunc=lambda i: None, **kwargs):
         """Constructor for ListBoxToolTip instances.
 
         master       -- a ListBox instance
@@ -251,7 +250,7 @@ class ListBoxToolTip(MapBasedToolTip):
 
 
 class MenuToolTip(MapBasedToolTip):
-    def __init__(self, master=None, itemTextFunc=lambda i: None, **kwargs):
+    def __init__(self, master, itemTextFunc=lambda i: None, **kwargs):
         """Constructor for MenuToolTip instances.
 
         master       -- the master widget; should be a Menu instance or
