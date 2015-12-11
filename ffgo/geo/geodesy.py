@@ -141,6 +141,30 @@ class NVector(collections.namedtuple('NVector', 'x y z')):
                    cosd(lat)*sind(lon),
                    sind(lat))
 
+    def lat(self):
+        """Latitude in degrees of the point represented by 'self'."""
+        return degrees(atan2(self.z, hypot(self.x, self.y)))
+
+    def lon(self):
+        """Longitude in degrees of the point represented by 'self'."""
+        return degrees(atan2(self.y, self.x))
+
+    # “Inline” combination of lat() and lon() for convenience and performance
+    def latLon(self):
+        """
+        Latitude and longitude in degrees of the point represented by 'self'."""
+        return (degrees(atan2(self.z, hypot(self.x, self.y))),
+                degrees(atan2(self.y, self.x)))
+
+    def __add__(self, other):
+        return NVector(self.x + other.x, self.y + other.y, self.z + other.z)
+
+    def scalarMul(self, scalar):
+        return NVector(scalar*self.x, scalar*self.y, scalar*self.z)
+
+    def scalarDiv(self, scalar):
+        return NVector(self.x / scalar, self.y / scalar, self.z / scalar)
+
     def dotProd(self, other):
         """Dot product of two vectors."""
         return self.x*other.x + self.y*other.y + self.z*other.z
