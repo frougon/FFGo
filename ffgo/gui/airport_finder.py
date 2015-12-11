@@ -412,6 +412,7 @@ class AirportFinder:
         self.chooseSelectedAptButton.grid(row=0, column=1)
         searchBottomLeftSubframe5.grid_columnconfigure(1, weight=100)
 
+        self.chooseSelectedAptButton.state(["disabled"])
         ToolTip(self.chooseSelectedAptButton,
                 _("Choose the selected airport and close this dialog"),
                 autowrap=True)
@@ -517,6 +518,7 @@ class AirportFinder:
                 return None
 
         self.searchButton.state(["disabled"])
+        self.chooseSelectedAptButton.state(["disabled"])
         message = _("Calculating distances and bearings...")
         infoWindow = infowindow.InfoWindow(self.master, text=message)
 
@@ -545,6 +547,9 @@ class AirportFinder:
                          detail=detail, parent=self.top)
 
             self.displayResults()
+            if self.results:
+                self.chooseSelectedAptButton.state(["!disabled"])
+
 
     def _search(self):
         refIcao = self.refIcao.get()
