@@ -288,3 +288,45 @@ class MenuToolTip(MapBasedToolTip):
         else:
             # There is no tooltip to show for this item.
             return False
+
+
+class TreeviewToolTip(MapBasedToolTip):
+    def __init__(self, master,
+                 itemTextFunc=lambda region, itemID, column: None, **kwargs):
+        """Constructor for TreeviewToolTip instances.
+
+        master       -- a Treeview instance
+        itemTextFunc -- a function taking three arguments. When called, the
+                        function will be passed:
+                          - the region of the Treeview widget, as
+                            returned by Treeview.identify_region();
+                          - the item identifier, as returned by
+                            Treeview.identify_row();
+                          - the data column identifier of the cell, as
+                            returned by Treeview.identify_column().
+                        If this function returns None, no tooltip will
+                        be shown for this cell (or, more generally, area
+                        of the Treeview widget); otherwise, the return
+                        value should be a string that will be used as
+                        tooltip text for this cell/area.
+
+        Additional keyword arguments are passed to ToolTipBase's
+        constructor.
+
+        """
+        MapBasedToolTip.__init__(self, master, itemTextFunc, **kwargs)
+
+    def prepareText(self, event):
+        if self.lastPos is None:
+            return False
+
+        region = self.master.identify_region(event.x, event.y)
+        itemID = self.master.identify_row(event.y)
+        column = self.master.identify_column(event.x)
+
+        text = self.itemTextFunc(region, itemID, column)
+        if text is not None:
+            self.textVar.set(text)
+            return True
+        else:
+            return False
