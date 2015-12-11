@@ -629,7 +629,7 @@ class AptDat:
 
         'runways' should behave like a list and is *modified in-place*,
         the runways found being appended. When 'readDetails' is False,
-        None is used instead of elements of a subclass of RunwayBase
+        None is used instead of instances of a subclass of RunwayBase
         (but the number of None objects added does correspond to the
         number of runways found).
 
