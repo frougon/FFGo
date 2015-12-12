@@ -11,6 +11,7 @@
 import enum
 import locale
 import textwrap
+import itertools
 
 from ..misc import normalizeHeading
 
@@ -53,9 +54,10 @@ class Airport:
     """Class for representing airport data."""
 
     def __init__(self, icao, name, type, lat, lon, elevation, indexInAptDat,
-                 runways, parkings):
+                 landRunways, waterRunways, helipads, parkings):
         self._attrs = ("icao", "name", "type", "lat", "lon", "elevation",
-                       "indexInAptDat", "runways", "parkings")
+                       "indexInAptDat", "landRunways", "waterRunways",
+                       "helipads", "parkings")
         for attr in self._attrs:
             setattr(self, attr, locals()[attr])
 
@@ -68,9 +70,13 @@ class Airport:
     def __str__(self):
         return "{} ({})".format(self.name, self.icao)
 
+    def runways(self):
+        return itertools.chain(self.landRunways, self.waterRunways,
+                               self.helipads)
+
     def tooltipText(self):
         d = {}
-        for rwy in self.runways:
+        for rwy in self.runways():
             if rwy.type not in d:
                 d[rwy.type] = []
 
@@ -117,9 +123,11 @@ class AirportStub:
 
     """
 
-    __slots__ = ("icao", "name", "type", "lat", "lon", "indexInAptDat")
+    __slots__ = ("icao", "name", "type", "lat", "lon", "nbLandRunways",
+                "nbWaterRunways", "nbHelipads", "indexInAptDat")
 
-    def __init__(self, icao, name, type, lat, lon, indexInAptDat):
+    def __init__(self, icao, name, type, lat, lon, nbLandRunways,
+                 nbWaterRunways, nbHelipads, indexInAptDat):
         for attr in self.__slots__:
             setattr(self, attr, locals()[attr])
 

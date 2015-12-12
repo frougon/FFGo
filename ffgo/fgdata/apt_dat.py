@@ -517,16 +517,17 @@ class AptDat:
             if code in (1, 16, 17): # Land airport, seaplane base or heliport
                 icao, type_, name, elev = self._processAirportHeader(code,
                                                                      payload)
-                eof, nextIndex, code, payload, avgLat, avgLon, runways, \
-                    parkings = self._readAirportData(calcCoords=True,
-                                                     readDetails=False)
+                eof, nextIndex, code, payload, avgLat, avgLon, landRunways, \
+                    waterRunways, helipads, parkings = self._readAirportData(
+                        calcCoords=True, readDetails=False)
                 # This should be better than sorting the list once complete
                 # from an algorithmic point of view, however the difference is
                 # hardly measurable with apt.dat 2013.10, build 20131335,
                 # containing 34074 airports (the sort() taking about 0.04 s).
                 bisect.insort_right(airports,
                                     (icao, type_.value, name, elev, avgLat,
-                                     avgLon, index))
+                                     avgLon, len(landRunways),
+                                     len(waterRunways), len(helipads), index))
                 index = nextIndex
             elif code in (None, 99): # None: EOF; 99: X-Plane's convention
                 break
@@ -553,11 +554,15 @@ class AptDat:
             # Optimizing this with writelines() doesn't seem to be worth it
             # (0.11 seconds instead of 0.12, while the whole method takes about
             # 25 seconds for 34074 airprts).
-            for icao, type_, name, elev, avgLat, avgLon, index in airports:
+            for icao, type_, name, elev, avgLat, avgLon, nbLandRunways, \
+                nbWaterRunways, nbHelipads, index in airports:
+                nbRunways = ';'.join(( str(s) for s in
+                                       (nbLandRunways, nbWaterRunways,
+                                        nbHelipads) ))
                 f.write(
                     '\0'.join([icao, name, str(type_),
                                avgLat.precisionRepr(), avgLon.precisionRepr(),
-                               repr(index)])
+                               nbRunways, repr(index)])
                     + '\n')
 
     def _processAirportHeader(self, code, payload):
@@ -579,7 +584,9 @@ class AptDat:
 
     def _readAirportData(self, calcCoords=False, readRunways=False,
                          readParkings=False, readDetails=True):
-        runways = []
+        landRunways = []
+        waterRunways = []
+        helipads = []
         # Will give the coordinates of the centroid of all runway ends +
         # helipads of the airport (each runway has a sort of “double weight”
         # because of its two ends, contrary to a helipad).
@@ -601,7 +608,8 @@ class AptDat:
                 if calcCoords or readRunways:
                     isRwyRecord, nvecSum0 = \
                         self._processPotentialRunwayRow(
-                            code, payload, runways, readDetails=readDetails)
+                            code, payload, landRunways, waterRunways, helipads,
+                            readDetails=readDetails)
                     if isRwyRecord:
                         nvecSum += nvecSum0
 
@@ -609,39 +617,42 @@ class AptDat:
                     self._processPotentialParkingRow(code, payload, parkings)
 
         if calcCoords:
-            n = len(runways)
+            # Each land or water runway is counted twice, once for each runway
+            # end.
+            n = 2*len(landRunways) + 2*len(waterRunways) + len(helipads)
             if n > 0:
                 avgLat, avgLon = map(misc.DecimalCoord,
                                      nvecSum.scalarDiv(n).latLon())
 
         if readRunways:
-            runways.sort(key=lambda runway: runway.name)
+            for runwayList in (landRunways, waterRunways, helipads):
+                runwayList.sort(key=lambda runway: runway.name)
 
         if readParkings:
             for parkList in parkings.values():
                 parkList.sort(key=parking.Parking.fullNameSortKey)
 
-        return (eof, index, code, payload, avgLat, avgLon, runways, parkings)
+        return (eof, index, code, payload, avgLat, avgLon,
+                landRunways, waterRunways, helipads, parkings)
 
-    def _processPotentialRunwayRow(self, code, payload, runways,
-                                   readDetails=True):
+    def _processPotentialRunwayRow(self, code, payload, landRunways,
+                                   waterRunways, helipads, readDetails=True):
         """Read runway information from (code, payload) if applicable.
 
-        'runways' should behave like a list and is *modified in-place*,
-        the runways found being appended. When 'readDetails' is False,
-        None is used instead of instances of a subclass of RunwayBase
-        (but the number of None objects added does correspond to the
-        number of runways found).
+        'landRunways', 'waterRunways' and 'helipads' should behave like
+        lists and are *modified in-place*, the runways found being
+        appended. When 'readDetails' is False, None is used instead of
+        instances of a subclass of RunwayBase (but the number of None
+        objects added does correspond to the number of runways found).
 
-        Return a tuple of the form (isRwyRecord, latSum, lonSum) where:
+        Return a tuple of the form (isRwyRecord, nvecSum) where:
           - 'isRwyRecord' is a boolean indicating whether 'code' is
             recognized as a runway code;
-          - 'latSum' (resp. 'lonSum') is the sum of the latitudes (resp.
-            longitudes) of the runway ends defined by (code, payload)
-            (i.e., typically two opposite runway ends for one “physical
-            runway”, but a helipad also counts as one runway end). This
-            can be used as a basis for computing the “centroid” of an
-            airport, so to speak.
+          - 'nvecSum' is the sum of the n-vectors for each runway end
+            defined by (code, payload) (i.e., typically two opposite
+            runway ends for one “physical runway”, but a helipad also
+            counts as one “runway end”). This can be used as a basis for
+            computing the “centroid” of an airport, so to speak.
 
         This method is a no-op if 'code' doesn't correspond to an
         apt.dat runway (helipads counting as runways in this context).
@@ -655,8 +666,11 @@ class AptDat:
             if len(e) >= 3 and e[2] != 'xxx':
                 # “Latitude/longitude [...] of runway or
                 # taxiway segment center” according to the APT810 spec
-                lat, lon, rwys = self._processV810Runway(
+                lat, lon, landRwys, waterRwys, helip = self._processV810Runway(
                     e, readDetails=readDetails)
+                landRunways.extend(landRwys)
+                waterRunways.extend(waterRwys)
+                helipads.extend(helip)
                 # May be one helipad or two reciprocal runway ends
                 nvecSum = NVector.fromLatLon(lat, lon)
                 if len(rwys) > 1:  # Two reciprocal runway ends
@@ -668,21 +682,22 @@ class AptDat:
                 payload, readDetails=readDetails)
             nvecSum = (NVector.fromLatLon(lat1, lon1) +
                        NVector.fromLatLon(lat2, lon2))
+            landRunways.extend(rwys)
         elif code == 101:
             lat1, lon1, lat2, lon2, rwys = self.processWaterRunway(
                 payload, readDetails=readDetails)
             nvecSum = (NVector.fromLatLon(lat1, lon1) +
                        NVector.fromLatLon(lat2, lon2))
+            waterRunways.extend(rwys)
         elif code == 102:
             lat, lon, rwys = self.processHelipad(payload,
                                                  readDetails=readDetails)
             nvecSum = NVector.fromLatLon(lat, lon)
+            helipads.extend(rwys)
         else:
             isRwyRecord = False
 
-        if isRwyRecord:
-            runways.extend(rwys)
-        else:
+        if not isRwyRecord:
             nvecSum = None      # no runway found
 
         return (isRwyRecord, nvecSum)
@@ -743,6 +758,9 @@ class AptDat:
                 _("not enough fields in record: {!r}").format(
                     self.line))
 
+        landRunways = []
+        waterRunways = []
+        helipads = []
         lat = self._readLatitude(e[0])
         lon = self._readLongitude(e[1])
         v810SurfaceType = self._readV810SurfaceType(e[9])
@@ -764,11 +782,12 @@ class AptDat:
                     # Override 'name' (remove trailing "x")
                     name = mo.group("name")
 
-                runways = (Helipad(name, lat, lon, heading, length, width,
-                                   surfaceType, shoulderSurfaceType, None,
-                                   smoothness, None),)
+                helipads.append(
+                    Helipad(name, lat, lon, heading, length, width,
+                            surfaceType, shoulderSurfaceType, None,
+                            smoothness, None))
             else:
-                runways = (None,)
+                helipads.append(None)
         elif readDetails:
             if name.endswith('x'): # rwy with no L, R, C, S... suffix
                 name = name[:-1]
@@ -794,11 +813,14 @@ class AptDat:
                 # one is close enough to either the North or South pole.
                 lat1, lon1, lat2, lon2 = self._computeV810RunwayEnds(
                     lat, lon, length, azimuth1, azimuth2)
+
+            # Two runways, differing in azimuth by 180°
             if v810SurfaceType.isWaterRunway():
                 rwy1 = WaterRunway(name, lat1, lon1, azimuth1, length, width,
                                    None)
                 rwy2 = WaterRunway(name2, lat2, lon2, azimuth2, length, width,
                                    None)
+                waterRunways.extend( (rwy1, rwy2) )
             else:
                 rwy1 = LandRunway(
                     name, lat1, lon1, azimuth1, length, width, surfaceType,
@@ -806,14 +828,15 @@ class AptDat:
                 rwy2 = LandRunway(
                     name2, lat2, lon2, azimuth2, length, width, surfaceType,
                     shoulderSurfaceType, runwayMarkings, smoothness)
-
+                landRunways.extend( (rwy1, rwy2) )
+        elif v810SurfaceType.isWaterRunway():
             # Two runways, differing in azimuth by 180°
-            runways = (rwy1, rwy2)
+            waterRunways.extend( (None, None) )
         else:
             # Ditto
-            runways = (None, None)
+            landRunways.extend( (None, None) )
 
-        return (lat, lon, runways)
+        return (lat, lon, landRunways, waterRunways, helipads)
 
     def otherRunway(self, num, suffix):
         otherNum = self.computeOtherRwyNum(num)
@@ -992,11 +1015,12 @@ class AptDat:
             return (False, None)
 
         if foundIcao == icao:
-            eof, nextIndex, code, payload, avgLat, avgLon, runways, parkings = \
+            eof, nextIndex, code, payload, avgLat, avgLon, \
+                landRunways, waterRunways, helipads, parkings = \
                  self._readAirportData(calcCoords=True, readRunways=True,
                                        readParkings=True, readDetails=True)
             airport = Airport(icao, name, type_, avgLat, avgLon, elev, index,
-                              runways, parkings)
+                              landRunways, waterRunways, helipads, parkings)
             return (True, airport)
         else:
             return (False, None)
@@ -1014,7 +1038,8 @@ class AptDat:
                 icao, type_, name, elev = self._processAirportHeader(code,
                                                                      payload)
                 try:
-                    eof, nextIndex, code, payload, avgLat, avgLon, runways, \
+                    eof, nextIndex, code, payload, avgLat, avgLon, \
+                    landRunways, waterRunways, helipads, \
                         parkings = self._readAirportData(calcCoords=True,
                                                          readDetails=True)
                 except UnableToParseAptDat as e:
@@ -1028,9 +1053,10 @@ class AptDat:
                         elif code in (None, 99):
                             break
                 else:
-                    bisect.insort_right(airports,
-                                        (icao, type_.value, name, elev, avgLat,
-                                         avgLon, index, runways, parkings))
+                    bisect.insort_right(
+                        airports,
+                        (icao, type_.value, name, elev, avgLat, avgLon, index,
+                         landRunways, waterRunways, helipads, parkings))
                     index = nextIndex
             elif code in (None, 99): # None: EOF; 99: X-Plane's convention
                 break
@@ -1042,8 +1068,8 @@ class AptDat:
 
         with open(outputFile, "w", encoding="utf-8") as f:
             first = True
-            for icao, type_, name, elev, avgLat, avgLon, index, runways, \
-                parkings, in airports:
+            for icao, type_, name, elev, avgLat, avgLon, index, landRunways, \
+                waterRunways, helipads, parkings in airports:
                 if first:
                     first = False
                     l = []
@@ -1051,11 +1077,12 @@ class AptDat:
                     l = ['']
 
                 airport = Airport(icao, name, type_, avgLat, avgLon, elev,
-                                  index, runways, parkings)
+                                  index, landRunways, waterRunways, helipads,
+                                  parkings)
                 logger.notice("Final: processing airport {0} ({1})...".format(
                     icao, name))
                 l.append("* {} ({})\n".format(icao, airport.name))
-                for rwy in airport.runways:
+                for rwy in airport.runways():
                     l.append(rwy.name + '\n'
                              + textwrap.indent(rwy.tooltipText(), '  ')
                              + '\n')
@@ -1069,7 +1096,7 @@ class AptDatDigest:
     FORMAT_MAGIC_NB = 7856251374982125
 
     @classmethod
-    def header(cls, aptDatSize, formatVersion=1):
+    def header(cls, aptDatSize, formatVersion=2):
         return textwrap.dedent("""\
    -*- coding: utf-8 -*-
    {prg}'s airport database, generated from FlightGear's apt.dat (or apt.dat.gz)
@@ -1133,7 +1160,7 @@ class AptDatDigest:
 
         with open(path, "r", encoding="utf-8") as f:
             formatVersion, aptDatSize = cls._checkHeader(f)
-            if formatVersion != 1:
+            if formatVersion != 2:
                 raise UnrecognizedFormatForAptDigest(
                     _("format version number {num} not supported").format(
                     num=formatVersion))
@@ -1153,11 +1180,14 @@ class AptDatDigest:
                     name = l[1]
                     type_ = AirportType(int(l[2]))
                     lat, lon = map(misc.DecimalCoord, l[3:5])
-                    indexInAptDat = int(l[5])
+                    nbLandRunways, nbWaterRunways, nbHelipads = map(
+                        int, l[5].split(';'))
+                    indexInAptDat = int(l[6])
                 except Exception as e: # could be refined a little bit...
                     raise UnableToParseAptDigest() from e
 
-                airports[icao] = AirportStub(icao, name, type_, lat, lon,
-                                             indexInAptDat)
+                airports[icao] = AirportStub(
+                    icao, name, type_, lat, lon, nbLandRunways, nbWaterRunways,
+                    nbHelipads, indexInAptDat)
 
         return (aptDatSize, airports)

@@ -1231,7 +1231,7 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
         found, airport = self.readAirportData(icao)
 
         if found:
-            return airport.runways
+            return airport.runways() # iterator
         else:
             return None
 
