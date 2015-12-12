@@ -32,7 +32,7 @@ from .airport import Airport, AirportStub, AirportType, LandRunway, \
 from . import parking
 from .parking import ParkingSource
 from ..geo import geodesy
-from ..geo.geodesy import cosd, sind, normLon
+from ..geo.geodesy import cosd, sind, normLon, NVector
 
 # This import requires the translation system [_() function] to be in
 # place.
@@ -580,11 +580,11 @@ class AptDat:
     def _readAirportData(self, calcCoords=False, readRunways=False,
                          readParkings=False, readDetails=True):
         runways = []
-        avgLat, avgLon = None, None
         # Will give the coordinates of the centroid of all runway ends +
         # helipads of the airport (each runway has a sort of “double weight”
         # because of its two ends, contrary to a helipad).
-        latSum, lonSum = misc.DecimalCoord(0.0), misc.DecimalCoord(0.0)
+        avgLat, avgLon = None, None
+        nvecSum = NVector(0.0, 0.0, 0.0)
         parkings = {}
         eof = False
 
@@ -599,12 +599,11 @@ class AptDat:
                 break
             else:
                 if calcCoords or readRunways:
-                    isRwyRecord, latSum0, lonSum0 = \
+                    isRwyRecord, nvecSum0 = \
                         self._processPotentialRunwayRow(
                             code, payload, runways, readDetails=readDetails)
                     if isRwyRecord:
-                        latSum += latSum0
-                        lonSum += lonSum0
+                        nvecSum += nvecSum0
 
                 if readParkings:
                     self._processPotentialParkingRow(code, payload, parkings)
@@ -612,7 +611,8 @@ class AptDat:
         if calcCoords:
             n = len(runways)
             if n > 0:
-                avgLat, avgLon = latSum / n, lonSum / n
+                avgLat, avgLon = map(misc.DecimalCoord,
+                                     nvecSum.scalarDiv(n).latLon())
 
         if readRunways:
             runways.sort(key=lambda runway: runway.name)
@@ -657,36 +657,35 @@ class AptDat:
                 # taxiway segment center” according to the APT810 spec
                 lat, lon, rwys = self._processV810Runway(
                     e, readDetails=readDetails)
+                # May be one helipad or two reciprocal runway ends
+                nvecSum = NVector.fromLatLon(lat, lon)
                 if len(rwys) > 1:  # Two reciprocal runway ends
-                    latSum = lat + lat
-                    lonSum = lon + lon
-                else:              # Helipad
-                    latSum = lat
-                    lonSum = lon
+                    nvecSum += nvecSum
             else:
                 isRwyRecord = False
         elif code == 100:
             lat1, lon1, lat2, lon2, rwys = self.processLandRunway(
                 payload, readDetails=readDetails)
-            latSum = lat1 + lat2
-            lonSum = lon1 + lon2
+            nvecSum = (NVector.fromLatLon(lat1, lon1) +
+                       NVector.fromLatLon(lat2, lon2))
         elif code == 101:
             lat1, lon1, lat2, lon2, rwys = self.processWaterRunway(
                 payload, readDetails=readDetails)
-            latSum = lat1 + lat2
-            lonSum = lon1 + lon2
+            nvecSum = (NVector.fromLatLon(lat1, lon1) +
+                       NVector.fromLatLon(lat2, lon2))
         elif code == 102:
-            latSum, lonSum, rwys = self.processHelipad(payload,
-                                                       readDetails=readDetails)
+            lat, lon, rwys = self.processHelipad(payload,
+                                                 readDetails=readDetails)
+            nvecSum = NVector.fromLatLon(lat, lon)
         else:
             isRwyRecord = False
 
         if isRwyRecord:
             runways.extend(rwys)
         else:
-            latSum = lonSum = None # no runway found
+            nvecSum = None      # no runway found
 
-        return (isRwyRecord, latSum, lonSum)
+        return (isRwyRecord, nvecSum)
 
     def _computeV810RunwayEnds(self, lat, lon, length, azimuth1, azimuth2):
         """Compute the coordinates of the opposite ends of a v810 runway.
