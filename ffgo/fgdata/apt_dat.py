@@ -768,8 +768,9 @@ class AptDat:
         if readDetails:
             name = e[2]
             heading = self._readHeading(e[3])
-            length = self._readLength(e[4])
-            width = self._readLength(e[5])
+            # In v810 format, runway lengths and widths are given in feet
+            length = self._readLength(e[4]) * 0.3048 # convert to meters
+            width = self._readLength(e[5]) * 0.3048  # convert to meters
             surfaceType = v810SurfaceType.v1000Equivalent()
             shoulderSurfaceType = self._readShoulderSurfaceType(e[10])
             runwayMarkings = self._readV810RunwayMarkings(e[11])
@@ -801,7 +802,7 @@ class AptDat:
                 # Compute the coordinates of the runway ends based on:
                 #   - the coordinates of their midpoint;
                 #   - the runway length and heading.
-                halfLength_m = 0.5*(length * 0.3048) # in meters
+                halfLength_m = 0.5*length
                 g1 = Geodesic.WGS84.Direct(lat, lon, azimuth2, halfLength_m)
                 g2 = Geodesic.WGS84.Direct(lat, lon, azimuth1, halfLength_m)
                 lat1, lon1 = g1['lat2'], g1['lon2']
@@ -894,8 +895,7 @@ class AptDat:
     @classmethod
     def computeLengthAndAzimuth(cls, lat1, lon1, lat2, lon2):
         g = cls.geodCalc.inverse(lat1, lon1, lat2, lon2)
-        # Convert meters to feet
-        return (g["s12"] / 0.3048, g["azi1"], g["azi2"] + 180.0)
+        return (g["s12"], g["azi1"], g["azi2"] + 180.0)
 
     def processLandRunway(self, payload, readDetails=True):
         """Process a runway record with code 100."""

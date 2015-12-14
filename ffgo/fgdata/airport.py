@@ -353,19 +353,17 @@ class RunwayBase:
 
     def _addLength(self, l):
         if self.length is not None:
-            length_ft = self.length
-            length_meters = self.length * 0.3048
-            l.append(_("Length: {0} ft ({1} m)").format(
-                self.formatLength(length_ft),
-                self.formatLength(length_meters)))
+            length_ft = self.length / 0.3048
+            l.append(_("Length: {0} m ({1} ft)").format(
+                self.formatLength(self.length),
+                self.formatLength(length_ft)))
 
     def _addWidth(self, l):
         if self.width is not None:
-            width_ft = self.width
-            width_meters = self.width * 0.3048
-            l.append(_("Width: {0} ft ({1} m)").format(
-                self.formatLength(width_ft),
-                self.formatLength(width_meters)))
+            width_ft = self.width / 0.3048
+            l.append(_("Width: {0} m ({1} ft)").format(
+                self.formatLength(self.width),
+                self.formatLength(width_ft)))
 
     def _addSurfaceType(self, l):
         if self.surfaceType is not None:
