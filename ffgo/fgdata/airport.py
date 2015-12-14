@@ -124,10 +124,12 @@ class AirportStub:
     """
 
     __slots__ = ("icao", "name", "type", "lat", "lon", "nbLandRunways",
-                "nbWaterRunways", "nbHelipads", "indexInAptDat")
+                "nbWaterRunways", "nbHelipads", "minRwyLength", "maxRwyLength",
+                 "indexInAptDat")
 
     def __init__(self, icao, name, type, lat, lon, nbLandRunways,
-                 nbWaterRunways, nbHelipads, indexInAptDat):
+                 nbWaterRunways, nbHelipads, minRwyLength, maxRwyLength,
+                 indexInAptDat):
         for attr in self.__slots__:
             setattr(self, attr, locals()[attr])
 

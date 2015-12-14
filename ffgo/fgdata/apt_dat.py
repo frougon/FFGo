@@ -518,8 +518,9 @@ class AptDat:
                 icao, type_, name, elev = self._processAirportHeader(code,
                                                                      payload)
                 eof, nextIndex, code, payload, avgLat, avgLon, landRunways, \
-                    waterRunways, helipads, parkings = self._readAirportData(
-                        calcCoords=True, readDetails=False)
+                    waterRunways, helipads, minRwyLength, maxRwyLength, \
+                    parkings = self._readAirportData(calcCoords=True,
+                                                     readDetails=False)
                 # This should be better than sorting the list once complete
                 # from an algorithmic point of view, however the difference is
                 # hardly measurable with apt.dat 2013.10, build 20131335,
@@ -527,7 +528,8 @@ class AptDat:
                 bisect.insort_right(airports,
                                     (icao, type_.value, name, elev, avgLat,
                                      avgLon, len(landRunways),
-                                     len(waterRunways), len(helipads), index))
+                                     len(waterRunways), len(helipads),
+                                     minRwyLength, maxRwyLength, index))
                 index = nextIndex
             elif code in (None, 99): # None: EOF; 99: X-Plane's convention
                 break
@@ -553,16 +555,22 @@ class AptDat:
 
             # Optimizing this with writelines() doesn't seem to be worth it
             # (0.11 seconds instead of 0.12, while the whole method takes about
-            # 25 seconds for 34074 airprts).
+            # 28 seconds for 34074 airprts).
             for icao, type_, name, elev, avgLat, avgLon, nbLandRunways, \
-                nbWaterRunways, nbHelipads, index in airports:
+                nbWaterRunways, nbHelipads, minRwyLength, maxRwyLength, \
+                index in airports:
                 nbRunways = ';'.join(( str(s) for s in
                                        (nbLandRunways, nbWaterRunways,
                                         nbHelipads) ))
+                if minRwyLength is None:
+                    minMaxRwyLengths = ""
+                else:
+                    minMaxRwyLengths = "{:.04f};{:.04f}".format(minRwyLength,
+                                                                maxRwyLength)
                 f.write(
                     '\0'.join([icao, name, str(type_),
                                avgLat.precisionRepr(), avgLon.precisionRepr(),
-                               nbRunways, repr(index)])
+                               nbRunways, minMaxRwyLengths, repr(index)])
                     + '\n')
 
     def _processAirportHeader(self, code, payload):
@@ -592,6 +600,7 @@ class AptDat:
         # because of its two ends, contrary to a helipad).
         avgLat, avgLon = None, None
         nvecSum = NVector(0.0, 0.0, 0.0)
+        minRwyLength = maxRwyLength = None
         parkings = {}
         eof = False
 
@@ -606,12 +615,19 @@ class AptDat:
                 break
             else:
                 if calcCoords or readRunways:
-                    isRwyRecord, nvecSum0 = \
+                    isRwyRecord, nvecSum0, rwyLength = \
                         self._processPotentialRunwayRow(
                             code, payload, landRunways, waterRunways, helipads,
                             readDetails=readDetails)
                     if isRwyRecord:
                         nvecSum += nvecSum0
+
+                        if rwyLength is not None:
+                            if minRwyLength is None: # no length encountered yet
+                                minRwyLength = maxRwyLength = rwyLength
+                            else:
+                                minRwyLength = min(minRwyLength, rwyLength)
+                                maxRwyLength = max(maxRwyLength, rwyLength)
 
                 if readParkings:
                     self._processPotentialParkingRow(code, payload, parkings)
@@ -632,8 +648,8 @@ class AptDat:
             for parkList in parkings.values():
                 parkList.sort(key=parking.Parking.fullNameSortKey)
 
-        return (eof, index, code, payload, avgLat, avgLon,
-                landRunways, waterRunways, helipads, parkings)
+        return (eof, index, code, payload, avgLat, avgLon, landRunways,
+                waterRunways, helipads, minRwyLength, maxRwyLength, parkings)
 
     def _processPotentialRunwayRow(self, code, payload, landRunways,
                                    waterRunways, helipads, readDetails=True):
@@ -659,6 +675,7 @@ class AptDat:
 
         """
         isRwyRecord = True
+        length = None
 
         if code == 10:  # Runway or taxiway from the APT810 spec (old)
             e = payload.split()
@@ -666,8 +683,8 @@ class AptDat:
             if len(e) >= 3 and e[2] != 'xxx':
                 # “Latitude/longitude [...] of runway or
                 # taxiway segment center” according to the APT810 spec
-                lat, lon, landRwys, waterRwys, helip = self._processV810Runway(
-                    e, readDetails=readDetails)
+                lat, lon, landRwys, waterRwys, helip, length = \
+                            self._processV810Runway(e, readDetails=readDetails)
                 landRunways.extend(landRwys)
                 waterRunways.extend(waterRwys)
                 helipads.extend(helip)
@@ -678,18 +695,19 @@ class AptDat:
             else:
                 isRwyRecord = False
         elif code == 100:
-            lat1, lon1, lat2, lon2, rwys = self.processLandRunway(
+            lat1, lon1, lat2, lon2, length, rwys = self.processLandRunway(
                 payload, readDetails=readDetails)
             nvecSum = (NVector.fromLatLon(lat1, lon1) +
                        NVector.fromLatLon(lat2, lon2))
             landRunways.extend(rwys)
         elif code == 101:
-            lat1, lon1, lat2, lon2, rwys = self.processWaterRunway(
+            lat1, lon1, lat2, lon2, length, rwys = self.processWaterRunway(
                 payload, readDetails=readDetails)
             nvecSum = (NVector.fromLatLon(lat1, lon1) +
                        NVector.fromLatLon(lat2, lon2))
             waterRunways.extend(rwys)
         elif code == 102:
+            # Helipad length is not counted as a “runway length”
             lat, lon, rwys = self.processHelipad(payload,
                                                  readDetails=readDetails)
             nvecSum = NVector.fromLatLon(lat, lon)
@@ -700,7 +718,7 @@ class AptDat:
         if not isRwyRecord:
             nvecSum = None      # no runway found
 
-        return (isRwyRecord, nvecSum)
+        return (isRwyRecord, nvecSum, length)
 
     def _computeV810RunwayEnds(self, lat, lon, length, azimuth1, azimuth2):
         """Compute the coordinates of the opposite ends of a v810 runway.
@@ -761,6 +779,8 @@ class AptDat:
         landRunways = []
         waterRunways = []
         helipads = []
+        # 'rwyLength' is for real runways, not helipads (convert to meters)
+        rwyLength = length = self._readLength(e[4]) * 0.3048
         lat = self._readLatitude(e[0])
         lon = self._readLongitude(e[1])
         v810SurfaceType = self._readV810SurfaceType(e[9])
@@ -769,7 +789,6 @@ class AptDat:
             name = e[2]
             heading = self._readHeading(e[3])
             # In v810 format, runway lengths and widths are given in feet
-            length = self._readLength(e[4]) * 0.3048 # convert to meters
             width = self._readLength(e[5]) * 0.3048  # convert to meters
             surfaceType = v810SurfaceType.v1000Equivalent()
             shoulderSurfaceType = self._readShoulderSurfaceType(e[10])
@@ -777,6 +796,7 @@ class AptDat:
             smoothness = self._readSmoothness(e[12])
 
         if v810SurfaceType.isHelipad():
+            rwyLength = None
             if readDetails:
                 mo = self._v810Helipad_cre.match(name) # Helipad?
                 if mo:
@@ -837,7 +857,7 @@ class AptDat:
             # Ditto
             landRunways.extend( (None, None) )
 
-        return (lat, lon, landRunways, waterRunways, helipads)
+        return (lat, lon, landRunways, waterRunways, helipads, rwyLength)
 
     def otherRunway(self, num, suffix):
         otherNum = self.computeOtherRwyNum(num)
@@ -897,6 +917,27 @@ class AptDat:
         g = cls.geodCalc.inverse(lat1, lon1, lat2, lon2)
         return (g["s12"], g["azi1"], g["azi2"] + 180.0)
 
+    @classmethod
+    def computeLengthForAptDigest(cls, lat1, lon1, lat2, lon2):
+        try:
+            # Fast and accurate method, but might fail in a few cases (not for
+            # a runway length, I think, but let's take maximum precautions,
+            # because a failure here would prevent FFGo from working at all).
+            dist = cls.geodCalc.vincentyInverseWithFallback(lat1, lon1,
+                                                            lat2, lon2)["s12"]
+        except geodesy.error:
+            if cls.geodCalc.karneyMethodAvailable():
+                # Slower, extremely accurate and should work in all cases, but
+                # may not be installed for all users.
+                dist = cls.geodCalc.karneyInverse(lat1, lon1,
+                                                  lat2, lon2)["s12"]
+            else:
+                # Very fast, not very accurate but still OK for a runway
+                # length (I believe I found a 9 cm difference for a 3600 m
+                # long runway near Paris). Should work in all cases.
+                dist = cls.geodCalc.modifiedFccDistance(lat1, lon1, lat2, lon2)
+        return dist
+
     def processLandRunway(self, payload, readDetails=True):
         """Process a runway record with code 100."""
         e = payload.split()
@@ -926,9 +967,10 @@ class AptDat:
             rwy2 = LandRunway(name2, lat2, lon2, azimuth2, length, width,
                               surfaceType, shoulderSurfaceType,
                               runwayMarkings2, smoothness)
-            return (lat1, lon1, lat2, lon2, (rwy1, rwy2))
+            return (lat1, lon1, lat2, lon2, length, (rwy1, rwy2))
         else:
-            return (lat1, lon1, lat2, lon2, (None, None))
+            length = self.computeLengthForAptDigest(lat1, lon1, lat2, lon2)
+            return (lat1, lon1, lat2, lon2, length, (None, None))
 
     def processWaterRunway(self, payload, readDetails=True):
         """Process a runway record with code 101."""
@@ -954,9 +996,10 @@ class AptDat:
                 lat1, lon1, lat2, lon2)
             rwy1 = WaterRunway(name1, lat1, lon1, azimuth1, length, width, None)
             rwy2 = WaterRunway(name2, lat2, lon2, azimuth2, length, width, None)
-            return (lat1, lon1, lat2, lon2, (rwy1, rwy2))
+            return (lat1, lon1, lat2, lon2, length, (rwy1, rwy2))
         else:
-            return (lat1, lon1, lat2, lon2, (None, None))
+            length = self.computeLengthForAptDigest(lat1, lon1, lat2, lon2)
+            return (lat1, lon1, lat2, lon2, length, (None, None))
 
     def processHelipad(self, payload, readDetails=True):
         """Process a “runway” record with code 102 (i.e., a helipad)."""
@@ -1016,9 +1059,10 @@ class AptDat:
 
         if foundIcao == icao:
             eof, nextIndex, code, payload, avgLat, avgLon, \
-                landRunways, waterRunways, helipads, parkings = \
-                 self._readAirportData(calcCoords=True, readRunways=True,
-                                       readParkings=True, readDetails=True)
+                landRunways, waterRunways, helipads, minRwyLength, \
+                maxRwyLength, parkings = self._readAirportData(
+                    calcCoords=True, readRunways=True,
+                    readParkings=True, readDetails=True)
             airport = Airport(icao, name, type_, avgLat, avgLon, elev, index,
                               landRunways, waterRunways, helipads, parkings)
             return (True, airport)
@@ -1182,12 +1226,21 @@ class AptDatDigest:
                     lat, lon = map(misc.DecimalCoord, l[3:5])
                     nbLandRunways, nbWaterRunways, nbHelipads = map(
                         int, l[5].split(';'))
-                    indexInAptDat = int(l[6])
+
+                    if l[6]:
+                        minRwyLength, maxRwyLength = map(
+                            float, l[6].split(';'))
+                    else:
+                        # The “airport” has no real runway (one can hope it has
+                        # helipads!)
+                        minRwyLength, maxRwyLength = None, None
+
+                    indexInAptDat = int(l[7])
                 except Exception as e: # could be refined a little bit...
                     raise UnableToParseAptDigest() from e
 
                 airports[icao] = AirportStub(
                     icao, name, type_, lat, lon, nbLandRunways, nbWaterRunways,
-                    nbHelipads, indexInAptDat)
+                    nbHelipads, minRwyLength, maxRwyLength, indexInAptDat)
 
         return (aptDatSize, airports)
