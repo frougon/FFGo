@@ -35,6 +35,18 @@ def setupEarthMagneticFieldProvider(provider):
     magField = provider
 
 
+class ValidatingWidget:
+    """Class holding widget-metadata to ease input validation.
+
+    This class allows a number of widgets to have their input validated
+    using the same code, with error reporting when the input is invalid.
+
+    """
+    def __init__(self, widget, var, validateFunc, invalidFunc):
+        for attr in ("widget", "var", "validateFunc", "invalidFunc"):
+            setattr(self, attr, locals()[attr])
+
+
 class AirportFinder:
     "Airport finder dialog."""
 
@@ -173,20 +185,34 @@ class AirportFinder:
             self.refIcao.set('')
 
         # *********************************************************************
-        # *                         The Search frame                          *
+        # *                      Search parameters frame                      *
         # *********************************************************************
-        searchFrame = ttk.LabelFrame(tlFrame, text=_("Search"),
-                                     padding=labelFramesPadding)
-        searchFrame.grid(row=1, column=0, sticky="nsew")
-        tlFrame.grid_rowconfigure(1, weight=900)
+        #
+        # List of ValidatingWidget instances for “standard” input validation.
+        self.validatingWidgets = []
 
-        searchTopFrame = ttk.Frame(searchFrame, padding=(0, 0, 0, "30p"))
-        searchTopFrame.grid(row=0, column=0, sticky="nsew")
-        searchFrame.grid_columnconfigure(0, weight=100)
+        searchParamsFrame = ttk.LabelFrame(tlFrame, text=_("Search parameters"),
+                                           padding=labelFramesPadding)
+        searchParamsFrame.grid(row=1, column=0, sticky="nsew")
 
-        paramsLabel1 = ttk.Label(searchTopFrame,
-                                 textvariable=self.searchDescrLabelVar)
-        paramsLabel1.grid(row=0, column=0, sticky="w")
+        searchParamsLeftFrame = ttk.Frame(searchParamsFrame)
+        searchParamsLeftFrame.grid(row=0, column=0, sticky="nsew")
+        searchParamsFrame.grid_columnconfigure(0, weight=200)
+
+        searchParamsLeftFrame.grid_columnconfigure(0, weight=100)
+        paramsSpinboxWd = 6     # common width for several aligned spinboxes
+
+        label = ttk.Label(searchParamsLeftFrame,
+                          textvariable=self.searchDescrLabelVar)
+        label.grid(row=0, column=0, sticky="w")
+
+        spacer = ttk.Frame(searchParamsLeftFrame)
+        spacer.grid(row=0, column=1, sticky="nsew")
+        searchParamsLeftFrame.grid_columnconfigure(1, minsize="7p", weight=100)
+
+        label = ttk.Label(searchParamsLeftFrame,
+                          text=pgettext("distance", "min: "))
+        label.grid(row=0, column=2, sticky="e")
 
         distBoundValidateCmd = self.master.register(self._distBoundValidateFunc)
         distBoundInvalidCmd = self.master.register(self._distBoundInvalidFunc)
@@ -195,57 +221,282 @@ class AirportFinder:
         self.minDist = tk.StringVar()
         self.minDist.set('75')
         self.minDistSpinbox = tk.Spinbox(
-            searchTopFrame, from_=0, to=10820, increment=1, repeatinterval=20,
-            textvariable=self.minDist, width=6, validate="focusout",
-            validatecommand=(distBoundValidateCmd, "%P"),
+            searchParamsLeftFrame, from_=0, to=10820, increment=1,
+            repeatinterval=20, textvariable=self.minDist, width=paramsSpinboxWd,
+            validate="focusout", validatecommand=(distBoundValidateCmd, "%P"),
             invalidcommand=(distBoundInvalidCmd, "%W", "%P"))
-        self.minDistSpinbox.grid(row=0, column=1)
+        # Used to run the validation code manually in case the spinbox
+        # still has focus when the data is needed. Using
+        # 'validate="all"' would *maybe* avoid the need to run manual
+        # validation, but it is inconvenient for users (e.g., erasing is
+        # a pain, because empty input is typically forbidden).
+        self.validatingWidgets.append(
+            ValidatingWidget(self.minDistSpinbox, self.minDist,
+                             self._distBoundValidateFunc,
+                             self._distBoundInvalidFunc))
+        self.minDistSpinbox.grid(row=0, column=3, sticky="ew")
+        searchParamsLeftFrame.grid_columnconfigure(3, weight=100)
 
-        paramsLabel2 = ttk.Label(
-            searchTopFrame,
-            text=pgettext("find airport in range", " ≤ d ≤ "))
-        paramsLabel2.grid(row=0, column=2)
+        lbl = ttk.Label(searchParamsLeftFrame,
+                        text=" " + pgettext("length unit", "nm"))
+        lbl.grid(row=0, column=4, sticky="w")
+
+        spacer = ttk.Frame(searchParamsLeftFrame)
+        spacer.grid(row=0, column=5, sticky="nsew")
+        searchParamsLeftFrame.grid_columnconfigure(5, minsize="7p", weight=100)
+
+        lbl = ttk.Label(searchParamsLeftFrame,
+                        text=pgettext("distance", "max: "))
+        lbl.grid(row=0, column=6, sticky="e")
 
         # Maximum distance to the reference airport
         self.maxDist = tk.StringVar()
         self.maxDist.set('100')
         self.maxDistSpinbox = tk.Spinbox(
-            searchTopFrame, from_=0, to=10820, increment=1, repeatinterval=20,
-            textvariable=self.maxDist, width=6,
+            searchParamsLeftFrame, from_=0, to=10820, increment=1,
+            repeatinterval=20, textvariable=self.maxDist, width=paramsSpinboxWd,
             validate="focusout", validatecommand=(distBoundValidateCmd, "%P"),
             invalidcommand=(distBoundInvalidCmd, "%W", "%P"))
+        self.validatingWidgets.append(
+            ValidatingWidget(self.maxDistSpinbox, self.maxDist,
+                             self._distBoundValidateFunc,
+                             self._distBoundInvalidFunc))
+        self.maxDistSpinbox.grid(row=0, column=7, sticky="ew")
+        searchParamsLeftFrame.grid_columnconfigure(7, weight=100)
 
-        self.maxDistSpinbox.grid(row=0, column=3)
+        lbl = ttk.Label(searchParamsLeftFrame,
+                        text=" " + pgettext("length unit", "nm"))
+        lbl.grid(row=0, column=8, sticky="w")
 
-        paramsLabel3 = ttk.Label(searchTopFrame,
-                                 text=pgettext("find airport in range",
-                                               " nm:"))
-        paramsLabel3.grid(row=0, column=4)
+        def addRunwayCountCriteria(rowNumber, startCol, labelText, minName,
+                                   maxName, self=self,
+                                   containingFrame=searchParamsLeftFrame,
+                                   paramsSpinboxWd=paramsSpinboxWd):
+            label1 = ttk.Label(containingFrame,
+                               text="{descr}".format(descr=labelText))
+            label1.grid(row=rowNumber, column=startCol, sticky="w")
+
+            spacer = ttk.Frame(containingFrame)
+            spacer.grid(row=rowNumber, column=startCol+1, sticky="nsew")
+            containingFrame.grid_columnconfigure(startCol+1, minsize="7p",
+                                                 weight=100)
+
+            label2 = ttk.Label(containingFrame,
+                               text=pgettext("number of runways/helipads",
+                                             "min: "))
+            label2.grid(row=rowNumber, column=startCol+2, sticky="e")
+
+            nbRunwaysValidateCmd = self.master.register(
+                self._nbRunwaysValidateFunc)
+            nbRunwaysInvalidCmd = self.master.register(
+                self._nbRunwaysInvalidFunc)
+
+            # Minimum number of land runways / water runways / helipads
+            setattr(self, minName, tk.StringVar())
+            getattr(self, minName).set('0')
+            minWidget = tk.Spinbox(
+                containingFrame, from_=0, to=999, increment=1,
+                repeatinterval=150, textvariable=getattr(self, minName),
+                width=paramsSpinboxWd, validate="focusout",
+                validatecommand=(nbRunwaysValidateCmd, "%P"),
+                invalidcommand=(nbRunwaysInvalidCmd, "%W", "%P"))
+            setattr(self, minName + "Spinbox", minWidget)
+            self.validatingWidgets.append(
+                ValidatingWidget(minWidget, getattr(self, minName),
+                                 self._nbRunwaysValidateFunc,
+                                 self._nbRunwaysInvalidFunc))
+            minWidget.grid(row=rowNumber, column=startCol+3, sticky="ew")
+
+            label3 = ttk.Label(
+                containingFrame,
+                text=pgettext("number of runways/helipads", "max: "))
+            label3.grid(row=rowNumber, column=startCol+6, sticky="e")
+
+            # Maximum number of land runways / water runways / helipads
+            setattr(self, maxName, tk.StringVar())
+            getattr(self, maxName).set('999')
+            maxWidget = tk.Spinbox(
+                containingFrame, from_=0, to=999, increment=1,
+                repeatinterval=150, textvariable=getattr(self, maxName),
+                width=paramsSpinboxWd, validate="focusout",
+                validatecommand=(nbRunwaysValidateCmd, "%P"),
+                invalidcommand=(nbRunwaysInvalidCmd, "%W", "%P"))
+            setattr(self, maxName + "Spinbox", maxWidget)
+            self.validatingWidgets.append(
+                ValidatingWidget(maxWidget, getattr(self, maxName),
+                                 self._nbRunwaysValidateFunc,
+                                 self._nbRunwaysInvalidFunc))
+            maxWidget.grid(row=rowNumber, column=startCol+7, sticky="ew")
+
+        addRunwayCountCriteria(1, 0, _("Number of land runways"),
+                               "minNbLandRunways", "maxNbLandRunways")
+        addRunwayCountCriteria(2, 0, _("Number of water runways"),
+                               "minNbWaterRunways", "maxNbWaterRunways")
+        addRunwayCountCriteria(3, 0, _("Number of helipads"),
+                               "minNbHelipads", "maxNbHelipads")
+
+        # Intercolumn space between the two “main columns” of the “Search
+        # parameters” frame.
+        spacer = ttk.Frame(searchParamsLeftFrame)
+        spacer.grid(row=0, column=9, sticky="nsew")
+        searchParamsLeftFrame.grid_columnconfigure(9, minsize="7p", weight=150)
+
+        lbl = ttk.Label(searchParamsLeftFrame, text=_("Longest runway"))
+        lbl.grid(row=0, column=10, sticky="w")
+
+        spacer = ttk.Frame(searchParamsLeftFrame)
+        spacer.grid(row=0, column=11, sticky="nsew")
+        searchParamsLeftFrame.grid_columnconfigure(11, minsize="5p", weight=150)
+
+        lbl = ttk.Label(searchParamsLeftFrame,
+                        text=pgettext("runway length", "at least") + " ")
+        lbl.grid(row=0, column=12, sticky="e")
+
+        distBoundValidateCmd = self.master.register(self._distBoundValidateFunc)
+        distBoundInvalidCmd = self.master.register(self._distBoundInvalidFunc)
+
+        # The longest runway in each result airport must be longer than...
+        self.maxRwyLengthLowerBound = tk.StringVar()
+        self.maxRwyLengthLowerBound.set('0')
+        self.maxRwyLengthLowerBoundSpinbox = tk.Spinbox(
+            searchParamsLeftFrame, from_=0, to=99999, increment=0.2,
+            repeatinterval=20, textvariable=self.maxRwyLengthLowerBound,
+            width=paramsSpinboxWd,
+            validate="focusout", validatecommand=(distBoundValidateCmd, "%P"),
+            invalidcommand=(distBoundInvalidCmd, "%W", "%P"))
+        self.validatingWidgets.append(
+            ValidatingWidget(self.maxRwyLengthLowerBoundSpinbox,
+                             self.maxRwyLengthLowerBound,
+                             self._distBoundValidateFunc,
+                             self._distBoundInvalidFunc))
+        self.maxRwyLengthLowerBoundSpinbox.grid(row=0, column=13, sticky="ew")
+        searchParamsLeftFrame.grid_columnconfigure(13, weight=100)
+
+        lbl = ttk.Label(searchParamsLeftFrame,
+                        text=" " + pgettext("length unit", "m"))
+        lbl.grid(row=0, column=14, sticky="w")
+
+        lbl = ttk.Label(searchParamsLeftFrame, text=_("Shortest runway"))
+        lbl.grid(row=1, column=10, sticky="w")
+
+        lbl = ttk.Label(searchParamsLeftFrame,
+                        text=pgettext("runway length", "at most") + " ")
+        lbl.grid(row=1, column=12, sticky="e")
+
+        # The shortest runway in each result airport must be shorter than...
+        self.minRwyLengthUpperBound = tk.StringVar()
+        self.minRwyLengthUpperBound.set('99999')
+        self.minRwyLengthUpperBoundSpinbox = tk.Spinbox(
+            searchParamsLeftFrame, from_=0, to=99999, increment=0.2,
+            repeatinterval=20, textvariable=self.minRwyLengthUpperBound,
+            width=paramsSpinboxWd,
+            validate="focusout", validatecommand=(distBoundValidateCmd, "%P"),
+            invalidcommand=(distBoundInvalidCmd, "%W", "%P"))
+        self.validatingWidgets.append(
+            ValidatingWidget(self.minRwyLengthUpperBoundSpinbox,
+                             self.minRwyLengthUpperBound,
+                             self._distBoundValidateFunc,
+                             self._distBoundInvalidFunc))
+        self.minRwyLengthUpperBoundSpinbox.grid(row=1, column=13, sticky="ew")
+
+        lbl = ttk.Label(searchParamsLeftFrame,
+                        text=" " + pgettext("length unit", "m"))
+        lbl.grid(row=1, column=14, sticky="w")
+
+        # Calculation method (Vincenty or Karney)
+        calcMethodLabel = ttk.Label(searchParamsLeftFrame,
+                                    text=_("Calculation method"))
+        calcMethodLabel.grid(row=2, column=10, sticky="w")
+
+        self.calcMethodVar = tk.StringVar()
+        # Vincenty's method is much faster than Karney's one, and since the
+        # calculation over about 34000 airports takes some time, let's pick the
+        # fastest one as default even if it may fail for a few rare pairs of
+        # airports (which will be signaled, so the user can select the Karney
+        # method for these specific cases and have all results in the end).
+        self.calcMethodVar.set("vincentyInverseWithFallback")
+        karneyMethodRadioButton = ttk.Radiobutton(
+            searchParamsLeftFrame, variable=self.calcMethodVar,
+            text=_("Karney"), value="karneyInverse",
+            padding=(0, 0, "10p", 0))
+        karneyMethodRadioButton.grid(row=2, column=12, columnspan=3, sticky="w")
+        vincentyMethodRadioButton = ttk.Radiobutton(
+            searchParamsLeftFrame, variable=self.calcMethodVar,
+            text=_("Vincenty et al."), value="vincentyInverseWithFallback",
+            padding=(0, 0, "10p", 0))
+        vincentyMethodRadioButton.grid(row=3, column=12, columnspan=3,
+                                       sticky="w")
+
+        # Tooltip for the calculation method
+        if self.geodCalc.karneyMethodAvailable():
+            calcMethodHint = ""
+        else:
+            karneyMethodRadioButton.state(["disabled"])
+            calcMethodHint = ("\n\n"
+                "In order to be able to use it here, you need to have "
+                "installed GeographicLib's implementation for the Python "
+                "installation you are using to run {prg}.").format(prg=PROGNAME)
+
+        calcMethodTooltipText = _(
+            "Method used to compute distance, initial and final bearings "
+            "for the shortest path between two airports (“inverse geodetic "
+            "problem”). "
+            "Vincenty's method is faster than Karney's one, but there are "
+            "some particular cases in which Vincenty's algorithm can't do "
+            "the computation. Karney's method should handle all possible "
+            "cases.{complement}").format(complement=calcMethodHint)
+        ToolTip(calcMethodLabel, calcMethodTooltipText, autowrap=True)
+
+        spacer = ttk.Frame(searchParamsFrame)
+        spacer.grid(row=0, column=1, sticky="nsew")
+        searchParamsFrame.grid_columnconfigure(1, minsize="5p", weight=150)
+
+        # The 'Search' button
+        self.searchButton = ttk.Button(
+            searchParamsFrame, text=_('Search'),
+            command=self.search, padding="10p")
+        self.searchButton.grid(row=0, column=2)
+
+        # Alt-s keyboard shortcut for the 'Search' button
+        self.top.bind('<Alt-KeyPress-s>',
+                      lambda event, self=self: self.searchButton.invoke())
+        ToolTip(self.searchButton,
+                _("Find all airports matching the specified criteria.\n"
+                  "Can be run with Alt-S."),
+                autowrap=True)
+
+        # *********************************************************************
+        # *                       Search results frame                        *
+        # *********************************************************************
+        resultsFrame = ttk.LabelFrame(tlFrame, text=_("Search results"),
+                                      padding=labelFramesPadding)
+        resultsFrame.grid(row=2, column=0, sticky="nsew")
+        tlFrame.grid_rowconfigure(2, weight=900)
+
+        resultsLeftFrame = ttk.Frame(resultsFrame)
+        resultsLeftFrame.grid(row=0, column=0, sticky="nsew")
+        resultsFrame.grid_rowconfigure(0, weight=100)
+        resultsFrame.grid_columnconfigure(0, weight=100, pad="30p")
 
         # Number of results
         self.nbResultsTextVar = tk.StringVar()
-        nbResultsLabel = ttk.Label(searchTopFrame,
+        nbResultsLabel = ttk.Label(resultsLeftFrame,
                                    textvariable=self.nbResultsTextVar)
-        nbResultsLabel.grid(row=0, column=5, sticky="e")
-        searchTopFrame.grid_columnconfigure(5, weight=100)
+        nbResultsLabel.grid(row=0, column=0, sticky="w")
+        resultsLeftFrame.grid_columnconfigure(0, weight=100)
 
-        searchBottomFrame = ttk.Frame(searchFrame)
-        searchBottomFrame.grid(row=1, column=0, sticky="nsew")
-        searchFrame.grid_rowconfigure(1, weight=200)
-
-        searchBottomLeftFrame = ttk.Frame(searchBottomFrame)
-        searchBottomLeftFrame.grid(row=0, column=0, sticky="nsew")
-        searchBottomFrame.grid_rowconfigure(0, weight=100)
-        searchBottomFrame.grid_columnconfigure(0, weight=100, pad="30p")
+        searchBottomLeftSpacerHeight = "20p"
+        spacer = ttk.Frame(resultsLeftFrame)
+        spacer.grid(row=1, column=0, sticky="nsew")
+        resultsLeftFrame.grid_rowconfigure(
+            1, minsize=searchBottomLeftSpacerHeight, weight=100)
 
         # Direction (from or to the reference airport)
-        searchBottomLeftSubframe1 = ttk.Frame(searchBottomLeftFrame)
-        searchBottomLeftSubframe1.grid(row=0, column=0, sticky="nsw")
-        searchBottomLeftFrame.grid_rowconfigure(0, weight=100)
-        searchBottomLeftFrame.grid_columnconfigure(0, weight=100)
+        searchBottomLeftSubframe1 = ttk.Frame(resultsLeftFrame)
+        searchBottomLeftSubframe1.grid(row=2, column=0, sticky="nsw")
 
         directionLabel = ttk.Label(searchBottomLeftSubframe1,
-                                   text=_("Direction: "))
+                                   text=_("Direction"))
         directionLabel.grid(row=0, column=0, sticky="w")
         searchBottomLeftSubframe1.grid_columnconfigure(0, weight=100)
 
@@ -264,19 +515,17 @@ class AirportFinder:
             padding=("10p", 0, "10p", 0))
         directionFromRefButton.grid(row=1, column=1, sticky="w")
 
-        searchBottomLeftSpacerHeight = "20p"
-        searchBottomLeftSpacer1 = ttk.Frame(searchBottomLeftFrame)
-        searchBottomLeftSpacer1.grid(row=1, column=0, sticky="nsew")
-        searchBottomLeftFrame.grid_rowconfigure(
-            1, minsize=searchBottomLeftSpacerHeight, weight=100)
+        searchBottomLeftSpacer1 = ttk.Frame(resultsLeftFrame)
+        searchBottomLeftSpacer1.grid(row=3, column=0, sticky="nsew")
+        resultsLeftFrame.grid_rowconfigure(
+            3, minsize=searchBottomLeftSpacerHeight, weight=100)
 
         # Magnetic or true bearings
-        searchBottomLeftSubframe2 = ttk.Frame(searchBottomLeftFrame)
-        searchBottomLeftSubframe2.grid(row=2, column=0, sticky="nsw")
-        searchBottomLeftFrame.grid_rowconfigure(2, weight=0)
+        searchBottomLeftSubframe2 = ttk.Frame(resultsLeftFrame)
+        searchBottomLeftSubframe2.grid(row=4, column=0, sticky="nsw")
 
         bearingsTypeLabel = ttk.Label(searchBottomLeftSubframe2,
-                                      text=_("Bearings: "))
+                                      text=_("Bearings"))
         bearingsTypeLabel.grid(row=0, column=0, sticky="w")
         searchBottomLeftSubframe2.grid_columnconfigure(0, weight=100)
 
@@ -298,18 +547,17 @@ class AirportFinder:
             self.bearingsType.set("true")
             magBearingsButton.state(["disabled"])
 
-        searchBottomLeftSpacer2 = ttk.Frame(searchBottomLeftFrame)
-        searchBottomLeftSpacer2.grid(row=3, column=0, sticky="nsew")
-        searchBottomLeftFrame.grid_rowconfigure(
-            3, minsize=searchBottomLeftSpacerHeight, weight=100)
+        searchBottomLeftSpacer2 = ttk.Frame(resultsLeftFrame)
+        searchBottomLeftSpacer2.grid(row=5, column=0, sticky="nsew")
+        resultsLeftFrame.grid_rowconfigure(
+            5, minsize=searchBottomLeftSpacerHeight, weight=100)
 
         # Length unit (nautical miles or kilometers)
-        searchBottomLeftSubframe3 = ttk.Frame(searchBottomLeftFrame)
-        searchBottomLeftSubframe3.grid(row=4, column=0, sticky="nsw")
-        searchBottomLeftFrame.grid_rowconfigure(4, weight=0)
+        searchBottomLeftSubframe3 = ttk.Frame(resultsLeftFrame)
+        searchBottomLeftSubframe3.grid(row=6, column=0, sticky="nsw")
 
         lengthUnitLabel = ttk.Label(searchBottomLeftSubframe3,
-                                    text=_("Distances in: "))
+                                    text=_("Distances in"))
         lengthUnitLabel.grid(row=0, column=0, sticky="w")
         searchBottomLeftSubframe3.grid_columnconfigure(0, weight=100)
 
@@ -328,89 +576,16 @@ class AirportFinder:
             padding=("10p", 0, "10p", 0))
         kilometersButton.grid(row=1, column=1, sticky="w")
 
-        searchBottomLeftSpacer3 = ttk.Frame(searchBottomLeftFrame)
-        searchBottomLeftSpacer3.grid(row=5, column=0, sticky="nsew")
-        searchBottomLeftFrame.grid_rowconfigure(
-            5, minsize=searchBottomLeftSpacerHeight, weight=100)
-
-        # Calculation method (Vincenty or Karney)
-        searchBottomLeftSubframe4 = ttk.Frame(searchBottomLeftFrame)
-        searchBottomLeftSubframe4.grid(row=6, column=0, sticky="nsw")
-        searchBottomLeftFrame.grid_rowconfigure(6, weight=0)
-
-        calcMethodLabel = ttk.Label(searchBottomLeftSubframe4,
-                                    text=_("Calculation method: "))
-        calcMethodLabel.grid(row=0, column=0, sticky="w")
-        searchBottomLeftSubframe4.grid_columnconfigure(0, weight=100)
-
-        self.calcMethodVar = tk.StringVar()
-        # Vincenty's method is much faster than Karney's one, and since the
-        # calculation over about 34000 airports takes some time, let's pick the
-        # fastest one as default even if it may fail for a few rare pairs of
-        # airports (which will be signaled, so the user can select the Karney
-        # method for these specific cases and have all results in the end).
-        self.calcMethodVar.set("vincentyInverseWithFallback")
-        karneyMethodRadioButton = ttk.Radiobutton(
-            searchBottomLeftSubframe4, variable=self.calcMethodVar,
-            text=_("Karney"), value="karneyInverse",
-            padding=("10p", 0, "10p", 0))
-        karneyMethodRadioButton.grid(row=0, column=1, sticky="w")
-        searchBottomLeftSubframe4.grid_rowconfigure(0, pad="5p")
-        vincentyMethodRadioButton = ttk.Radiobutton(
-            searchBottomLeftSubframe4, variable=self.calcMethodVar,
-            text=_("Vincenty et al."), value="vincentyInverseWithFallback",
-            padding=("10p", 0, "10p", 0))
-        vincentyMethodRadioButton.grid(row=1, column=1, sticky="w")
-
-        # Tooltip for the calculation method
-        if self.geodCalc.karneyMethodAvailable():
-            calcMethodHint = ""
-        else:
-            karneyMethodRadioButton.state(["disabled"])
-            calcMethodHint = (" "
-                "In order to be able to use it here, you need to have "
-                "installed GeographicLib's implementation for the Python "
-                "installation you are using to run {prg}.").format(prg=PROGNAME)
-
-        calcMethodTooltipText = _(
-            "Vincenty's method is faster than Karney's one, but there are "
-            "some particular cases in which the algorithm can't do the "
-            "computation. Karney's method should handle all possible "
-            "cases.{complement}\n\n"
-            "Note: changing this option won't have any effect until the search "
-            "is restarted.").format(complement=calcMethodHint)
-        ToolTip(calcMethodLabel, calcMethodTooltipText, autowrap=True)
-
-        searchBottomLeftSpacer4 = ttk.Frame(searchBottomLeftFrame)
-        searchBottomLeftSpacer4.grid(row=7, column=0, sticky="nsew")
-        searchBottomLeftFrame.grid_rowconfigure(
+        searchBottomLeftSpacer3 = ttk.Frame(resultsLeftFrame)
+        searchBottomLeftSpacer3.grid(row=7, column=0, sticky="nsew")
+        resultsLeftFrame.grid_rowconfigure(
             7, minsize=searchBottomLeftSpacerHeight, weight=100)
 
-        # Push buttons ('Search' and 'Choose selected airport')
-        searchBottomLeftSubframe5 = ttk.Frame(searchBottomLeftFrame)
-        searchBottomLeftSubframe5.grid(row=8, column=0, sticky="nsew")
-        searchBottomLeftFrame.grid_rowconfigure(8, weight=0)
-
-        self.searchButton = ttk.Button(
-            searchBottomLeftSubframe5, text=_('Search'),
-            command=self.search, padding="10p")
-        self.searchButton.grid(row=0, column=0)
-        searchBottomLeftSubframe5.grid_rowconfigure(0, weight=100)
-        searchBottomLeftSubframe5.grid_columnconfigure(0, weight=100)
-
-        # Alt-s keyboard shortcut for the 'Search' button
-        self.top.bind('<Alt-KeyPress-s>',
-                      lambda event, self=self: self.searchButton.invoke())
-        ToolTip(self.searchButton,
-                _("Find all airports matching the specified criteria.\n"
-                  "Can be run with Alt-S."),
-                autowrap=True)
-
+        # “Choose selected airport” button
         self.chooseSelectedAptButton = ttk.Button(
-            searchBottomLeftSubframe5, text=_('Choose selected airport'),
+            resultsLeftFrame, text=_('Choose selected airport'),
             command=self.chooseSelectedAirport, padding="4p")
-        self.chooseSelectedAptButton.grid(row=0, column=1)
-        searchBottomLeftSubframe5.grid_columnconfigure(1, weight=100)
+        self.chooseSelectedAptButton.grid(row=8, column=0)
 
         self.chooseSelectedAptButton.state(["disabled"])
         ToolTip(self.chooseSelectedAptButton,
@@ -435,11 +610,11 @@ class AirportFinder:
         resCols = [ col.name for col in resultsColumnsList ]
 
         self.resultsTree = widgets.MyTreeview(
-            searchBottomFrame, columns=resCols, show="headings",
+            resultsFrame, columns=resCols, show="headings",
             selectmode="browse", height=10)
 
         self.resultsTree.grid(row=0, column=1, sticky="nsew")
-        searchBottomFrame.grid_columnconfigure(1, weight=300)
+        resultsFrame.grid_columnconfigure(1, weight=300)
 
         def resultsTreeTooltipFunc(region, itemID, column, self=self):
             if region == "cell":
@@ -453,7 +628,7 @@ class AirportFinder:
         TreeviewToolTip(self.resultsTree, resultsTreeTooltipFunc)
 
         self.resultsScrollbar = ttk.Scrollbar(
-            searchBottomFrame, orient='vertical',
+            resultsFrame, orient='vertical',
             command=self.resultsTree.yview, takefocus=0)
         self.resultsScrollbar.grid(row=0, column=2, sticky="ns")
         self.resultsTree.config(yscrollcommand=self.resultsScrollbar.set)
@@ -477,16 +652,49 @@ class AirportFinder:
     def _distBoundInvalidFunc(self, widgetPath, text):
         """Callback function used when an invalid distance has been input."""
         widget = self.master.nametowidget(widgetPath)
+        type_ = "distance"
 
         if widget is self.minDistSpinbox:
             message = _('Invalid minimum distance value')
         elif widget is self.maxDistSpinbox:
             message = _('Invalid maximum distance value')
+        elif widget in (self.minRwyLengthUpperBoundSpinbox,
+                        self.maxRwyLengthLowerBoundSpinbox):
+            message = _('Invalid length')
+            type_ = "length"
         else:
             assert False, "Unexpected widget: " + repr(widget)
 
-        detail = _("'{input}' is not a valid distance. Only non-negative "
-                   "decimal numbers are allowed here.").format(input=text)
+        if type_ == "distance":
+            detailStart = _("'{input}' is not a valid distance.")
+        else:
+            assert type_ == "length", type_
+            detailStart = _("'{input}' is not a valid length.")
+
+        detail = (detailStart + " " +
+                  _("Only non-negative decimal numbers are allowed here.")) \
+                  .format(input=text)
+        showerror(_('{prg}').format(prg=PROGNAME), message, detail=detail,
+                  parent=self.top)
+
+        widget.focus_set()
+
+    def _nbRunwaysValidateFunc(self, text):
+        """Validate a string that should contain a number of runways."""
+        try:
+            i = int(text)
+        except ValueError:
+            return False
+
+        return (i >= 0)
+
+    def _nbRunwaysInvalidFunc(self, widgetPath, text):
+        """Callback function used when an invalid runway count has been input."""
+        widget = self.master.nametowidget(widgetPath)
+
+        message = _('Invalid value')
+        detail = _("'{input}' is not a valid runway or helipad count. Only "
+                   "non-negative integers are allowed here.").format(input=text)
         showerror(_('{prg}').format(prg=PROGNAME), message, detail=detail,
                   parent=self.top)
 
@@ -502,7 +710,7 @@ class AirportFinder:
         self.results = None     # the results were for the previous ref airport
 
         self.searchDescrLabelVar.set(
-            _("Find airports at distance d from {refIcao} where ").format(
+            _("Distance from ref. ({refIcao})").format(
             refIcao=icao))
 
     def search(self):
@@ -510,12 +718,11 @@ class AirportFinder:
         # Validate the contents of these spinboxes in case one of them still
         # has the focus (which is possible if this method was invoked by a
         # keyboard shortcut).
-        for varname, widget in (("minDist", self.minDistSpinbox),
-                                ("maxDist", self.maxDistSpinbox)):
-            val = getattr(self, varname).get()
-            if not self._distBoundValidateFunc(val):
-                self._distBoundInvalidFunc(str(widget), val)
-                return None
+        for validating in self.validatingWidgets:
+            val = validating.var.get()
+            if not validating.validateFunc(val):
+                validating.invalidFunc(str(validating.widget), val)
+                return
 
         self.searchButton.state(["disabled"])
         self.chooseSelectedAptButton.state(["disabled"])
@@ -550,7 +757,6 @@ class AirportFinder:
             if self.results:
                 self.chooseSelectedAptButton.state(["!disabled"])
 
-
     def _search(self):
         refIcao = self.refIcao.get()
 
@@ -558,6 +764,16 @@ class AirportFinder:
         # variables has been validated in search()).
         minDist = 1852*float(self.minDist.get())
         maxDist = 1852*float(self.maxDist.get())
+
+        minNbLandRunways = int(self.minNbLandRunways.get())
+        maxNbLandRunways = int(self.maxNbLandRunways.get())
+        minNbWaterRunways = int(self.minNbWaterRunways.get())
+        maxNbWaterRunways = int(self.maxNbWaterRunways.get())
+        minNbHelipads = int(self.minNbHelipads.get())
+        maxNbHelipads = int(self.maxNbHelipads.get())
+        minRwyLengthUpperBound = float(self.minRwyLengthUpperBound.get())
+        maxRwyLengthLowerBound = float(self.maxRwyLengthLowerBound.get())
+
         self.results = []
         omittedResults = set()
 
@@ -568,17 +784,25 @@ class AirportFinder:
             distCalcFunc = getattr(self.geodCalc, self.calcMethodVar.get())
             airportsDict = self.config.airports
 
-            for airport in airportsDict.values():
+            for apt in airportsDict.values():
                 try:
-                    g = distCalcFunc(airport.lat, airport.lon,
+                    g = distCalcFunc(apt.lat, apt.lon,
                                      refAptLat, refAptLon)
                 except geodesy.VincentyInverseError:
-                    omittedResults.add(airport.icao)
+                    omittedResults.add(apt.icao)
                     continue
 
-                if minDist <= g["s12"] <= maxDist:
+                if \
+                (minDist <= g["s12"] <= maxDist and
+                 minNbLandRunways <= apt.nbLandRunways <= maxNbLandRunways and
+                 minNbWaterRunways <= apt.nbWaterRunways <= maxNbWaterRunways and
+                 minNbHelipads <= apt.nbHelipads <= maxNbHelipads and
+                 (apt.minRwyLength is None or
+                  apt.minRwyLength <= minRwyLengthUpperBound) and
+                 (apt.maxRwyLength is None or
+                  apt.maxRwyLength >= maxRwyLengthLowerBound)):
                     self.results.append(
-                        (airport, g["s12"], g["azi1"], g["azi2"]))
+                        (apt, g["s12"], g["azi1"], g["azi2"]))
 
             return omittedResults
         else:
