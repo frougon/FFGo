@@ -122,9 +122,10 @@ class SortOrder(enum.Enum):
 class Column:
     """Column metadata for Treeview widgets."""
 
-    def __init__(self, name, title, dataIndex, anchor, stretch, widthKeyword,
-                 widthText=None, sortFunc=None, formatFunc=None,
-                 columnKwargs=None, sortOrder=SortOrder.ascending):
+    def __init__(self, name, title, dataIndex, anchor, stretch,
+                 widthKeyword="width", widthText=None, sortFunc=None,
+                 formatFunc=None, columnKwargs=None,
+                 sortOrder=SortOrder.ascending):
         """Constructor for Column instances.
 
         name         -- symbolic name for the column; should match the
