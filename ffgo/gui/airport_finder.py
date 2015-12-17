@@ -949,7 +949,7 @@ class TabularDataManager:
     def __init__(self, master, config, identVar, treeData, columnsMetadata,
                  identColName, initSortBy, treeWidget,
                  treeUpdatedCallback=None):
-        """Constructor for AirportChooser instances.
+        """Constructor for TabularDataManager instances.
 
         master          -- Tk master object (“root”)
         config          -- Config instance
