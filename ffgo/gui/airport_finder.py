@@ -947,7 +947,8 @@ class TabularDataManager:
 
     """
     def __init__(self, master, config, identVar, treeData, columnsMetadata,
-                 identColName, initSortBy, treeWidget):
+                 identColName, initSortBy, treeWidget,
+                 treeUpdatedCallback=None):
         """Constructor for AirportChooser instances.
 
         master          -- Tk master object (“root”)
@@ -973,6 +974,11 @@ class TabularDataManager:
                            sort the Treeview widget
         treeWidget      -- Ttk Treeview widget used as a multicolumn
                            list (in other words, a table)
+        treeUpdatedCallback
+                        -- function called after the Treeview widget has
+                           been updated (after every update of the
+                           Treeview widget contents). The function is
+                           called without any argument.
 
         The 'identVar' StringVar instance and the Treeview widget must
         be created by the caller. However, this constructor takes care
@@ -980,7 +986,7 @@ class TabularDataManager:
 
         """
         _attrs = ("master", "config", "identVar", "treeData", "columnsMetadata",
-                  "identColName", "treeWidget")
+                  "identColName", "treeWidget", "treeUpdatedCallback")
         for attr in _attrs:
             setattr(self, attr, locals()[attr])
 
@@ -1085,6 +1091,9 @@ class TabularDataManager:
                 tree.FFGoGotoItemWithIndex(0)
         else:                   # empty tree, we can't select anything
             self.identVar.set('')
+
+        if self.treeUpdatedCallback is not None:
+            self.treeUpdatedCallback()
 
     def configColumn(self, col):
         measure = self.config.treeviewHeadingFont.measure
