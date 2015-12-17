@@ -353,22 +353,36 @@ class AirportFinder:
         addRunwayCountCriteria(3, 0, _("Number of helipads"),
                                "minNbHelipads", "maxNbHelipads")
 
-        # Intercolumn space between the two “main columns” of the “Search
+        # Intercolumn space between the first two “main columns” of the “Search
         # parameters” frame.
         spacer = ttk.Frame(searchParamsLeftFrame)
         spacer.grid(row=0, column=9, sticky="nsew")
         searchParamsLeftFrame.grid_columnconfigure(9, minsize="7p", weight=150)
 
+        # Check button to only include airports that have at least one land or
+        # water runway
+        self.hasLandOrWaterRwys = tk.IntVar()
+        self.hasLandOrWaterRwys.trace("w", self.onHasLandOrWaterRwysWritten)
+        hasLandOrWaterRwysCb = ttk.Checkbutton(
+            searchParamsLeftFrame, text=_("Has land or water runways"),
+            variable=self.hasLandOrWaterRwys)
+        hasLandOrWaterRwysCb.grid(row=0, column=10, columnspan=5, sticky="w")
+
+        ToolTip(hasLandOrWaterRwysCb,
+                _("Only include airports that have at least one land or "
+                  "water runway"),
+                autowrap=True)
+
         lbl = ttk.Label(searchParamsLeftFrame, text=_("Longest runway"))
-        lbl.grid(row=0, column=10, sticky="w")
+        lbl.grid(row=1, column=10, sticky="w")
 
         spacer = ttk.Frame(searchParamsLeftFrame)
-        spacer.grid(row=0, column=11, sticky="nsew")
+        spacer.grid(row=1, column=11, sticky="nsew")
         searchParamsLeftFrame.grid_columnconfigure(11, minsize="5p", weight=70)
 
         lbl = ttk.Label(searchParamsLeftFrame,
                         text=pgettext("runway length", "at least") + " ")
-        lbl.grid(row=0, column=12, sticky="e")
+        lbl.grid(row=1, column=12, sticky="e")
 
         distBoundValidateCmd = self.master.register(self._distBoundValidateFunc)
         distBoundInvalidCmd = self.master.register(self._distBoundInvalidFunc)
@@ -387,19 +401,19 @@ class AirportFinder:
                              self.maxRwyLengthLowerBound,
                              self._distBoundValidateFunc,
                              self._distBoundInvalidFunc))
-        self.maxRwyLengthLowerBoundSpinbox.grid(row=0, column=13, sticky="ew")
+        self.maxRwyLengthLowerBoundSpinbox.grid(row=1, column=13, sticky="ew")
         searchParamsLeftFrame.grid_columnconfigure(13, weight=100)
 
         lbl = ttk.Label(searchParamsLeftFrame,
                         text=" " + pgettext("length unit", "m"))
-        lbl.grid(row=0, column=14, sticky="w")
+        lbl.grid(row=1, column=14, sticky="w")
 
         lbl = ttk.Label(searchParamsLeftFrame, text=_("Shortest runway"))
-        lbl.grid(row=1, column=10, sticky="w")
+        lbl.grid(row=2, column=10, sticky="w")
 
         lbl = ttk.Label(searchParamsLeftFrame,
                         text=pgettext("runway length", "at most") + " ")
-        lbl.grid(row=1, column=12, sticky="e")
+        lbl.grid(row=2, column=12, sticky="e")
 
         # The shortest runway in each result airport must be shorter than...
         self.minRwyLengthUpperBound = tk.StringVar()
@@ -415,16 +429,25 @@ class AirportFinder:
                              self.minRwyLengthUpperBound,
                              self._distBoundValidateFunc,
                              self._distBoundInvalidFunc))
-        self.minRwyLengthUpperBoundSpinbox.grid(row=1, column=13, sticky="ew")
+        self.minRwyLengthUpperBoundSpinbox.grid(row=2, column=13, sticky="ew")
 
         lbl = ttk.Label(searchParamsLeftFrame,
                         text=" " + pgettext("length unit", "m"))
-        lbl.grid(row=1, column=14, sticky="w")
+        lbl.grid(row=2, column=14, sticky="w")
+
+        # Set the initial enabled/disabled state for the two spinboxes
+        # according to this state of the "Has land or water runways" check
+        # button.
+        self.hasLandOrWaterRwys.set('0')
+
+        spacer = ttk.Frame(searchParamsLeftFrame)
+        spacer.grid(row=0, column=15, sticky="nsew")
+        searchParamsLeftFrame.grid_columnconfigure(15, minsize="7p", weight=150)
 
         # Calculation method (Vincenty or Karney)
         calcMethodLabel = ttk.Label(searchParamsLeftFrame,
                                     text=_("Calculation method"))
-        calcMethodLabel.grid(row=2, column=10, sticky="w")
+        calcMethodLabel.grid(row=0, column=16, sticky="w")
 
         self.calcMethodVar = tk.StringVar()
         # Vincenty's method is much faster than Karney's one, and since the
@@ -436,14 +459,13 @@ class AirportFinder:
         karneyMethodRadioButton = ttk.Radiobutton(
             searchParamsLeftFrame, variable=self.calcMethodVar,
             text=_("Karney"), value="karneyInverse",
-            padding=(0, 0, "10p", 0))
-        karneyMethodRadioButton.grid(row=2, column=12, columnspan=3, sticky="w")
+            padding=("10p", 0, "10p", 0))
+        karneyMethodRadioButton.grid(row=0, column=17, sticky="w")
         vincentyMethodRadioButton = ttk.Radiobutton(
             searchParamsLeftFrame, variable=self.calcMethodVar,
             text=_("Vincenty et al."), value="vincentyInverseWithFallback",
-            padding=(0, 0, "10p", 0))
-        vincentyMethodRadioButton.grid(row=3, column=12, columnspan=3,
-                                       sticky="w")
+            padding=("10p", 0, "10p", 0))
+        vincentyMethodRadioButton.grid(row=1, column=17, sticky="w")
 
         # Tooltip for the calculation method
         if self.geodCalc.karneyMethodAvailable():
@@ -730,6 +752,15 @@ class AirportFinder:
 
         widget.focus_set()
 
+    # Accept any arguments to allow safe use as a Tkinter variable observer
+    def onHasLandOrWaterRwysWritten(self, *args):
+        widgets = (self.maxRwyLengthLowerBoundSpinbox,
+                   self.minRwyLengthUpperBoundSpinbox)
+
+        state = "normal" if self.hasLandOrWaterRwys.get() else "disabled"
+        for widget in widgets:
+            widget.config(state=state)
+
     def quit(self, event=None):
         """Destroy the Airport Finder dialog."""
         self.top.destroy()
@@ -801,8 +832,9 @@ class AirportFinder:
         maxNbWaterRunways = int(self.maxNbWaterRunways.get())
         minNbHelipads = int(self.minNbHelipads.get())
         maxNbHelipads = int(self.maxNbHelipads.get())
-        minRwyLengthUpperBound = float(self.minRwyLengthUpperBound.get())
-        maxRwyLengthLowerBound = float(self.maxRwyLengthLowerBound.get())
+        mustHaveLandOrWaterRwys = self.hasLandOrWaterRwys.get()
+        minRLUB = float(self.minRwyLengthUpperBound.get())
+        maxRLLB = float(self.maxRwyLengthLowerBound.get())
 
         self.results = []
         omittedResults = set()
@@ -823,14 +855,14 @@ class AirportFinder:
                     continue
 
                 if \
-                (minDist <= g["s12"] <= maxDist and
-                 minNbLandRunways <= apt.nbLandRunways <= maxNbLandRunways and
-                 minNbWaterRunways <= apt.nbWaterRunways <= maxNbWaterRunways and
-                 minNbHelipads <= apt.nbHelipads <= maxNbHelipads and
-                 (apt.minRwyLength is None or
-                  apt.minRwyLength <= minRwyLengthUpperBound) and
-                 (apt.maxRwyLength is None or
-                  apt.maxRwyLength >= maxRwyLengthLowerBound)):
+            (minDist <= g["s12"] <= maxDist and
+             minNbLandRunways <= apt.nbLandRunways <= maxNbLandRunways and
+             minNbWaterRunways <= apt.nbWaterRunways <= maxNbWaterRunways and
+             minNbHelipads <= apt.nbHelipads <= maxNbHelipads and
+             (mustHaveLandOrWaterRwys and
+              (apt.minRwyLength is not None and apt.minRwyLength <= minRLUB and
+               apt.maxRwyLength is not None and apt.maxRwyLength >= maxRLLB) or
+              not mustHaveLandOrWaterRwys)):
                     self.results.append(
                         (apt, g["s12"], g["azi1"], g["azi2"]))
 
