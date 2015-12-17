@@ -623,7 +623,19 @@ class AirportFinder:
             widgets.Column("initBearing", _("Init. bearing"), 3, "e",
                            False, "width", widthText="M"*4, formatFunc=str),
             widgets.Column("finalBearing", _("Final bearing"), 4, "e",
-                           False, "width", widthText="M"*4, formatFunc=str) ]
+                           False, "width", widthText="M"*4, formatFunc=str),
+            widgets.Column("landRunways", _("Land rwys"), 5, "e", False,
+                           formatFunc=str),
+            widgets.Column("waterRunways", _("Water rwys"), 6, "e", False,
+                           formatFunc=str),
+            widgets.Column("helipads", _("Helipads"), 7, "e", False,
+                           formatFunc=str),
+            widgets.Column("minRwyLength", _("Shortest rwy (m)"), 8, "e",
+                           False, formatFunc=rwyLengthFormatFunc,
+                           sortFunc=rwyLengthSortFunc),
+            widgets.Column("maxRwyLength", _("Longest rwy (m)"), 9, "e",
+                           False, formatFunc=rwyLengthFormatFunc,
+                           sortFunc=rwyLengthSortFunc) ]
         self.resultsColumns = { col.name: col for col in resultsColumnsList }
         resCols = [ col.name for col in resultsColumnsList ]
 
@@ -875,7 +887,9 @@ class AirportFinder:
                     finalBearing = normalizeHeading(azi1 + 180.0)
 
             l.append([airport.icao, airport.name, distance, initBearing,
-                      finalBearing])
+                      finalBearing, airport.nbLandRunways,
+                      airport.nbWaterRunways, airport.nbHelipads,
+                      airport.minRwyLength, airport.maxRwyLength])
 
         self.resultsManager.loadData(l)
         nbRes = len(self.results)
