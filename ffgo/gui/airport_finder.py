@@ -116,7 +116,9 @@ class AirportFinder:
 
         # The TreeviewSelect event binding is done in the AirportChooser class
         self.refAirportSearchTree = widgets.MyTreeview(
-            refAirportFrame, columns=["icao", "name"],
+            refAirportFrame, columns=["icao", "name", "landRunways",
+                                      "waterRunways", "helipads",
+                                      "minRwyLength", "maxRwyLength"],
             show="headings", selectmode="browse", height=6)
 
         self.refAirportSearchTree.grid(row=0, column=1, sticky="nsew")
@@ -145,23 +147,39 @@ class AirportFinder:
         self.refIcao.trace("w", self.onRefIcaoWritten)
         self.results = None
 
+        def rwyLengthFormatFunc(length):
+            return "" if length is None else str(round(length))
+
+        def rwyLengthSortFunc(length):
+            return (0 if length is None else 1, length)
+
         refAirportSearchColumnsList = [
             widgets.Column("icao", _("ICAO"), 0, "w", False, "width",
                            widthText="M"*4),
             widgets.Column("name", _("Name"), 1, "w", True, "width",
-                           widthText="M"*30) ]
+                           widthText="M"*25),
+            widgets.Column("landRunways", _("Land rwys"), 2, "e", False,
+                           formatFunc=str),
+            widgets.Column("waterRunways", _("Water rwys"), 3, "e", False,
+                           formatFunc=str),
+            widgets.Column("helipads", _("Helipads"), 4, "e", False,
+                           formatFunc=str),
+            widgets.Column("minRwyLength", _("Shortest rwy (m)"), 5, "e",
+                           False, formatFunc=rwyLengthFormatFunc,
+                           sortFunc=rwyLengthSortFunc),
+            widgets.Column("maxRwyLength", _("Longest rwy (m)"), 6, "e",
+                           False, formatFunc=rwyLengthFormatFunc,
+                           sortFunc=rwyLengthSortFunc) ]
         refAirportSearchColumns = { col.name: col
                                     for col in refAirportSearchColumnsList }
 
-        # To be able to efficiently gather the following data, we would need to
-        # include it in the apt digest file:
-        #
-        # Column("landRunways", _("Land runways"), 2, "e", False, "width")
-        # Column("waterRunways", _("Water runways"), 3, "e", False, "width")
-        # Column("helipads", _("Helipads"), 4, "e", False, "width")
-
-        refAirportSearchData = [ (icao, config.airports[icao].name)
-                                 for icao in config.sortedIcao() ]
+        refAirportSearchData = []
+        for icao in config.sortedIcao():
+            airport = config.airports[icao]
+            refAirportSearchData.append(
+                (icao, airport.name, airport.nbLandRunways,
+                 airport.nbWaterRunways, airport.nbHelipads,
+                 airport.minRwyLength, airport.maxRwyLength))
 
         self.airportChooser = widgets.AirportChooser(
             self.master, self.config, self.refIcao,
