@@ -279,7 +279,7 @@ class AirportChooser:
         unsortedMatches = []
         text = self.searchVar.get().lower()
 
-        for i, (icao, name) in enumerate(self.treeData):
+        for i, (icao, name, *rest) in enumerate(self.treeData):
             if icao.lower().startswith(text) or text in name.lower():
                 unsortedMatches.append(i)
 
