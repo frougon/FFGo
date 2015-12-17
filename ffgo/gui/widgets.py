@@ -178,7 +178,8 @@ class AirportChooser:
 
     def __init__(self, master, config,
                  icaoVar, treeData, columnsMetadata, initSortBy,
-                 entryWidget, clearButton, treeWidget, updateDelay=400):
+                 entryWidget, clearButton, treeWidget,
+                 treeUpdatedCallback=None, updateDelay=400):
         """Constructor for AirportChooser instances.
 
         master          -- Tk master object (“root”)
@@ -201,6 +202,11 @@ class AirportChooser:
         clearButton     -- Ttk or Tk Button widget: the “Clear” button
         treeWidget      -- Ttk Treeview widget used as a multicolumn
                            list (in other words, a table)
+        treeUpdatedCallback
+                        -- function called after the Treeview widget has
+                           been updated (after every update of the
+                           Treeview widget contents). The function is
+                           called without any argument.
         updateDelay     --
           delay in milliseconds before starting to update the Treeview
           after each character typed in the search field. This allows to
@@ -217,7 +223,8 @@ class AirportChooser:
 
         """
         _attrs = ("master", "config", "icaoVar", "treeData", "columnsMetadata",
-                  "entryWidget", "clearButton", "treeWidget", "updateDelay")
+                  "entryWidget", "clearButton", "treeWidget",
+                  "treeUpdatedCallback", "updateDelay")
         for attr in _attrs:
             setattr(self, attr, locals()[attr])
 
@@ -361,6 +368,9 @@ class AirportChooser:
                 tree.FFGoGotoItemWithIndex(tree.index(item))
         else:                   # empty tree, we can't select anything
             self.icaoVar.set('')
+
+        if self.treeUpdatedCallback is not None:
+            self.treeUpdatedCallback()
 
     def configColumn(self, col):
         measure = self.config.treeviewHeadingFont.measure
