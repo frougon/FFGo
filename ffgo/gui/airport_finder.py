@@ -364,7 +364,7 @@ class AirportFinder:
 
         spacer = ttk.Frame(searchParamsLeftFrame)
         spacer.grid(row=0, column=11, sticky="nsew")
-        searchParamsLeftFrame.grid_columnconfigure(11, minsize="5p", weight=150)
+        searchParamsLeftFrame.grid_columnconfigure(11, minsize="5p", weight=70)
 
         lbl = ttk.Label(searchParamsLeftFrame,
                         text=pgettext("runway length", "at least") + " ")
