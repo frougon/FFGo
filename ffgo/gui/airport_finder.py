@@ -133,8 +133,8 @@ class AirportFinder:
             else:
                 return None
 
-        TreeviewToolTip(self.refAirportSearchTree,
-                        refAirportSearchTreeTooltipFunc)
+        self.airportChooserTooltip = TreeviewToolTip(
+            self.refAirportSearchTree, refAirportSearchTreeTooltipFunc)
 
         self.refAirportScrollbar = ttk.Scrollbar(
             refAirportFrame, orient='vertical',
@@ -186,7 +186,8 @@ class AirportFinder:
             refAirportSearchData, refAirportSearchColumns,
             "icao", # Initially, sort by ICAO
             self.refAirportSearchEntry, self.refAirportSearchClearButton,
-            self.refAirportSearchTree)
+            self.refAirportSearchTree,
+            treeUpdatedCallback=self.hideAirportChooserTooltip)
 
         self.searchDescrLabelVar = tk.StringVar()
 
@@ -773,6 +774,9 @@ class AirportFinder:
         self.searchDescrLabelVar.set(
             _("Distance from ref. ({refIcao})").format(
             refIcao=icao))
+
+    def hideAirportChooserTooltip(self):
+        self.airportChooserTooltip.hide()
 
     def search(self):
         """Main method of the Airport Finder dialog."""
