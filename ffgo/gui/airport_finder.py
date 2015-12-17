@@ -678,7 +678,8 @@ class AirportFinder:
             else:
                 return None
 
-        TreeviewToolTip(self.resultsTree, resultsTreeTooltipFunc)
+        self.resultsTreeTooltip = TreeviewToolTip(
+            self.resultsTree, resultsTreeTooltipFunc)
 
         self.resultsScrollbar = ttk.Scrollbar(
             resultsFrame, orient='vertical',
@@ -690,8 +691,9 @@ class AirportFinder:
         self.selectedIcao = tk.StringVar()
         # Logic around the Treeview widget used to display the results
         self.resultsManager = TabularDataManager(
-            self.master, self.config, self.selectedIcao, [], self.resultsColumns,
-                 "icao", "distance", self.resultsTree)
+            self.master, self.config, self.selectedIcao, [],
+            self.resultsColumns, "icao", "distance", self.resultsTree,
+            treeUpdatedCallback=self.hideResultsTreeTooltip)
 
     def _distBoundValidateFunc(self, text):
         """Validate a string that should contain a distance measure."""
@@ -777,6 +779,9 @@ class AirportFinder:
 
     def hideAirportChooserTooltip(self):
         self.airportChooserTooltip.hide()
+
+    def hideResultsTreeTooltip(self):
+        self.resultsTreeTooltip.hide()
 
     def search(self):
         """Main method of the Airport Finder dialog."""
