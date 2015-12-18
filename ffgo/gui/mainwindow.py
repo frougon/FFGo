@@ -16,6 +16,7 @@ from gettext import translation
 import threading
 import queue as queue_mod       # keep 'queue' available for variable bindings
 from tkinter import *
+from tkinter import ttk
 from tkinter import constants as tkc
 import tkinter.filedialog as fd
 from tkinter.scrolledtext import ScrolledText
@@ -215,11 +216,12 @@ class App:
 
         self.master.config(menu=self.menubar)
 
-        self.frame = Frame(self.master)
-        self.frame.pack(side='top', fill='both', expand=True)
+        self.mainPanedWindow = ttk.PanedWindow(self.master, orient='vertical')
+        self.mainPanedWindow.pack(side='top', fill='both', expand=True)
 
-        self.frame0 = Frame(self.frame, borderwidth=4)
-        self.frame0.pack(side='top', fill='x')
+        self.frame0 = Frame(self.mainPanedWindow, borderwidth=4)
+        self.mainPanedWindow.add(self.frame0, weight=100)
+
 #------ Aircraft list ---------------------------------------------------------
         self.frame1 = Frame(self.frame0, borderwidth=8)
         self.frame1.pack(side='left', fill='both', expand=True)
@@ -362,8 +364,8 @@ class App:
                                           command=self.airportSearchClear)
         self.airportSearchButton.pack(side='left')
 #------ FlightGear process status and buttons ---------------------------------
-        self.frame4 = Frame(self.frame, borderwidth=4)
-        self.frame4.pack(side='top', fill='x')
+        self.frame4 = Frame(self.mainPanedWindow, borderwidth=4)
+        self.mainPanedWindow.add(self.frame4, weight=100)
 
         self.frame41 = Frame(self.frame4, borderwidth=4)
         self.frame41.pack(side='right', fill='x')
@@ -394,14 +396,12 @@ class App:
                                  command=self.runFG)
         self.run_button.pack(side='left')
 #------ Text windows ----------------------------------------------------------
-        self.frame5 = Frame(self.frame)
-        self.frame5.pack(side='top', fill='both', expand=True)
+        self.innerPanedWindow = ttk.PanedWindow(self.mainPanedWindow,
+                                                orient='horizontal')
+        self.mainPanedWindow.add(self.innerPanedWindow, weight=100)
 
-        self.frame5top = Frame(self.frame5)
-        self.frame5top.pack(side='top', fill='both', expand=True)
-
-        self.frame51 = Frame(self.frame5top)
-        self.frame51.pack(side='left', fill='both', expand=True)
+        self.frame51 = ttk.Frame(self.innerPanedWindow)
+        self.innerPanedWindow.add(self.frame51, weight=100)
 
         option_window_sv = Scrollbar(self.frame51, orient='vertical')
         option_window_sh = Scrollbar(self.frame51, orient='horizontal')
@@ -417,15 +417,15 @@ class App:
         option_window_sv.pack(side='left', fill='y')
 
         self.FGOutput = FGOutput(
-            self, self.config.showFGOutput, parent=self.frame5top,
+            self, self.config.showFGOutput, parent=self.innerPanedWindow,
             show=self.config.showFGOutput.get(),
             windowDetached=self.config.showFGOutputInSeparateWindow.get(),
-            geomVariable=self.config.FGOutputGeometry)
+            geomVariable=self.config.FGOutputGeometry, paneWeight=150)
         self.FGCommand = FGCommand(
-            self, self.config.showFGCommand, parent=self.frame,
+            self, self.config.showFGCommand, parent=self.mainPanedWindow,
             show=self.config.showFGCommand.get(),
             windowDetached=self.config.showFGCommandInSeparateWindow.get(),
-            geomVariable=self.config.FGCommandGeometry)
+            geomVariable=self.config.FGCommandGeometry, paneWeight=100)
 
 #------------------------------------------------------------------------------
 
@@ -1901,7 +1901,7 @@ class DetachableWindowManagerBase(metaclass=abc.ABCMeta):
 
     """
     def __init__(self, app, showVariable, parent, title, show, windowDetached,
-                 geomVariable):
+                 geomVariable, paneWeight):
         """Initialize a DetachableWindowManagerBase instance.
 
             app       -- application instance
@@ -1910,7 +1910,7 @@ class DetachableWindowManagerBase(metaclass=abc.ABCMeta):
                          used to toggle the shown/hidden status of the
                          widgets making up the detachable “window”
             parent    -- parent of the outer Frame among the widgets to be
-                         created
+                         created; should be a Ttk PanedWindow
             title     -- displayed when the window is detached
             show      -- whether to show the widgets on instance creation
                          (regardless of the detached state)
@@ -1919,9 +1919,14 @@ class DetachableWindowManagerBase(metaclass=abc.ABCMeta):
             geomVariable
                       -- Tkinter variable used to remember the geometry of
                          the window in its detached state
+            paneWeight
+                      -- weight used when add()ing the outer Frame to
+                         the parent PanedWindow (i.e., when attaching
+                         it)
 
         """
-        for name in ("app", "parent", "title", "showVariable", "geomVariable"):
+        for name in ("app", "parent", "title", "showVariable", "geomVariable",
+                     "paneWeight"):
             setattr(self, name, locals()[name])
         if show:
             self.createWidgets(windowDetached, firstTime=True)
@@ -1955,6 +1960,8 @@ class DetachableWindowManagerBase(metaclass=abc.ABCMeta):
                 self.saveGeometry()
                 self.topLevel.destroy()
             else:
+                # Remove the pane from the parent PanedWindow
+                self.parent.forget(self.outerFrame)
                 self.outerFrame.destroy()
 
         # Anything to create?
@@ -2016,11 +2023,11 @@ class FGCommand(DetachableWindowManagerBase):
 
     # cf. DetachableWindowManagerBase for a description of the parameters
     def __init__(self, app, showVariable, parent=None, show=True,
-                 windowDetached=False, geomVariable=None):
+                 windowDetached=False, geomVariable=None, paneWeight=100):
         title = _("FlightGear Command")
         DetachableWindowManagerBase.__init__(
             self, app, showVariable, parent, title,
-            show, windowDetached, geomVariable)
+            show, windowDetached, geomVariable, paneWeight)
 
         # Can only be imported once the translation system is set up
         from ..fgcmdbuilder import FGCommandBuilder
@@ -2055,7 +2062,10 @@ class FGCommand(DetachableWindowManagerBase):
             outerFrameOpts = {"relief": "groove", "borderwidth": 2}
 
         outerFrame = Frame(parent, **outerFrameOpts)
-        outerFrame.pack(side='top', fill='both', expand=True)
+        if windowDetached:
+            outerFrame.pack(side='top', fill='both', expand=True)
+        else:                   # add the pane to the parent PanedWindow
+            self.parent.add(outerFrame, weight=self.paneWeight)
 
         label = Label(
             outerFrame,
@@ -2166,7 +2176,7 @@ class FGOutput(DetachableWindowManagerBase):
     """
     # cf. DetachableWindowManagerBase for a description of the parameters
     def __init__(self, app, showVariable, parent=None, show=True,
-                 windowDetached=False, geomVariable=None):
+                 windowDetached=False, geomVariable=None, paneWeight=150):
         # Manages the logic independently of the GUI. It stores all of
         # the FG output, which is essential when the window is hidden or
         # detached/attached (since the widgets are destroy()ed in these
@@ -2175,7 +2185,7 @@ class FGOutput(DetachableWindowManagerBase):
         title = _("FlightGear Output")
         DetachableWindowManagerBase.__init__(
             self, app, showVariable, parent, title,
-            show, windowDetached, geomVariable)
+            show, windowDetached, geomVariable, paneWeight)
 
     def createWidgets(self, windowDetached, firstTime=False):
         if windowDetached:
@@ -2190,7 +2200,10 @@ class FGOutput(DetachableWindowManagerBase):
         # Elements of outerFrame are defined in reverse order to make sure
         # that bottom buttons are always visible when resizing.
         outerFrame = Frame(parent)
-        outerFrame.pack(side='left', fill='both', expand=True)
+        if windowDetached:
+            outerFrame.pack(side='left', fill='both', expand=True)
+        else:                   # add the pane to the parent PanedWindow
+            self.parent.add(outerFrame, weight=self.paneWeight)
 
         self.frame1 = Frame(outerFrame)
         self.frame1.pack(side='bottom', fill='y')
