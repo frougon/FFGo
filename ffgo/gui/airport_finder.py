@@ -66,23 +66,37 @@ class AirportFinder:
         self.top.protocol("WM_DELETE_WINDOW", self.quit)
         self.top.bind('<Escape>', self.quit)
 
-        tlFrame = ttk.Frame(self.top, padding='12p')
-        tlFrame.grid(row=0, column=0, sticky="nsew")
+        panedWindow = ttk.PanedWindow(self.top, orient="vertical")
+        panedWindow.grid(row=0, column=0, sticky="nsew")
         self.top.grid_rowconfigure(0, weight=100)
         self.top.grid_columnconfigure(0, weight=100)
 
         # Padding: all or (left, top, right, bottom)
+        #
+        # Padding outside the LabelFrame widgets
+        outerFramesPadding = "12p"
+        # Half of the vertical separation between two “adjacent” LabelFrame
+        # widgets
+        outerFramesHalfSep = "0p"
+        # Padding inside the LabelFrame widgets
         labelFramesPadding = "15p"
+
+        # Frame providing padding around the “Reference airport” LabelFrame
+        refAirportOuterFrame = ttk.Frame(
+            panedWindow,
+            padding=(outerFramesPadding, outerFramesPadding,
+                     outerFramesPadding, outerFramesHalfSep))
+        panedWindow.add(refAirportOuterFrame, weight=100)
 
         # *********************************************************************
         # *                   The “Reference airport” frame                   *
         # *********************************************************************
-        refAirportFrame = ttk.LabelFrame(tlFrame,
+        refAirportFrame = ttk.LabelFrame(refAirportOuterFrame,
                                          text=_("Reference airport"),
                                          padding=labelFramesPadding)
         refAirportFrame.grid(row=0, column=0, sticky="nsew")
-        tlFrame.grid_rowconfigure(0, weight=100)
-        tlFrame.grid_columnconfigure(0, weight=100)
+        refAirportOuterFrame.grid_rowconfigure(0, weight=100)
+        refAirportOuterFrame.grid_columnconfigure(0, weight=100)
 
         # In the current state, we could spare this frame, which was used to
         # align several things vertically.
@@ -206,17 +220,28 @@ class AirportFinder:
         # *********************************************************************
         # *                      Search parameters frame                      *
         # *********************************************************************
-        #
+
         # List of ValidatingWidget instances for “standard” input validation.
         self.validatingWidgets = []
 
-        searchParamsFrame = ttk.LabelFrame(tlFrame, text=_("Search parameters"),
+        # Frame providing padding around the “Search parameters” LabelFrame
+        searchParamsOuterFrame = ttk.Frame(
+            panedWindow,
+            padding=(outerFramesPadding, outerFramesHalfSep,
+                     outerFramesPadding, outerFramesHalfSep))
+        panedWindow.add(searchParamsOuterFrame, weight=0)
+
+        searchParamsFrame = ttk.LabelFrame(searchParamsOuterFrame,
+                                           text=_("Search parameters"),
                                            padding=labelFramesPadding)
-        searchParamsFrame.grid(row=1, column=0, sticky="nsew")
+        searchParamsFrame.grid(row=0, column=0, sticky="nsew")
+        searchParamsOuterFrame.grid_rowconfigure(0, weight=100)
+        searchParamsOuterFrame.grid_columnconfigure(0, weight=100)
 
         searchParamsLeftFrame = ttk.Frame(searchParamsFrame)
         searchParamsLeftFrame.grid(row=0, column=0, sticky="nsew")
         searchParamsFrame.grid_columnconfigure(0, weight=200)
+        searchParamsFrame.grid_rowconfigure(0, weight=100)
 
         searchParamsLeftFrame.grid_columnconfigure(0, weight=100)
         paramsSpinboxWd = 6     # common width for several aligned spinboxes
@@ -224,6 +249,7 @@ class AirportFinder:
         label = ttk.Label(searchParamsLeftFrame,
                           textvariable=self.searchDescrLabelVar)
         label.grid(row=0, column=0, sticky="w")
+        searchParamsLeftFrame.grid_rowconfigure(0, weight=100)
 
         spacer = ttk.Frame(searchParamsLeftFrame)
         spacer.grid(row=0, column=1, sticky="nsew")
@@ -294,6 +320,7 @@ class AirportFinder:
             label1 = ttk.Label(containingFrame,
                                text="{descr}".format(descr=labelText))
             label1.grid(row=rowNumber, column=startCol, sticky="w")
+            containingFrame.grid_rowconfigure(rowNumber, weight=100)
 
             spacer = ttk.Frame(containingFrame)
             spacer.grid(row=rowNumber, column=startCol+1, sticky="nsew")
@@ -509,10 +536,19 @@ class AirportFinder:
         # *********************************************************************
         # *                       Search results frame                        *
         # *********************************************************************
-        resultsFrame = ttk.LabelFrame(tlFrame, text=_("Search results"),
+
+        # Frame providing padding around the “Search results” LabelFrame
+        resultsOuterFrame = ttk.Frame(
+            panedWindow, padding=(outerFramesPadding, outerFramesHalfSep,
+                                  outerFramesPadding, outerFramesPadding))
+        panedWindow.add(resultsOuterFrame, weight=900)
+
+        resultsFrame = ttk.LabelFrame(resultsOuterFrame,
+                                      text=_("Search results"),
                                       padding=labelFramesPadding)
-        resultsFrame.grid(row=2, column=0, sticky="nsew")
-        tlFrame.grid_rowconfigure(2, weight=900)
+        resultsFrame.grid(row=0, column=0, sticky="nsew")
+        resultsOuterFrame.grid_rowconfigure(0, weight=100)
+        resultsOuterFrame.grid_columnconfigure(0, weight=100)
 
         resultsLeftFrame = ttk.Frame(resultsFrame)
         resultsLeftFrame.grid(row=0, column=0, sticky="nsew")
