@@ -488,12 +488,12 @@ class App:
             logger.warningNP(textwrap.fill(s, width=textWidth))
 
         if not HAS_GEOGRAPHICLIB:
-            s = _("[{prg} notice] {libName}'s Python binding not found. In "
-                  "the current state of {prg}, this shouldn't have any "
-                  "measurable impact. However, if you install it, geodetic "
-                  "calculations will be done with an accuracy on the order of "
-                  "5 nanometers. :-)").format(prg=PROGNAME,
-                                              libName="GeographicLib")
+            s = _("[{prg} notice] {libName}'s Python binding not found. {prg} "
+                  "has fallback strategies, therefore you shouldn't see much "
+                  "of a difference. However, some particular geodetic "
+                  "calculations can only be done with {libName}. You will be "
+                  "notified when such a case is encountered.").format(
+                      prg=PROGNAME, libName="GeographicLib")
             logger.noticeNP(textwrap.fill(s, width=textWidth))
 
         if self.config.earthMagneticField is None:
