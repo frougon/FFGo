@@ -66,6 +66,9 @@ class AirportFinder:
         self.top.protocol("WM_DELETE_WINDOW", self.quit)
         self.top.bind('<Escape>', self.quit)
 
+        self.tooltips = []
+        self.top.bind('<Unmap>', self.hideTooltips)
+
         panedWindow = ttk.PanedWindow(self.top, orient="vertical")
         panedWindow.grid(row=0, column=0, sticky="nsew")
         self.top.grid_rowconfigure(0, weight=100)
@@ -149,6 +152,7 @@ class AirportFinder:
 
         self.airportChooserTooltip = TreeviewToolTip(
             self.refAirportSearchTree, refAirportSearchTreeTooltipFunc)
+        self.tooltips.append(self.airportChooserTooltip)
 
         self.refAirportScrollbar = ttk.Scrollbar(
             refAirportFrame, orient='vertical',
@@ -396,10 +400,11 @@ class AirportFinder:
             variable=self.hasLandOrWaterRwys)
         hasLandOrWaterRwysCb.grid(row=0, column=10, columnspan=5, sticky="w")
 
-        ToolTip(hasLandOrWaterRwysCb,
-                _("Only include airports that have at least one land or "
-                  "water runway"),
-                autowrap=True)
+        self.tooltips.append(
+            ToolTip(hasLandOrWaterRwysCb,
+                    _("Only include airports that have at least one land or "
+                      "water runway"),
+                    autowrap=True))
 
         lbl = ttk.Label(searchParamsLeftFrame, text=_("Longest runway"))
         lbl.grid(row=1, column=10, sticky="w")
@@ -513,7 +518,8 @@ class AirportFinder:
             "some particular cases in which Vincenty's algorithm can't do "
             "the computation. Karney's method should handle all possible "
             "cases.{complement}").format(complement=calcMethodHint)
-        ToolTip(calcMethodLabel, calcMethodTooltipText, autowrap=True)
+        self.tooltips.append(
+            ToolTip(calcMethodLabel, calcMethodTooltipText, autowrap=True))
 
         spacer = ttk.Frame(searchParamsFrame)
         spacer.grid(row=0, column=1, sticky="nsew")
@@ -528,10 +534,11 @@ class AirportFinder:
         # Alt-s keyboard shortcut for the 'Search' button
         self.top.bind('<Alt-KeyPress-s>',
                       lambda event, self=self: self.searchButton.invoke())
-        ToolTip(self.searchButton,
-                _("Find all airports matching the specified criteria.\n"
-                  "Can be run with Alt-S."),
-                autowrap=True)
+        self.tooltips.append(
+            ToolTip(self.searchButton,
+                    _("Find all airports matching the specified criteria.\n"
+                      "Can be run with Alt-S."),
+                    autowrap=True))
 
         # *********************************************************************
         # *                       Search results frame                        *
@@ -665,9 +672,10 @@ class AirportFinder:
         self.chooseSelectedAptButton.grid(row=8, column=0)
 
         self.chooseSelectedAptButton.state(["disabled"])
-        ToolTip(self.chooseSelectedAptButton,
-                _("Choose the selected airport and close this dialog"),
-                autowrap=True)
+        self.tooltips.append(
+            ToolTip(self.chooseSelectedAptButton,
+                    _("Choose the selected airport and close this dialog"),
+                    autowrap=True))
 
         # Treeview widget used to display the search results
         resultsColumnsList = [
@@ -716,6 +724,7 @@ class AirportFinder:
 
         self.resultsTreeTooltip = TreeviewToolTip(
             self.resultsTree, resultsTreeTooltipFunc)
+        self.tooltips.append(self.resultsTreeTooltip)
 
         self.resultsScrollbar = ttk.Scrollbar(
             resultsFrame, orient='vertical',
@@ -818,6 +827,11 @@ class AirportFinder:
 
     def hideResultsTreeTooltip(self):
         self.resultsTreeTooltip.hide()
+
+    # Accept any arguments to allow safe use as a Tkinter variable observer
+    def hideTooltips(self, *args):
+        for tooltip in self.tooltips:
+            tooltip.hide()
 
     def search(self):
         """Main method of the Airport Finder dialog."""
