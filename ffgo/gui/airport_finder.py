@@ -8,6 +8,7 @@
 # have received a copy of this license along with this file. You can also find
 # it at <http://www.wtfpl.net/>.
 
+import locale
 import tkinter as tk
 from tkinter import ttk
 from tkinter.messagebox import showinfo, showerror
@@ -745,7 +746,7 @@ class AirportFinder:
     def _distBoundValidateFunc(self, text):
         """Validate a string that should contain a distance measure."""
         try:
-            f = float(text)
+            f = locale.atof(text)
         except ValueError:
             return False
 
@@ -884,8 +885,8 @@ class AirportFinder:
 
         # Convert from nautical miles to meters (the contents of these
         # variables has been validated in search()).
-        minDist = 1852*float(self.minDist.get())
-        maxDist = 1852*float(self.maxDist.get())
+        minDist = 1852*locale.atof(self.minDist.get())
+        maxDist = 1852*locale.atof(self.maxDist.get())
 
         minNbLandRunways = int(self.minNbLandRunways.get())
         maxNbLandRunways = int(self.maxNbLandRunways.get())
@@ -894,8 +895,8 @@ class AirportFinder:
         minNbHelipads = int(self.minNbHelipads.get())
         maxNbHelipads = int(self.maxNbHelipads.get())
         mustHaveLandOrWaterRwys = self.hasLandOrWaterRwys.get()
-        minRLUB = float(self.minRwyLengthUpperBound.get())
-        maxRLLB = float(self.maxRwyLengthLowerBound.get())
+        minRLUB = locale.atof(self.minRwyLengthUpperBound.get())
+        maxRLLB = locale.atof(self.maxRwyLengthLowerBound.get())
 
         self.results = []
         omittedResults = set()
