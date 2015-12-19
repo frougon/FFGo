@@ -1633,7 +1633,7 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
         text = self.options.get()
         self.configWindow = ConfigWindow(self.master, self.config, text)
         # Wait for window to close and reset data if Save&Quit button was used.
-        self.frame.wait_window(self.configWindow.top)
+        self.master.wait_window(self.configWindow.top)
         if self.configWindow.reset_flag:
             self.reset()
 
