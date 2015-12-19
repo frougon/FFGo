@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: FFGo 1.8.0\n"
 "Report-Msgid-Bugs-To: f.rougon@free.fr\n"
 "POT-Creation-Date: 2015-12-19 12:52+0100\n"
-"PO-Revision-Date: 2015-11-23 16:02+0100\n"
+"PO-Revision-Date: 2015-12-19 13:38+0100\n"
 "Last-Translator: chris_blues <chris@musicchris.de>\n"
 "Language-Team: \n"
 "Language: de\n"
@@ -242,8 +242,8 @@ msgstr[1] "Wasserstartbahnen"
 #: ffgo/fgdata/airport.py:277
 msgid "Helipad"
 msgid_plural "Helipads"
-msgstr[0] "Helipad"
-msgstr[1] "Helipads"
+msgstr[0] "Hubschrauberlandeplatz"
+msgstr[1] "Hubschrauberlandeplätze"
 
 #: ffgo/fgdata/airport.py:295
 msgctxt "runway markings"
@@ -295,14 +295,14 @@ msgid "True heading: {}"
 msgstr "Wahre Ausrichtung: {}"
 
 #: ffgo/fgdata/airport.py:359
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "Length: {0} m ({1} ft)"
-msgstr "Länge: {0} ft ({1} m)"
+msgstr "Länge: {0} m ({1} ft)"
 
 #: ffgo/fgdata/airport.py:366
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "Width: {0} m ({1} ft)"
-msgstr "Breite: {0} ft ({1} m)"
+msgstr "Breite: {0} m ({1} ft)"
 
 #: ffgo/fgdata/airport.py:372
 msgid "Surface type: {}"
@@ -462,7 +462,8 @@ msgstr "Konnte Umfassungsbojenschalter nicht erkennen: {0!r} in Zeile {1!r}"
 #: ffgo/fgdata/apt_dat.py:390
 msgid "unable to parse as an helipad edge lighting flag: {0!r} in line {1!r}"
 msgstr ""
-"Konnte Helipad-Randbeleuchtungsschalter nicht erkennen: {0!r} in Zeile {1!r}"
+"Konnte Hubschrauberlandeplatz-Randbeleuchtungsschalter nicht erkennen: {0!r} "
+"in Zeile {1!r}"
 
 #: ffgo/fgdata/apt_dat.py:414 ffgo/fgdata/apt_dat.py:436
 #: ffgo/fgdata/apt_dat.py:475 ffgo/fgdata/apt_dat.py:581
@@ -871,19 +872,16 @@ msgid "Remember the main window position"
 msgstr "Die Hauptfensterposition speichern"
 
 #: ffgo/gui/airport_finder.py:66
-#, fuzzy
 msgid "Airport finder"
-msgstr "Flughafen:"
+msgstr "Flughafensuche"
 
 #: ffgo/gui/airport_finder.py:99
-#, fuzzy
 msgid "Reference airport"
-msgstr "Land-Flughafen:"
+msgstr "Bezugsflughafen:"
 
 #: ffgo/gui/airport_finder.py:119
-#, fuzzy
 msgid "Search: "
-msgstr "Suchen"
+msgstr "Suche:"
 
 #: ffgo/gui/airport_finder.py:130 ffgo/gui/mainwindow.py:260
 #: ffgo/gui/mainwindow.py:363
@@ -892,122 +890,115 @@ msgstr "Leeren"
 
 #: ffgo/gui/airport_finder.py:176 ffgo/gui/airport_finder.py:685
 msgid "ICAO"
-msgstr ""
+msgstr "ICAO"
 
 #: ffgo/gui/airport_finder.py:178 ffgo/gui/airport_finder.py:687
 msgid "Name"
-msgstr ""
+msgstr "Name"
 
 #: ffgo/gui/airport_finder.py:180 ffgo/gui/airport_finder.py:697
-#, fuzzy
 msgid "Land rwys"
-msgstr "Landstartbahn"
+msgstr "Landstartbahnen"
 
 #: ffgo/gui/airport_finder.py:182 ffgo/gui/airport_finder.py:699
-#, fuzzy
 msgid "Water rwys"
-msgstr "Wasserstartbahn"
+msgstr "Wasserstartbahnen"
 
 #: ffgo/gui/airport_finder.py:184 ffgo/gui/airport_finder.py:701
-#, fuzzy
 msgid "Helipads"
-msgstr "Helipad"
+msgstr "Hubschrauberlandeplätze"
 
 #: ffgo/gui/airport_finder.py:186 ffgo/gui/airport_finder.py:703
 msgid "Shortest rwy (m)"
-msgstr ""
+msgstr "Kürzeste Startbahn (m)"
 
 #: ffgo/gui/airport_finder.py:189 ffgo/gui/airport_finder.py:706
 msgid "Longest rwy (m)"
-msgstr ""
+msgstr "Längste Startbahn (m)"
 
 #: ffgo/gui/airport_finder.py:240
 msgid "Search parameters"
-msgstr ""
+msgstr "Suchparameter"
 
 #: ffgo/gui/airport_finder.py:264
 msgctxt "distance"
 msgid "min: "
-msgstr ""
+msgstr "min:"
 
 #: ffgo/gui/airport_finder.py:291 ffgo/gui/airport_finder.py:318
 msgctxt "length unit"
 msgid "nm"
-msgstr ""
+msgstr "nm"
 
 #: ffgo/gui/airport_finder.py:299
 msgctxt "distance"
 msgid "max: "
-msgstr ""
+msgstr "max:"
 
 #: ffgo/gui/airport_finder.py:337
 msgctxt "number of runways/helipads"
 msgid "min: "
-msgstr ""
+msgstr "min:"
 
 #: ffgo/gui/airport_finder.py:363
 msgctxt "number of runways/helipads"
 msgid "max: "
-msgstr ""
+msgstr "max:"
 
 #: ffgo/gui/airport_finder.py:382
-#, fuzzy
 msgid "Number of land runways"
-msgstr "Landstartbahn"
+msgstr "Anzahl der Landstartbahnen"
 
 #: ffgo/gui/airport_finder.py:384
-#, fuzzy
 msgid "Number of water runways"
-msgstr "Wasserstartbahn"
+msgstr "Anzahl der Wasserstartbahnen"
 
 #: ffgo/gui/airport_finder.py:386
 msgid "Number of helipads"
-msgstr ""
+msgstr "Anzahl der Hubschrauberlandeplätze"
 
 #: ffgo/gui/airport_finder.py:400
 msgid "Has land or water runways"
-msgstr ""
+msgstr "Hat Land- oder Wasserstartbahnen"
 
 #: ffgo/gui/airport_finder.py:406
 msgid "Only include airports that have at least one land or water runway"
-msgstr ""
+msgstr "Nur Flughäfen mit mindestens einer Land- oder Wasserstartbahn finden"
 
 #: ffgo/gui/airport_finder.py:410
-#, fuzzy
 msgid "Longest runway"
-msgstr "Landstartbahn"
+msgstr "längste Start-/Landebahn"
 
 #: ffgo/gui/airport_finder.py:418
 msgctxt "runway length"
 msgid "at least"
-msgstr ""
+msgstr "mindestens"
 
 #: ffgo/gui/airport_finder.py:442 ffgo/gui/airport_finder.py:469
 msgctxt "length unit"
 msgid "m"
-msgstr ""
+msgstr "m"
 
 #: ffgo/gui/airport_finder.py:445
-#, fuzzy
 msgid "Shortest runway"
-msgstr "Wasserstartbahn"
+msgstr "Kürzeste Start-/Landebahn"
 
 #: ffgo/gui/airport_finder.py:449
 msgctxt "runway length"
 msgid "at most"
-msgstr ""
+msgstr "Höchstens"
 
 #: ffgo/gui/airport_finder.py:483
 msgid "Calculation method"
-msgstr ""
+msgstr "Methode zur Berechnung"
 
 #: ffgo/gui/airport_finder.py:495
 msgid "Karney"
-msgstr ""
+msgstr "Karney"
 
 #: ffgo/gui/airport_finder.py:500
 msgid "Vincenty et al."
-msgstr ""
+msgstr "Vincenty et al."
 
 #: ffgo/gui/airport_finder.py:515
 #, python-brace-format
@@ -1018,6 +1009,11 @@ msgid ""
 "Vincenty's algorithm can't do the computation. Karney's method should handle "
 "all possible cases.{complement}"
 msgstr ""
+"Methode mit der Entfernung, anfängliche und abschließende Richtungen "
+"zwischen zwei Flughäfen berechnet werden (“geodäsisches Umkehrproblem”). "
+"Vincentys Methode ist schneller als Karneys, aber es gibt einige "
+"Spezialfälle in denen Vincentys Methode keine Ergebnisse liefert. Karneys "
+"Methode sollte alle möglichen Fälle behandeln können.{complement}"
 
 #: ffgo/gui/airport_finder.py:531
 msgid "Search"
@@ -1028,102 +1024,100 @@ msgid ""
 "Find all airports matching the specified criteria.\n"
 "Can be run with Alt-S."
 msgstr ""
+"Suche alle Flughäfen mit den angegeben Kriterien.\n"
+"Kann mit Alt-S gestartet werden."
 
 #: ffgo/gui/airport_finder.py:555
-#, fuzzy
 msgid "Search results"
-msgstr "Suchen"
+msgstr "Suchergebnisse"
 
 #: ffgo/gui/airport_finder.py:584
 msgid "Direction"
-msgstr ""
+msgstr "Richtung"
 
 #: ffgo/gui/airport_finder.py:593
 msgid "to reference airport"
-msgstr ""
+msgstr "zum Bezugsflughafen"
 
 #: ffgo/gui/airport_finder.py:599
 msgid "from reference airport"
-msgstr ""
+msgstr "vom Bezugsflughafen"
 
 #: ffgo/gui/airport_finder.py:613
-#, fuzzy
 msgid "Bearings"
-msgstr "Einstellungen"
+msgstr "Richtungen"
 
 #: ffgo/gui/airport_finder.py:621
 msgctxt "Bearings"
 msgid "magnetic"
-msgstr ""
+msgstr "magnetisch"
 
 #: ffgo/gui/airport_finder.py:627
 msgctxt "Bearings"
 msgid "true"
-msgstr ""
+msgstr "wahr"
 
 #: ffgo/gui/airport_finder.py:647
 msgid "Distances in"
-msgstr ""
+msgstr "Entfernung in"
 
 #: ffgo/gui/airport_finder.py:656
 msgid "nautical miles"
-msgstr ""
+msgstr "Nautische Meilen"
 
 #: ffgo/gui/airport_finder.py:662
 msgid "kilometers"
-msgstr ""
+msgstr "Kilometer"
 
 #: ffgo/gui/airport_finder.py:673
 msgid "Choose selected airport"
-msgstr ""
+msgstr "Ausgewählten Flughafen wählen"
 
 #: ffgo/gui/airport_finder.py:680
 msgid "Choose the selected airport and close this dialog"
-msgstr ""
+msgstr "Den ausgewählten Flughafen wählen und diesen Dialog schließen"
 
 #: ffgo/gui/airport_finder.py:691
 msgid "Distance"
-msgstr ""
+msgstr "Entfernung"
 
 #: ffgo/gui/airport_finder.py:693
 msgid "Init. bearing"
-msgstr ""
+msgstr "Anfängliche Richtung"
 
 #: ffgo/gui/airport_finder.py:695
 msgid "Final bearing"
-msgstr ""
+msgstr "Abschließende Richtung"
 
 #: ffgo/gui/airport_finder.py:761
 msgid "Invalid minimum distance value"
-msgstr ""
+msgstr "Ungültiger Wert für minimale Entfernung"
 
 #: ffgo/gui/airport_finder.py:763
 msgid "Invalid maximum distance value"
-msgstr ""
+msgstr "Ungültiger Wert für maximale Entfernung"
 
 #: ffgo/gui/airport_finder.py:766
-#, fuzzy
 msgid "Invalid length"
-msgstr "Ungültig"
+msgstr "Ungültige Länge"
 
 #: ffgo/gui/airport_finder.py:772
 #, python-brace-format
 msgid "'{input}' is not a valid distance."
-msgstr ""
+msgstr "'{input}' ist keine gültige Entfernung."
 
 #: ffgo/gui/airport_finder.py:775
 #, python-brace-format
 msgid "'{input}' is not a valid length."
-msgstr ""
+msgstr "'{input}' ist keine gültige Länge."
 
 #: ffgo/gui/airport_finder.py:778
 msgid "Only non-negative decimal numbers are allowed here."
-msgstr ""
+msgstr "Nur nicht-negative Dezimalzahlen sind hier erlaubt."
 
 #: ffgo/gui/airport_finder.py:798
-#, fuzzy
 msgid "Invalid value"
-msgstr "Ungültig"
+msgstr "Ungültiger Wert"
 
 #: ffgo/gui/airport_finder.py:799
 #, python-brace-format
@@ -1131,19 +1125,21 @@ msgid ""
 "'{input}' is not a valid runway or helipad count. Only non-negative integers "
 "are allowed here."
 msgstr ""
+"'{input}' ist keine gültige Start-/Landebahn- oder "
+"Hubschrauberlandeplatzzahl. Nur nicht-negative Ganzzahlen sind hier erlaubt."
 
 #: ffgo/gui/airport_finder.py:825
 #, python-brace-format
 msgid "Distance from ref. ({refIcao})"
-msgstr ""
+msgstr "Entfernung von Ref. ({refIcao})"
 
 #: ffgo/gui/airport_finder.py:852
 msgid "Calculating distances and bearings..."
-msgstr ""
+msgstr "Berechne Entfernungen und Richtungen..."
 
 #: ffgo/gui/airport_finder.py:863
 msgid "Some results might be missing"
-msgstr ""
+msgstr "Manche Ergebnisse könnten fehlen"
 
 #: ffgo/gui/airport_finder.py:865
 #, python-brace-format
@@ -1159,13 +1155,22 @@ msgid ""
 "or nearly so. Therefore, if you are not interested in such cases, you can "
 "probably ignore this message."
 msgstr ""
+"Kann die Entfernung und Richtung zwischen {refICAO} und dem folgenden "
+"Flughafen nicht berechnen: {aptList}.\n"
+"\n"
+"Vincentys Algorythmus für das geodäsische Umkehrproblem kann bekannterweise "
+"nicht alle möglichen Fälle behandeln. Benutzen Sie Karneys "
+"Berechnungsmethode um alle Ergebnisse zu bekommen.\n"
+"\n"
+"Normalerweise kann das nur passieren, wenn die Flughäfen sich "
+"gegenüberliegen, oder sehr nahe daran. Daher können sie diese nachricht "
+"getrost ignorieren, wenn sie daran nicht interessiert sind."
 
 #: ffgo/gui/airport_finder.py:991
-#, fuzzy
 msgid "Found {} airport"
 msgid_plural "Found {} airports"
-msgstr[0] "Land-Flughafen:"
-msgstr[1] "Land-Flughafen:"
+msgstr[0] "Flughafen {} gefunden"
+msgstr[1] "Flughäfen {} gefunden"
 
 #: ffgo/gui/mainwindow.py:129
 msgid "Load..."
@@ -1236,9 +1241,8 @@ msgid "Settings"
 msgstr "Einstellungen"
 
 #: ffgo/gui/mainwindow.py:199
-#, fuzzy
 msgid "Airport Finder"
-msgstr "Flughafen:"
+msgstr "Flughafensuche"
 
 #: ffgo/gui/mainwindow.py:203
 msgid "Copy FG shell-equivalent command"
@@ -1333,17 +1337,17 @@ msgstr ""
 "angezeigt werden."
 
 #: ffgo/gui/mainwindow.py:491
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid ""
 "[{prg} notice] {libName}'s Python binding not found. {prg} has fallback "
 "strategies, therefore you shouldn't see much of a difference. However, some "
 "particular geodetic calculations can only be done with {libName}. You will "
 "be notified when such a case is encountered."
 msgstr ""
-"[{prg} notice] {libName}'s Python Anbindung nicht gefunden. Im jetzigen "
-"Zustand von {prg} sollte das keinen messbaren Unterschied machen. Wenn sie "
-"es installieren werden die geodäsischen Berechnungen mit einer Genauigkeit "
-"von 5 Nanometern ausgeführt. :-)"
+"[{prg} notice] {libName}'s Python Anbindung nicht gefunden. {prg} hat "
+"Ausweichlösungen, daher sollten Sie keinen Unterschied bemerken. Allerdings "
+"können einige geodäsische Berechnungen nur mit {libName} vorgenommen werden. "
+"Sie werden benachrichtigt, wenn das passiert."
 
 #: ffgo/gui/mainwindow.py:500
 #, python-brace-format
@@ -1762,9 +1766,8 @@ msgid "You can consult <{url}> for a description of the allowed syntax."
 msgstr "Konsultieren Sie <{url}> für eine Beschreibung der erlaubten Syntax."
 
 #: ffgo/gui/mainwindow.py:2027
-#, fuzzy
 msgid "FlightGear Command"
-msgstr "FlightGear Einstellungen"
+msgstr "FlightGear Aufruf"
 
 #: ffgo/gui/mainwindow.py:2072
 msgid "FlightGear will be started with following arguments:"
@@ -1786,9 +1789,8 @@ msgid "File manager process terminated ({0})"
 msgstr "Dateimanager-Prozess beendet ({0})"
 
 #: ffgo/gui/mainwindow.py:2185
-#, fuzzy
 msgid "FlightGear Output"
-msgstr "Zeige FlightGear Terminalausgaben"
+msgstr "FlightGear Terminalausgaben"
 
 #: ffgo/gui/mainwindow.py:2211
 msgid "Save Log"
@@ -2046,11 +2048,10 @@ msgid "empty output for the test run"
 msgstr "leere Ausgabe für den Testlauf"
 
 #: ffgo/geo/magfield.py:103
-#, fuzzy
 msgid ""
 "returned magnetic declination is not a float: {0!r} [complete output: {1!r}]"
 msgstr ""
-"Erster Rüchgabewert ist kein Fließkommawert: {0!r} [volle Ausgabe: {1!r}]"
+"Erster Rückgabewert ist kein Fließkommawert: {0!r} [volle Ausgabe: {1!r}]"
 
 #: ffgo/geo/magfield.py:117
 #, python-brace-format
