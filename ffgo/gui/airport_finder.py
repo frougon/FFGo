@@ -685,7 +685,7 @@ class AirportFinder:
             widgets.Column("icao", _("ICAO"), 0, "w", False, "width",
                            widthText="M"*4),
             widgets.Column("name", _("Name"), 1, "w", True, "width",
-                           widthText="M"*25),
+                           widthText="M"*18),
             # The distance 'formatFunc' will be set later (depends on the
             # chosen unit).
             widgets.Column("distance", _("Distance"), 2, "e", False, "width",
