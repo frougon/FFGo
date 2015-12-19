@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: FFGo 1.8.0\n"
 "Report-Msgid-Bugs-To: f.rougon@free.fr\n"
 "POT-Creation-Date: 2015-12-19 12:52+0100\n"
-"PO-Revision-Date: 2015-12-19 13:38+0100\n"
+"PO-Revision-Date: 2015-12-19 14:38+0100\n"
 "Last-Translator: chris_blues <chris@musicchris.de>\n"
 "Language-Team: \n"
 "Language: de\n"
@@ -67,7 +67,7 @@ msgstr "Wahre Ausrichtung: {}"
 #: ffgo/fgdata/parking.py:204
 #, python-brace-format
 msgid "while parsing '{file}': {errmsg}"
-msgstr "beim analysieren von '{file}': {errmsg}"
+msgstr "beim Analysieren von '{file}': {errmsg}"
 
 #: ffgo/fgdata/parking.py:206
 msgid "Error parsing a groundnet file"
@@ -137,7 +137,7 @@ msgstr "Wasserflugzeughorst"
 
 #: ffgo/fgdata/airport.py:48
 msgid "Heliport"
-msgstr "Heliport:"
+msgstr "Hubschrauberhafen"
 
 #: ffgo/fgdata/airport.py:89
 #, python-brace-format
@@ -181,7 +181,7 @@ msgstr "Rasen oder Gras"
 #: ffgo/fgdata/airport.py:165
 msgctxt "surface type"
 msgid "dirt"
-msgstr "unbefestigt"
+msgstr "Unbefestigt"
 
 #: ffgo/fgdata/airport.py:166
 msgctxt "surface type"
@@ -857,7 +857,7 @@ msgstr "Flughafen-Datenquelle:"
 
 #: ffgo/gui/configwindow.py:577
 msgid "Airport database update:"
-msgstr "Flughafen Datenbank erneuern:"
+msgstr "Flughafen Datenbank auffrischen:"
 
 #: ffgo/gui/configwindow.py:594
 msgid "Rebuild Airport Database"
@@ -877,7 +877,7 @@ msgstr "Flughafensuche"
 
 #: ffgo/gui/airport_finder.py:99
 msgid "Reference airport"
-msgstr "Bezugsflughafen:"
+msgstr "Bezugsflughafen"
 
 #: ffgo/gui/airport_finder.py:119
 msgid "Search: "
@@ -981,12 +981,12 @@ msgstr "m"
 
 #: ffgo/gui/airport_finder.py:445
 msgid "Shortest runway"
-msgstr "Kürzeste Start-/Landebahn"
+msgstr "kürzeste Start-/Landebahn"
 
 #: ffgo/gui/airport_finder.py:449
 msgctxt "runway length"
 msgid "at most"
-msgstr "Höchstens"
+msgstr "höchstens"
 
 #: ffgo/gui/airport_finder.py:483
 msgid "Calculation method"
@@ -1009,7 +1009,7 @@ msgid ""
 "Vincenty's algorithm can't do the computation. Karney's method should handle "
 "all possible cases.{complement}"
 msgstr ""
-"Methode mit der Entfernung, anfängliche und abschließende Richtungen "
+"Methode, mit der Entfernung, anfängliche und abschließende Richtungen "
 "zwischen zwei Flughäfen berechnet werden (“geodäsisches Umkehrproblem”). "
 "Vincentys Methode ist schneller als Karneys, aber es gibt einige "
 "Spezialfälle in denen Vincentys Methode keine Ergebnisse liefert. Karneys "
@@ -1059,7 +1059,7 @@ msgstr "wahr"
 
 #: ffgo/gui/airport_finder.py:647
 msgid "Distances in"
-msgstr "Entfernung in"
+msgstr "Entfernungen in"
 
 #: ffgo/gui/airport_finder.py:656
 msgid "nautical miles"
@@ -1126,7 +1126,8 @@ msgid ""
 "are allowed here."
 msgstr ""
 "'{input}' ist keine gültige Start-/Landebahn- oder "
-"Hubschrauberlandeplatzzahl. Nur nicht-negative Ganzzahlen sind hier erlaubt."
+"Hubschrauberlandeplatzanzahl. Nur nicht-negative Ganzzahlen sind hier "
+"erlaubt."
 
 #: ffgo/gui/airport_finder.py:825
 #, python-brace-format
@@ -1163,7 +1164,7 @@ msgstr ""
 "Berechnungsmethode um alle Ergebnisse zu bekommen.\n"
 "\n"
 "Normalerweise kann das nur passieren, wenn die Flughäfen sich "
-"gegenüberliegen, oder sehr nahe daran. Daher können sie diese nachricht "
+"gegenüberliegen, oder sehr nahe daran. Daher können sie diese Nachricht "
 "getrost ignorieren, wenn sie daran nicht interessiert sind."
 
 #: ffgo/gui/airport_finder.py:991
@@ -1539,7 +1540,7 @@ msgstr "Mil. Kampfflug"
 #: ffgo/gui/mainwindow.py:936
 msgctxt "flight type"
 msgid "VTOL"
-msgstr "VTOL"
+msgstr "Senkrechtstarter"
 
 #: ffgo/gui/mainwindow.py:938
 msgctxt "flight type"
@@ -1963,7 +1964,7 @@ msgstr "ungültige Escape-Sequenz in Optionszeile: \\{0}"
 
 #: ffgo/geo/geodesy.py:32
 msgid "Error caught in the geodesy module"
-msgstr "Fehler im geodesy Modul erkannt"
+msgstr "Fehler im Modul geodesy erkannt"
 
 #: ffgo/geo/geodesy.py:38
 msgid "Unable to perform geodetic calculation"
