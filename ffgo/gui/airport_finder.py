@@ -617,12 +617,14 @@ class AirportFinder:
         self.bearingsType.trace("w", self.displayResults)
         magBearingsButton = ttk.Radiobutton(
             searchBottomLeftSubframe2, variable=self.bearingsType,
-            text=_("magnetic"), value="magnetic", padding=("10p", 0, "10p", 0))
+            text=pgettext("Bearings", "magnetic"), value="magnetic",
+            padding=("10p", 0, "10p", 0))
         magBearingsButton.grid(row=0, column=1, sticky="w")
         searchBottomLeftSubframe2.grid_rowconfigure(0, pad="5p")
         trueBearingsButton = ttk.Radiobutton(
             searchBottomLeftSubframe2, variable=self.bearingsType,
-            text=_("true"), value="true", padding=("10p", 0, "10p", 0))
+            text=pgettext("Bearings", "true"), value="true",
+            padding=("10p", 0, "10p", 0))
         trueBearingsButton.grid(row=1, column=1, sticky="w")
 
         if magField is not None:
