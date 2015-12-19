@@ -111,9 +111,26 @@ Settings:
 
 Tools:
 
-    METAR       -- show METAR report for the selected (or nearest) airport.
-                   These reports are downloaded from
-                   http://weather.noaa.gov/
+    Airport Finder -- open a dialog allowing to easily find airports
+                   using various criteria: distance to a chosen,
+                   “reference airport”; number of land runways, water
+                   runways, or helipads; length of the longest or
+                   shortest runway in the airport, etc. Results are
+                   listed in a table giving these criteria for each
+                   airport as well as the initial and final bearings for
+                   the shortest path from or to the reference airport.
+                   The table of results can be sorted according to
+                   airport ICAO code, name or any of the aforementioned
+                   criteria.
+
+    METAR       -- show METAR report for the selected airport, or the
+                   nearest airport providing METAR data. These reports
+                   are downloaded from <http://weather.noaa.gov/>.
+
+    Copy FG shell-equivalent command -- copy a shell command to the
+                   clipboard that should be equivalent to the FlightGear
+                   invocation FFGo would do if you were to click on the
+                   “Run FG” button.
 
 Help:
 
