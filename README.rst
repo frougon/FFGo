@@ -24,8 +24,8 @@ which allows many interesting things as shown at:
 Screenshots
 -----------
 
-Screenshots are available from the `FFGo home page
-<http://people.via.ecp.fr/~flo/projects/FFGo/>`_.
+Screenshots are available from the `FFGo screenshots gallery page
+<http://people.via.ecp.fr/~flo/projects/FFGo/gallery/>`_.
 
 .. _end-of-intro:
 
@@ -67,8 +67,9 @@ the following software if installed:
     to be installed in order to work properly (the
     ``geographiclib-get-magnetic`` script may be helpful to get them
     installed);
-  - `GeographicLib`_\'s binding for Python 3 (distribution packages may
-    be named ``python3-geographiclib``, may or may not exist yet...).
+  - `GeographicLib`_\'s binding for Python 3 (present in Debian testing
+    and unstable under the name ``python3-geographiclib`` at the time of
+    this writing).
 
 If some of these optional components are not installed, or if for some
 reason FFGo can't find them, some features will be disabled or work in
@@ -184,13 +185,12 @@ directory in any release tarball or zip file. In short:
     before or after FFGo. Similarly, if you want to see magnetic
     variation and magnetic headings in addition to true headings, you'll
     need to install GeographicLib's ``MagneticField`` program. Finally,
-    `GeographicLib`_ is used for geodetic calculations if installed for
-    the Python interpreter used to run FFGo. In the current state of
-    FFGo, these computations can normally be done without this module,
-    but planned features for future releases will benefit from
-    `GeographicLib`_\'s Python binding in some particular cases
-    (computation of distance and bearings for the shortest path between
-    nearly antipodal points).
+    `GeographicLib`_\'s Python implementation is used for some geodetic
+    calculations if installed for the Python interpreter used to run
+    FFGo. Most computations can normally be done without this module,
+    but it may be necessary in some particular cases (computation of
+    distance and bearings for the shortest path between nearly antipodal
+    points).
 
 .. _pip: https://pypi.python.org/pypi/pip
 

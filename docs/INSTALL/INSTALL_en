@@ -43,13 +43,14 @@ FFGo's dependencies are:
     magnetic variation at a particular place and to compute magnetic headings
     from true headings);
   - GeographicLib's binding for Python 3 (optional; used for geodesic
-    calculations, e.g., to compute a runway length or heading based on the
-    latitude and longitude of the two runway ends as found in apt.dat). FFGo
-    includes algorithms for “basic” geodesic calculations (Vincenty's formula
-    and a few others); these should be sufficient in most cases. However,
-    there are rare cases (calculation of the shortest path between nearly
-    antipodal points) in which these algorithms don't work, whereas Karney's
-    algorithm, implemented in GeographicLib, does.
+    calculations, e.g., to compute the distance and azimuths between two
+    airports, or a runway length and heading based on the latitude and
+    longitude of the two runway ends as found in apt.dat). FFGo includes
+    algorithms for “basic” geodesic calculations (Vincenty's formula and a few
+    others); these should be sufficient in most cases. However, there are rare
+    cases (calculation of the shortest path between nearly antipodal points)
+    in which these algorithms don't work, whereas Karney's algorithm,
+    implemented in GeographicLib, does.
 
 Let's examine them one by one:
 
