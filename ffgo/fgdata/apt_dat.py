@@ -335,13 +335,17 @@ class AptDat:
             if not (0 <= res <= 1):
                 raise ValueError(_("invalid smoothness value: {0!r}").format(
                     res))
-        except ValueError as e:
-            raise UnableToParseAptDat(
-                self.lineNb,
-                _("unable to parse as a smoothness value: {0!r} in line {1!r}")
-                .format(s, self.line)) from e
-        else:
-            return res
+        except ValueError:
+            # Tolerate this error for now in order to allow FFGo to run (error
+            # present in some versions of apt.dat, cf.
+            # <http://gatewaybugs.x-plane.com/browse/XSG-1218>).
+            logger.warning(
+                _("Error in apt.dat: unable to parse as a smoothness value: "
+                  "{val!r} in line {lineNb} ({line!r})")
+                .format(val=s, lineNb=self.lineNb, line=self.line))
+            res = None
+
+        return res
 
     def _readRunwayMarkings(self, s):
         try:
