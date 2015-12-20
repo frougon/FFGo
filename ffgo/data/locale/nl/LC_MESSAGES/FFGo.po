@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FFGo 1.8.0\n"
 "Report-Msgid-Bugs-To: f.rougon@free.fr\n"
-"POT-Creation-Date: 2015-12-19 12:52+0100\n"
+"POT-Creation-Date: 2015-12-20 16:59+0100\n"
 "PO-Revision-Date: 2010-05-23 23:35+0200\n"
 "Last-Translator: snipey\n"
 "Language-Team:\n"
@@ -445,76 +445,78 @@ msgstr "Kan FlightGear niet starten"
 msgid "invalid smoothness value: {0!r}"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:341
+#: ffgo/fgdata/apt_dat.py:343
 #, fuzzy
-msgid "unable to parse as a smoothness value: {0!r} in line {1!r}"
+msgid ""
+"Error in apt.dat: unable to parse as a smoothness value: {val!r} in line "
+"{lineNb} ({line!r})"
 msgstr "Kan FlightGear niet starten"
 
-#: ffgo/fgdata/apt_dat.py:352
+#: ffgo/fgdata/apt_dat.py:356
 #, fuzzy
 msgid "unable to parse as a code for runway markings: {0!r} in line {1!r}"
 msgstr "Kan FlightGear niet starten"
 
-#: ffgo/fgdata/apt_dat.py:363
+#: ffgo/fgdata/apt_dat.py:367
 msgid "invalid v810 code for runway markings: {0!r}"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:368
+#: ffgo/fgdata/apt_dat.py:372
 #, fuzzy
 msgid "unable to parse as a v810 code for runway markings: {0!r} in line {1!r}"
 msgstr "Kan FlightGear niet starten"
 
-#: ffgo/fgdata/apt_dat.py:379
+#: ffgo/fgdata/apt_dat.py:383
 #, fuzzy
 msgid "unable to parse as a perimeter buoys flag: {0!r} in line {1!r}"
 msgstr "Kan FlightGear niet starten"
 
-#: ffgo/fgdata/apt_dat.py:390
+#: ffgo/fgdata/apt_dat.py:394
 #, fuzzy
 msgid "unable to parse as an helipad edge lighting flag: {0!r} in line {1!r}"
 msgstr "Kan FlightGear niet starten"
 
-#: ffgo/fgdata/apt_dat.py:414 ffgo/fgdata/apt_dat.py:436
-#: ffgo/fgdata/apt_dat.py:475 ffgo/fgdata/apt_dat.py:581
-#: ffgo/fgdata/apt_dat.py:776 ffgo/fgdata/apt_dat.py:947
-#: ffgo/fgdata/apt_dat.py:981 ffgo/fgdata/apt_dat.py:1010
+#: ffgo/fgdata/apt_dat.py:418 ffgo/fgdata/apt_dat.py:440
+#: ffgo/fgdata/apt_dat.py:479 ffgo/fgdata/apt_dat.py:585
+#: ffgo/fgdata/apt_dat.py:780 ffgo/fgdata/apt_dat.py:951
+#: ffgo/fgdata/apt_dat.py:985 ffgo/fgdata/apt_dat.py:1014
 msgid "not enough fields in record: {!r}"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:539 ffgo/fgdata/apt_dat.py:1110
+#: ffgo/fgdata/apt_dat.py:543 ffgo/fgdata/apt_dat.py:1114
 msgid "unexpected row code: {code} (line: {line!r})"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:875
+#: ffgo/fgdata/apt_dat.py:879
 msgid "unexpected runway number: {num!r} (line: {line!r})"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:887
+#: ffgo/fgdata/apt_dat.py:891
 msgid "runway name not starting with digits: {rwy!r} (line: {line!r})"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:1162 ffgo/fgdata/apt_dat.py:1166
+#: ffgo/fgdata/apt_dat.py:1166 ffgo/fgdata/apt_dat.py:1170
 msgid "unable to find the magic number"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:1173
+#: ffgo/fgdata/apt_dat.py:1177
 msgid "end of file reached before finding the magic number"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:1179
+#: ffgo/fgdata/apt_dat.py:1183
 msgid "could not find a valid line specifying the format version"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:1185
+#: ffgo/fgdata/apt_dat.py:1189
 msgid "could not find a valid line specifying the apt.dat size"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:1209
+#: ffgo/fgdata/apt_dat.py:1213
 #, python-brace-format
 msgid "format version number {num} not supported"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:1214
+#: ffgo/fgdata/apt_dat.py:1218
 msgid "header not terminated by a blank line"
 msgstr ""
 
