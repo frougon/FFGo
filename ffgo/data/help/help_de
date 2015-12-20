@@ -99,7 +99,7 @@ Einstellungen:
 		   erneuert die Flughafenliste. Funktioniert nur, wenn
 		   “Nur installierte Flughäfen anzeigen” aktiviert ist.
 
-    ========================== Vier Check buttons ==========================
+    ========================== Vier Check Buttons ==========================
 
     Zeige FlightGear Parameter
 		-- Anzeigen oder Verstecken des Kommandofensters
@@ -124,9 +124,27 @@ Einstellungen:
 
 Werkzeuge:
 
+    Flughafensuche 
+		-- öffnet einen Dialog, um einfach Flughäfen zu finden nach
+		   verschiedenen Kriterien: Entfernung zu einem auswählbaren
+		   “Referenzflughafen”; Anzahl der Landstartbahnen,
+		   Wasserbahnen, oder Hubschrauberlandeplatz; Länge der längsten
+		   oder kürzesten Landebahn, etc. Die Ergebnisse werden in einer
+		   Tabelle aufgelistet mit diesen Kriterien für jeden Flughafen
+		   und außerdem mit anfänglichen und abschließenden Richtungen
+		   für die kürzeste Route von oder zum Referenzflughafen. Die
+		   Tabelle mit den Ergebnissen kann nach ICAO Code des
+		   Flughafens, Name oder jeder der genannten Kriterien sortiert
+		   werden.
+
     METAR	-- zeige METAR Wetterbericht für den ausgewählten oder nächsten
                    Flughafen. Diese Wetterberichte werden von
                    http://weather.noaa.gov/ heruntergeladen.
+
+    Kopiere FG Shell Kommando
+		-- Kopiere das Shellkommando in die Zwischenablage, mit dem FFGo
+		   FlightGear starten würde wenn man auf den “FG starten” Knopf
+		   drückt.
 
 Hilfe:
 
