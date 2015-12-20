@@ -137,9 +137,10 @@ Werkzeuge:
 		   Flughafens, Name oder jeder der genannten Kriterien sortiert
 		   werden.
 
-    METAR	-- zeige METAR Wetterbericht für den ausgewählten oder nächsten
-                   Flughafen. Diese Wetterberichte werden von
-                   http://weather.noaa.gov/ heruntergeladen.
+    METAR	-- zeige METAR Wetterbericht für den ausgewählten Flughafen,
+		   oder nächsten Flughafen, der METARdaten bereitstellt. Diese
+		   Wetterberichte werden von <http://weather.noaa.gov/>
+		   heruntergeladen.
 
     Kopiere FG Shell Kommando
 		-- Kopiere das Shellkommando in die Zwischenablage, mit dem FFGo
