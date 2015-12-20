@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: FFGo 1.8.0\n"
 "Report-Msgid-Bugs-To: f.rougon@free.fr\n"
 "POT-Creation-Date: 2015-12-20 16:59+0100\n"
-"PO-Revision-Date: 2015-12-19 12:38+0100\n"
+"PO-Revision-Date: 2015-12-20 17:23+0100\n"
 "Last-Translator: Florent Rougon <f.rougon@free.fr>\n"
 "Language-Team: French <kde-i18n-doc@kde.org>\n"
 "Language: fr\n"
@@ -446,13 +446,12 @@ msgid "invalid smoothness value: {0!r}"
 msgstr "valeur invalide pour le facteur d'aspect lisse : {0!r}"
 
 #: ffgo/fgdata/apt_dat.py:343
-#, fuzzy
 msgid ""
 "Error in apt.dat: unable to parse as a smoothness value: {val!r} in line "
 "{lineNb} ({line!r})"
 msgstr ""
-"impossible d'analyser en tant que facteur d'aspect lisse : {0!r} à la ligne "
-"{1!r}"
+"Erreur dans apt.dat : impossible d'analyser en tant que facteur d'aspect "
+"lisse : {val!r} à la ligne {lineNb} ({line!r})"
 
 #: ffgo/fgdata/apt_dat.py:356
 msgid "unable to parse as a code for runway markings: {0!r} in line {1!r}"
