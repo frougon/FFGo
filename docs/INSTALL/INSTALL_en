@@ -71,6 +71,10 @@ Let's examine them one by one:
   always available in virtual environments created from that interpreter, even
   if you created them without the '--system-site-packages' option.
 
+  Note: very old versions of Tkinter/Tk that don't have the Ttk widget set
+        (cf. <https://docs.python.org/3/library/tkinter.ttk.html>) are not
+        supported starting from FFGo 1.8.0. Tk 8.5 should be recent enough.
+
 - CondConfigParser is straightforward to install once you have a “working pip
   setup” (cf. Appendix A): all that is needed is to run
   'pip install CondConfigParser'. Otherwise, it is available as a Debian

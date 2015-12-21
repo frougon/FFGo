@@ -53,7 +53,9 @@ FFGo requires the following software:
   - `FlightGear`_;
   - `Python`_ 3.4 or later;
   - `Tkinter`_ (part of the Python standard library; often known as
-    ``python3-tk`` or ``python-tk`` in Linux package managers);
+    ``python3-tk`` or ``python-tk`` in Linux package managers); very old
+    versions that don't have the Ttk widget set are not supported
+    starting from FFGo 1.8.0 [Tk 8.5 should be recent enough]);
   - `CondConfigParser`_.
 
 In addition to these mandatory dependencies, FFGo will take advantage of
