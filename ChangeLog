@@ -589,3 +589,64 @@ you may want to consult the Git repository log.
           should be fixed now. (Florent Rougon)
 [USABILITY] Improve some tooltips of the Preferences dialog. (Florent Rougon)
 [FEATURE] Update the German translation. (chris_blues)
+
+1.8.0
+[FEATURE] New “Airport Finder” dialog. This dialog, accessible under the Tools
+          menu, allows one to easily find airports using various criteria:
+          distance to a chosen, “reference airport”; number of land runways,
+          water runways, or helipads; length of the longest or shortest runway
+          in the airport, etc. Results are listed in a table giving these
+          criteria for each airport as well as the initial and final bearings
+          for the shortest path from or to the reference airport. The table of
+          results can be sorted according to airport ICAO code, name or any of
+          the aforementioned criteria (click on a column header to sort
+          according to the corresponding field; click a second time on the
+          same column header to reverse the sort order).
+
+          The Airport Finder dialog uses a new widget set for airport
+          selection, that is mainly based on Ttk's Treeview widget. See
+          <http://forum.flightgear.org/viewtopic.php?f=18&t=27054&p=269261#p268159>
+          and the following message for more details. (Florent Rougon)
+[FEATURE] Add the number of land runways, water runways, helipads, plus the
+          minimum and maximum runway lengths for each airport to the apt
+          digest file (aka “airport database”). This allows to perform quick
+          searches over all airports known from apt.dat using these criteria
+          (used in the Airport Finder dialog). The format version of the apt
+          digest file changed from 1 to 2 to reflect this change. Migration
+          for users should be completely automatic. (Florent Rougon)
+[USABILITY] Previously, when in carrier mode, clicking on a different airport
+          in the airport list didn't really select it, as it didn't leave
+          carrier mode. This is not the case anymore. (Florent Rougon)
+[USABILITY] Allow resizing the main parts of FFGo's main window by dragging
+          with the mouse (this uses a Ttk PanedWindow). (Florent Rougon)
+[BUGFIX]  More tolerant parsing of apt.dat, in order to make it possible to
+          use current apt.dat files distributed at
+          <http://gateway.x-plane.com/NOTAMs>. (Florent Rougon)
+[MAINT]   Tolerate invalid smoothness values in apt.dat. This is not really
+          needed, since invalid values only cause an error when looking up
+          buggy runway metadata, but this will allow users to access the rest
+          of these particular runway metadata... Change mainly motivated by
+          <http://gatewaybugs.x-plane.com/browse/XSG-1218>. (Florent Rougon)
+[BUGFIX]  Fix calculation of airport centroid coordinates. Use n-vectors to
+          compute the latitude and longitude of the centroid of each airport.
+          The previous method, a simple arithmetic mean, could give incorrect
+          results with airports having runway ends located on either side of
+          the 180° meridian or very close to the North or South pole (not that
+          I encountered any such problem, but I prefer a correct method, all
+          the more since the performance impact is negligible).
+          (Florent Rougon)
+[BUGFIX]  Fix wrong unit for runway width in apt.dat v850 and later data. In
+          v850 format, runway widths and helipad lengths and widths are given
+          in meters, whereas in v810 format, they were given in feet. This led
+          to confusion and before this version, runway widths were wrongly
+          converted as if they had been given in feet (for > v810 data). This
+          is now fixed.
+
+          In runway tooltips, print the length and width first in meters, then
+          in feet, instead of the other way around (since this is how they are
+          specified in the primary source...). (Florent Rougon)
+[MAINT]   Behind-the-scenes tooltip improvements. Most notably, the new
+          TreeviewToolTip class allows to have dynamic tooltips in the
+          Treeview widgets used in the new Airport Finder dialog.
+          (Florent Rougon)
+[FEATURE] Update the German translation. (chris_blues)
