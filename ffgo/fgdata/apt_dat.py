@@ -1087,9 +1087,9 @@ class AptDat:
                                                                      payload)
                 try:
                     eof, nextIndex, code, payload, avgLat, avgLon, \
-                    landRunways, waterRunways, helipads, \
-                        parkings = self._readAirportData(calcCoords=True,
-                                                         readDetails=True)
+                    landRunways, waterRunways, helipads, minRwyLength, \
+                    maxRwyLength, parkings = self._readAirportData(
+                        calcCoords=True, readDetails=True)
                 except UnableToParseAptDat as e:
                     logger.error("in airport {}: {}".format(icao, e))
                     # Skip to the next airport
