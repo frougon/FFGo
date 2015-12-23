@@ -505,7 +505,10 @@ class AptDat:
           - build the airport list;
           - find the nearest METAR station for a given airport;
           - look up more information about a given airport in apt.dat
-            (an index allows to do that efficiently).
+            (an index allows to do that efficiently), and be able to
+            display the relevant apt.dat line number in case an error is
+            encountered;
+          - perform the searches offered by the Airport Finder.
 
         """
         if outputFile is None:
