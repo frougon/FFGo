@@ -55,6 +55,14 @@ class Airport:
 
     def __init__(self, icao, name, type, lat, lon, elevation, indexInAptDat,
                  landRunways, waterRunways, helipads, parkings):
+        """Initialize an Airport instance.
+
+        'indexInAptDat' should be a tuple (byteOffset, lineNb) where
+        'byteOffset' points to the start of the first line defining the
+        airport in apt.dat, and 'lineNb' is the corresponding line
+        number (starting from 1).
+
+        """
         self._attrs = ("icao", "name", "type", "lat", "lon", "elevation",
                        "indexInAptDat", "landRunways", "waterRunways",
                        "helipads", "parkings")
@@ -130,6 +138,14 @@ class AirportStub:
     def __init__(self, icao, name, type, lat, lon, nbLandRunways,
                  nbWaterRunways, nbHelipads, minRwyLength, maxRwyLength,
                  indexInAptDat):
+        """Initialize an AirportStub instance.
+
+        'indexInAptDat' should be a tuple (byteOffset, lineNb) where
+        'byteOffset' points to the start of the first line defining the
+        airport in apt.dat, and 'lineNb' is the corresponding line
+        number (starting from 1).
+
+        """
         for attr in self.__slots__:
             setattr(self, attr, locals()[attr])
 

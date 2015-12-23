@@ -1021,7 +1021,8 @@ want to follow this new default and set “Airport database update” to
 
             popup.tk_popup(event.x_root, event.y_root, 0)
 
-    def _readAirportDataWrongIndexErrMsg(self, pbType, icao, aptPath, index):
+    def _readAirportDataWrongIndexErrMsg(self, pbType, icao, aptPath,
+                                         byteOffset):
         message = _('Unable to load airport data')
 
         if pbType == "index too large":
@@ -1029,12 +1030,12 @@ want to follow this new default and set “Airport database update” to
 Attempt to load data for airport {icao} from apt digest file '{aptDigest}' \
 using index {index}, which is greater than, or equal to the supposed size of \
 uncompressed '{aptDat}' ({aptDatSize} bytes) as recorded in '{aptDigest}'."""
-            ).format(icao=icao, aptDigest=APT, index=index,
+            ).format(icao=icao, aptDigest=APT, index=byteOffset,
                      aptDat=aptPath, aptDatSize=self.config.aptDatSize)
         elif pbType == "airport not found at index":
             startOfMsg = _("""\
 Unable to find data for airport {icao} in apt digest file '{aptDigest}' \
-at index {index}.""").format(icao=icao, aptDigest=APT, index=index)
+at index {index}.""").format(icao=icao, aptDigest=APT, index=byteOffset)
         else:
             assert False, "Bug in {prg}, please report.".format(prg=PROGNAME)
 
@@ -1069,10 +1070,12 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
             from ..fgdata.apt_dat import AptDat
             aptPath = os.path.join(self.config.FG_root.get(), APT_DAT)
 
+            # index[0] is the byte offset in apt.dat, and index[1] the
+            # corresponding line number.
             index = self.config.airports[icao].indexInAptDat
-            if index >= self.config.aptDatSize:
+            if index[0] >= self.config.aptDatSize:
                 self._readAirportDataWrongIndexErrMsg("index too large",
-                                                      icao, aptPath, index)
+                                                      icao, aptPath, index[0])
                 return (False, None)
 
             with AptDat(aptPath) as aptDat:
@@ -1082,7 +1085,7 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
                 self.config.aptDatCache.append((icao, airport))
             else:
                 self._readAirportDataWrongIndexErrMsg(
-                    "airport not found at index", icao, aptPath, index)
+                    "airport not found at index", icao, aptPath, index[0])
 
         return (found, airport)
 

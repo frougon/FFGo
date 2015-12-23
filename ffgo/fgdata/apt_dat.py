@@ -514,7 +514,8 @@ class AptDat:
         self.reset()
         airports = []
         eof = False
-        index = self.file.tell() # start index for this airport header
+        # Start index for the first airport header (byte offset + line number)
+        index = (self.file.tell(), self.lineNb)
         code, payload = self._readRecord()
 
         while not eof:
@@ -571,10 +572,14 @@ class AptDat:
                 else:
                     minMaxRwyLengths = "{:.04f};{:.04f}".format(minRwyLength,
                                                                 maxRwyLength)
+
+                # Byte offset followed by line number
+                indexRepr = ';'.join(( str(i) for i in index ))
+
                 f.write(
                     '\0'.join([icao, name, str(type_),
                                avgLat.precisionRepr(), avgLon.precisionRepr(),
-                               nbRunways, minMaxRwyLengths, repr(index)])
+                               nbRunways, minMaxRwyLengths, indexRepr])
                     + '\n')
 
     def _processAirportHeader(self, code, payload):
@@ -609,7 +614,7 @@ class AptDat:
         eof = False
 
         while True:
-            index = self.file.tell()
+            index = (self.file.tell(), self.lineNb)
             code, payload = self._readRecord()
 
             if code in (1, 16, 17): # Land airport, seaplane base or heliport
@@ -1036,6 +1041,11 @@ class AptDat:
     def readAirportDataUsingIndex(self, icao, index):
         """Read detailed airport data from apt.dat using an index.
 
+        'index' should be a sequence (byteOffset, lineNb) where
+        'byteOffset' points to the start of the first line defining the
+        airport in apt.dat, and 'lineNb' is the corresponding line
+        number (starting from 1).
+
         Return a tuple of the form (found, data) where:
           - 'found' is a boolean indicating whether airport data for
             the specified 'icao' was found at 'index';
@@ -1045,9 +1055,10 @@ class AptDat:
         """
         logger.debug("{meth}(): entered method".format(
             meth=self.readAirportDataUsingIndex.__qualname__))
-        self.file.seek(index)
+        self.file.seek(index[0])
         logger.debug("{meth}(): after the seek()".format(
             meth=self.readAirportDataUsingIndex.__qualname__))
+        self.lineNb = index[1]
 
         code, payload = self._readRecord()
 
@@ -1078,7 +1089,8 @@ class AptDat:
         self.reset()
         airports = []
         eof = False
-        index = self.file.tell() # start index for this airport header
+        # Start index for the first airport header (byte offset + line number)
+        index = (self.file.tell(), self.lineNb)
         code, payload = self._readRecord()
 
         while not eof:
@@ -1096,7 +1108,7 @@ class AptDat:
                     while True:
                         code, payload = self._readRecord()
                         if code in (1, 16, 17):
-                            index = self.file.tell()
+                            index = (self.file.tell(), self.lineNb)
                             break
                         elif code in (None, 99):
                             break
@@ -1144,7 +1156,7 @@ class AptDatDigest:
     FORMAT_MAGIC_NB = 7856251374982125
 
     @classmethod
-    def header(cls, aptDatSize, formatVersion=2):
+    def header(cls, aptDatSize, formatVersion=3):
         return textwrap.dedent("""\
    -*- coding: utf-8 -*-
    {prg}'s airport database, generated from FlightGear's apt.dat (or apt.dat.gz)
@@ -1208,7 +1220,7 @@ class AptDatDigest:
 
         with open(path, "r", encoding="utf-8") as f:
             formatVersion, aptDatSize = cls._checkHeader(f)
-            if formatVersion != 2:
+            if formatVersion != 3:
                 raise UnrecognizedFormatForAptDigest(
                     _("format version number {num} not supported").format(
                     num=formatVersion))
@@ -1239,7 +1251,8 @@ class AptDatDigest:
                         # helipads!)
                         minRwyLength, maxRwyLength = None, None
 
-                    indexInAptDat = int(l[7])
+                    # Byte offset and line number (2-tuple)
+                    indexInAptDat = tuple(map(int, l[7].split(';')))
                 except Exception as e: # could be refined a little bit...
                     raise UnableToParseAptDigest() from e
 
