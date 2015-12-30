@@ -365,7 +365,9 @@ class App:
         self.airportSearchButton.pack(side='left')
 #------ FlightGear process status and buttons ---------------------------------
         self.frame4 = Frame(self.mainPanedWindow, borderwidth=4)
-        self.mainPanedWindow.add(self.frame4, weight=100)
+        # Zero weight ensures the frame is visible even when starting with a
+        # main window that is not very tall.
+        self.mainPanedWindow.add(self.frame4, weight=0)
 
         self.frame41 = Frame(self.frame4, borderwidth=4)
         self.frame41.pack(side='right', fill='x')
