@@ -226,11 +226,31 @@ class App:
         self.frame1 = Frame(self.frame0, borderwidth=8)
         self.frame1.pack(side='left', fill='both', expand=True)
 
+        # Fill self.frame1 from bottom to top, because when vertical space is
+        # scarce, the last elements added are the first to suffer from the lack
+        # of space. Here, we want the aircraft list to be shrunk before the
+        # search field and the 'Clear' button.
         self.frame11 = Frame(self.frame1, borderwidth=1)
-        self.frame11.pack(side='top', fill='both', expand=True)
+        self.frame11.pack(side='bottom', fill='x')
 
-        self.scrollbar = Scrollbar(self.frame11, orient='vertical')
-        self.aircraftList = Listbox(self.frame11, bg=TEXT_BG_COL,
+        self.aircraftSearchText = StringVar()
+        # Trigger a new search whenever the search text is modified (a set()
+        # call setting the same value as already present doesn't count as a
+        # modification).
+        self.aircraftSearchText.trace('w', self.searchAircrafts)
+
+        self.aircraftSearch = MyEntry(self, self.frame11, bg=TEXT_BG_COL,
+                                      textvariable=self.aircraftSearchText)
+        self.aircraftSearch.pack(side='left', fill='x', expand=True)
+        self.aircraftSearchButton = Button(self.frame11, text=_('Clear'),
+                                           command=self.aircraftSearchClear)
+        self.aircraftSearchButton.pack(side='left')
+
+        self.frame12 = Frame(self.frame1, borderwidth=1)
+        self.frame12.pack(side='bottom', fill='both', expand=True)
+
+        self.scrollbar = Scrollbar(self.frame12, orient='vertical')
+        self.aircraftList = Listbox(self.frame12, bg=TEXT_BG_COL,
                                     exportselection=0,
                                     yscrollcommand=self.scrollbar.set,
                                     height=14)
@@ -245,89 +265,102 @@ class App:
         self.aircraftTooltip = tooltip.ListBoxToolTip(self.aircraftList,
                                                       aircraftListTooltipFunc)
 
-        self.frame12 = Frame(self.frame1, borderwidth=1)
-        self.frame12.pack(side='top', fill='x')
-
-        self.aircraftSearchText = StringVar()
-        # Trigger a new search whenever the search text is modified (a set()
-        # call setting the same value as already present doesn't count as a
-        # modification).
-        self.aircraftSearchText.trace('w', self.searchAircrafts)
-
-        self.aircraftSearch = MyEntry(self, self.frame12, bg=TEXT_BG_COL,
-                                      textvariable=self.aircraftSearchText)
-        self.aircraftSearch.pack(side='left', fill='x', expand=True)
-        self.aircraftSearchButton = Button(self.frame12, text=_('Clear'),
-                                           command=self.aircraftSearchClear)
-        self.aircraftSearchButton.pack(side='left')
 #------ Middle panel ----------------------------------------------------------
         self.frame2 = Frame(self.frame0, borderwidth=1, relief='sunken')
         self.frame2.pack(side='left', fill='both')
-        # Aircraft
-        self.frame21 = Frame(self.frame2, borderwidth=4)
-        self.frame21.pack(side='top', expand=True)
+        # Fill self.frame2 from bottom to top, because when vertical space is
+        # scarce, the last elements added are the first to suffer from the lack
+        # of space. Here, we want the aircraft thumbnail to be shrunk before
+        # the buttons.
 
-        self.aircraftLabel = Label(self.frame21,
-                                   textvariable=self.config.aircraft)
-        self.aircraftLabel.pack(side='top')
+        # AI Scenarios
+        self.frame21 = Frame(self.frame2)
+        self.frame21.pack(side='bottom', fill='both')
 
-        self.thumbnail = Label(self.frame21, width=171, height=128)
-        self.thumbnail.pack(side='top', fill='y')
-        self.updateImage()
+        self.scenarios = Label(self.frame21, text=_('Select Scenario'),
+                               relief='groove', padx=6, pady=6)
+        self.scenarios.pack(side='left', fill='both', expand=True)
+        self.scenarios.bind('<Button-1>', self.popupScenarios)
+
         # Airport, rwy and parking
         self.frame22 = Frame(self.frame2, borderwidth=4)
-        self.frame22.pack(side='top', fill='x')
+        self.frame22.pack(side='bottom', fill='x')
         # First column
         self.frame221 = Frame(self.frame22, borderwidth=4)
         self.frame221.pack(side='left', fill='x')
 
-        self.airport_label = Label(self.frame221, text=_('Airport:'))
-        self.airport_label.pack(side='top')
+        self.park_label = Label(self.frame221, text=_('Parking:'))
+        self.park_label.pack(side='bottom')
 
         self.rwy_label = Label(self.frame221, text=_('Rwy:'))
-        self.rwy_label.pack(side='top')
+        self.rwy_label.pack(side='bottom')
 
-        self.park_label = Label(self.frame221, text=_('Parking:'))
-        self.park_label.pack(side='top')
+        self.airport_label = Label(self.frame221, text=_('Airport:'))
+        self.airport_label.pack(side='bottom')
+
         # Second column
         self.frame222 = Frame(self.frame22, borderwidth=4)
         self.frame222.pack(side='left', fill='x')
 
-        self.airportLabel = Label(self.frame222, width=12,
-                                  textvariable=self.config.airport,
-                                  relief='groove', borderwidth=2)
-        self.airportLabel.pack(side='top')
-        self.airportLabel.bind('<Button-1>', self.popupCarrier)
+        self.parkLabel = Label(self.frame222, width=12,
+                               textvariable=self.translatedPark,
+                               relief='groove', borderwidth=2)
+        self.parkLabel.pack(side='bottom')
+        self.parkLabel.bind('<Button-1>', self.popupPark)
 
         self.rwyLabel = Label(self.frame222, width=12,
                               textvariable=self.translatedRwy,
                               relief='groove', borderwidth=2)
-        self.rwyLabel.pack(side='top')
+        self.rwyLabel.pack(side='bottom')
         self.rwyLabel.bind('<Button-1>', self.popupRwy)
 
-        self.parkLabel = Label(self.frame222, width=12,
-                               textvariable=self.translatedPark,
-                               relief='groove', borderwidth=2)
-        self.parkLabel.pack(side='top')
-        self.parkLabel.bind('<Button-1>', self.popupPark)
-        # AI Scenarios
-        self.frame23 = Frame(self.frame2)
-        self.frame23.pack(side='top', fill='both')
+        self.airportLabel = Label(self.frame222, width=12,
+                                  textvariable=self.config.airport,
+                                  relief='groove', borderwidth=2)
+        self.airportLabel.pack(side='bottom')
+        self.airportLabel.bind('<Button-1>', self.popupCarrier)
 
-        self.scenarios = Label(self.frame23, text=_('Select Scenario'),
-                               relief='groove', padx=6, pady=6)
-        self.scenarios.pack(side='left', fill='both', expand=True)
-        self.scenarios.bind('<Button-1>', self.popupScenarios)
+        # Aircraft
+        self.frame23 = Frame(self.frame2, borderwidth=4)
+        self.frame23.pack(side='bottom', expand=True)
+
+        self.aircraftLabel = Label(self.frame23,
+                                   textvariable=self.config.aircraft)
+        self.aircraftLabel.pack(side='top')
+
+        self.thumbnail = Label(self.frame23, width=171, height=128)
+        self.thumbnail.pack(side='top', fill='y')
+        self.updateImage()
 
 #------ Airport list ----------------------------------------------------------
         self.frame3 = Frame(self.frame0, borderwidth=8)
         self.frame3.pack(side='left', fill='both', expand=True)
 
+        # Fill self.frame3 from bottom to top, because when vertical space is
+        # scarce, the last elements added are the first to suffer from the lack
+        # of space. Here, we want the airport list to be shrunk before the
+        # search field and the 'Clear' button.
         self.frame31 = Frame(self.frame3, borderwidth=1)
-        self.frame31.pack(side='top', fill='both', expand=True)
+        self.frame31.pack(side='bottom', fill='x')
 
-        self.sAirports = Scrollbar(self.frame31, orient='vertical')
-        self.airportList = Listbox(self.frame31, bg=TEXT_BG_COL,
+        self.airportSearchText = StringVar()
+        # Trigger a new search whenever the search text is modified (a set()
+        # call setting the same value as already present doesn't count as a
+        # modification).
+        self.airportSearchText.trace('w', self.searchAirports)
+
+        self.airportSearch = MyEntry(self, self.frame31, bg=TEXT_BG_COL,
+                                     textvariable=self.airportSearchText)
+        self.airportSearch.pack(side='left', fill='x', expand=True)
+        self.airportSearchButton = Button(self.frame31, text=_('Clear'),
+                                          command=self.airportSearchClear)
+        self.airportSearchButton.pack(side='left')
+
+        self.frame32 = Frame(self.frame3, borderwidth=1)
+        self.frame32.pack(side='bottom', fill='both', expand=True)
+
+        self.sAirports = Scrollbar(self.frame32, orient='vertical')
+        self.airportList = Listbox(self.frame32, bg=TEXT_BG_COL,
                                    exportselection=0,
                                    yscrollcommand=self.sAirports.set,
                                    height=14)
@@ -348,21 +381,6 @@ class App:
         self.airportTooltip = tooltip.ListBoxToolTip(self.airportList,
                                                      airportListTooltipFunc)
 
-        self.frame32 = Frame(self.frame3, borderwidth=1)
-        self.frame32.pack(side='top', fill='x')
-
-        self.airportSearchText = StringVar()
-        # Trigger a new search whenever the search text is modified (a set()
-        # call setting the same value as already present doesn't count as a
-        # modification).
-        self.airportSearchText.trace('w', self.searchAirports)
-
-        self.airportSearch = MyEntry(self, self.frame32, bg=TEXT_BG_COL,
-                                     textvariable=self.airportSearchText)
-        self.airportSearch.pack(side='left', fill='x', expand=True)
-        self.airportSearchButton = Button(self.frame32, text=_('Clear'),
-                                          command=self.airportSearchClear)
-        self.airportSearchButton.pack(side='left')
 #------ FlightGear process status and buttons ---------------------------------
         self.frame4 = Frame(self.mainPanedWindow, borderwidth=4)
         # Zero weight ensures the frame is visible even when starting with a
