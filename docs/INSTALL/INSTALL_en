@@ -50,7 +50,12 @@ FFGo's dependencies are:
     others); these should be sufficient in most cases. However, there are rare
     cases (calculation of the shortest path between nearly antipodal points)
     in which these algorithms don't work, whereas Karney's algorithm,
-    implemented in GeographicLib, does.
+    implemented in GeographicLib, does;
+  - the 'pkg_resources' Python 3 module (optional; normally shipped with
+    setuptools; not needed when using ffgo-launcher.py). Since setuptools
+    should always be available when working with pip, this dependency should
+    only be a concern when FFGo has been installed via a distribution package
+    lacking a dependency on a package providing 'pkg_resources'.
 
 Let's examine them one by one:
 
@@ -113,6 +118,10 @@ Let's examine them one by one:
   /usr/share/GeographicLib/magnetic, where it can be found by MagneticField
   (not registering the added files with dpkg, which is a bit ugly,
   cf. <https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=687253>).
+
+- the 'pkg_resources' Python 3 module should be available everywhere (being
+  part of setuptools, which is a fundamental component of pip). In
+  Debian, this module is shipped in the python3-pkg-resources package.
 
 
 Tips for Windows users
