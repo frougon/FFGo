@@ -9,6 +9,7 @@
 # it at <http://www.wtfpl.net/>.
 
 import subprocess
+import datetime
 
 
 class error(Exception):
@@ -31,6 +32,14 @@ class EarthMagneticField:
     def getBackendDescription(self):
         return self._runMagneticField(justGetVersion=True).strip()
 
+    @classmethod
+    def _utcDayString(cls):
+        """Return today's UTC date in the form 'YYYY-MM-DD'."""
+        # Current date and time expressed in UTC
+        now = datetime.datetime.now(datetime.timezone.utc)
+
+        return now.strftime("%Y-%m-%d")
+
     def _checkGeographicLibMagneticField(self):
         """Check that 'MagneticField' from GeographicLib works fine.
 
@@ -38,7 +47,8 @@ class EarthMagneticField:
 
         """
         # KSFO at 0 meters above the ellipsoid modelling the Earth
-        self._runMagneticField("now 37.61777 -122.37526 0\n")
+        self._runMagneticField(
+            "{} 37.61777 -122.37526 0\n".format(self._utcDayString()))
 
     def _runMagneticField(self, input_=None, justGetVersion=False):
         executable = self.config.MagneticField_bin.get() or "MagneticField"
@@ -132,6 +142,10 @@ class EarthMagneticField:
 
     def batchDecl(self, inputIterable):
         l = []
+        # GeographicLib versions 1.39 (released 2014-11-11) and later interpret
+        # the string 'now' as the current UTC date. Emulate this for users of
+        # older versions.
+        today = self._utcDayString()
 
         for lat, lon in inputIterable:
             try:
@@ -145,7 +159,7 @@ class EarthMagneticField:
                 lon = str(lon)
 
             # date, lat, lon, altitude
-            l.append(' '.join(("now", lat, lon, "0")))
+            l.append(' '.join((today, lat, lon, "0")))
 
         if l:
             l.append('')        # to obtain a final newline
