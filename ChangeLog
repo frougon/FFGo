@@ -650,3 +650,31 @@ you may want to consult the Git repository log.
           Treeview widgets used in the new Airport Finder dialog.
           (Florent Rougon)
 [FEATURE] Update the German translation. (chris_blues)
+
+1.8.1
+[BUGFIX]  Support MagneticField from GeographicLib versions < 1.39. In these
+          versions, the MagneticField program doesn't support the special
+          string "now" for the time field. Use the current date in order to
+          support these versions (i.e., released before 2014-11-11).
+          (Florent Rougon)
+[BUGFIX]  Layout improvements: make sure that the most important widgets in
+          FFGo's main window are the last to be shrunk when the window is too
+          small to display all of its widgets at their natural size. Most
+          notably, the frame containing the "Run FG" button could be
+          completely invisible in version 1.8.0 if started with a main window
+          that is not very tall. With this change, the text and list widgets,
+          as well as the aircraft thumbnail, are all shrunk before starting to
+          “touch” to any of the buttons or labels. (Florent Rougon)
+[BUGFIX]  Fix wrong line numbers in error reports for index-based apt.dat
+          requests. AptDat.readAirportDataUsingIndex() used to seek into the
+          apt.dat.gz file using the specified index, but it did not modify
+          AptDat.lineNb accordingly. As a consequence, the line numbers for
+          error reports concerning apt.dat parsing raised by this method were
+          usually wrong. In order to properly fix this, it has been necessary
+          to modify be the apt digest file format a little bit (storing a line
+          number along with each index value), and therefore to change its
+          format version from 2 to 3. Migration for users should be completely
+          automatic. (Florent Rougon)
+[DOC]     Add notes concerning the 'pkg_resources' Python 3 module to
+          docs/INSTALL/INSTALL_en. Users might need to install this module in
+          somewhat unusual situations. (Florent Rougon)
