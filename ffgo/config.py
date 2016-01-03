@@ -93,6 +93,7 @@ class Config:
         self.showFGOutput = IntVar()
         self.showFGOutputInSeparateWindow = IntVar()
         self.FGOutputGeometry = StringVar()
+        self.autoscrollFGOutput =  IntVar()
 
         self.keywords = {'--aircraft=': self.aircraft,
                          '--airport=': self.airport,
@@ -123,7 +124,8 @@ class Config:
                          'SHOW_FG_OUTPUT=': self.showFGOutput,
                          'SHOW_FG_OUTPUT_IN_SEPARATE_WINDOW=':
                          self.showFGOutputInSeparateWindow,
-                         'FG_OUTPUT_GEOMETRY=': self.FGOutputGeometry}
+                         'FG_OUTPUT_GEOMETRY=': self.FGOutputGeometry,
+                         'AUTOSCROLL_FG_OUTPUT=': self.autoscrollFGOutput}
 
         # In order to avoid using a lot of memory, detailed airport data is
         # only loaded on demand. Since this is quite slow, keep a cache of the
@@ -340,6 +342,7 @@ class Config:
         self.showFGOutput.set('1')
         self.showFGOutputInSeparateWindow.set('0')
         self.FGOutputGeometry.set('')
+        self.autoscrollFGOutput.set('1')
         self.park.set('')
         self.rwy.set('')
         self.scenario.set('')

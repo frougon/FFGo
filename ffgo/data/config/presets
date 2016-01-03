@@ -94,6 +94,10 @@
 #                               - Window geometry specification for the
 #                                 Output Window. Set this only if you are not
 #                                 satisfied with the default window geometry.
+# AUTOSCROLL_FG_OUTPUT=boolean  - 0 or 1 (defaults to 1). Automatically scroll
+#                                 the Output Window to the end whenever new
+#                                 text is received from FlightGear's stdout or
+#                                 stderr stream.
 #
 # Any number of options can be selected, but to get FFGo ready to work,
 # you only need:

@@ -1549,7 +1549,9 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
             self.FGOutput.appendNoUnlock(line)
 
         self.FGOutput.lock()
-        self.FGOutput.showEnd()
+
+        if self.config.autoscrollFGOutput.get():
+            self.FGOutput.showEnd()
 
     def _onFgfsProcessTerminated(self, event, queue=None):
         # There should be exactly one item in the queue now. Get it.

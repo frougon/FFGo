@@ -303,6 +303,10 @@ Name or path to GeographicLib's MagneticField executable. If left blank,
 When saving the configuration, don't store the main window size only,
 but also its position (i.e., the offsets from the screen borders).
 When this option is unchecked, only the main window size is stored.""")
+        self.tooltip_autoscrollFGOutput = _(
+            "Automatically scroll the FlightGear Output Window to the end "
+            "every time new text is received from FlightGear's stdout or "
+            "stderr stream.")
 
     def quit(self):
         """Quit without saving."""
@@ -620,9 +624,22 @@ When this option is unchecked, only the main window size is stored.""")
         self.MagneticFieldBinFind.pack(side='left')
 
         # “Remember main windows position” checkbox
+        self.frame_rememberMainWinPos = Frame(self.frame_misc)
+        self.frame_rememberMainWinPos.pack(side='top', fill='x', expand=True)
         self.rememberMainWinPos = Checkbutton(
-            self.frame_misc,
+            self.frame_rememberMainWinPos,
             text=_('Remember the main window position'),
             variable=self.config.saveWindowPosition)
         ToolTip(self.rememberMainWinPos, self.tooltip_rememberMainWinPos)
         self.rememberMainWinPos.pack(side='left', fill='x')
+
+        # “Automatically scroll the Output Window” checkbox
+        self.frame_autoscrollFGOutput = Frame(self.frame_misc)
+        self.frame_autoscrollFGOutput.pack(side='top', fill='x', expand=True)
+        self.autoscrollFGOutput = Checkbutton(
+            self.frame_autoscrollFGOutput,
+            text=_('Automatically scroll the Output Window'),
+            variable=self.config.autoscrollFGOutput)
+        ToolTip(self.autoscrollFGOutput, self.tooltip_autoscrollFGOutput,
+                autowrap=True)
+        self.autoscrollFGOutput.pack(side='left', fill='x')
