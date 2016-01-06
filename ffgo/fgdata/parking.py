@@ -1,7 +1,7 @@
 # parking.py --- Handle FlightGear parking data
 # -*- coding: utf-8 -*-
 #
-# Copyright (c) 2015  Florent Rougon
+# Copyright (c) 2015, 2016  Florent Rougon
 #
 # This file is distributed under the terms of the DO WHAT THE FUCK YOU WANT TO
 # PUBLIC LICENSE version 2, dated December 2004, by Sam Hocevar. You should
@@ -13,6 +13,8 @@ import enum
 from xml.etree import ElementTree
 import locale
 import textwrap
+import tkinter
+from tkinter.messagebox import showerror
 
 from ..constants import PROGNAME
 from .. import misc
