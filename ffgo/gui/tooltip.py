@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright (c) 2013-2014  Robert 'erobo' Leda
-# Copyright (c) 2015       Florent Rougon
+# Copyright (c) 2015-2016  Florent Rougon
 #
 # This file is distributed under the terms of the DO WHAT THE FUCK YOU WANT TO
 # PUBLIC LICENSE version 2, dated December 2004, by Sam Hocevar. You should
@@ -51,6 +51,11 @@ class ToolTipBase(Toplevel):
         self.master.bind('<Motion>', self.onMotion)
         self.master.bind('<Leave>', self.onLeave)
         self.master.bind('<Button>', self.hide)
+        # Without this, there would be a _tkinter.TclError during the
+        # deiconify() call in self.show() if the window containing self.master
+        # were closed and the tooltip tried to appear afterwards. This also
+        # hides the tooltip when the user switches to another workspace.
+        self.master.bind('<Unmap>', self.hide)
 
     def scheduleTooltip(self, event):
         self.id = self.master.after(self.delay, self.prepareAndShow, event)
