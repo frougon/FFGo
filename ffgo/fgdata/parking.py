@@ -13,8 +13,6 @@ import enum
 from xml.etree import ElementTree
 import locale
 import textwrap
-import tkinter
-from tkinter.messagebox import showerror
 
 from ..constants import PROGNAME
 from .. import misc
@@ -186,6 +184,7 @@ def readGroundnetFile(xmlFilePath):
     """Read parking positions from XML file."""
     logger.info("Reading parking positions from '{}'".format(xmlFilePath))
     res = {}
+    exceptions = []             # list of problems found in the groundnet file
 
     tree = ElementTree.parse(xmlFilePath)
     root = tree.getroot()
@@ -195,7 +194,7 @@ def readGroundnetFile(xmlFilePath):
         if parking_list is not None:
             break
     else:
-        return res
+        return (res, exceptions)
 
     parkings = {}
 
@@ -205,10 +204,7 @@ def readGroundnetFile(xmlFilePath):
         except error as e:
             logger.error(_("while parsing '{file}': {errmsg}").format(
                 file=xmlFilePath, errmsg=e))
-            message = _('Error parsing a groundnet file')
-            detail = _("In '{file}': {errmsg}.").format(
-                file=xmlFilePath, errmsg=e)
-            showerror(_('{prg}').format(prg=PROGNAME), message, detail=detail)
+            exceptions.append(e)
             continue
 
         if not str(p):
@@ -238,4 +234,4 @@ def readGroundnetFile(xmlFilePath):
         # as successive sort keys.
         parkList.sort(key=Parking.fullNameSortKey)
 
-    return res
+    return (res, exceptions)

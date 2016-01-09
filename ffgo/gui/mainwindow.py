@@ -1109,6 +1109,17 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
 
         return (found, airport)
 
+    def _readGroundnetFile(self, groundnetPath):
+        parkings, exceptions = fgdata.parking.readGroundnetFile(groundnetPath)
+
+        if exceptions:
+            message = _('Error parsing a groundnet file')
+            detail = _("In '{file}':\n\n{errors}").format(
+                file=groundnetPath, errors='\n'.join(map(str, exceptions)))
+            showerror(_('{prg}').format(prg=PROGNAME), message, detail=detail)
+
+        return parkings
+
     def readParkingData(self, icao):
         """Read parking/startup location data from a groundnet file or apt.dat.
 
@@ -1133,7 +1144,7 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
                 groundnet = '{}.groundnet.xml'.format(icao)
                 groundnetPath = os.path.join(path, groundnet)
                 if os.path.isfile(groundnetPath):
-                    res = fgdata.parking.readGroundnetFile(groundnetPath)
+                    res = self._readGroundnetFile(groundnetPath)
                     break
         # If airport data source is set to "Old default"
         else:
@@ -1142,9 +1153,9 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
                 dirs = os.listdir(path)
                 if icao in dirs:
                     path = os.path.join(path, icao)
-                    file_path = os.path.join(path, 'parking.xml')
-                    if os.path.exists(file_path):
-                        res = fgdata.parking.readGroundnetFile(file_path)
+                    groundnetPath = os.path.join(path, 'parking.xml')
+                    if os.path.isfile(groundnetPath):
+                        res = self._readGroundnetFile(groundnetPath)
 
         if not res:
             found, airport = self.readAirportData(icao)
