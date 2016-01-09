@@ -1,7 +1,7 @@
 # widgets.py --- Customized widgets
 # -*- coding: utf-8 -*-
 #
-# Copyright (c) 2015  Florent Rougon
+# Copyright (c) 2015, 2016  Florent Rougon
 #
 # This file is distributed under the terms of the DO WHAT THE FUCK YOU WANT TO
 # PUBLIC LICENSE version 2, dated December 2004, by Sam Hocevar. You should
@@ -280,6 +280,13 @@ class AirportChooser:
         self.immediateSearchUpdate = True
         self.searchBufferVar.set("")
         self.entryWidget.focus_set()
+
+    def setTreeData(self, treeData):
+        """Change the underlying data for the Treeview widget."""
+        self.treeData = treeData
+        # This will force an update of the Treeview widget.
+        self.matches = None
+        self.updateAirportList()
 
     # Accept any arguments to allow safe use as a Tkinter variable observer
     def updateAirportList(self, *args):
