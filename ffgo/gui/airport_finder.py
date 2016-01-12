@@ -976,8 +976,26 @@ class AirportFinder:
     def chooseSelectedAirport(self):
         """
         Choose the results-selected airport and close the Airport Finder dialog."""
-        self.app.selectNewAirport(self.selectedIcao.get())
-        self.quit()
+        icao = self.selectedIcao.get()
+        try:
+            self.app.selectNewAirport(icao)
+        except widgets.NoSuchItem:
+            message = _('Airport is filtered out')
+            detail = _("It is impossible to select “{name}” ({icao}) in "
+                       "{prg}'s main window, because it is not present in the "
+                       "airport list from that window. You have probably "
+                       "enabled the option to only show airports for which "
+                       "you have scenery installed.\n\n"
+                       "In order to be able to select this airport, you "
+                       "should either deselect this option from the Settings "
+                       "menu (“Show installed airports only”) or install "
+                       "scenery for this airport.").format(
+                       prg=PROGNAME, icao=icao,
+                           name=self.config.airports[icao].name)
+            showerror(_('{prg}').format(prg=PROGNAME), message, detail=detail,
+                      parent=self.top)
+        else:
+            self.quit()
 
 
 class TabularDataManager:
