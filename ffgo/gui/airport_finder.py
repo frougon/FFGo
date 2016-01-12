@@ -208,14 +208,10 @@ class AirportFinder:
 
         # Initial “reference airport” selection
         curIcao = config.airport.get()
-        tree = self.refAirportSearchTree
-        for item in tree.get_children():
-            if tree.set(item, "icao") == curIcao:
-                # This will set self.refIcao via the TreeviewSelect event
-                # handler
-                tree.FFGoGotoItemWithIndex(tree.index(item))
-                break
-        else:
+        try:
+            # This will set self.refIcao via the TreeviewSelect event handler.
+            self.refAirportSearchTree.FFGoGotoItemWithValue("icao", curIcao)
+        except widgets.NoSuchItem:
             self.refIcao.set('')
 
         # *********************************************************************
@@ -1121,13 +1117,11 @@ class TabularDataManager:
 
         # Select a suitable item in the repopulated tree, if it is non-empty.
         if self.indices:
-            for item in tree.get_children():
-                if tree.set(item, identColName) == curIdent:
-                    # This will set self.identVar via the TreeviewSelect
-                    # event handler.
-                    tree.FFGoGotoItemWithIndex(tree.index(item))
-                    break
-            else:
+            try:
+                # This will set self.identVar via the TreeviewSelect
+                # event handler.
+                tree.FFGoGotoItemWithValue(identColName, curIdent)
+            except widgets.NoSuchItem:
                 # We could not find the previously-selected airport
                 # → select the first one in the tree.
                 tree.FFGoGotoItemWithIndex(0)

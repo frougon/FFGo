@@ -13,6 +13,13 @@ import tkinter as tk
 from tkinter import ttk
 
 
+class error(Exception):
+    """Base class for exceptions raised in the 'widgets' module."""
+
+class NoSuchItem(error):
+    pass
+
+
 # *****************************************************************************
 # *                 Improved version of Ttk's Treeview widget                 *
 # *****************************************************************************
@@ -85,6 +92,10 @@ class MyTreeview(ttk.Treeview):
             targetIdx = len(treeItems) - 1 if keysym == "End" else 0
             self.FFGoGotoItemWithIndex(targetIdx, treeItems=treeItems)
 
+    def FFGoGotoItem(self, item):
+        self.selection(selop="set", items=(item,))
+        self.see(item)
+
     def FFGoGotoItemWithIndex(self, index, treeItems=None):
         if treeItems is None:   # small optimization in case we already have it
             treeItems = self.get_children()
@@ -93,10 +104,27 @@ class MyTreeview(ttk.Treeview):
         self.selection(selop="set", items=(targetItem,))
         self.see(targetItem)
 
+    def FFGoGotoItemWithValue(self, column, value):
+        """Go to the first item having the specified value in 'column'.
+
+        'value' is compared to values from Treeview items, and therefore
+        should be a string.
+
+        Raise NoSuchItem if no item with this value is found.
+
+        """
+        for item in self.get_children():
+            if self.set(item, column) == value:
+                 self.FFGoGotoItem(item)
+                 break           # The item was found and selected
+        else:
+            raise NoSuchItem()
+
 
 # *****************************************************************************
 # *                      Airport Chooser-related classes                      *
 # *****************************************************************************
+
 
 @enum.unique
 class SortOrder(enum.Enum):
@@ -370,9 +398,9 @@ class AirportChooser:
                     # self.icaoVar via the TreeviewSelect event handler.
                     tree.FFGoGotoItemWithIndex(0)
                 else:
-                    tree.FFGoGotoItemWithIndex(tree.index(item))
+                    tree.FFGoGotoItem(item)
             else:
-                tree.FFGoGotoItemWithIndex(tree.index(item))
+                tree.FFGoGotoItem(item)
         else:                   # empty tree, we can't select anything
             self.icaoVar.set('')
 
