@@ -897,6 +897,14 @@ want to follow this new default and set “Airport database update” to
     def popupCarrier(self, event):
         """Make pop up menu."""
         popup = Menu(tearoff=0)
+
+        # This makes the popup menu more visible, visually similar to the
+        # runway and parking popup menus, and avoids it disappearing in a flash
+        # with the first entry being accidentally selected if the user just
+        # clicked without holding the mouse button down.
+        popup.add_command(label='', state=DISABLED,
+                          background=POPUP_HEADER_BG_COL)
+
         popup.add_command(label=pgettext('carrier', 'None'),
                           command=self.resetCarrier)
         for i in self.config.carrier_list:
