@@ -213,9 +213,10 @@ class FGCommandBuilder:
         # --airport/--runway/--carrier in such a case.
         if parkStatus == "apt.dat":
             locationOpts = []
+        elif self.app.config.carrier.get(): # carrier mode
+            locationOpts = [('--carrier=', self.app.config.carrier.get())]
         else:
-            locationOpts = [('--carrier=', self.app.config.carrier.get()),
-                            ('--airport=', self.app.config.airport.get()),
+            locationOpts = [('--airport=', self.app.config.airport.get()),
                             ('--runway=', self.app.config.rwy.get())]
 
         for opt, cfg in aircraftOpts + locationOpts:

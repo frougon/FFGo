@@ -106,7 +106,7 @@ class Metar:
         icao = self.icao.get()
         if not icao:
             self.report.set(_('No airport is selected.'))
-            return              # carrier mode
+            return
 
         if self._isOnMetarList(icao):
             station = icao

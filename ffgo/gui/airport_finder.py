@@ -728,6 +728,8 @@ class AirportFinder:
             self.resultsColumns, "icao", "distance", self.resultsTree,
             treeUpdatedCallback=self.hideResultsTreeTooltip)
 
+        self.refAirportSearchEntry.focus_set()
+
     def _distBoundValidateFunc(self, text):
         """Validate a string that should contain a distance measure."""
         try:

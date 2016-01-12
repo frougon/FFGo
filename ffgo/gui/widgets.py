@@ -269,6 +269,9 @@ class AirportChooser:
         # affect self.searchVar instead of being delayed. Has “one shot”
         # behavior.
         self.immediateSearchUpdate = False
+        # When False, self.searchBufferVarWritten() returns immediately without
+        # doing its normal work.
+        self.searchUpdateEnabled = True
         self.searchBufferVar.trace("w", self.searchBufferVarWritten)
         self.searchVar.trace("w", self.updateAirportList)
 
@@ -287,10 +290,13 @@ class AirportChooser:
             assert i == col.dataIndex, (i, col.dataIndex)
 
         self.treeWidget.bind('<<TreeviewSelect>>', self.onTreeviewSelect)
-        self.clearSearch()
+        self.clearSearch(setFocusOnEntryWidget=False)
 
     # Accept any arguments to allow safe use as a Tkinter variable observer
     def searchBufferVarWritten(self, *args):
+        if not self.searchUpdateEnabled:
+            return
+
         if self.searchUpdateCancelId is not None:
             self.master.after_cancel(self.searchUpdateCancelId)
 
@@ -304,17 +310,29 @@ class AirportChooser:
     def updateSearchVar(self):
         self.searchVar.set(self.searchBufferVar.get())
 
-    def clearSearch(self):
+    def clearSearch(self, setFocusOnEntryWidget=True):
         self.immediateSearchUpdate = True
         self.searchBufferVar.set("")
-        self.entryWidget.focus_set()
+        if setFocusOnEntryWidget:
+            self.entryWidget.focus_set()
 
-    def setTreeData(self, treeData):
-        """Change the underlying data for the Treeview widget."""
+    def setTreeData(self, treeData, clearSearch=False):
+        """Change the underlying data for the Treeview widget.
+
+        When 'clearSearch' is True, the search field is cleared at the
+        same time and special care is taken to avoid updating the
+        airport list twice.
+
+        """
         self.treeData = treeData
         # This will force an update of the Treeview widget.
         self.matches = None
-        self.updateAirportList()
+        if clearSearch:
+            # This will cause self.updateAirportList() to be called via the
+            # chain of observers for self.searchBufferVar and self.searchVar.
+            self.clearSearch(setFocusOnEntryWidget=False)
+        else:
+            self.updateAirportList()
 
     # Accept any arguments to allow safe use as a Tkinter variable observer
     def updateAirportList(self, *args):

@@ -61,11 +61,11 @@ class Config:
 
         self.aircraft = StringVar()
         self.aircraftDir = StringVar()
-        self.airport = StringVar()
+        self.airport = StringVar() # ICAO code of the selected airport
         self.alreadyProposedChanges = StringVar()
         self.apt_data_source = IntVar()
         self.auto_update_apt = IntVar()
-        self.carrier = StringVar()
+        self.carrier = StringVar() # when non-empty, we are in “carrier mode”
         self.FG_aircraft = StringVar()
         self.FG_bin = StringVar()
         self.FG_root = StringVar()
@@ -361,6 +361,9 @@ class Config:
                     if name in self.keywords:
                         var = self.keywords[name]
                         var.set(value)
+
+        # Useful to know when the airport has been changed
+        self.previousAirport = self.airport.get()
 
         self._setLanguage(self.language.get())
         setupTranslationHelper(self)

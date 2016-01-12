@@ -31,6 +31,7 @@ from .. import misc
 from ..misc import resourceExists, textResourceStream, binaryResourceStream
 from . import tooltip
 from .tooltip import ToolTip
+from . import widgets
 from .configwindow import ConfigWindow
 from . import infowindow
 from ..constants import *
@@ -343,43 +344,57 @@ class App:
         self.frame31 = Frame(self.frame3, borderwidth=1)
         self.frame31.pack(side='bottom', fill='x')
 
-        self.airportSearchText = StringVar()
-        # Trigger a new search whenever the search text is modified (a set()
-        # call setting the same value as already present doesn't count as a
-        # modification).
-        self.airportSearchText.trace('w', self.searchAirports)
-
-        self.airportSearch = MyEntry(self, self.frame31, bg=TEXT_BG_COL,
-                                     textvariable=self.airportSearchText)
+        # The link to a StringVar is done in the AirportChooser class
+        self.airportSearch = MyEntry(self, self.frame31, bg=TEXT_BG_COL)
         self.airportSearch.pack(side='left', fill='x', expand=True)
-        self.airportSearchButton = Button(self.frame31, text=_('Clear'),
-                                          command=self.airportSearchClear)
+        self.airportSearchButton = Button(self.frame31, text=_('Clear'))
         self.airportSearchButton.pack(side='left')
 
         self.frame32 = Frame(self.frame3, borderwidth=1)
         self.frame32.pack(side='bottom', fill='both', expand=True)
 
-        self.sAirports = Scrollbar(self.frame32, orient='vertical')
-        self.airportList = Listbox(self.frame32, bg=TEXT_BG_COL,
-                                   exportselection=0,
-                                   yscrollcommand=self.sAirports.set,
-                                   height=14)
-        self.sAirports.config(command=self.airportList.yview, takefocus=0)
-        self.airportList.bind('<<ListboxSelect>>', self.updateAirport)
+        self.airportListScrollbar = Scrollbar(self.frame32, orient='vertical',
+                                              takefocus=0)
+
+        # Subclass of Ttk's Treeview. The TreeviewSelect event binding is done
+        # in the AirportChooser class.
+        self.airportList = widgets.MyTreeview(
+            self.frame32, columns=["icao", "name"],
+            show="headings", selectmode="browse", height=14,
+            yscrollcommand=self.airportListScrollbar.set)
         self.airportList.pack(side='left', fill='both', expand=True)
-        self.sAirports.pack(side='left', fill='y')
 
-        def airportListTooltipFunc(index):
-            icao = self.getAirportIcaoAtIndex(index)
-            found, airport = self.readAirportData(icao)
+        self.airportListScrollbar.config(command=self.airportList.yview)
+        self.airportListScrollbar.pack(side='left', fill='y')
 
-            if found:
-                return airport.tooltipText()
+        def airportListTooltipFunc(region, itemID, column, self=self):
+            if region == "cell":
+                icao = self.airportList.set(itemID, "icao")
+                found, airport = self.readAirportData(icao)
+
+                return airport.tooltipText() if found else None
             else:
                 return None
 
-        self.airportTooltip = tooltip.ListBoxToolTip(self.airportList,
-                                                     airportListTooltipFunc)
+        self.airportTooltip = tooltip.TreeviewToolTip(self.airportList,
+                                                      airportListTooltipFunc)
+
+        airportListColumnsList = [
+            widgets.Column("icao", _("ICAO"), 0, "w", False, "width",
+                           widthText="M"*4),
+            widgets.Column("name", _("Name"), 1, "w", True, "width",
+                           widthText="M"*20)]
+        airportListColumns = { col.name: col
+                               for col in airportListColumnsList }
+
+        self.airportChooser = widgets.AirportChooser(
+            self.master, self.config, self.config.airport,
+            [],                 # empty list for now, will be filled by reset()
+            airportListColumns,
+            "icao",             # initially sort by airport ICAO code
+            self.airportSearch, self.airportSearchButton,
+            self.airportList,   # MyTreeview instance (subclass of Treeview)
+            treeUpdatedCallback=lambda self=self: self.airportTooltip.hide())
 
 #------ FlightGear process status and buttons ---------------------------------
         self.frame4 = Frame(self.mainPanedWindow, borderwidth=4)
@@ -760,43 +775,21 @@ want to follow this new default and set “Airport database update” to
         self.aircraftSearch.delete('0', 'end')
         self.aircraftSearch.focus_set()
 
-    def buildAirportList(self, applySearchFilter=False):
-        # The current tooltip won't match the airport under the mouse pointer
-        # after the list is rebuilt.
-        self.airportTooltip.hide()
-
-        if self.airportList:
-            self.airportList.delete(0, 'end')
-
-        searchText = self.airportSearch.get().lower()
-
-        for airport in self.shownAirports:
-            text = "{:6} {}".format(airport.icao, airport.name)
-            if not applySearchFilter or searchText in text.lower():
-                self.airportList.insert('end', text)
-
-    # Accept any arguments to allow safe use as a Tkinter variable observer
-    def searchAirports(self, *args):
-        self.buildAirportList(applySearchFilter=True)
-
-        # Select the first result, if any
-        if self.airportList.size():
-            # This does not trigger the <<ListboxSelect>> event (tested with
-            # Tk 8.6)...
-            self.airportList.selection_set(0)
-            # ... therefore, we have do do it ourselves.
-            self.updateAirport()
-
-    def airportSearchClear(self):
-        self.airportSearch.delete('0', 'end')
-        self.airportSearch.focus_set()
-
-    def updateAirportList(self):
+    def buildAirportList(self, clearSearch=False):
         if (self.config.auto_update_apt.get() and
             os.path.isfile(self.config.apt_path)):
             self.config._autoUpdateApt()
 
-        self.shownAirports = self.config._readApt()
+        # This is limited to the list of installed airports if
+        # 'Config.filteredAptList' is set to 1.
+        self.browsableAirports = self.config._readApt()
+
+        airportListData = [ (airport.icao, airport.name)
+                            for airport in self.browsableAirports ]
+        # Update the airport list widget (as opposed to
+        # 'self.browsableAirports', which is also an airport list in some way)
+        self.airportChooser.setTreeData(airportListData,
+                                        clearSearch=clearSearch)
 
     def commentText(self):
         """Highlight comments in text window."""
@@ -839,19 +832,16 @@ want to follow this new default and set “Airport database update” to
             self.config.write(text=t, path=p)
 
     def filterAirports(self):
-        """Update airportList.
+        """Update the airport list.
 
-        Apply filter to airportList if self.config.filteredAptList is True.
+        Apply filter to the airport list if self.config.filteredAptList is
+        True.
 
         """
         message = _("Building the airport list (this may take a while)...")
         infoWindow = infowindow.InfoWindow(self.master, text=message)
-        self.updateAirportList()
         self.buildAirportList()
         infoWindow.destroy()
-
-        self.airportList.see(self.getIndex('p'))
-        self.airportList.select_set(self.getIndex('p'))
 
     def getAircraft(self):
         """Return the Aircraft instance selected via self.aircraftList."""
@@ -862,26 +852,6 @@ want to follow this new default and set “Airport database update” to
             # No aircraft selected. Should only happen when no aircraft is
             # available.
             return None
-
-    def getAirportIcaoAtIndex(self, index):
-        """
-        Return the ICAO code for the airport at 'index' in the airport list.
-
-        As for the Tkinter Listbox widget, 'index' starts from 0.
-
-        """
-        return self.airportList.get(index).split()[0]
-
-    def getAirport(self):
-        """Get airportList current selection and return airport ICAO."""
-        index = self.airportList.curselection()
-        if index:
-            return self.getAirportIcaoAtIndex(index)
-
-        try:
-            return self.getAirportIcaoAtIndex(ACTIVE)
-        except IndexError:
-            return self.config.airport.get()
 
     def getImage(self, aircraft):
         """Find thumbnail in aircraft directory."""
@@ -897,44 +867,30 @@ want to follow this new default and set “Airport database update” to
 
         return image
 
-    def getIndex(self, type_):
-        """Get aircraft name ('a') or airport ICAO ('p')
-        and return its index."""
-        if type_ == 'a':
-            aircraft = self.config.getCurrentAircraft()
+    def getCurrentAircraftIndex(self):
+        """Return the index of the selected aircraft in the aircraft list."""
+        aircraft = self.config.getCurrentAircraft()
+
+        try:
+            return self.shownAircrafts.index(aircraft)
+        except ValueError:
+            try:
+                dfltAircrafts = self.config.aircraftDict[DEFAULT_AIRCRAFT]
+            except KeyError:
+                return 0
 
             try:
-                return self.shownAircrafts.index(aircraft)
+                dfltAircraft = dfltAircrafts[0]
+            except IndexError: # should never happen
+                logger.warning(_(
+                    "Empty list for the default aircraft. Please report "
+                    "a bug."))
+                return 0
+
+            try:
+                return self.shownAircrafts.index(dfltAircraft)
             except ValueError:
-                try:
-                    dfltAircrafts = self.config.aircraftDict[DEFAULT_AIRCRAFT]
-                except KeyError:
-                    return 0
-
-                try:
-                    dfltAircraft = dfltAircrafts[0]
-                except IndexError: # should never happen
-                    logger.warning(_(
-                        "Empty list for the default aircraft. Please report "
-                        "a bug."))
-                    return 0
-
-                try:
-                    return self.shownAircrafts.index(dfltAircraft)
-                except ValueError:
-                    return 0
-
-        if type_ == 'p':
-            icao = self.config.airport.get()
-            try:
-                airport = self.config.airports[icao]
-                return self.shownAirports.index(airport)
-            except (KeyError, ValueError):
-                try:
-                    airport = self.config.airports[DEFAULT_AIRPORT]
-                    return self.shownAirports.index(airport)
-                except (KeyError, ValueError):
-                    return 0
+                return 0
 
     def popupCarrier(self, event):
         """Make pop up menu."""
@@ -1028,7 +984,7 @@ want to follow this new default and set “Airport database update” to
         """Make popup menu for airport parking or carrier start position."""
         popup = Menu(tearoff=0)
 
-        if self.config.airport.get():
+        if not self.config.carrier.get(): # not in “carrier mode”
             data = self.populateAirportParkingPopup(event, popup,
                                                     POPUP_HEADER_BG_COL)
             if data is None:    # error doing the parking data lookup
@@ -1165,8 +1121,8 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
 
     def popupRwy(self, event):
         """Popup menu offering to select between runways and/or helipads."""
-        if not self.config.airport.get():
-            return
+        assert self.config.airport.get(), \
+            "self.config.airport.get() should not be empty here"
 
         runways = self.readRunwayData(self.config.airport.get())
         if runways is None: # error doing the runway data lookup
@@ -1174,7 +1130,6 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
 
         # Mapping from menu item index to fgdata.airport.RunwayBase instance
         runwayForItem = {}
-        # self.config.airport not empty: we are not in “carrier mode”
         popup = Menu(tearoff=0)
 
         # This makes the popup menu more visible, visually similar
@@ -1297,6 +1252,7 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
         self.options.trace('w', self.FGCommand.update)
         self.config.aircraft.trace('w', self.FGCommand.update)
         self.config.aircraftDir.trace('w', self.FGCommand.update)
+        self.config.airport.trace('w', self.resetRwyParkAndCarrier)
         self.config.airport.trace('w', self.FGCommand.update)
         self.config.scenario.trace('w', self.FGCommand.update)
         self.config.carrier.trace('w', self.FGCommand.update)
@@ -1316,24 +1272,17 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
 
         setupTranslationHelper(self.config) # the language may have changed
 
-        # Save these parameters, because deleting the search entries modifies
-        # them, since it causes the first (aircraft or airport) list entry to
-        # be selected.
+        # Save the current aircraft, because deleting the corresponding search
+        # entry might modify it (e.g., causing the first entry in the aircraft
+        # list to be selected).
         aircraft = self.config.getCurrentAircraft()
-        airport = self.config.airport.get()
-
         # This doesn't trigger a rebuild of the aircraft list at application
-        # startup, because self.aircraftSearchText is initially empty.
-        # Therefore, the buildAircraftList() call in resetLists() is not
-        # redundant with the following line.
+        # startup, because self.aircraftSearch is initially empty. Therefore,
+        # the buildAircraftList() call in resetLists() is not redundant with
+        # the following line.
         self.aircraftSearch.delete(0, 'end')
-        # Ditto with “airport list”, self.airportSearchText and
-        # buildAirportList().
-        self.airportSearch.delete(0, 'end')
-
-        # Restore the parameters saved above
+        # Restore the saved aircraft selection
         self.config.setCurrentAircraft(aircraft)
-        self.config.airport.set(airport)
 
         self._updUpdateInstalledAptListMenuEntryState()
         self.resetLists()
@@ -1378,7 +1327,6 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
                                  bg=self.default_bg)
         self.rwy_label.config(fg=self.default_fg)
         self.rwyLabel.config(fg=self.default_fg)
-        self.config.airport.set(self.getAirport())
         self.updateImage()
 
         try:
@@ -1393,12 +1341,12 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
 
     def resetLists(self):
         self.buildAircraftList()
-        self.updateAirportList()
-        self.buildAirportList()
-        self.aircraftList.select_set(self.getIndex('a'))
-        self.airportList.select_set(self.getIndex('p'))
-        self.aircraftList.see(self.getIndex('a'))
-        self.airportList.see(self.getIndex('p'))
+        self.aircraftList.select_set(self.getCurrentAircraftIndex())
+        self.aircraftList.see(self.getCurrentAircraftIndex())
+
+        # Clear the airport search entry and rebuild the airport list at the
+        # same time.
+        self.buildAirportList(clearSearch=True)
 
     def resetText(self):
         t = self.option_window
@@ -1652,7 +1600,6 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
         self.rwy_label.config(fg=GRAYED_OUT_COL)
         self.rwyLabel.config(fg=GRAYED_OUT_COL)
         self.config.rwy.set('')
-        self.config.airport.set('')
         scenario = self.currentCarrier[-1]
 
         if scenario not in self.config.scenario.get().split():
@@ -1756,25 +1703,19 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
             self.config.setCurrentAircraft(now)
             self.updateImage()
 
-    def updateAirport(self, event=None, allowLeavingCarrierMode=True):
-        """Update airport selection.
+    def resetRwyParkAndCarrier(self, *args):
+        """Reset runway, parking position and carrier after changing airport.
 
-        Must be called after changing the selection in the airport list.
-        Exit carrier mode if the airport selected in the airport list is
-        different from self.config.airport.
+        Automatically called after changing the selection in the airport list.
 
         """
-        if self.config.airport.get() or allowLeavingCarrierMode:
-            # self.config.airport not empty: we are not in “carrier mode”
-            selected_apt = self.getAirport()
+        if self.config.airport.get() != self.config.previousAirport:
+            self.config.previousAirport = self.config.airport.get()
 
-            if selected_apt != self.config.airport.get():
-                self.config.park.set('')
-                self.config.rwy.set('')
-                self.config.airport.set(selected_apt)
+            self.config.park.set('')
+            self.config.rwy.set('')
 
-                if allowLeavingCarrierMode:
-                    self.resetCarrier()
+            self.resetCarrier()
 
     def selectNewAirport(self, icao):
         """Select a new airport. Leave carrier mode if necessary.
@@ -1785,16 +1726,8 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
         """
         # Clear the search field, otherwise the new airport may be filtered out
         # and thus invisible.
-        self.airportSearchClear()
-        # Find the index for 'icao' in the airport list
-        airport = self.config.airports[icao]
-        indexInAptList = self.shownAirports.index(airport)
-        self.airportList.see(indexInAptList)
-        self.airportList.select_clear(0, "end")
-        self.airportList.select_set(indexInAptList)
-        # Must always be done after changing the selection in the airport list.
-        # This will set self.config.airport to 'icao'.
-        self.updateAirport()
+        self.airportSearch.delete(0, 'end')
+        self.airportList.FFGoGotoItemWithValue("icao", icao)
 
     def onRunwayUpdate(self, *args):
         """Method run when self.config.rwy is changed."""
