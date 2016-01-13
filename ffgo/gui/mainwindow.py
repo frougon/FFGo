@@ -394,6 +394,7 @@ class App:
             "icao",             # initially sort by airport ICAO code
             self.airportSearch, self.airportSearchButton,
             self.airportList,   # MyTreeview instance (subclass of Treeview)
+            150, # delay before propagating the effect of nav keys (arrows...)
             treeUpdatedCallback=lambda self=self: self.airportTooltip.hide())
 
 #------ FlightGear process status and buttons ---------------------------------

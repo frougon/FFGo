@@ -202,6 +202,7 @@ class AirportFinder:
             "icao", # Initially, sort by ICAO
             self.refAirportSearchEntry, self.refAirportSearchClearButton,
             self.refAirportSearchTree,
+            0, # delay before propagating the effect of nav keys (arrows...)
             treeUpdatedCallback=self.hideAirportChooserTooltip)
 
         self.searchDescrLabelVar = tk.StringVar()

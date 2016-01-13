@@ -42,6 +42,15 @@ class MyTreeview(ttk.Treeview):
         assert "height" in kwargs, kwargs
         self._FFGoTreeHeight = kwargs["height"]
         self._FFGoWrapItems = FFGoWrapItems
+        # We need this flag for special handling of navigation keys:
+        # because the subsequent processing may take some time and such
+        # keys may cause repeated events by simply being held down, it
+        # may be beneficial to wait a bit before doing lengthy
+        # processing in case the selected item is changed again within a
+        # short delay. This way, Tk's main loop can have enough time to
+        # update the interface, despite keyboard events arriving with
+        # "high" frequency.
+        self._FFGoRepeatableNavKeyHit = False
 
         self.bind('<KeyPress>', self._FFGoOnKeyPress)
 
@@ -81,6 +90,7 @@ class MyTreeview(ttk.Treeview):
                 else:               # no item is selected
                     targetIdx = 0
 
+                self._FFGoRepeatableNavKeyHit = True # set the flag
                 self.FFGoGotoItemWithIndex(targetIdx, treeItems=treeItems)
 
     # Must be called with an up-to-date 'self' object
@@ -207,7 +217,8 @@ class AirportChooser:
     def __init__(self, master, config,
                  icaoVar, treeData, columnsMetadata, initSortBy,
                  entryWidget, clearButton, treeWidget,
-                 treeUpdatedCallback=None, updateDelay=400):
+                 repeatableNavKeyApplyDelay, treeUpdatedCallback=None,
+                 updateDelay=400):
         """Constructor for AirportChooser instances.
 
         master          -- Tk master object (“root”)
@@ -230,6 +241,18 @@ class AirportChooser:
         clearButton     -- Ttk or Tk Button widget: the “Clear” button
         treeWidget      -- Ttk Treeview widget used as a multicolumn
                            list (in other words, a table)
+        repeatableNavKeyApplyDelay
+                        -- delay before the result of using a repeatable
+                           navigation key (up or down arrow, Page Up or
+                           Page Down) is propagated to 'icaoVar'. This
+                           is necessary when writing to 'icaoVar'
+                           triggers time-consuming callbacks, otherwise
+                           the Tk main loop doesn't have enough time to
+                           refresh the interface between two successive
+                           keyboard events, and thus the interface
+                           appears to be frozen (typically when holding
+                           down one of the aforementioned navigation
+                           keys).
         treeUpdatedCallback
                         -- function called after the Treeview widget has
                            been updated (after every update of the
@@ -252,7 +275,8 @@ class AirportChooser:
         """
         _attrs = ("master", "config", "icaoVar", "treeData", "columnsMetadata",
                   "entryWidget", "clearButton", "treeWidget",
-                  "treeUpdatedCallback", "updateDelay")
+                  "repeatableNavKeyApplyDelay", "treeUpdatedCallback",
+                  "updateDelay")
         for attr in _attrs:
             setattr(self, attr, locals()[attr])
 
@@ -274,6 +298,7 @@ class AirportChooser:
         self.searchUpdateEnabled = True
         self.searchBufferVar.trace("w", self.searchBufferVarWritten)
         self.searchVar.trace("w", self.updateAirportList)
+        self._applyNavKeyCancelId = None
 
         entryWidget.config(textvariable=self.searchBufferVar)
         clearButton.config(command=self.clearSearch)
@@ -454,8 +479,27 @@ class AirportChooser:
 
     def onTreeviewSelect(self, event=None):
         tree = self.treeWidget
-
         currentSel = tree.selection()
         assert currentSel, "Unexpected empty selection in TreeviewSelect event"
 
+        if tree._FFGoRepeatableNavKeyHit:
+            # We are presumably here because of a repeatable navigation
+            # key (up or down arrow, Page Up or Page Down).
+            tree._FFGoRepeatableNavKeyHit = False # clear the flag
+
+            if self._applyNavKeyCancelId is not None:
+                self.master.after_cancel(self._applyNavKeyCancelId)
+
+            if self.repeatableNavKeyApplyDelay: # non-zero delay
+                self._applyNavKeyCancelId = self.master.after(
+                    self.repeatableNavKeyApplyDelay, self.applySelection)
+                return
+
         self.icaoVar.set(tree.set(currentSel[0], "icao"))
+
+    def applySelection(self):
+        """Set 'self.icaoVar' according to the currently selected item."""
+        tree = self.treeWidget
+        currentSel = tree.selection()
+        if currentSel:
+            self.icaoVar.set(tree.set(currentSel[0], "icao"))
