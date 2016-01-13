@@ -250,15 +250,24 @@ class App:
         self.frame12 = Frame(self.frame1, borderwidth=1)
         self.frame12.pack(side='bottom', fill='both', expand=True)
 
-        self.scrollbar = Scrollbar(self.frame12, orient='vertical')
+        aircraftListScrollbar = ttk.Scrollbar(self.frame12, orient='vertical',
+                                              takefocus=0)
+
+        def onAircraftListScrolled(
+                *args, self=self, aircraftListScrollbar=aircraftListScrollbar):
+            aircraftListScrollbar.set(*args)
+            # Once the Treeview is scrolled, the tooltip is likely not to match
+            # the airport under the mouse pointer anymore.
+            self.aircraftTooltip.hide()
+
         self.aircraftList = Listbox(self.frame12, bg=TEXT_BG_COL,
                                     exportselection=0,
-                                    yscrollcommand=self.scrollbar.set,
+                                    yscrollcommand=onAircraftListScrolled,
                                     height=14)
-        self.scrollbar.config(command=self.aircraftList.yview, takefocus=0)
+        aircraftListScrollbar.config(command=self.aircraftList.yview)
         self.aircraftList.bind('<<ListboxSelect>>', self.updateAircraft)
         self.aircraftList.pack(side='left', fill='both', expand=True)
-        self.scrollbar.pack(side='left', fill='y')
+        aircraftListScrollbar.pack(side='left', fill='y')
 
         def aircraftListTooltipFunc(index):
             return self.shownAircrafts[index].dir
@@ -356,12 +365,18 @@ class App:
         self.airportListScrollbar = Scrollbar(self.frame32, orient='vertical',
                                               takefocus=0)
 
+        def onAirportListScrolled(*args, self=self):
+            self.airportListScrollbar.set(*args)
+            # Once the Treeview is scrolled, the tooltip is likely not to match
+            # the airport under the mouse pointer anymore.
+            self.airportTooltip.hide()
+
         # Subclass of Ttk's Treeview. The TreeviewSelect event binding is done
         # in the AirportChooser class.
         self.airportList = widgets.MyTreeview(
             self.frame32, columns=["icao", "name"],
             show="headings", selectmode="browse", height=14,
-            yscrollcommand=self.airportListScrollbar.set)
+            yscrollcommand=onAirportListScrolled)
         self.airportList.pack(side='left', fill='both', expand=True)
 
         self.airportListScrollbar.config(command=self.airportList.yview)

@@ -151,12 +151,18 @@ class AirportFinder:
         self.airportChooserTooltip = TreeviewToolTip(
             self.refAirportSearchTree, refAirportSearchTreeTooltipFunc)
 
+        def onRefAirportListScrolled(*args, self=self):
+            self.refAirportScrollbar.set(*args)
+            # Once the Treeview is scrolled, the tooltip is likely not to match
+            # the airport under the mouse pointer anymore.
+            self.airportChooserTooltip.hide()
+
         self.refAirportScrollbar = ttk.Scrollbar(
             refAirportFrame, orient='vertical',
             command=self.refAirportSearchTree.yview, takefocus=0)
         self.refAirportScrollbar.grid(row=0, column=2, sticky="ns")
         self.refAirportSearchTree.config(
-            yscrollcommand=self.refAirportScrollbar.set)
+            yscrollcommand=onRefAirportListScrolled)
 
         self.refIcao = tk.StringVar()
         self.refIcao.trace("w", self.onRefIcaoWritten)
@@ -715,11 +721,17 @@ class AirportFinder:
         self.resultsTreeTooltip = TreeviewToolTip(self.resultsTree,
                                                   resultsTreeTooltipFunc)
 
+        def onResultsTreeScrolled(*args, self=self):
+            self.resultsScrollbar.set(*args)
+            # Once the Treeview is scrolled, the tooltip is likely not to match
+            # the airport under the mouse pointer anymore.
+            self.resultsTreeTooltip.hide()
+
         self.resultsScrollbar = ttk.Scrollbar(
             resultsFrame, orient='vertical',
             command=self.resultsTree.yview, takefocus=0)
         self.resultsScrollbar.grid(row=0, column=2, sticky="ns")
-        self.resultsTree.config(yscrollcommand=self.resultsScrollbar.set)
+        self.resultsTree.config(yscrollcommand=onResultsTreeScrolled)
 
         # This will hold the ICAO for the airport selected in the results tree.
         self.selectedIcao = tk.StringVar()
