@@ -4,6 +4,7 @@
 import os
 from tkinter import *
 import tkinter.filedialog as fd
+from tkinter.messagebox import showinfo
 
 from .. import misc
 from .tooltip import ToolTip
@@ -363,8 +364,15 @@ When this option is unchecked, only the main window size is stored.""")
 
     def saveBaseFontSize(self):
         value = self.validateBaseFontSize()
-        self.config.baseFontSize.set(value)
-        self.config.setupFonts()  # Apply the change
+        if int(self.config.baseFontSize.get()) != int(value):
+            message = _('Some changes may need a restart to be effective')
+            detail = _("It may be necessary to restart {prg} in order to "
+                       "see the full effects of changing the font size.") \
+                       .format(prg=PROGNAME)
+            showinfo(_('{prg}').format(prg=PROGNAME), message, detail=detail)
+
+            self.config.baseFontSize.set(value)
+            self.config.setupFonts()  # Apply the change
 
     def validateBaseFontSize(self):
         v = self.getBaseFontSize()

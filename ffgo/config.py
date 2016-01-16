@@ -184,11 +184,20 @@ class Config:
 
         # Configure built-in fonts
         for style in ("Default", "Text", "Fixed", "Caption", "Tooltip"):
-            configFontSize(style, 1)
+            # The 'if init:' here is a workaround for a weird problem: when
+            # saving the settings from the Preferences dialog, even if the very
+            # same font size is set here as the one that was used at program
+            # initialization, the main window layout gets broken, with the
+            # airport chooser Treeview taking more and more horizontal space
+            # every time the settings are saved. Avoiding to reconfigure the
+            # fonts in such "reinit" conditions works around the problem...
+            if init:
+                configFontSize(style, 1)
 
         for style, factor in (("Menu", 20 / 18.), ("Heading", 20 / 18.),
                               ("SmallCaption", 16 / 18.), ("Icon", 14 / 18.)):
-            configFontSize(style, factor)
+            if init:            # Second part of the workaround mentioned above
+                configFontSize(style, factor)
 
         # Create or configure custom fonts, depending on 'init'
         aboutTitleFontSize = scale(42 / 18.)
@@ -198,16 +207,21 @@ class Config:
         else:
             self.aboutTitleFont.configure(size=aboutTitleFontSize)
 
-        # For the ttk.Treeview widget
-        treeviewHeadingFontSize = scale(1.)
+        # Final part of the workaround mentioned above. Normally, the code
+        # should always be executed, regardless of the value of 'init'.
         if init:
-            self.treeviewHeadingFont = tkinter.font.Font(
-                weight="normal", size=treeviewHeadingFontSize)
-        else:
-            self.treeviewHeadingFont.configure(size=treeviewHeadingFontSize)
+            # For the ttk.Treeview widget
+            treeviewHeadingFontSize = scale(1.)
+            # Redundant test, right. Hopefully, one day, we'll be able to get
+            # rid of the workaround and this test won't be redundant anymore.
+            if init:
+                self.treeviewHeadingFont = tkinter.font.Font(
+                    weight="normal", size=treeviewHeadingFontSize)
+            else:
+                self.treeviewHeadingFont.configure(size=treeviewHeadingFontSize)
 
-        style = ttk.Style()
-        style.configure("Treeview.Heading", font=self.treeviewHeadingFont)
+            style = ttk.Style()
+            style.configure("Treeview.Heading", font=self.treeviewHeadingFont)
 
     def makeInstalledAptList(self):
         logger.notice(_("Building the list of installed airports "
