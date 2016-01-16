@@ -36,6 +36,8 @@ class ConfigWindow:
         self.MagneticField_bin = StringVar()
         self.language = StringVar()
         self.baseFontSize = StringVar()
+        self.rememberMainWinPos = IntVar()
+        self.autoscrollFGOutput = IntVar()
         self.fakeParkposOption = IntVar()
 
         if self.config.apt_data_source.get():
@@ -58,6 +60,8 @@ class ConfigWindow:
         else:
             self.language.set('-')
         self.baseFontSize.set(self.config.baseFontSize.get())
+        self.rememberMainWinPos.set(self.config.saveWindowPosition.get())
+        self.autoscrollFGOutput.set(self.config.autoscrollFGOutput.get())
         self.fakeParkposOption.set(self.config.fakeParkposOption.get())
 
         self.reset_flag = False
@@ -349,6 +353,8 @@ When this option is unchecked, only the main window size is stored.""")
         else:
             self.config.language.set(self.language.get())
         self.saveBaseFontSize()
+        self.config.saveWindowPosition.set(self.rememberMainWinPos.get())
+        self.config.autoscrollFGOutput.set(self.autoscrollFGOutput.get())
         self.config.fakeParkposOption.set(self.fakeParkposOption.get())
 
         self.config.write(text=self.text)
@@ -634,23 +640,23 @@ When this option is unchecked, only the main window size is stored.""")
         # “Remember main windows position” checkbox
         self.frame_rememberMainWinPos = Frame(self.frame_misc)
         self.frame_rememberMainWinPos.pack(side='top', fill='x', expand=True)
-        self.rememberMainWinPos = Checkbutton(
+        self.rememberMainWinPosCb = Checkbutton(
             self.frame_rememberMainWinPos,
             text=_('Remember the main window position'),
-            variable=self.config.saveWindowPosition)
-        ToolTip(self.rememberMainWinPos, self.tooltip_rememberMainWinPos)
-        self.rememberMainWinPos.pack(side='left', fill='x')
+            variable=self.rememberMainWinPos)
+        ToolTip(self.rememberMainWinPosCb, self.tooltip_rememberMainWinPos)
+        self.rememberMainWinPosCb.pack(side='left', fill='x')
 
         # “Automatically scroll the Output Window” checkbox
         self.frame_autoscrollFGOutput = Frame(self.frame_misc)
         self.frame_autoscrollFGOutput.pack(side='top', fill='x', expand=True)
-        self.autoscrollFGOutput = Checkbutton(
+        self.autoscrollFGOutputCb = Checkbutton(
             self.frame_autoscrollFGOutput,
             text=_('Automatically scroll the Output Window'),
-            variable=self.config.autoscrollFGOutput)
-        ToolTip(self.autoscrollFGOutput, self.tooltip_autoscrollFGOutput,
+            variable=self.autoscrollFGOutput)
+        ToolTip(self.autoscrollFGOutputCb, self.tooltip_autoscrollFGOutput,
                 autowrap=True)
-        self.autoscrollFGOutput.pack(side='left', fill='x')
+        self.autoscrollFGOutputCb.pack(side='left', fill='x')
 
         # “Fake the --parkpos option” checkbox
         self.frame_fakeParkposOption = Frame(self.frame_misc)
