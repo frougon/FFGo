@@ -976,11 +976,14 @@ want to follow this new default and set “Airport database update” to
                         background=headerBgColor,
                         columnbreak=True)
 
-                if parking.source == ParkingSource.groundnet:
+                fakeParkposOpt = self.config.fakeParkposOption.get()
+                if (parking.source == ParkingSource.groundnet and
+                    not fakeParkposOpt):
                     setParkFunc = lambda x=parkName: self.config.park.set(x)
                 else:
-                    assert parking.source == ParkingSource.apt_dat, \
-                        parking.source
+                    assert (parking.source == ParkingSource.apt_dat or
+                            fakeParkposOpt), (parking.source, fakeParkposOpt)
+
                     def setParkFunc(parking=parking, parkName=parkName):
                         s = "::apt.dat::1::{},{};lat={},lon={},heading={}" \
                             .format(len(parkName), parkName,

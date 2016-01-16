@@ -36,6 +36,7 @@ class ConfigWindow:
         self.MagneticField_bin = StringVar()
         self.language = StringVar()
         self.baseFontSize = StringVar()
+        self.fakeParkposOption = IntVar()
 
         if self.config.apt_data_source.get():
             self.apt_data_source.set(_('Scenery'))
@@ -57,6 +58,7 @@ class ConfigWindow:
         else:
             self.language.set('-')
         self.baseFontSize.set(self.config.baseFontSize.get())
+        self.fakeParkposOption.set(self.config.fakeParkposOption.get())
 
         self.reset_flag = False
         self.initToolTipMessages()
@@ -307,6 +309,11 @@ When this option is unchecked, only the main window size is stored.""")
             "Automatically scroll the FlightGear Output Window to the end "
             "every time new text is received from FlightGear's stdout or "
             "stderr stream.")
+        self.tooltip_fakeParkposOption = _(
+            "Translate the --parkpos option into a sequence of --lat, --lon "
+            "and --heading options. This is useful when --parkpos is broken "
+            "in FlightGear; otherwise, it is probably better to leave this "
+            "option disabled.")
 
     def quit(self):
         """Quit without saving."""
@@ -342,6 +349,7 @@ When this option is unchecked, only the main window size is stored.""")
         else:
             self.config.language.set(self.language.get())
         self.saveBaseFontSize()
+        self.config.fakeParkposOption.set(self.fakeParkposOption.get())
 
         self.config.write(text=self.text)
         self.reset_flag = True
@@ -643,3 +651,14 @@ When this option is unchecked, only the main window size is stored.""")
         ToolTip(self.autoscrollFGOutput, self.tooltip_autoscrollFGOutput,
                 autowrap=True)
         self.autoscrollFGOutput.pack(side='left', fill='x')
+
+        # “Fake the --parkpos option” checkbox
+        self.frame_fakeParkposOption = Frame(self.frame_misc)
+        self.frame_fakeParkposOption.pack(side='top', fill='x', expand=True)
+        self.fakeParkposOptionCb = Checkbutton(
+            self.frame_fakeParkposOption,
+            text=_('Fake the --parkpos option'),
+            variable=self.fakeParkposOption)
+        ToolTip(self.fakeParkposOptionCb, self.tooltip_fakeParkposOption,
+                autowrap=True)
+        self.fakeParkposOptionCb.pack(side='left', fill='x')

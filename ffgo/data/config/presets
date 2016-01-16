@@ -98,6 +98,11 @@
 #                                 the Output Window to the end whenever new
 #                                 text is received from FlightGear's stdout or
 #                                 stderr stream.
+# FAKE_PARKPOS_OPTION=boolean   - 0 or 1 (defaults to 0). Automatically
+#                                 translate the --parkpos option (that would
+#                                 normally be passed to fgfs for parking
+#                                 positions found in groundnet files) into
+#                                 three --lat, --lon and --heading options.
 #
 # Any number of options can be selected, but to get FFGo ready to work,
 # you only need:

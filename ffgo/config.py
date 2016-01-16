@@ -94,6 +94,9 @@ class Config:
         self.showFGOutputInSeparateWindow = IntVar()
         self.FGOutputGeometry = StringVar()
         self.autoscrollFGOutput =  IntVar()
+        # Option to translate --parkpos into --lat, --lon and --heading (useful
+        # when --parkpos is broken in FlightGear)
+        self.fakeParkposOption = IntVar()
 
         self.keywords = {'--aircraft=': self.aircraft,
                          '--airport=': self.airport,
@@ -125,7 +128,8 @@ class Config:
                          'SHOW_FG_OUTPUT_IN_SEPARATE_WINDOW=':
                          self.showFGOutputInSeparateWindow,
                          'FG_OUTPUT_GEOMETRY=': self.FGOutputGeometry,
-                         'AUTOSCROLL_FG_OUTPUT=': self.autoscrollFGOutput}
+                         'AUTOSCROLL_FG_OUTPUT=': self.autoscrollFGOutput,
+                         'FAKE_PARKPOS_OPTION=': self.fakeParkposOption}
 
         # In order to avoid using a lot of memory, detailed airport data is
         # only loaded on demand. Since this is quite slow, keep a cache of the
@@ -344,6 +348,7 @@ class Config:
         self.FGOutputGeometry.set('')
         self.autoscrollFGOutput.set('1')
         self.park.set('')
+        self.fakeParkposOption.set('0')
         self.rwy.set('')
         self.scenario.set('')
         self.filteredAptList.set(0)
