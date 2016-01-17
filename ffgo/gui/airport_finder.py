@@ -14,6 +14,7 @@ from tkinter import ttk
 from tkinter.messagebox import showinfo, showerror
 
 from ..constants import PROGNAME
+from .. import common_transl
 from . import widgets
 from ..geo import geodesy
 from ..misc import normalizeHeading
@@ -498,25 +499,13 @@ class AirportFinder:
             padding=("10p", 0, "10p", 0))
         vincentyMethodRadioButton.grid(row=1, column=17, sticky="w")
 
-        # Tooltip for the calculation method
-        if self.geodCalc.karneyMethodAvailable():
-            calcMethodHint = ""
-        else:
+        if not self.geodCalc.karneyMethodAvailable():
             karneyMethodRadioButton.state(["disabled"])
-            calcMethodHint = ("\n\n"
-                "In order to be able to use it here, you need to have "
-                "installed GeographicLib's implementation for the Python "
-                "installation you are using to run {prg}.").format(prg=PROGNAME)
 
-        calcMethodTooltipText = _(
-            "Method used to compute distance, initial and final bearings "
-            "for the shortest path between two airports (“inverse geodetic "
-            "problem”). "
-            "Vincenty's method is faster than Karney's one, but there are "
-            "some particular cases in which Vincenty's algorithm can't do "
-            "the computation. Karney's method should handle all possible "
-            "cases.{complement}").format(complement=calcMethodHint)
-        ToolTip(calcMethodLabel, calcMethodTooltipText, autowrap=True)
+        # Tooltip for the calculation method
+        ToolTip(calcMethodLabel,
+                common_transl.geodCalcMethodTooltipText(self.geodCalc),
+                autowrap=True)
 
         spacer = ttk.Frame(searchParamsFrame)
         spacer.grid(row=0, column=1, sticky="nsew")
