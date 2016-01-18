@@ -93,7 +93,7 @@ class Config:
         self.showFGOutput = IntVar()
         self.showFGOutputInSeparateWindow = IntVar()
         self.FGOutputGeometry = StringVar()
-        self.autoscrollFGOutput =  IntVar()
+        self.autoscrollFGOutput = IntVar()
         # Option to translate --parkpos into --lat, --lon and --heading (useful
         # when --parkpos is broken in FlightGear)
         self.fakeParkposOption = IntVar()
