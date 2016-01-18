@@ -659,10 +659,23 @@ class AirportFinder:
             resultsLeftFrame, text=_('Choose selected airport'),
             command=self.chooseSelectedAirport, padding="4p")
         self.chooseSelectedAptButton.grid(row=8, column=0)
+        resultsLeftFrame.grid_rowconfigure(8, pad="15p")
 
         self.chooseSelectedAptButton.state(["disabled"])
         ToolTip(self.chooseSelectedAptButton,
                 _("Choose the selected airport and close this dialog"),
+                autowrap=True)
+
+        # “Clear results” button
+        self.clearResultsButton = ttk.Button(
+            resultsLeftFrame, text=_('Clear results'),
+            command=self.clearResults, padding="4p")
+        self.clearResultsButton.grid(row=9, column=0)
+
+        ToolTip(self.clearResultsButton,
+                _("Clear the table of results. This may free up a small "
+                  "amount of memory if a very large number of results "
+                  "is displayed."),
                 autowrap=True)
 
         # Treeview widget used to display the search results
@@ -932,7 +945,7 @@ class AirportFinder:
             return None
 
     # Accept any arguments to allow safe use as a Tkinter variable observer
-    def displayResults(self, *args):
+    def displayResults(self, *args, FFGoClearNbResultsTextVar=False):
         """Display the last search results."""
         if self.results is None or not self.refIcao.get():
             return
@@ -985,10 +998,19 @@ class AirportFinder:
                       airport.minRwyLength, airport.maxRwyLength])
 
         self.resultsManager.loadData(l)
-        nbRes = len(self.results)
-        self.nbResultsTextVar.set(
-            ngettext("Found {} airport", "Found {} airports", nbRes)
-            .format(nbRes))
+
+        if FFGoClearNbResultsTextVar:
+            self.nbResultsTextVar.set('')
+        else:
+            nbRes = len(self.results)
+            self.nbResultsTextVar.set(
+                ngettext("Found {} airport", "Found {} airports", nbRes)
+                .format(nbRes))
+
+    def clearResults(self):
+        self.results = []
+        self.displayResults(FFGoClearNbResultsTextVar=True)
+        self.chooseSelectedAptButton.state(["disabled"])
 
     def chooseSelectedAirport(self):
         """
