@@ -132,23 +132,51 @@ class GPSTool:
         calcFrame.grid_rowconfigure(0, weight=100)
         calcFrame.grid_columnconfigure(0, weight=100, pad="30p")
 
-        # Magnetic or true bearings
+        # Length unit (nautical miles or kilometers)
         leftSubframe1 = ttk.Frame(calcLeftFrame)
         leftSubframe1.grid(row=0, column=0, sticky="nsw")
 
-        bearingsTypeLabel = ttk.Label(leftSubframe1, text=_("Bearings"))
-        bearingsTypeLabel.grid(row=0, column=0, sticky="w")
+        lengthUnitLabel = ttk.Label(leftSubframe1, text=_("Distance in"))
+        lengthUnitLabel.grid(row=0, column=0, sticky="w")
         leftSubframe1.grid_columnconfigure(0, weight=100)
+
+        self.lengthUnit = tk.StringVar()
+        self.lengthUnit.set("nautical mile")
+        nautMilesButton = ttk.Radiobutton(
+            leftSubframe1, variable=self.lengthUnit,
+            text=_("nautical miles"), value="nautical mile",
+            padding=("10p", 0, "10p", 0))
+        nautMilesButton.grid(row=0, column=1, sticky="w")
+        leftSubframe1.grid_rowconfigure(0, pad="5p")
+        kilometersButton = ttk.Radiobutton(
+            leftSubframe1, variable=self.lengthUnit,
+            text=_("kilometers"), value="kilometer",
+            padding=("10p", 0, "10p", 0))
+        kilometersButton.grid(row=1, column=1, sticky="w")
+
+        leftSpacerHeight = "20p"
+        leftSpacer = ttk.Frame(calcLeftFrame)
+        leftSpacer.grid(row=1, column=0, sticky="nsew")
+        calcLeftFrame.grid_rowconfigure(
+            1, minsize=leftSpacerHeight, weight=100)
+
+        # Magnetic or true bearings
+        leftSubframe2 = ttk.Frame(calcLeftFrame)
+        leftSubframe2.grid(row=2, column=0, sticky="nsw")
+
+        bearingsTypeLabel = ttk.Label(leftSubframe2, text=_("Bearings"))
+        bearingsTypeLabel.grid(row=0, column=0, sticky="w")
+        leftSubframe2.grid_columnconfigure(0, weight=100)
 
         self.bearingsType = tk.StringVar()
         magBearingsButton = ttk.Radiobutton(
-            leftSubframe1, variable=self.bearingsType,
+            leftSubframe2, variable=self.bearingsType,
             text=pgettext("Bearings", "magnetic"), value="magnetic",
             padding=("10p", 0, "10p", 0))
         magBearingsButton.grid(row=0, column=1, sticky="w")
-        leftSubframe1.grid_rowconfigure(0, pad="5p")
+        leftSubframe2.grid_rowconfigure(0, pad="5p")
         trueBearingsButton = ttk.Radiobutton(
-            leftSubframe1, variable=self.bearingsType,
+            leftSubframe2, variable=self.bearingsType,
             text=pgettext("Bearings", "true"), value="true",
             padding=("10p", 0, "10p", 0))
         trueBearingsButton.grid(row=1, column=1, sticky="w")
@@ -160,34 +188,6 @@ class GPSTool:
             magBearingsButton.state(["disabled"])
             ToolTip(bearingsTypeLabel, common_transl.magneticFieldTooltipText,
                     autowrap=True)
-
-        leftSpacerHeight = "20p"
-        leftSpacer = ttk.Frame(calcLeftFrame)
-        leftSpacer.grid(row=1, column=0, sticky="nsew")
-        calcLeftFrame.grid_rowconfigure(
-            1, minsize=leftSpacerHeight, weight=100)
-
-        # Length unit (nautical miles or kilometers)
-        leftSubframe2 = ttk.Frame(calcLeftFrame)
-        leftSubframe2.grid(row=2, column=0, sticky="nsw")
-
-        lengthUnitLabel = ttk.Label(leftSubframe2, text=_("Distances in"))
-        lengthUnitLabel.grid(row=0, column=0, sticky="w")
-        leftSubframe2.grid_columnconfigure(0, weight=100)
-
-        self.lengthUnit = tk.StringVar()
-        self.lengthUnit.set("nautical mile")
-        nautMilesButton = ttk.Radiobutton(
-            leftSubframe2, variable=self.lengthUnit,
-            text=_("nautical miles"), value="nautical mile",
-            padding=("10p", 0, "10p", 0))
-        nautMilesButton.grid(row=0, column=1, sticky="w")
-        leftSubframe2.grid_rowconfigure(0, pad="5p")
-        kilometersButton = ttk.Radiobutton(
-            leftSubframe2, variable=self.lengthUnit,
-            text=_("kilometers"), value="kilometer",
-            padding=("10p", 0, "10p", 0))
-        kilometersButton.grid(row=1, column=1, sticky="w")
 
         leftSpacer = ttk.Frame(calcLeftFrame)
         leftSpacer.grid(row=3, column=0, sticky="nsew")
