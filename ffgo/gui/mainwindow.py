@@ -199,6 +199,8 @@ class App:
         self.toolsmenu = Menu(self.menubar, tearoff=0)
         self.toolsmenu.add_command(label=_('Airport Finder'),
                                    command=self.showAirportFinder)
+        self.toolsmenu.add_command(label=_('GPS Tool'),
+                                   command=self.showGPSTool)
         self.toolsmenu.add_command(label='METAR',
                                    command=self.showMETARWindow)
         self.toolsmenu.add_command(label=_('Copy FG shell-equivalent command'),
@@ -484,7 +486,8 @@ class App:
         self.default_bg = self.master.cget('bg')
         self.scenarioListOpen = False
         self.currentCarrier = []
-        self.setMetarToNone() # Initialize self.metar to None
+        self.setMetarToNone()   # Initialize self.metar to None
+        self.setGPSToolToNone() # Initialize self.gpsTool to None
         # Window to let the user know a long operation is taking place
         self.aptDatParkLookupInfoWindow = None
 
@@ -1688,6 +1691,26 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
         from . import airport_finder
 
         airport_finder.AirportFinder(self.master, self.config, self)
+
+    def showGPSTool(self, event=None):
+        """Show the GPS Tool dialog."""
+        # This import indirectly requires the translation system to be in
+        # place.
+        from . import gps_tool
+
+        if self.gpsTool is None:
+            # Create a new dialog from scratch
+            self.gpsTool = gps_tool.GPSTool(self.master, self.config, self)
+        else:
+            # Unhide an already-created dialog
+            self.gpsTool.show()
+
+    # Method called from GPSTool.destroy() (otherwise, that would be
+    # ridiculous)
+    def setGPSToolToNone(self):
+        # Allow the garbage collector to free up the memory. In theory, at
+        # least...
+        self.gpsTool = None
 
     def showMETARWindow(self, event=None):
         # This import indirectly requires the translation system to be in

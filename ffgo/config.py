@@ -1006,8 +1006,10 @@ configurations are kept separate.""")
         from .fgdata import airport as airport_mod
         from .fgdata import parking as parking_mod
         from .gui import airport_finder as airport_finder_mod
+        from .gui import gps_tool as gps_tool_mod
 
-        for module in (airport_mod, parking_mod, airport_finder_mod):
+        for module in (airport_mod, parking_mod, airport_finder_mod,
+                       gps_tool_mod):
             module.setupEarthMagneticFieldProvider(self.earthMagneticField)
 
 
