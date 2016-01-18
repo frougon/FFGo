@@ -785,9 +785,9 @@ class GPSTool:
         assert unit in ("knot", "km/h")
 
         if unit == "knot":
-            gs = 1.852*groundSpeed
-        else:
             gs = groundSpeed / 1.852
+        else:
+            gs = 1.852*groundSpeed
 
         self.dontUpdateFlightDuration = True
         self.groundSpeed.set(str(round(gs)))
