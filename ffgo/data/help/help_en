@@ -123,6 +123,16 @@ Tools:
                    airport ICAO code, name or any of the aforementioned
                    criteria.
 
+    GPS Tool    -- similar in some ways to the Airport Finder dialog,
+                   but more convenient for the cases where you already
+                   know the start and destination airports you are
+                   interested in, and you just want to get the results
+                   for these airports. Or you want to find the distance
+                   and bearings for several particular pairs of
+                   airports. This dialog also allows you to see the
+                   flight duration for a given ground speed, and vice
+                   versa.
+
     METAR       -- show METAR report for the selected airport, or the
                    nearest airport providing METAR data. These reports
                    are downloaded from <http://weather.noaa.gov/>.
