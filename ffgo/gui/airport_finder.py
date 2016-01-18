@@ -65,8 +65,11 @@ class AirportFinder:
         # Uncomment this to disallow interacting with other windows
         # self.top.grab_set()
         self.top.title(_('Airport finder'))
-        self.top.protocol("WM_DELETE_WINDOW", self.quit)
-        self.top.bind('<Escape>', self.quit)
+        # Currently, hiding is a better choice than destroying, because memory
+        # occupation doesn't increase when the dialog is shown again after
+        # being hidden.
+        self.top.protocol("WM_DELETE_WINDOW", self.hide)
+        self.top.bind('<Escape>', self.hide)
 
         panedWindow = ttk.PanedWindow(self.top, orient="vertical")
         panedWindow.grid(row=0, column=0, sticky="nsew")
@@ -801,9 +804,21 @@ class AirportFinder:
         for widget in widgets:
             widget.config(state=state)
 
-    def quit(self, event=None):
+    def destroy(self, event=None):
         """Destroy the Airport Finder dialog."""
         self.top.destroy()
+        # Normally, this should allow Python's garbage collector to free some
+        # memory, however it doesn't work so well. Presumably, the Tk widgets
+        # stay in memory even when they are not referenced anymore...
+        self.app.setAirportFinderToNone()
+
+    def hide(self, event=None):
+        """Hide the Airport Finder dialog."""
+        self.top.withdraw()
+
+    def show(self, event=None):
+        """Unhide a hidden Airport Finder dialog."""
+        self.top.deiconify()
 
     # Accept any arguments to allow safe use as a Tkinter variable observer
     def onRefIcaoWritten(self, *args):
@@ -997,7 +1012,7 @@ class AirportFinder:
             showerror(_('{prg}').format(prg=PROGNAME), message, detail=detail,
                       parent=self.top)
         else:
-            self.quit()
+            self.hide()
 
 
 class TabularDataManager:

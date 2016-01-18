@@ -486,8 +486,9 @@ class App:
         self.default_bg = self.master.cget('bg')
         self.scenarioListOpen = False
         self.currentCarrier = []
-        self.setMetarToNone()   # Initialize self.metar to None
-        self.setGPSToolToNone() # Initialize self.gpsTool to None
+        self.setMetarToNone()         # Initialize self.metar to None
+        self.setAirportFinderToNone() # Initialize self.airportFinder to None
+        self.setGPSToolToNone()       # Initialize self.gpsTool to None
         # Window to let the user know a long operation is taking place
         self.aptDatParkLookupInfoWindow = None
 
@@ -1690,7 +1691,20 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
         # place.
         from . import airport_finder
 
-        airport_finder.AirportFinder(self.master, self.config, self)
+        if self.airportFinder is None:
+            # Create a new dialog from scratch
+            self.airportFinder = airport_finder.AirportFinder(
+                self.master, self.config, self)
+        else:
+            # Unhide an already-created dialog
+            self.airportFinder.show()
+
+    # Method called from AirportFinder.destroy() (otherwise, that would be
+    # ridiculous)
+    def setAirportFinderToNone(self):
+        # Allow the garbage collector to free up the memory. In theory, at
+        # least...
+        self.airportFinder = None
 
     def showGPSTool(self, event=None):
         """Show the GPS Tool dialog."""
