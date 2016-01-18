@@ -37,3 +37,8 @@ def geodCalcMethodTooltipText(geodCalc):
         "cases.{complement}").format(complement=geographicLibHint)
 
     return text
+
+
+magneticFieldTooltipText = _(
+    "You may want to install GeographicLib's MagneticField program in "
+    "order to see magnetic bearings.")

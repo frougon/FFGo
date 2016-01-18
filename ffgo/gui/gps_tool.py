@@ -158,9 +158,8 @@ class GPSTool:
         else:
             self.bearingsType.set("true")
             magBearingsButton.state(["disabled"])
-            ToolTip(bearingsTypeLabel, _(
-                "You may install GeographicLib's MagneticField program in "
-                "order to see magnetic bearings."), autowrap=True)
+            ToolTip(bearingsTypeLabel, common_transl.magneticFieldTooltipText,
+                    autowrap=True)
 
         leftSpacerHeight = "20p"
         leftSpacer = ttk.Frame(calcLeftFrame)

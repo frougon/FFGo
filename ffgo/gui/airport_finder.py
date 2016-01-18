@@ -619,6 +619,8 @@ class AirportFinder:
         else:
             self.bearingsType.set("true")
             magBearingsButton.state(["disabled"])
+            ToolTip(bearingsTypeLabel, common_transl.magneticFieldTooltipText,
+                    autowrap=True)
 
         searchBottomLeftSpacer2 = ttk.Frame(resultsLeftFrame)
         searchBottomLeftSpacer2.grid(row=5, column=0, sticky="nsew")
