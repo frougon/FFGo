@@ -21,8 +21,7 @@ def geodCalcMethodTooltipText(geodCalc):
     if geodCalc.karneyMethodAvailable():
         geographicLibHint = ""
     else:
-        geographicLibHint = _(
-            "\n\n"
+        geographicLibHint = "\n\n" + _(
             "In order to be able to use it here, you need to have "
             "installed GeographicLib's implementation for the Python "
             "installation you are using to run {prg}.").format(prg=PROGNAME)

@@ -705,7 +705,7 @@ class GPSTool:
     def updateFlightDurationPostfix(self, *args):
         """
         Update the converted value of flight time in days, hours and minutes."""
-        baseUnitStr = pgettext("duration unit", "min.")
+        baseUnitStr = pgettext("unit of time", "min")
         durationStr = self.flightDuration.get()
 
         try:
