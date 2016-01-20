@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: FFGo 1.9.0\n"
 "Report-Msgid-Bugs-To: f.rougon@free.fr\n"
 "POT-Creation-Date: 2016-01-19 10:25+0100\n"
-"PO-Revision-Date: 2015-12-20 23:50+0100\n"
+"PO-Revision-Date: 2016-01-20 19:40+0100\n"
 "Last-Translator: chris_blues <chris@musicchris.de>\n"
 "Language-Team: \n"
 "Language: de\n"
@@ -538,6 +538,8 @@ msgid ""
 "GeographicLib's implementation for the Python installation you are using to "
 "run {prg}."
 msgstr ""
+"Um es hier zu benutzen muß GeographicsLibs Implementierung für die "
+"Pythonversion, die sie für {prg} benutzen, installiert sein."
 
 #: ffgo/common_transl.py:30
 #, python-brace-format
@@ -559,6 +561,8 @@ msgid ""
 "You may want to install GeographicLib's MagneticField program in order to "
 "see magnetic bearings."
 msgstr ""
+"Um die magnetischen Richtungen zu sehen, sollten sie GeographicsLib "
+"Magnetfeld Programm installieren."
 
 #: ffgo/gui/metar.py:81
 msgid "Decoded"
@@ -858,6 +862,8 @@ msgid ""
 "Automatically scroll the FlightGear Output Window to the end every time new "
 "text is received from FlightGear's stdout or stderr stream."
 msgstr ""
+"Das FlightGear Augabefenster automatisch nach unten an das Ende rollen, wenn "
+"neuer Text aus FlightGears stdout oder stderr erscheint."
 
 #: ffgo/gui/configwindow.py:318
 msgid ""
@@ -865,10 +871,14 @@ msgid ""
 "options. This is useful when --parkpos is broken in FlightGear; otherwise, "
 "it is probably better to leave this option disabled."
 msgstr ""
+"Die --parkpos in eine ---lat, --lon und --heading Sequenz übersetzen. Dies "
+"ist sinnvoll, wenn FlightGears --parkpos nicht funktioniert; andernfalls ist "
+"es wahrscheinlich besser diese Option zu deaktivieren."
 
 #: ffgo/gui/configwindow.py:368
 msgid "Some changes may need a restart to be effective"
 msgstr ""
+"Einige Änderungen könnten einen Neustart brauchen um wirksam zu werden."
 
 #: ffgo/gui/configwindow.py:369
 #, python-brace-format
@@ -876,6 +886,8 @@ msgid ""
 "It may be necessary to restart {prg} in order to see the full effects of "
 "changing the font size."
 msgstr ""
+"Es könnte notwendig sein {prg} neu zu starten, um die ganzen Auswirkungen "
+"des Änderns der Textgröße zu sehen."
 
 #: ffgo/gui/configwindow.py:437 ffgo/gui/configwindow.py:458
 #: ffgo/gui/configwindow.py:479 ffgo/gui/configwindow.py:502
@@ -922,36 +934,31 @@ msgstr "Die Hauptfensterposition speichern"
 
 #: ffgo/gui/configwindow.py:663
 msgid "Automatically scroll the Output Window"
-msgstr ""
+msgstr "Das Ausgabefenster automatisch nach unten rollen."
 
 #: ffgo/gui/configwindow.py:674
 msgid "Fake the --parkpos option"
-msgstr ""
+msgstr "die --parkpos Option vortäuschen"
 
 #: ffgo/gui/gps_tool.py:60 ffgo/gui/mainwindow.py:202
-#, fuzzy
 msgid "GPS Tool"
-msgstr "Werkzeuge"
+msgstr "GPS Werkzeug"
 
 #: ffgo/gui/gps_tool.py:100
-#, fuzzy
 msgid "Airport A"
-msgstr "Flughafen:"
+msgstr "Flughafen A"
 
 #: ffgo/gui/gps_tool.py:112
-#, fuzzy
 msgid "Airport B"
-msgstr "Flughafen:"
+msgstr "Flughafen B"
 
 #: ffgo/gui/gps_tool.py:121
-#, fuzzy
 msgid "Calculations"
-msgstr "Methode zur Berechnung"
+msgstr "Berechnungen"
 
 #: ffgo/gui/gps_tool.py:139
-#, fuzzy
 msgid "Distance in"
-msgstr "Entfernungen in"
+msgstr "Entfernung in"
 
 #: ffgo/gui/gps_tool.py:147 ffgo/gui/airport_finder.py:644
 msgid "nautical miles"
@@ -977,15 +984,15 @@ msgstr "wahr"
 
 #: ffgo/gui/gps_tool.py:201
 msgid "Speed in"
-msgstr ""
+msgstr "Geschwindigkeit in"
 
 #: ffgo/gui/gps_tool.py:209
 msgid "knots"
-msgstr ""
+msgstr "Knoten"
 
 #: ffgo/gui/gps_tool.py:215
 msgid "km/h"
-msgstr ""
+msgstr "km/h"
 
 #: ffgo/gui/gps_tool.py:229 ffgo/gui/airport_finder.py:484
 msgid "Calculation method"
@@ -1001,29 +1008,29 @@ msgstr "Vincenty et al."
 
 #: ffgo/gui/gps_tool.py:270
 msgid "Distance between A and B: "
-msgstr ""
+msgstr "Entfernung zwischen A und B:"
 
 #: ffgo/gui/gps_tool.py:296
 msgid "Bearings from A to B:"
-msgstr ""
+msgstr "Richtung von A nach B: "
 
 #: ffgo/gui/gps_tool.py:303 ffgo/gui/gps_tool.py:333
 msgctxt "bearings for a path between two points"
 msgid "init: "
-msgstr ""
+msgstr "anfangs: "
 
 #: ffgo/gui/gps_tool.py:318 ffgo/gui/gps_tool.py:345
 msgctxt "bearings for a path between two points"
 msgid "final: "
-msgstr ""
+msgstr "schließlich: "
 
 #: ffgo/gui/gps_tool.py:327
 msgid "Bearings from B to A: "
-msgstr ""
+msgstr "Richtung von B nach A: "
 
 #: ffgo/gui/gps_tool.py:364
 msgid "Ground speed: "
-msgstr ""
+msgstr "Geschwindigkeit über Grund: "
 
 #: ffgo/gui/gps_tool.py:407
 #, python-brace-format
@@ -1031,6 +1038,8 @@ msgid ""
 "Decomposition using Julian years\n"
 "(1 Julian year = {days} days)"
 msgstr ""
+"Zerlegung mit Julianischen Jahren\n"
+"(1 Julianisches Jahr = {days} Tage)"
 
 #: ffgo/gui/gps_tool.py:442 ffgo/gui/airport_finder.py:120
 msgid "Search: "
@@ -1052,12 +1061,11 @@ msgid "Name"
 msgstr "Name"
 
 #: ffgo/gui/gps_tool.py:547
-#, fuzzy
 msgid "Unable to perform this calculation"
-msgstr "Kann geodäsische Berechnung nicht ausführen"
+msgstr "Kann diese Berechnung nicht ausführen"
 
 #: ffgo/gui/gps_tool.py:549
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid ""
 "Could not compute the distance and bearings between {icaoA} ({nameA}) and "
 "{icaoB} ({nameB}).\n"
@@ -1067,19 +1075,16 @@ msgid ""
 "or nearly antipodal points). Use Karney's calculation method if you want to "
 "see the results for these two airports."
 msgstr ""
-"Kann die Entfernung und Richtung zwischen {refICAO} und dem folgenden "
-"Flughafen nicht berechnen: {aptList}.\n"
+"Kann die Entfernung und Richtung zwischen {icaoA} ({nameA}) und {icaoB} "
+"({nameB}) nicht berechnen.\n"
 "\n"
 "Vincentys Algorythmus für das geodäsische Umkehrproblem kann bekannterweise "
-"nicht alle möglichen Fälle behandeln. Benutzen Sie Karneys "
-"Berechnungsmethode um alle Ergebnisse zu bekommen.\n"
-"\n"
-"Normalerweise kann das nur passieren, wenn die Flughäfen sich "
-"gegenüberliegen, oder sehr nahe daran. Daher können sie diese Nachricht "
-"getrost ignorieren, wenn sie daran nicht interessiert sind."
+"nicht alle möglichen Fälle behandeln (am auffälligsten ist, daß es zwei "
+"entgegengesetzte oder beinahe entgegengesetzte Punkte nicht bestimmen kann). "
+"Benutzen Sie Karneys Berechnungsmethode um die Ergebnisse für diese beiden "
+"Flughäfen zu bekommen."
 
 #: ffgo/gui/gps_tool.py:581
-#, fuzzy
 msgctxt "length unit"
 msgid " nm"
 msgstr "nm"
@@ -1087,72 +1092,71 @@ msgstr "nm"
 #: ffgo/gui/gps_tool.py:586
 msgctxt "length unit"
 msgid " km"
-msgstr ""
+msgstr "km"
 
 #: ffgo/gui/gps_tool.py:708
-#, fuzzy
 msgctxt "unit of time"
 msgid "min"
-msgstr "min:"
+msgstr "min"
 
 #: ffgo/gui/gps_tool.py:740
 #, python-brace-format
 msgid "{nYears} {years}"
-msgstr ""
+msgstr "{nYears} {years}"
 
 #: ffgo/gui/gps_tool.py:742
 msgid "year"
 msgid_plural "years"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Jahr"
+msgstr[1] "Jahre"
 
 #: ffgo/gui/gps_tool.py:745
 #, python-brace-format
 msgid "{nDays} {days}"
-msgstr ""
+msgstr "{nDays} {days}"
 
 #: ffgo/gui/gps_tool.py:747
 msgid "day"
 msgid_plural "days"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tag"
+msgstr[1] "Tage"
 
 #: ffgo/gui/gps_tool.py:750
 #, python-brace-format
 msgid "{nHours} {hours}"
-msgstr ""
+msgstr "{nHours} {hours}"
 
 #: ffgo/gui/gps_tool.py:752
 msgid "hour"
 msgid_plural "hours"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Stunde"
+msgstr[1] "Stunden"
 
 #: ffgo/gui/gps_tool.py:755 ffgo/gui/gps_tool.py:767
 #, python-brace-format
 msgid "{nMinutes} {minutes}"
-msgstr ""
+msgstr "{nMinutes} {minutes}"
 
 #: ffgo/gui/gps_tool.py:757 ffgo/gui/gps_tool.py:769
 msgid "minute"
 msgid_plural "minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Minute"
+msgstr[1] "Minuten"
 
 #: ffgo/gui/gps_tool.py:761
 msgctxt "duration expression"
 msgid " and "
-msgstr ""
+msgstr " und "
 
 #: ffgo/gui/gps_tool.py:799
 msgctxt "speed unit"
 msgid " kn"
-msgstr ""
+msgstr " kn"
 
 #: ffgo/gui/gps_tool.py:801
 msgctxt "speed unit"
 msgid " km/h"
-msgstr ""
+msgstr " km/h"
 
 #: ffgo/gui/airport_finder.py:67
 msgid "Airport finder"
@@ -1295,15 +1299,16 @@ msgid "Choose the selected airport and close this dialog"
 msgstr "Den ausgewählten Flughafen wählen und diesen Dialog schließen"
 
 #: ffgo/gui/airport_finder.py:673
-#, fuzzy
 msgid "Clear results"
-msgstr "Suchergebnisse"
+msgstr "Suchergebnisse leeren"
 
 #: ffgo/gui/airport_finder.py:678
 msgid ""
 "Clear the table of results. This may free up a small amount of memory if a "
 "very large number of results is displayed."
 msgstr ""
+"Die Ergebnistabelle leeren. Dies kann ein wenig Speicher freigeben, wenn "
+"sehr viele Ergebnisse dargestellt werden."
 
 #: ffgo/gui/airport_finder.py:691
 msgid "Distance"
@@ -1402,9 +1407,8 @@ msgstr[0] "Flughafen {} gefunden"
 msgstr[1] "Flughäfen {} gefunden"
 
 #: ffgo/gui/airport_finder.py:1024
-#, fuzzy
 msgid "Airport is filtered out"
-msgstr "Flughafensuche"
+msgstr "Flughafen wurde herausgefiltert"
 
 #: ffgo/gui/airport_finder.py:1025
 #, python-brace-format
@@ -1418,6 +1422,14 @@ msgid ""
 "option from the Settings menu (“Show installed airports only”) or install "
 "scenery for this airport."
 msgstr ""
+"Es ist unmöglich “{name}” ({icao}) in {prg}'s Hauptfenster auszuwählen, weil "
+"dieser Flughafen nicht in der Flughafenliste dieses Fensters ist. "
+"Wahrscheinlich wurde die Option gewählt: nur installierte Flughäfen "
+"anzeigen.\n"
+"\n"
+"Um diesen Flughafen auswählen zu können, sollten sie entweder die Option "
+"(“nur installierte Flughäfen anzeigen”) im Einstellungsmenü abschalten oder "
+"die Szenerie für diesen Flughafen installieren."
 
 #: ffgo/gui/mainwindow.py:130
 msgid "Load..."
@@ -1869,12 +1881,15 @@ msgid "Error parsing a groundnet file"
 msgstr "Fehler beim Analysieren einer Groundnet-Datei"
 
 #: ffgo/gui/mainwindow.py:1106
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid ""
 "In '{file}':\n"
 "\n"
 "{errors}"
-msgstr "In '{file}': {errmsg}"
+msgstr ""
+"In '{file}':\n"
+"\n"
+"{errors}"
 
 #: ffgo/gui/mainwindow.py:1175 ffgo/gui/mainwindow.py:1824
 msgctxt "runway"

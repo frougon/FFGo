@@ -137,6 +137,15 @@ Werkzeuge:
 		   Flughafens, Name oder jeder der genannten Kriterien sortiert
 		   werden.
 
+    GPS Werkzeug
+		-- in mancher Hinsicht ähnlich wie die Flughafensuche, aber
+		   bequemer in den Fällen, in denen man schon den Start- und
+		   Zielflughafen weiß und man nur die Ergebnisse für diese
+		   Flughäfen haben will. Oder man möchte die Entfernungen und
+		   Richtungen für mehrere bestimmte Flughafenpaare bestimmen.
+		   Dieser Dialog erlaubt auch die Flugdauer anhand einer
+		   Geschwindigkeit über Grund zu bestimmen oder andersherum.
+
     METAR	-- zeige METAR Wetterbericht für den ausgewählten Flughafen,
 		   oder nächsten Flughafen, der METARdaten bereitstellt. Diese
 		   Wetterberichte werden von <http://weather.noaa.gov/>
