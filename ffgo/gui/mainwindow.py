@@ -1660,11 +1660,14 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
         except AttributeError:
             pass
         # Find currently used language.
-        language = self.config.language.get()
-        if language:
-            lang_code = language
-        else:
-            lang_code = translation(MESSAGES, LOCALE_DIR).info()['language']
+        lang_code = self.config.language.get()
+        if not lang_code:
+            try:
+                lang_code = translation(
+                    MESSAGES, LOCALE_DIR).info()['language']
+            except OSError:
+                # There is no translation for the current locale, use English
+                lang_code = "en"
 
         if not resourceExists(HELP_STEM + lang_code):
             lang_code = 'en'

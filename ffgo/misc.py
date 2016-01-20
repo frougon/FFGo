@@ -1,7 +1,7 @@
 # misc.py --- Miscellaneous utility functions
 # -*- coding: utf-8 -*-
 #
-# Copyright (c) 2015  Florent Rougon
+# Copyright (c) 2015, 2016  Florent Rougon
 #
 # This file is distributed under the terms of the DO WHAT THE FUCK YOU WANT TO
 # PUBLIC LICENSE version 2, dated December 2004, by Sam Hocevar. You should
@@ -204,9 +204,16 @@ class TranslationHelper:
 
         """
         from .constants import MESSAGES, LOCALE_DIR
-        langCode = (
-            config.language.get() or
-            gettext.translation(MESSAGES, LOCALE_DIR).info()['language'])
+
+        langCode = config.language.get()
+        if not langCode:
+            try:
+                langCode = gettext.translation(
+                    MESSAGES, LOCALE_DIR).info()['language']
+            except OSError:
+                # There is no translation for the current locale, use English
+                langCode = "en"
+
         self.translator = gettext.translation(
             MESSAGES, LOCALE_DIR, languages=[langCode])
 
