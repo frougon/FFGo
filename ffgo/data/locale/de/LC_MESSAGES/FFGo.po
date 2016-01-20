@@ -1,7 +1,7 @@
 # German translations for FFGo.
 # Copyright (C) 2010-2015  Robert Leda
-# Copyright (C) 2014-2015  Florent Rougon
-# Copyright (C) 2010-2015  chris_blues <chris@musicchris.de>
+# Copyright (C) 2014-2016  Florent Rougon
+# Copyright (C) 2010-2016  chris_blues <chris@musicchris.de>
 # This file is distributed under the same license as the FFGo package.
 #
 msgid ""
@@ -938,7 +938,7 @@ msgstr "Das Ausgabefenster automatisch nach unten rollen."
 
 #: ffgo/gui/configwindow.py:674
 msgid "Fake the --parkpos option"
-msgstr "die --parkpos Option vortäuschen"
+msgstr "Die --parkpos Option vortäuschen"
 
 #: ffgo/gui/gps_tool.py:60 ffgo/gui/mainwindow.py:202
 msgid "GPS Tool"
@@ -1008,7 +1008,7 @@ msgstr "Vincenty et al."
 
 #: ffgo/gui/gps_tool.py:270
 msgid "Distance between A and B: "
-msgstr "Entfernung zwischen A und B:"
+msgstr "Entfernung zwischen A und B: "
 
 #: ffgo/gui/gps_tool.py:296
 msgid "Bearings from A to B:"
@@ -1087,12 +1087,12 @@ msgstr ""
 #: ffgo/gui/gps_tool.py:581
 msgctxt "length unit"
 msgid " nm"
-msgstr "nm"
+msgstr " nm"
 
 #: ffgo/gui/gps_tool.py:586
 msgctxt "length unit"
 msgid " km"
-msgstr "km"
+msgstr " km"
 
 #: ffgo/gui/gps_tool.py:708
 msgctxt "unit of time"
