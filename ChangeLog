@@ -678,3 +678,87 @@ you may want to consult the Git repository log.
 [DOC]     Add notes concerning the 'pkg_resources' Python 3 module to
           docs/INSTALL/INSTALL_en. Users might need to install this module in
           somewhat unusual situations. (Florent Rougon)
+
+1.9.0
+[FEATURE] Use the new airport chooser (widgets.AirportChooser) for the airport
+          list in the main window. The airport list in the main window used to
+          be a simple list; replace it with a real multicolumn widget (Ttk
+          Treeview), reusing the logic already implemented in
+          widgets.AirportChooser. This fixes small alignment problems in the
+          previous implementation (due to the ICAO codes not having the same
+          display width), allows one to sort the airport list by ICAO code or
+          airport name, in ascending or descending order, with a simple click
+          on the relevant column header, and brings the nice logic from
+          widgets.AirportChooser to the main window airport list (such as
+          preferring an exact match on ICAO code when there are also substring
+          matches on airport names for a given search string).
+
+          The airport chooser has also been modified to better handle
+          navigation keys (Up and Down arrows, Page Up and Page Down, Home and
+          End). Most notably, holding down one of the first four mentioned
+          here should work as expected (this might need some tuning, because
+          the thing is to delay the time-consuming task of updating everything
+          that depends on the selected airport enough so that Tk has
+          sufficient time between two consecutive “arrow-pressed” keyboard
+          events to refresh the GUI---please report if that doesn't work for
+          you in an airport list [the aircraft list still has this little
+          problem when an arrow key is held down, I know]). (Florent Rougon)
+[FEATURE] New GPS Tool dialog allowing one to find the distance, initial and
+          final bearings for the shortest path between two given airports.
+          This dialog should be more convenient than the Airport Finder dialog
+          for the cases where you already know the start and destination
+          airports you are interested in, and you just want to get the results
+          for these airports. Or you want to check several pairs of airports,
+          and you know precisely *which* ones you want the calculations to be
+          done for.
+
+          The dialog also computes the flight duration for a given ground
+          speed, and vice versa. It reuses the AirportChooser widget already
+          used in FFGo's main window and in the Airport Finder dialog.
+          (Florent Rougon)
+[FEATURE] New setting: "Automatically scroll the Output Window". Add a
+          checkbox to the Miscellaneous tab of the Preferences dialog to
+          control whether FFGo should automatically scroll the FlightGear
+          Output Window to the end whenever new text is received from
+          FlightGear's stdout or stderr stream. This corresponds to the config
+          file parameter AUTOSCROLL_FG_OUTPUT. (Florent Rougon, feature
+          request by pommesschranke/d-laser)
+[FEATURE] Add option to translate --parkpos into --lat, --lon and --heading.
+          This option can be enabled using the “Fake the --parkpos option”
+          checkbox found in the Miscellaneous tab of the Preferences dialog.
+          It is useful when --parkpos is broken in FlightGear (which is
+          currently the case in the 'next' branch of FlightGear's Git
+          repository). (Florent Rougon)
+[BUGFIX]  Fix bug preventing FFGo from starting when there was no translation
+          file for the current locale (thanks to legoboyvdlp for the report).
+          (Florent Rougon)
+[BUGFIX]  Add missing 'tkinter.messagebox' import for 'showerror' in
+          ffgo/fgdata/parking.py. The problematic code could only be reached
+          when FFGo opens an erroneous groundnet file. Problem was: the error
+          reporting could not be done properly. (Florent Rougon)
+[BUGFIX]  Fix two options from the Preferences dialog whose lastest-updated
+          values were used by FFGo even if the dialog was closed with Cancel.
+          These are the 'Remember the main window position' and 'Automatically
+          scroll the Output Window' options. (Florent Rougon)
+[BUGFIX]  Airport Finder: display an explanatory error message when the user
+          chooses an airport that is not present in FFGo's main window due to
+          the fact that the “Show installed airports only” option (from the
+          Settings menu) has been enabled. (Florent Rougon)
+[BUGFIX]  Hide item-specific tooltips when the underlying List or Treeview is
+          scrolled. Once a list or Treeview is scrolled, item-specific
+          tooltips are likely not to match the item under the mouse pointer
+          anymore. For this reason, hide the item-specific tooltip whenever
+          each of the following Lists or Treeviews is scrolled: aircraft and
+          airport lists in FFGo's main window; “reference airport” chooser and
+          results table in the Airport Finder dialog (the GPS Tool dialog has
+          never had this little problem AFAICT). (Florent Rougon)
+[USABILITY] Main window: set the initial focus in the airport search entry. I
+          think this is the most useful thing to do in general.
+          (Florent Rougon)
+[USABILITY] Add a colored, disabled (i.e., not clickable) and empty header to
+          the carrier popup menu. This makes it more visible, visually similar
+          to the runway and parking popup menus, and avoids it disappearing in
+          a flash with the first entry being accidentally selected (i.e.,
+          'carrier = None', return to airport mode) if the user just clicked
+          without holding the left mouse button down. (Florent Rougon)
+[FEATURE] Update the German translation. (chris_blues)
