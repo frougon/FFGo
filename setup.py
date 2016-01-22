@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2015  Florent Rougon
+# Copyright (C) 2015, 2016  Florent Rougon
 #
 # This file is distributed under the terms of the DO WHAT THE FUCK YOU WANT TO
 # PUBLIC LICENSE version 2, dated December 2004, by Sam Hocevar. You should
@@ -67,7 +67,8 @@ def do_setup():
 
         install_requires=['CondConfigParser'],
         extras_require = {'images':  ['Pillow'], 'geo': ['geographiclib']},
-        entry_points={'console_scripts': ['ffgo = ffgo.main:main']},
+        entry_points={'console_scripts': ['ffgo = ffgo.main:main'],
+                      'gui_scripts': ['ffgo-noconsole = ffgo.main:main']},
         # We need real files and directories for gettext l10n files, but
         # pkg_resources.resource_filename() doesn't work if the package is
         # imported from a zip file ("resource_filename() only supported for
