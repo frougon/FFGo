@@ -3,6 +3,7 @@
 
 import os
 import sys
+import platform
 import locale
 import subprocess
 import socket
@@ -2175,7 +2176,15 @@ class LogManager:
                 logfile.write(self.getLog())
 
     def openLogDir(self):
-        program = "xdg-open"
+        if platform.system() == "Windows":
+            # The directory was created at application startup.
+            os.startfile(LOG_DIR) # this is supposed to return immediately
+        elif platform.system() == "Darwin":
+            self._openLogDirWithSubprocess("open")
+        else:
+            self._openLogDirWithSubprocess("xdg-open")
+
+    def _openLogDirWithSubprocess(self, program):
         try:
             process = subprocess.Popen([program, LOG_DIR])
         except OSError as exc:
