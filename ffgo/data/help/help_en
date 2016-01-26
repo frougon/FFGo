@@ -207,8 +207,10 @@ The “Save Log” button allows one to save the entire output of the last
 FlightGear run to a file of your choice.
 
 The “Open Log Directory” button is just a shortcut to open the default
-log directory in a file manager. This is done with the 'xdg-open'
-command to allow you to configure the file manager of your choice.
+log directory in a file manager. On systems different from Windows and
+MacOS X, this is done with the 'xdg-open' program to allow you to
+configure the file manager of your choice. On Windows and MacOS X, the
+directory is opened using the standard mechanism.
 
 The Output Window can be detached from the main window, reattached to it
 or completely hidden. This can be done from the Settings menu. The

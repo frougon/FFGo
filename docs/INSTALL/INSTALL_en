@@ -127,10 +127,9 @@ Let's examine them one by one:
 Tips for Windows users
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Although the author of these lines didn't have a chance to run FFGo himself
-under Windows (please report if you do so), he knows for sure it can be
-installed and run with the “Standard procedure” described a few paragraphs
-below. But before doing so, in the Python installer:
+In order to install FFGo on Windows, I recommend to use the “Standard
+procedure” described a few paragraphs below. But before doing so, in the
+Python installer:
 
   - make sure to enable the 'Tcl/tk' and 'pip' components;
 
@@ -149,12 +148,6 @@ Python on Windows, you can use pip directly on your Python installation. There
 should be *no need to create a virtual environment* for typical Windows users.
 Of course, if you are comfortable with virtual environments and want to use
 one, no problem, go ahead.
-
-Note:
-
-  The “Open Log Directory” feature is not expected to work on Windows, as it
-  uses the 'xdg-open' program. However, this is not important, you can open
-  the log directory with any file manager (such as Explorer).
 
 For Windows-specific instructions concerning Python installation and use, you
 may refer to <https://docs.python.org/3/using/windows.html>.
@@ -175,7 +168,7 @@ carefully read the instructions below about setting up a virtual environment
 and using pip inside it, you should be able to install and later upgrade
 everything easily. But if you want to cut the procedure as short as possible
 and test FFGo right away, here is how (this method requires an OS supporting
-symbolic links, therefore Windows seems not to qualify):
+symbolic links):
 
   0. You may install Pillow and/or GeographicLib (with the MagneticField tool)
      through your distribution package manager; it's usually easy, but
@@ -246,19 +239,29 @@ or
 Note: old versions of pip don't support https.
 
 The above commands automatically pull in the required dependencies (i.e.,
-CondConfigParser, but not Pillow nor GeographicLib's binding for Python 3, nor
-GeographicLib's MagneticField program since they are optional). After that,
-you will have an 'ffgo' executable in the directory where pip installs scripts
-('bin' subdirectory of the virtual environment if your pip runs in a venv,
-something such as C:\PythonXX\Scripts on Windows if you ran pip outside a
-venv).
+CondConfigParser, but not Pillow nor GeographicLib's implementation for
+Python 3, nor GeographicLib's MagneticField program since they are optional).
+After that, you will have an 'ffgo' executable in the directory where pip
+installs scripts ('bin' subdirectory of the virtual environment if your pip
+runs in a venv, something such as C:\PythonXY\Scripts on Windows if you ran
+pip outside a venv, where “XY” is for instance “34” for a Python 3.4
+installation).
 
 Note for Windows users:
 
   If you chose “Add python.exe to Path” in the Python installer and ran pip
-  outside a venv, then the FFGo executable should also be in your PATH,
-  allowing you to run FFGo by just typing 'ffgo' (without the quotes) in a
-  Command Prompt.
+  outside a venv, then the FFGo executables should also be in your PATH,
+  allowing you to run FFGo by just typing 'ffgo' or 'ffgo-noconsole' (without
+  the quotes) in a Command Prompt.
+
+  The 'ffgo.exe' and 'ffgo-noconsole.exe' executables (likely located in
+  C:\PythonXY\Scripts) both run FFGo. You can simply double-click on the one
+  you want in order to start FFGo. The difference between them is that
+  'ffgo.exe' opens a Windows terminal (“console”) containing all FFGo
+  messages, while 'ffgo-noconsole.exe' doesn't. You can safely use the latter
+  most of the time. Should FFGo refuse to start for some reason, running
+  'ffgo.exe' and examining/reporting the printed messages would certainly be
+  helpful.
 
 Upgrades can be done by simply passing '--upgrade' or '-U' to the
 'pip install' command, as in:
@@ -334,7 +337,13 @@ Hints concerning installation of the dependencies
 
         pip install Pillow
 
-* GeographicLib's binding for Python 3
+    Note: on some platforms (e.g., Windows), Pillow can be installed with
+          'pip install Pillow' even if the system doesn't have the compiler
+          and headers necessary to compile Pillow. This is because
+          <https://pypi.python.org/pypi/Pillow> ships binary Pillow
+          distributions for some combinations of platform and Python version.
+
+* GeographicLib's Python 3 implementation
 
   The situation is similar to that of Pillow, except this one doesn't need to
   be compiled. In general, it can be installed with

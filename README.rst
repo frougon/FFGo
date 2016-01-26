@@ -45,7 +45,7 @@ FFGo requires the following software:
   - Operating system:
 
       * GNU/Linux surely works, as should any Unix-like system;
-      * Windows should work, please report;
+      * Windows is reported to work;
       * MacOS X should also work, except *maybe* for MacOS-specific
         Tcl/Tk bugs as explained at
         `<https://www.python.org/download/mac/tcltk/>`_. Please report.
@@ -86,7 +86,7 @@ run FFGo.
 Note:
 
   The home pages of FFGo's dependencies indicated here are current at
-  the time of this writing (November 2015) but might change over time.
+  the time of this writing (January 2016), but might change over time.
 
 
 Download
@@ -122,25 +122,43 @@ or
 
   aptitude install ffgo
 
-etc. depending on your package manager of choice. For this to work, you
-only need to add the following lines to your ``/etc/apt/sources.list``
-(given for Debian *unstable* here)::
+etc., depending on your package manager of choice. For this to work, you
+need to:
 
-  deb http://people.via.ecp.fr/~flo/debian-ffgo unstable main
-  deb-src http://people.via.ecp.fr/~flo/debian-ffgo unstable main
+  - add the following lines to your ``/etc/apt/sources.list`` (given for
+    Debian *unstable* here)::
 
-Packages for Debian *stable* are also available. If this is what you
-need, just replace *unstable* with *jessie*, or whatever is the
-codename of the current Debian *stable* release, in these
-``sources.list`` lines.
+      deb http://people.via.ecp.fr/~flo/debian-ffgo unstable main
+      deb-src http://people.via.ecp.fr/~flo/debian-ffgo unstable main
 
-Don't forget to run::
+    Packages for Debian *stable* are also available. If this is what you
+    need, just replace *unstable* with *jessie*, or whatever is the
+    codename of the current Debian *stable* release, in these
+    ``sources.list`` lines.
+
+  - install `Florent Rougon's OpenPGP key`_ into the ``apt`` keyring.
+    This is necessary to allow ``apt`` to authenticate the packages (if
+    you don't do this, the installation should still be possible, but
+    with warnings and, of course, reduced security).
+
+    .. _Florent Rougon's OpenPGP key: https://people.via.ecp.fr/~flo/keys.html
+
+    In order to do this, you should first get the key using the above
+    link, and save it to a file. Let's assume you have the key in file
+    ``/tmp/OpenPGP-key.asc``. To add it to the ``apt`` keyring, you can
+    run the following command as root::
+
+      apt-key add /tmp/OpenPGP-key.asc
+
+    Once this is done, there is no need to keep the ``OpenPGP-key.asc``
+    file around anymore.
+
+After these two steps, don't forget to run::
 
   apt-get update
 
-(or ``aptitude update``, etc.) after adding the two lines, otherwise the
-package manager won't find the packages available from the newly-added
-repository.
+(or ``aptitude update``, etc.), otherwise the package manager won't find
+the packages available from the newly-added repository.
 
 Notes:
 
@@ -219,14 +237,23 @@ Running
   pip should have installed an ``ffgo`` executable in the directory it
   normally installs scripts into. This directory may be a ``Scripts``
   subdirectory of your Python installation, or a ``bin`` subdirectory of
-  the virtual environment if you ran it in a venv, etc. It depends on
+  the virtual environment if you ran pip in a venv, etc. It depends on
   how you ran pip (inside or outside a venv, etc.). More details are
   given in ``docs/INSTALL``, and if this is not enough, please refer to
   the `pip`_ documentation.
 
-In any case, it is suggested that you skim through the available help
-from the Help menu after you start FFGo. This will direct you to the
-important first-time settings, hopefully give you useful tips, etc.
+  Note for Windows users:
+
+    On Windows, `pip`_ will install an ``ffgo-noconsole.exe`` executable
+    along with ``ffgo.exe`` (typically in ``C:\PythonXY\Scripts`` for a
+    Python installation with version X.Y). The difference between these
+    two files is that ``ffgo.exe`` opens a Windows terminal (“console”)
+    containing all FFGo messages, while ``ffgo-noconsole.exe`` doesn't.
+
+In any case, it is suggested that you skim through the documentation
+available from the Help menu after you start FFGo. This will direct you
+to the important first-time settings, hopefully give you useful tips,
+etc.
 
 
 Documentation
@@ -235,10 +262,10 @@ Documentation
 Apart from this text (which corresponds to ``README.rst`` in a release
 tarball or zip file), FFGo's documentation can be found in the ``docs``
 top-level directory after unpacking a release tarball or zip file. Once
-FFGo is installed, users should start by reading ``docs/README/README_en``
-(``en`` being for the English version; this text is also accessible from
-FFGo's *Help* menu). In a second time,
-``docs/README.conditional-config`` (`available online
+FFGo is installed, users should start by reading
+``docs/README/README_<language code>`` (the language code is ``en`` for
+English; this text is also accessible from FFGo's *Help* menu). In a
+second time, ``docs/README.conditional-config`` (`available online
 <http://people.via.ecp.fr/~flo/projects/FFGo/doc/README-conditional-config/>`_)
 explains how to use the full power of the configuration system used by
 FFGo.
@@ -260,9 +287,14 @@ Getting help, discussing
 ------------------------
 
 At the time of this writing, there is a thread dedicated to FFGo on the
-FlightGear forum at the following address:
+`FlightGear forum`_ at the following address:
 
   http://forum.flightgear.org/viewtopic.php?f=18&t=27054
+
+.. _FlightGear forum: http://forum.flightgear.org/
+
+This is where most discussions about FFGo take place. If you have a
+question or a problem related to FFGo, this is a good place to ask.
 
 
 Bugs
