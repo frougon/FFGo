@@ -762,3 +762,16 @@ you may want to consult the Git repository log.
           'carrier = None', return to airport mode) if the user just clicked
           without holding the left mouse button down. (Florent Rougon)
 [FEATURE] Update the German translation. (chris_blues)
+
+1.9.1
+[FEATURE] Installing on Windows should create an ffgo-noconsole.exe executable
+          (typically in C:\PythonXY\Scripts) that doesn't open any terminal
+          window (“console”) when run. (Florent Rougon)
+[BUGFIX]  Fix a bug in the Airport Finder: if the airport search text in
+          FFGo's main window was non-empty, the “Choose selected airport”
+          button of the Airport Finder dialog could fail to find the chosen
+          airport. (Florent Rougon)
+[BUGFIX]  Fix the “Open Log Directory” feature to hopefully work on Windows
+          and MacOS X (in addition to Unix-like systems, of course).
+          (Florent Rougon)
+[FEATURE] Update the German translation. (chris_blues)
