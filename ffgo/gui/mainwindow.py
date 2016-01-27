@@ -1796,7 +1796,10 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
         """
         # Clear the search field, otherwise the new airport may be filtered out
         # and thus invisible.
-        self.airportSearch.delete(0, 'end')
+        self.airportChooser.clearSearch(setFocusOnEntryWidget=False)
+        # Let Tk update the airport list
+        self.master.update_idletasks()
+        # Now, we can select the desired airport.
         self.airportList.FFGoGotoItemWithValue("icao", icao)
 
     def onRunwayUpdate(self, *args):
