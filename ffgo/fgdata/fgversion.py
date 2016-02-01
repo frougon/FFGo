@@ -201,7 +201,7 @@ def getFlightGearVersion(FG_bin):
     except subprocess.CalledProcessError as e:
         raise ErrorRunningFlightGearDashDashVersion(str(e)) from e
 
-    mo = _FGVersionOutput_cre.match(output)
+    mo = _FGVersionOutput_cre.search(output)
     if not mo:
         raise UnableToParseFlightGearVersionOutput()
 
