@@ -502,9 +502,10 @@ class GPSTool:
             airportSearchData.append((icao, airport.name))
 
         airportChooser = widgets.AirportChooser(
-            self.master, self.config, icaoVar,
-            airportSearchData, airportSearchColumns,
-            "icao", # Initially, sort by ICAO
+            self.master, self.config,
+            icaoVar,                      # output variable of the chooser
+            airportSearchData,
+            airportSearchColumns, "icao", # Initially, sort by ICAO
             searchEntry, searchClearButton,
             airportSearchTree,
                # Delay before propagating the effect of nav keys (arrows...).

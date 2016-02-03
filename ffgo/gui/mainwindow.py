@@ -406,7 +406,8 @@ class App:
                                for col in airportListColumnsList }
 
         self.airportChooser = widgets.AirportChooser(
-            self.master, self.config, self.config.airport,
+            self.master, self.config,
+            self.config.airport, # output variable of the chooser
             [],                 # empty list for now, will be filled by reset()
             airportListColumns,
             "icao",             # initially sort by airport ICAO code

@@ -207,9 +207,10 @@ class AirportFinder:
                  airport.minRwyLength, airport.maxRwyLength))
 
         self.airportChooser = widgets.AirportChooser(
-            self.master, self.config, self.refIcao,
-            refAirportSearchData, refAirportSearchColumns,
-            "icao", # Initially, sort by ICAO
+            self.master, self.config,
+            self.refIcao,       # output variable of the chooser
+            refAirportSearchData,
+            refAirportSearchColumns, "icao", # Initially, sort by ICAO
             self.refAirportSearchEntry, self.refAirportSearchClearButton,
             self.refAirportSearchTree,
             0, # delay before propagating the effect of nav keys (arrows...)

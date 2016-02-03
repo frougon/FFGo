@@ -8,6 +8,7 @@
 # have received a copy of this license along with this file. You can also find
 # it at <http://www.wtfpl.net/>.
 
+import abc
 import enum
 import tkinter as tk
 from tkinter import ttk
@@ -17,6 +18,9 @@ class error(Exception):
     """Base class for exceptions raised in the 'widgets' module."""
 
 class NoSuchItem(error):
+    pass
+
+class NoSelectedItem(error):
     pass
 
 
@@ -173,7 +177,7 @@ class Column:
         dataIndex    -- index (starting from 0) used to look up data for
                         this column in each record of the underlying
                         data model (e.g., index for use inside each
-                        element of AirportChooser.treeData)
+                        element of IncrementalChooser.treeData)
         anchor       -- 'anchor' parameter for use in
                         TreeWidget.column()
         stretch      -- 'stretch' parameter for use in
@@ -211,41 +215,59 @@ class Column:
             setattr(self, attr, locals()[attr])
 
 
-class AirportChooser:
-    """Glue logic turning three widgets into a convenient airport chooser."""
+class IncrementalChooser(metaclass=abc.ABCMeta):
+    """Generic glue logic turning three widgets into a convenient chooser.
 
-    def __init__(self, master, config,
-                 icaoVar, treeData, columnsMetadata, initSortBy,
+    Abstract class used to build a convenient chooser from three
+    widgets: a MyTreeview instance displaying a list of available items
+    (airports, aircrafts...), an Entry widget allowing the user to enter
+    a search query, and a Button to clear the Entry and display the full
+    list of available items.
+
+    The list displayed in the MyTreeview widget may have several
+    columns, allow sorting by clicking on column headers, have
+    item-specific tooltips, etc.
+    """
+
+    def __init__(self, master, config, outputVar,
+                 treeData, columnsMetadata, initSortBy,
                  entryWidget, clearButton, treeWidget,
                  repeatableNavKeyApplyDelay, treeUpdatedCallback=None,
                  updateDelay=400):
-        """Constructor for AirportChooser instances.
+        """Constructor for IncrementalChooser instances.
+
+        Some of the terminology used here (e.g., “column identifier”,
+        “symbolic column name”) comes from the documentation of the Ttk
+        Treeview widget.
 
         master          -- Tk master object (“root”)
         config          -- Config instance
-        icaoVar         -- StringVar instance that will be automatically
-                           updated to reflect the currently selected
-                           airport (currently selected in the MyTreeview
-                           widget)
+        outputVar       -- Arbitrary Python object that will be
+                           automatically updated to reflect the current
+                           selection in 'treeWidget'. This class has a
+                           few abstract methods to tell precisely how to
+                           manage 'outputVar'.
         treeData        -- sequence of tuples where each tuple has one
-                           element per column displayed in the
-                           MyTreeview. This is the complete data set
-                           used to fill the MyTreeview. The word “tuple”
-                           is used to ease understanding here, but any
-                           sequence can do.
-        columnsMetadata -- mapping from symbolic column names for the
-                           MyTreeview widget to Column instances
+                           element per column displayed in 'treeWidget'.
+                           This is the complete data set used to fill
+                           'treeWidget'. The word “tuple” is used to
+                           ease understanding here, but any sequence can
+                           do.
+        columnsMetadata -- mapping from symbolic column names for
+                           'treeWidget' to Column instances
         initSortBy      -- symbolic name of the column used to initially
-                           sort the MyTreeview widget
+                           sort 'treeWidget'
         entryWidget     -- Ttk or Tk Entry widget: the search field
         clearButton     -- Ttk or Tk Button widget: the “Clear” button
         treeWidget      -- MyTreeview instance used as a multicolumn
-                           list (in other words, a table)
+                           list (in other words, a table). It can of
+                           course have one column only if desired---this
+                           is just a particular case.
         repeatableNavKeyApplyDelay
                         -- delay before the result of using a repeatable
                            navigation key (up or down arrow, Page Up or
-                           Page Down) is propagated to 'icaoVar'. This
-                           is necessary when writing to 'icaoVar'
+                           Page Down) is propagated to 'outputVar'. This
+                           is necessary when writing to 'outputVar'
                            triggers time-consuming callbacks, otherwise
                            the Tk main loop doesn't have enough time to
                            refresh the interface between two successive
@@ -254,35 +276,36 @@ class AirportChooser:
                            down one of the aforementioned navigation
                            keys).
         treeUpdatedCallback
-                        -- function called after the MyTreeview widget
-                           has been updated (after every update of the
-                           MyTreeview widget contents). The function is
-                           called without any argument.
-        updateDelay     --
-          delay in milliseconds before starting to update the MyTreeview
-          after each character typed in the search field. This allows to
-          keep the Entry responsive when typing or erasing faster than
-          would otherwise be allowed due to the time needed to find the
-          matching entries, sort them and replace the existing contents
-          of the MyTreeview with this new data.
+                        -- function called after 'treeWidget' has been
+                           updated (after every update of the widget
+                           contents). The function is called without any
+                           argument.
+        updateDelay     -- delay in milliseconds before starting to
+                           update 'treeWidget' after each character
+                           typed in the search field. This allows to
+                           keep the Entry responsive when typing or
+                           erasing faster than would otherwise be
+                           allowed due to the time needed to find the
+                           matching entries, sort them and replace the
+                           existing contents of 'treeWidget' with this
+                           new data.
 
-        The 'icaoVar' StringVar instance and the three widgets used by
-        this class (Entry, Button and MyTreeview) must be created by the
-        caller. However, this constructor takes care of connecting them
-        with the appropriate methods or internally-used StringVar
-        instances.
+        The three widgets used by this class (Entry, Button and
+        MyTreeview) must be created by the caller. This constructor
+        takes care of connecting them with the appropriate methods or
+        internally-used StringVar instances.
 
         """
-        _attrs = ("master", "config", "icaoVar", "treeData", "columnsMetadata",
-                  "entryWidget", "clearButton", "treeWidget",
-                  "repeatableNavKeyApplyDelay", "treeUpdatedCallback",
-                  "updateDelay")
+        _attrs = ("master", "config", "outputVar", "treeData",
+                  "columnsMetadata", "entryWidget", "clearButton",
+                  "treeWidget", "repeatableNavKeyApplyDelay",
+                  "treeUpdatedCallback", "updateDelay")
         for attr in _attrs:
             setattr(self, attr, locals()[attr])
 
         self.sortBy = initSortBy
 
-        # List of item indices (into treeData) for the airports found by
+        # List of item indices (into treeData) for the items found by
         # the last search.
         self.matches = []
 
@@ -297,7 +320,7 @@ class AirportChooser:
         # doing its normal work.
         self.searchUpdateEnabled = True
         self.searchBufferVar.trace("w", self.searchBufferVarWritten)
-        self.searchVar.trace("w", self.updateAirportList)
+        self.searchVar.trace("w", self.updateList)
         # Id obtained from self.master.after() when scheduling
         # self.applySelection() for delayed execution after a repeatable
         # navigation key has triggered a TreeviewSelect event (assuming
@@ -321,8 +344,81 @@ class AirportChooser:
         self.treeWidget.bind('<<TreeviewSelect>>', self.onTreeviewSelect)
         self.clearSearch(setFocusOnEntryWidget=False)
 
+    @abc.abstractmethod
+    def findMatches(self):
+        """Find all matches corresponding to the contents of 'self.searchVar'.
+
+        This is used to determine the set of items that will remain in
+        the 'self.treeWidget' for a given search query. Return a list of
+        indices into 'self.treeData'.
+
+        This is an abstract method. It must be overridden by subclasses
+        before they can be instantiated.
+
+        """
+        raise NotImplementedError()
+
+    @abc.abstractmethod
+    def decodedOutputVar(self):
+        """Decode the value of 'self.outputVar'.
+
+        It may be that 'self.outputVar' encodes state information in a
+        way that is not practical to work with (for instance, encoding
+        complex states in a Tk StringVar). This method should decode the
+        value of 'self.outputVar' and return a representation that is
+        convenient to work with.
+
+        """
+        raise NotImplementedError()
+
+    @abc.abstractmethod
+    def matchesOutputVar(self, item, decodedOutputVar):
+        """Whether a tree item is an exact match for 'self.outputVar'."""
+        raise NotImplementedError()
+
+    @abc.abstractmethod
+    def matchesSearchText(self, item, massagedSearchText):
+        """Whether a tree item is an exact match for the search query.
+
+        This is used to choose the item to select *after* list filtering
+        based on the search query. Among the remaining items once the
+        search filter has been applied, one will be selected. This
+        method can give a hint about which one to choose.
+
+        Note that “exact match” means “full match” here, but not
+        necessarily “case-sensitive match”. For instance, considering a
+        search on aircraft names, an item named 'A320neo' could be
+        exactly matched by search query 'a320neo', but not by 'a320'.
+
+        """
+        raise NotImplementedError()
+
+    @abc.abstractmethod
+    def setOutputVarForItem(self, item):
+        """Set 'self.outputVar' to reflect selection of tree item 'item'."""
+        raise NotImplementedError()
+
+    @abc.abstractmethod
+    def setNullOutputVar(self):
+        """Set 'self.outputVar' to reflect that no item is selected."""
+        raise NotImplementedError()
+
+    def selectDefaultItemForEmptySearch(self):
+        """Default item selection when the search string is empty.
+
+        Likely to be overridden in subclasses. This implementation
+        selects the first item in the list.
+
+        When reimplementing this method in a subclass, you can rely on
+        the fact that it is only called in situtations where
+        'self.treeWidget' is non-empty.
+
+        """
+        self.treeWidget.FFGoGotoItemWithIndex(0)
+
     # Accept any arguments to allow safe use as a Tkinter variable observer
     def searchBufferVarWritten(self, *args):
+        """Method called when self.searchBufferVar.set() is called."""
         if not self.searchUpdateEnabled:
             return
 
@@ -346,31 +442,30 @@ class AirportChooser:
             self.entryWidget.focus_set()
 
     def setTreeData(self, treeData, clearSearch=False):
-        """Change the underlying data for the MyTreeview widget.
+        """Change the underlying data for 'self.treeWidget'.
 
         When 'clearSearch' is True, the search field is cleared at the
-        same time and special care is taken to avoid updating the
-        airport list twice.
+        same time and special care is taken to avoid updating
+        'self.treeWidget' twice.
 
         """
         self.treeData = treeData
-        # This will force an update of the MyTreeview widget.
+        # This will force an update of 'self.treeWidget' by
+        # self.updateList().
         self.matches = None
         if clearSearch:
-            # This will cause self.updateAirportList() to be called via the
+            # This will cause self.updateList() to be called via the
             # chain of observers for self.searchBufferVar and self.searchVar.
             self.clearSearch(setFocusOnEntryWidget=False)
         else:
-            self.updateAirportList()
+            self.updateList()
 
     # Accept any arguments to allow safe use as a Tkinter variable observer
-    def updateAirportList(self, *args):
-        unsortedMatches = []
-        text = self.searchVar.get().lower()
-
-        for i, (icao, name, *rest) in enumerate(self.treeData):
-            if icao.lower().startswith(text) or text in name.lower():
-                unsortedMatches.append(i)
+    def updateList(self, *args):
+        """Update the list based on the search query in 'self.searchVar'."""
+        # Find all matches corresponding to the contents of 'self.searchVar'.
+        # 'unsortedMatches' is a list of their indices in 'self.treeData'.
+        unsortedMatches = self.findMatches()
 
         col = self.columnsMetadata[self.sortBy]
         treeData = self.treeData  # for performance
@@ -378,19 +473,20 @@ class AirportChooser:
 
         l = [ (treeData[i][dataIndex], i) for i in unsortedMatches ]
         if col.sortFunc is not None:
-            keyFunc = lambda t: col.sortFunc(t[0])
+            keyFunc = lambda t, col=col: col.sortFunc(t[0])
         else:
             keyFunc = lambda t: t[0]
 
         l.sort(key=keyFunc, reverse=int(col.sortOrder))
-        matches = [ t[1] for t in l ]
+        matches = [ t[1] for t in l ] # only keep the indices of matching items
 
         if self.matches != matches:
             self.matches = matches
             self._updateTreeWidget()
 
     def _updateTreeWidget(self):
-        curIcao = self.icaoVar.get()
+        """Update the contents of 'self.treeWidget' based on 'self.matches'."""
+        decodedOutputVar = self.decodedOutputVar()
         tree = self.treeWidget
         # Delete all children of the root element. Even when the elements just
         # need to be put in a different order, it is much faster this way than
@@ -424,37 +520,41 @@ class AirportChooser:
             uSearchText = self.searchVar.get().upper()
             found = {}
             for item in tree.get_children():
-                itemIcao = tree.set(item, "icao")
-                if itemIcao == curIcao:
-                    found["current airport"] = item
-                elif itemIcao == uSearchText:
+                if self.matchesOutputVar(item, decodedOutputVar):
+                    found["current selection"] = item
+                elif self.matchesSearchText(item, uSearchText):
                     # This one, if available, is preferred over the current
-                    # airport.
-                    found["exact match of search text"] = item
+                    # selection.
+                    found["match of search text"] = item
                     break
 
             try:
-                # Is there an airport whose ICAO is the search text?
-                item = found["exact match of search text"]
+                # Is there an item whose search key is the search text?
+                item = found["match of search text"]
             except KeyError:
                 try:
-                    # Is the previously-selected airport in the list?
-                    item = found["current airport"]
+                    # Is the previously-selected item in the list?
+                    item = found["current selection"]
                 except KeyError:
-                    # Select the first airport in the tree. This will set
-                    # self.icaoVar via the TreeviewSelect event handler.
-                    tree.FFGoGotoItemWithIndex(0)
+                    if uSearchText:
+                        # Select the first item in the list. This will set
+                        # self.outputVar via the TreeviewSelect event handler.
+                        tree.FFGoGotoItemWithIndex(0)
+                    else:
+                        # Special case when the search query is empty
+                        self.selectDefaultItemForEmptySearch()
                 else:
                     tree.FFGoGotoItem(item)
             else:
                 tree.FFGoGotoItem(item)
         else:                   # empty tree, we can't select anything
-            self.icaoVar.set('')
+            self.setNullOutputVar()
 
         if self.treeUpdatedCallback is not None:
             self.treeUpdatedCallback()
 
     def configColumn(self, col):
+        """Configure column 'col' of 'self.treeWidget'."""
         measure = self.config.treeviewHeadingFont.measure
         if col.widthText is not None:
             width = max(map(measure, (col.widthText + "  ", col.title + "  ")))
@@ -479,7 +579,7 @@ class AirportChooser:
             self.sortBy = col.name
             col.sortOrder = SortOrder.ascending
 
-        self.updateAirportList() # repopulate the MyTreeview widget
+        self.updateList()       # repopulate 'self.treeWidget'
 
     def onTreeviewSelect(self, event=None):
         tree = self.treeWidget
@@ -499,11 +599,65 @@ class AirportChooser:
                     self.repeatableNavKeyApplyDelay, self.applySelection)
                 return
 
-        self.icaoVar.set(tree.set(currentSel[0], "icao"))
+        # Set self.outputVar based on the first (and normally only) item of the
+        # selection.
+        self.setOutputVarForItem(currentSel[0])
 
     def applySelection(self):
-        """Set 'self.icaoVar' according to the currently selected item."""
+        """Set 'self.outputVar' according to the currently selected item."""
         tree = self.treeWidget
         currentSel = tree.selection()
         if currentSel:
-            self.icaoVar.set(tree.set(currentSel[0], "icao"))
+            self.setOutputVarForItem(currentSel[0])
+
+    def getValue(self, columnName):
+        """Get the selected item's value in column 'columnName'.
+
+        Raise NoSelectedItem if the selection is empty.
+
+        """
+        tree = self.treeWidget
+        currentSel = tree.selection()
+        if currentSel:
+            return tree.set(currentSel[0], columnName)
+        else:
+            raise NoSelectedItem()
+
+
+class AirportChooser(IncrementalChooser):
+    """Glue logic turning three widgets into a convenient airport chooser."""
+
+    def findMatches(self):
+        """Find all matches corresponding to the contents of 'self.searchVar'.
+
+        Return a list of indices into 'self.treeData'.
+
+        """
+        unsortedMatches = []
+        text = self.searchVar.get().lower()
+
+        for i, (icao, name, *rest) in enumerate(self.treeData):
+            if icao.lower().startswith(text) or text in name.lower():
+                unsortedMatches.append(i)
+
+        return unsortedMatches
+
+    def decodedOutputVar(self):
+        return self.outputVar.get()
+
+    def setOutputVarForItem(self, item):
+        # This is in upper case.
+        self.outputVar.set(self.treeWidget.set(item, "icao"))
+
+    def setNullOutputVar(self):
+        self.outputVar.set('')
+
+    def matchesOutputVar(self, item, decodedOutputVar):
+        # Both the tree data for column “icao” and 'decodedOutputVar' are in
+        # upper case.
+        return self.treeWidget.set(item, "icao") == decodedOutputVar
+
+    def matchesSearchText(self, item, massagedSearchText):
+        # Both the tree data for column “icao” and 'massagedSearchText' are in
+        # upper case.
+        return self.treeWidget.set(item, "icao") == massagedSearchText
