@@ -225,21 +225,21 @@ class AirportChooser:
         config          -- Config instance
         icaoVar         -- StringVar instance that will be automatically
                            updated to reflect the currently selected
-                           airport (currently selected in the Treeview
+                           airport (currently selected in the MyTreeview
                            widget)
         treeData        -- sequence of tuples where each tuple has one
-                           element per column displayed in the Treeview.
-                           This is the complete data set used to fill
-                           the Treeview. The word “tuple” is used to
-                           ease understanding here, but any sequence
-                           can do.
+                           element per column displayed in the
+                           MyTreeview. This is the complete data set
+                           used to fill the MyTreeview. The word “tuple”
+                           is used to ease understanding here, but any
+                           sequence can do.
         columnsMetadata -- mapping from symbolic column names for the
-                           Ttk Treeview widget to Column instances
+                           MyTreeview widget to Column instances
         initSortBy      -- symbolic name of the column used to initially
-                           sort the Treeview widget
+                           sort the MyTreeview widget
         entryWidget     -- Ttk or Tk Entry widget: the search field
         clearButton     -- Ttk or Tk Button widget: the “Clear” button
-        treeWidget      -- Ttk Treeview widget used as a multicolumn
+        treeWidget      -- MyTreeview instance used as a multicolumn
                            list (in other words, a table)
         repeatableNavKeyApplyDelay
                         -- delay before the result of using a repeatable
@@ -254,20 +254,20 @@ class AirportChooser:
                            down one of the aforementioned navigation
                            keys).
         treeUpdatedCallback
-                        -- function called after the Treeview widget has
-                           been updated (after every update of the
-                           Treeview widget contents). The function is
+                        -- function called after the MyTreeview widget
+                           has been updated (after every update of the
+                           MyTreeview widget contents). The function is
                            called without any argument.
         updateDelay     --
-          delay in milliseconds before starting to update the Treeview
+          delay in milliseconds before starting to update the MyTreeview
           after each character typed in the search field. This allows to
           keep the Entry responsive when typing or erasing faster than
           would otherwise be allowed due to the time needed to find the
           matching entries, sort them and replace the existing contents
-          of the Treeview with this new data.
+          of the MyTreeview with this new data.
 
         The 'icaoVar' StringVar instance and the three widgets used by
-        this class (Entry, Button and Treeview) must be created by the
+        this class (Entry, Button and MyTreeview) must be created by the
         caller. However, this constructor takes care of connecting them
         with the appropriate methods or internally-used StringVar
         instances.
@@ -298,6 +298,10 @@ class AirportChooser:
         self.searchUpdateEnabled = True
         self.searchBufferVar.trace("w", self.searchBufferVarWritten)
         self.searchVar.trace("w", self.updateAirportList)
+        # Id obtained from self.master.after() when scheduling
+        # self.applySelection() for delayed execution after a repeatable
+        # navigation key has triggered a TreeviewSelect event (assuming
+        # self.repeatableNavKeyApplyDelay is non-zero).
         self._applyNavKeyCancelId = None
 
         entryWidget.config(textvariable=self.searchBufferVar)
@@ -342,7 +346,7 @@ class AirportChooser:
             self.entryWidget.focus_set()
 
     def setTreeData(self, treeData, clearSearch=False):
-        """Change the underlying data for the Treeview widget.
+        """Change the underlying data for the MyTreeview widget.
 
         When 'clearSearch' is True, the search field is cleared at the
         same time and special care is taken to avoid updating the
@@ -350,7 +354,7 @@ class AirportChooser:
 
         """
         self.treeData = treeData
-        # This will force an update of the Treeview widget.
+        # This will force an update of the MyTreeview widget.
         self.matches = None
         if clearSearch:
             # This will cause self.updateAirportList() to be called via the
@@ -475,7 +479,7 @@ class AirportChooser:
             self.sortBy = col.name
             col.sortOrder = SortOrder.ascending
 
-        self.updateAirportList() # repopulate the Treeview
+        self.updateAirportList() # repopulate the MyTreeview widget
 
     def onTreeviewSelect(self, event=None):
         tree = self.treeWidget
