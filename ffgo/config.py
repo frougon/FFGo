@@ -33,6 +33,17 @@ def setupTranslationHelper(config):
 class AbortConfig(Exception):
     pass
 
+# No translated strings to avoid depending on the language being already set
+# and the translation system being in place. If this exception is raised and
+# not caught in FFGo, it is a bug.
+class NoSuchAircraft(Exception):
+    def __init__(self, aircraftName, aircraftDir):
+        self.name, self.dir = aircraftName, aircraftDir
+
+    def __str__(self):
+        return "no aircraft '{name}' in directory '{dir}'".format(
+            name=self.name, dir=self.dir)
+
 
 class Config:
 
@@ -59,8 +70,20 @@ class Config:
         self.settings = []  # List of basic settings read from config file.
         self.text = ''  # String to be shown in command line options window.
 
+        # 'self.aircraftId' is the central variable telling which particular
+        # aircraft is selected in FFGo's interface. It is a tuple of the form
+        # (aircraftName, aircraftDir).
+        self.aircraftId = misc.Observable()
         self.aircraft = StringVar()
         self.aircraftDir = StringVar()
+        # Whenever 'self.aircraftId' is set, 'self.aircraft' and
+        # 'self.aircraftDir' are automatically updated to reflect the new value
+        # (and their observers called, even if the values didn't change).
+        self.aircraftId.trace("w", self.updateAircraftNameAndDirFromAircraftId)
+        # Note: the FFGo config file stores the values of 'self.aircraft' and
+        #       'self.aircraftDir' separately (this makes the compatibility
+        #       path easy with versions that don't know about aircraftDir).
+
         self.airport = StringVar() # ICAO code of the selected airport
         self.alreadyProposedChanges = StringVar()
         self.apt_data_source = IntVar()
@@ -296,17 +319,85 @@ class Config:
         if exc is not None and not ignoreFGVersionError:
             raise exc
 
-    def getCurrentAircraft(self):
-        return self.currentAircraft
+    # This is a callback for FFGo's misc.Observable class.
+    def updateAircraftNameAndDirFromAircraftId(self, aircraftId):
+        aircraftName, aircraftDir = aircraftId
+        self.aircraft.set(aircraftName)
+        self.aircraftDir.set(aircraftDir)
 
-    def setCurrentAircraft(self, ac):
-        self.currentAircraft = ac
-        if ac is not None:
-            self.aircraft.set(self.currentAircraft.name)
-            self.aircraftDir.set(self.currentAircraft.dir)
+    def aircraftWithNameAndDir(self, name, dir_):
+        """Get the Aircraft instance for a given name and directory."""
+        try:
+            aircrafts = self.aircraftDict[name]
+        except KeyError:
+            raise NoSuchAircraft(name, dir_)
+
+        for aircraft in aircrafts:
+            # The idea is that the directory 'dir_' passed here should have
+            # been discovered earlier by a filesystem exploration, therefore
+            # there must be one Aircraft instance that has an exact match for
+            # both 'name' and 'dir_' (no need to use 'os.path.samefile()',
+            # which would be slower, could raise errors...).
+            if aircraft.dir == dir_:
+                return aircraft
         else:
-            self.aircraft.set(DEFAULT_AIRCRAFT)
-            self.aircraftDir.set('')
+            raise NoSuchAircraft(name, dir_)
+
+    def aircraftWithId(self, aircraftId):
+        """Get the Aircraft instance for a given aircraft ID."""
+        return self.aircraftWithNameAndDir(*self.aircraftId.get())
+
+    def getCurrentAircraft(self):
+        """Get the Aircraft instance for the currently-selected aircraft."""
+        return self.aircraftWithId(self.aircraftId.get())
+
+    def _findAircraft(self, acName, acDir):
+        """Return an aircraft ID for 'acName' and 'acDir' if possible.
+
+        If no aircraft is found with the given name and directory, fall
+        back to:
+          - an identically-named aircraft in a different directory
+            (taking the first in FG_AIRCRAFT precedence order);
+          - if this isn't possible either, fall back to the default
+            aircraft. The returned aircraft ID will have an empty
+            directory component if even the default aircraft isn't
+            available in this case.
+
+        Log an appropriate warning or notice when a fallback strategy is
+        used.
+
+        """
+        if acName in self.aircraftDict:
+            for ac in self.aircraftDict[acName]:
+                if ac.dir == acDir:
+                    aircraft = ac
+                    break
+            else:
+                aircraft = self.aircraftDict[acName][0]
+                logger.notice(
+                    _("Could not find aircraft '{aircraft}' under '{dir}', "
+                      "taking it from '{fallback}' instead").format(
+                          aircraft=acName, dir=acDir, fallback=aircraft.dir))
+        else:
+            try:
+                defaultAircrafts = self.aircraftDict[DEFAULT_AIRCRAFT]
+            except KeyError:
+                aircraft = None
+                logger.warning(
+                    _("Could not find the default aircraft: {aircraft}")
+                    .format(aircraft=DEFAULT_AIRCRAFT))
+            else:
+                aircraft = defaultAircrafts[0]
+                logger.notice(
+                    _("Could not find aircraft '{aircraft}', using "
+                      "'{fallback}' from '{dir}' instead").format(
+                          aircraft=acName, fallback=aircraft.name,
+                          dir=aircraft.dir))
+
+        if aircraft is None:
+            return (DEFAULT_AIRCRAFT, '')
+        else:
+            return (aircraft.name, aircraft.dir)
 
     def sanityChecks(self):
         status, *rest = self.decodeParkingSetting(self.park.get())
@@ -338,7 +429,10 @@ class Config:
         del self.scenario_list
         del self.carrier_list
 
-        self.setCurrentAircraft(None) # sets self.aircraft and self.aircraftDir
+        # The variable will be set again right after reading the config
+        # file, therefore there is no need to run the callbacks now
+        # (such as updating the aircraft image).
+        self.aircraftId.set((DEFAULT_AIRCRAFT, ''), runCallbacks=False)
         self.airport.set(DEFAULT_AIRPORT)
         self.alreadyProposedChanges.set('')
         self.apt_data_source.set(1)
@@ -393,7 +487,10 @@ class Config:
         self.metar_path = os.path.join(self.FG_root.get(), METAR_DAT)
 
         self.aircraftDict, self.aircraftList = self._readAircraft()
-        self.setCurrentAircraft(self._findAircraft(self.aircraft.get()))
+        # Choose a suitable aircraft, even if the one defined by
+        # 'self.aircraft' and 'self.aircraftDir' isn't available.
+        self.aircraftId.set(self._findAircraft(self.aircraft.get(),
+                                               self.aircraftDir.get()))
 
         self.scenario_list, self.carrier_list = self._readScenarios()
         self.sanityChecks()
@@ -730,37 +827,6 @@ configurations are kept separate.""")
 
                 aircraft = Aircraft(name, path)
                 aircraftDict[name].append(aircraft)
-
-    def _findAircraft(self, acName):
-        if acName in self.aircraftDict:
-            for ac in self.aircraftDict[acName]:
-                if ac.dir == self.aircraftDir.get():
-                    aircraft = ac
-                    break
-            else:
-                aircraft = self.aircraftDict[acName][0]
-                logger.notice(
-                    _("Could not find aircraft '{aircraft}' under '{dir}', "
-                      "taking it from '{fallback}' instead").format(
-                          aircraft=acName, dir=self.aircraftDir.get(),
-                          fallback=aircraft.dir))
-        else:
-            try:
-                defaultAircrafts = self.aircraftDict[DEFAULT_AIRCRAFT]
-            except KeyError:
-                aircraft = None
-                logger.warning(
-                    _("Could not find the default aircraft: {aircraft}")
-                    .format(aircraft=DEFAULT_AIRCRAFT))
-            else:
-                aircraft = defaultAircrafts[0]
-                logger.notice(
-                    _("Could not find aircraft '{aircraft}', using "
-                      "'{fallback}' from '{dir}' instead").format(
-                          aircraft=acName, fallback=aircraft.name,
-                          dir=aircraft.dir))
-
-        return aircraft
 
     def sortedIcao(self):
         return sorted(self.airports.keys())

@@ -13,6 +13,8 @@ import enum
 import tkinter as tk
 from tkinter import ttk
 
+from .. import constants
+
 
 class error(Exception):
     """Base class for exceptions raised in the 'widgets' module."""
@@ -661,3 +663,52 @@ class AirportChooser(IncrementalChooser):
         # Both the tree data for column “icao” and 'massagedSearchText' are in
         # upper case.
         return self.treeWidget.set(item, "icao") == massagedSearchText
+
+
+class AircraftChooser(IncrementalChooser):
+    """Glue logic turning three widgets into a convenient aircraft chooser."""
+
+    def findMatches(self):
+        """Find all matches corresponding to the contents of 'self.searchVar'.
+
+        Return a list of indices into 'self.treeData'.
+
+        """
+        unsortedMatches = []
+        text = self.searchVar.get().lower()
+
+        for i, (name, *rest) in enumerate(self.treeData):
+            if text in name.lower():
+                unsortedMatches.append(i)
+
+        return unsortedMatches
+
+    def decodedOutputVar(self):
+        return self.outputVar.get()
+
+    def setOutputVarForItem(self, item):
+        d = self.treeWidget.set(item)
+        self.outputVar.set((d["name"], d["directory"]))
+
+    def matchesOutputVar(self, item, decodedOutputVar):
+        d = self.treeWidget.set(item)
+        return (d["name"], d["directory"]) == decodedOutputVar
+
+    def matchesSearchText(self, item, massagedSearchText):
+        return self.treeWidget.set(item, "name").upper() == massagedSearchText
+
+    def setNullOutputVar(self):
+        self.outputVar.set(('', ''))
+
+    def selectDefaultItemForEmptySearch(self):
+        """Default aircraft selection when the search string is empty.
+
+        This method is called in situtations where 'self.treeWidget' is
+        non-empty.
+
+        """
+        try:
+            self.treeWidget.FFGoGotoItemWithValue(
+                "name", constants.DEFAULT_AIRCRAFT)
+        except NoSuchItem:
+            self.treeWidget.FFGoGotoItemWithIndex(0)

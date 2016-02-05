@@ -30,6 +30,7 @@ import condconfigparser
 from ..logging import logger
 from .. import misc
 from ..misc import resourceExists, textResourceStream, binaryResourceStream
+from .. import config as config_mod
 from . import tooltip
 from .tooltip import ToolTip
 from . import widgets
@@ -227,30 +228,23 @@ class App:
         self.mainPanedWindow.add(self.frame0, weight=100)
 
 #------ Aircraft list ---------------------------------------------------------
-        self.frame1 = Frame(self.frame0, borderwidth=8)
+        self.frame1 = ttk.Frame(self.frame0, borderwidth=8)
         self.frame1.pack(side='left', fill='both', expand=True)
 
         # Fill self.frame1 from bottom to top, because when vertical space is
         # scarce, the last elements added are the first to suffer from the lack
         # of space. Here, we want the aircraft list to be shrunk before the
         # search field and the 'Clear' button.
-        self.frame11 = Frame(self.frame1, borderwidth=1)
+        self.frame11 = ttk.Frame(self.frame1, borderwidth=1)
         self.frame11.pack(side='bottom', fill='x')
 
-        self.aircraftSearchText = StringVar()
-        # Trigger a new search whenever the search text is modified (a set()
-        # call setting the same value as already present doesn't count as a
-        # modification).
-        self.aircraftSearchText.trace('w', self.searchAircrafts)
-
-        self.aircraftSearch = MyEntry(self, self.frame11, bg=TEXT_BG_COL,
-                                      textvariable=self.aircraftSearchText)
+        # The link to a StringVar is done in the AircraftChooser class
+        self.aircraftSearch = MyEntry(self, self.frame11, bg=TEXT_BG_COL)
         self.aircraftSearch.pack(side='left', fill='x', expand=True)
-        self.aircraftSearchButton = Button(self.frame11, text=_('Clear'),
-                                           command=self.aircraftSearchClear)
+        self.aircraftSearchButton = Button(self.frame11, text=_('Clear'))
         self.aircraftSearchButton.pack(side='left')
 
-        self.frame12 = Frame(self.frame1, borderwidth=1)
+        self.frame12 = ttk.Frame(self.frame1, borderwidth=1)
         self.frame12.pack(side='bottom', fill='both', expand=True)
 
         aircraftListScrollbar = ttk.Scrollbar(self.frame12, orient='vertical',
@@ -260,23 +254,56 @@ class App:
                 *args, self=self, aircraftListScrollbar=aircraftListScrollbar):
             aircraftListScrollbar.set(*args)
             # Once the Treeview is scrolled, the tooltip is likely not to match
-            # the airport under the mouse pointer anymore.
+            # the aircraft under the mouse pointer anymore.
             self.aircraftTooltip.hide()
 
-        self.aircraftList = Listbox(self.frame12, bg=TEXT_BG_COL,
-                                    exportselection=0,
-                                    yscrollcommand=onAircraftListScrolled,
-                                    height=14)
-        aircraftListScrollbar.config(command=self.aircraftList.yview)
-        self.aircraftList.bind('<<ListboxSelect>>', self.updateAircraft)
+        # Subclass of Ttk's Treeview. The TreeviewSelect event binding is done
+        # in the AircraftChooser class. Each item will have an associated
+        # "directory" value that can be used in conjunction with the "name"
+        # value to precisely identify the aircraft. Only the name will be
+        # displayed in the MyTreeview widget, though.
+        self.aircraftList = widgets.MyTreeview(
+            self.frame12, columns=["name", "directory"],
+            displaycolumns=["name"], show="headings", selectmode="browse",
+            height=14, yscrollcommand=onAircraftListScrolled)
         self.aircraftList.pack(side='left', fill='both', expand=True)
+
+        aircraftListScrollbar.config(command=self.aircraftList.yview)
         aircraftListScrollbar.pack(side='left', fill='y')
 
-        def aircraftListTooltipFunc(index):
-            return self.shownAircrafts[index].dir
+        def aircraftListTooltipFunc(region, itemID, column, self=self):
+            if region == "cell":
+                d = self.aircraftList.set(itemID)
+                aircraftName, aircraftDir = d["name"], d["directory"]
 
-        self.aircraftTooltip = tooltip.ListBoxToolTip(self.aircraftList,
-                                                      aircraftListTooltipFunc)
+                # If the Aircraft instance can't be found, it's a bug.
+                aircraft = self.config.aircraftWithNameAndDir(aircraftName,
+                                                              aircraftDir)
+                return aircraft.tooltipText()
+            else:
+                return None
+
+        self.aircraftTooltip = tooltip.TreeviewToolTip(self.aircraftList,
+                                                       aircraftListTooltipFunc)
+
+        aircraftListColumnsList = [
+            widgets.Column("name", _("Aircraft name"), 0, "w", True, "width",
+                           widthText="M"*15,
+                           sortFunc=lambda name: name.lower()),
+            widgets.Column("directory", _("Directory"), 1, "w", True, "width")]
+        aircraftListColumns = { col.name: col
+                               for col in aircraftListColumnsList }
+
+        self.aircraftChooser = widgets.AircraftChooser(
+            self.master, self.config,
+            self.config.aircraftId, # output variable of the chooser
+            [],                 # empty list for now, will be filled by reset()
+            aircraftListColumns,
+            "name",             # initially sort by aircraft name
+            self.aircraftSearch, self.aircraftSearchButton,
+            self.aircraftList,   # MyTreeview instance (subclass of Treeview)
+            150, # delay before propagating the effect of nav keys (arrows...)
+            treeUpdatedCallback=lambda self=self: self.aircraftTooltip.hide())
 
 #------ Middle panel ----------------------------------------------------------
         self.frame2 = Frame(self.frame0, borderwidth=1, relief='sunken')
@@ -343,7 +370,6 @@ class App:
 
         self.thumbnail = Label(self.frame23, width=171, height=128)
         self.thumbnail.pack(side='top', fill='y')
-        self.updateImage()
 
 #------ Airport list ----------------------------------------------------------
         self.frame3 = Frame(self.frame0, borderwidth=8)
@@ -755,49 +781,12 @@ want to follow this new default and set “Airport database update” to
         self.aboutTitle.destroy()
         self.aboutLicense.destroy()
 
-    def buildAircraftList(self):
-        # The current tooltip won't match the aircraft under the mouse pointer
-        # after the list is rebuilt.
-        self.aircraftTooltip.hide()
-
-        if self.aircraftList:
-            self.aircraftList.delete(0, 'end')
-
-        self.aircraftList.insert(
-                'end', *[ ac.name for ac in self.config.aircraftList ])
-        # Cheap, but self.shownAircrafts must not be modified in-place!
-        self.shownAircrafts = self.config.aircraftList
-
-    # Accept any arguments to allow safe use as a Tkinter variable observer
-    def searchAircrafts(self, *args):
-        searchText = self.aircraftSearch.get().lower()
-        if searchText:
-            # The current tooltip may not match the aircraft under the mouse
-            # pointer after the list is rebuilt.
-            self.aircraftTooltip.hide()
-
-            self.aircraftList.delete(0, 'end')
-            self.shownAircrafts = []
-
-            for aircraft in self.config.aircraftList:
-                if searchText in aircraft.name.lower():
-                    self.aircraftList.insert('end', aircraft.name)
-                    self.shownAircrafts.append(aircraft)
-        else:
-            # Optimized for speed and memory usage
-            self.buildAircraftList()
-
-        # Select the first result, if any
-        if self.aircraftList.size():
-            # This does not trigger the <<ListboxSelect>> event (tested with
-            # Tk 8.6)...
-            self.aircraftList.selection_set(0)
-            # ... therefore, we have do do it ourselves.
-            self.updateAircraft()
-
-    def aircraftSearchClear(self):
-        self.aircraftSearch.delete('0', 'end')
-        self.aircraftSearch.focus_set()
+    def buildAircraftList(self, clearSearch=False):
+        aircraftTreeData = [ (ac.name, ac.dir)
+                             for ac in self.config.aircraftList ]
+        # Update the aircraft list widget
+        self.aircraftChooser.setTreeData(aircraftTreeData,
+                                         clearSearch=clearSearch)
 
     def buildAirportList(self, clearSearch=False):
         if (self.config.auto_update_apt.get() and
@@ -867,15 +856,18 @@ want to follow this new default and set “Airport database update” to
         self.buildAirportList()
         infoWindow.destroy()
 
-    def getAircraft(self):
+    def getAircraft(self):      # Currently unused
         """Return the Aircraft instance selected via self.aircraftList."""
-        indices = self.aircraftList.curselection()
-        if indices:
-            return self.shownAircrafts[int(indices[0])]
-        else:
+        try:
+            aircraftName = self.aircraftChooser.getValue("name")
+            aircraftDir = self.aircraftChooser.getValue("directory")
+        except widgets.NoSelectedItem:
             # No aircraft selected. Should only happen when no aircraft is
-            # available.
+            # available, or no aircraft matches the search query.
             return None
+
+        # If this doesn't find anything, there must be a bug.
+        return self.config.aircraftWithNameAndDir(aircraftName, aircraftDir)
 
     def getImage(self, aircraft):
         """Find thumbnail in aircraft directory."""
@@ -890,31 +882,6 @@ want to follow this new default and set “Airport database update” to
             image = PhotoImage(file=NO_PIL_PIC)
 
         return image
-
-    def getCurrentAircraftIndex(self):
-        """Return the index of the selected aircraft in the aircraft list."""
-        aircraft = self.config.getCurrentAircraft()
-
-        try:
-            return self.shownAircrafts.index(aircraft)
-        except ValueError:
-            try:
-                dfltAircrafts = self.config.aircraftDict[DEFAULT_AIRCRAFT]
-            except KeyError:
-                return 0
-
-            try:
-                dfltAircraft = dfltAircrafts[0]
-            except IndexError: # should never happen
-                logger.warning(_(
-                    "Empty list for the default aircraft. Please report "
-                    "a bug."))
-                return 0
-
-            try:
-                return self.shownAircrafts.index(dfltAircraft)
-            except ValueError:
-                return 0
 
     def popupCarrier(self, event):
         """Make pop up menu."""
@@ -1285,8 +1252,11 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
 
     def registerTracedVariables(self):
         self.options.trace('w', self.FGCommand.update)
-        self.config.aircraft.trace('w', self.FGCommand.update)
-        self.config.aircraftDir.trace('w', self.FGCommand.update)
+        # There is also an observer of 'self.config.aircraftId' registered in
+        # Config's constructor to update 'self.config.aircraft' and
+        # 'self.config.aircraftDir'.
+        self.config.aircraftId.trace('w', self.updateImage)
+        self.config.aircraftId.trace('w', self.FGCommand.update)
         self.config.airport.trace('w', self.resetRwyParkAndCarrier)
         self.config.airport.trace('w', self.FGCommand.update)
         self.config.scenario.trace('w', self.FGCommand.update)
@@ -1307,21 +1277,8 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
 
         setupTranslationHelper(self.config) # the language may have changed
 
-        # Save the current aircraft, because deleting the corresponding search
-        # entry might modify it (e.g., causing the first entry in the aircraft
-        # list to be selected).
-        aircraft = self.config.getCurrentAircraft()
-        # This doesn't trigger a rebuild of the aircraft list at application
-        # startup, because self.aircraftSearch is initially empty. Therefore,
-        # the buildAircraftList() call in resetLists() is not redundant with
-        # the following line.
-        self.aircraftSearch.delete(0, 'end')
-        # Restore the saved aircraft selection
-        self.config.setCurrentAircraft(aircraft)
-
         self._updUpdateInstalledAptListMenuEntryState()
         self.resetLists()
-        self.updateImage()
         self.resetText()
 
         # Update selected carrier
@@ -1362,7 +1319,6 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
                                  bg=self.default_bg)
         self.rwy_label.config(fg=self.default_fg)
         self.rwyLabel.config(fg=self.default_fg)
-        self.updateImage()
 
         try:
             scenario = self.currentCarrier[-1]
@@ -1375,10 +1331,10 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
                 self.config.scenario.set(' '.join(c))
 
     def resetLists(self):
-        self.buildAircraftList()
-        self.aircraftList.select_set(self.getCurrentAircraftIndex())
-        self.aircraftList.see(self.getCurrentAircraftIndex())
-
+        # Clear the aircraft search entry and rebuild the aircraft list at the
+        # same time. The aircraft thumbnail is updated via an observer when
+        # Config.aircraftId is set by Config.update().
+        self.buildAircraftList(clearSearch=True)
         # Clear the airport search entry and rebuild the airport list at the
         # same time.
         self.buildAirportList(clearSearch=True)
@@ -1766,14 +1722,6 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
         else:
             self.master.clipboard_append(bCommand)
 
-    def updateAircraft(self, event=None):
-        """Update aircraft selection."""
-        now = self.getAircraft()
-
-        if now != self.config.getCurrentAircraft():
-            self.config.setCurrentAircraft(now)
-            self.updateImage()
-
     def resetRwyParkAndCarrier(self, *args):
         """Reset runway, parking position and carrier after changing airport.
 
@@ -1851,8 +1799,13 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
             labelVar = getattr(self, labelVarName)
             labelVar.set(cfgValue if cfgValue else default)
 
-    def updateImage(self):
-        aircraft = self.config.getCurrentAircraft()
+    # Accept any arguments to allow safe use as a Tkinter variable observer
+    def updateImage(self, *args):
+        try:
+            aircraft = self.config.getCurrentAircraft()
+        except config_mod.NoSuchAircraft:
+            aircraft = None
+
         self.image = self.getImage(aircraft)
         self.thumbnail.config(image=self.image)
 
