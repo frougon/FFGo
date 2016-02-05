@@ -247,3 +247,64 @@ class TranslationHelper:
                 return (singular if n == 1 else plural)
 
         return transl
+
+
+class Observable:
+    """Class to which observers can be attached.
+
+    This class is similar to Tkinter variable classes such as StringVar
+    and IntVar, but accepts arbitrary Python types and is easier to
+    debug (exceptions raised in Tkinter variable observers are a pain to
+    debug because the tracebacks don't go beyond the <variable>.set()
+    calls---in other words, they don't cross the Tk barrier).
+    Performance should also be better with this class, since it doesn't
+    have to go through Python → Tk → Python layers. Of course, instances
+    of this class can't be used directly with Tkinter widgets as Tkinter
+    variables.
+
+    Except for implicit type conversions done by Tkinter, the syntax
+    used to manipulate a Tkinter StringVar or IntVar, and attach
+    observers to it, can be used unchanged here. The biggest difference
+    is that this class uses the values passed to set() as is instead of
+    automatically converting them as done with Tkinter methods. The
+    other difference is that callbacks written for this class can rely
+    on particular arguments being passed, which are not necessarily the
+    same for a Tkinter variable observer.
+
+    Apart from these differences, the semantics should be very close to
+    those provided by Tkinter variables. Most notably, a 'read' (resp.
+    'write') observer is called whenever the observable's get() (resp.
+    set()) method is called---whether the value is actually modified by
+    set() calls is irrelevant.
+
+    """
+
+    def __init__(self, initValue=None):
+        self.value = initValue
+        self.readCallbacks = []
+        self.writeCallbacks = []
+
+    def get(self, runCallbacks=True):
+        value = self.value
+
+        if runCallbacks:
+            for cb in self.readCallbacks:
+                cb(value)
+
+        return value
+
+    def set(self, value, runCallbacks=True):
+        self.value = value
+
+        if runCallbacks:
+            for cb in self.writeCallbacks:
+                cb(value)
+
+    def trace(self, accessType, callback):
+        if accessType == "w":
+            self.writeCallbacks.append(callback)
+        elif accessType == "r":
+            self.readCallbacks.append(callback)
+        else:
+            raise ValueError("invalid access type for trace(): {accessType}"
+                             .format(accessType=accessType))
