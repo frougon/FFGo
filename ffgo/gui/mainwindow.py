@@ -257,13 +257,29 @@ class App:
             # the aircraft under the mouse pointer anymore.
             self.aircraftTooltip.hide()
 
-        # Subclass of Ttk's Treeview. The TreeviewSelect event binding is done
-        # in the AircraftChooser class. Each item will have an associated
-        # "directory" value that can be used in conjunction with the "name"
-        # value to precisely identify the aircraft. Only the name will be
-        # displayed in the MyTreeview widget, though.
+        # widgets.MyTreeview is a subclass of the Ttk Treeview widget. The
+        # TreeviewSelect event binding is done in the AircraftChooser class.
+        # Each item will have an associated “directory” value that can be used
+        # in conjunction with the “name” value to precisely identify the
+        # aircraft. Only the name will be displayed in the MyTreeview widget,
+        # though.
+        #
+        # Approximate matching of aircraft names
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # The “match key” invisible column in self.aircraftList below is used
+        # to efficiently implement approximate matching of aircraft names. For
+        # instance, an aircraft named 'EC-137D' will have its match key set to
+        # 'ec137d' by App.buildAircraftList() (lowercase, and hyphens + other
+        # similar chars removed). The same characters (hyphens, underscores...)
+        # are removed from the search query before it is compared to each
+        # aircraft match key. For obvious efficiency reasons, the match keys
+        # for each aircraft are computed only when the aircraft list is built.
+        # The “match key” column is included first in the list of columns,
+        # because this allows AircraftChooser.findMatches() to be a bit more
+        # efficient (no need to store unused values in local variables for
+        # *each* aircraft of the list).
         self.aircraftList = widgets.MyTreeview(
-            self.frame12, columns=["name", "directory"],
+            self.frame12, columns=["match key", "name", "directory"],
             displaycolumns=["name"], show="headings", selectmode="browse",
             height=14, yscrollcommand=onAircraftListScrolled)
         self.aircraftList.pack(side='left', fill='both', expand=True)
@@ -287,10 +303,11 @@ class App:
                                                        aircraftListTooltipFunc)
 
         aircraftListColumnsList = [
-            widgets.Column("name", _("Aircraft name"), 0, "w", True, "width",
+            widgets.Column("match key", "", 0, "w", True),
+            widgets.Column("name", _("Aircraft name"), 1, "w", True, "width",
                            widthText="M"*15,
                            sortFunc=lambda name: name.lower()),
-            widgets.Column("directory", _("Directory"), 1, "w", True)]
+            widgets.Column("directory", _("Directory"), 2, "w", True)]
         aircraftListColumns = { col.name: col
                                for col in aircraftListColumnsList }
 
@@ -797,7 +814,13 @@ want to follow this new default and set “Airport database update” to
         self.aboutLicense.destroy()
 
     def buildAircraftList(self, clearSearch=False):
-        aircraftTreeData = [ (ac.name, ac.dir)
+        def matchKey(acName,
+                     translationMap=self.aircraftChooser.acNameTranslationMap):
+            """
+            Remove characters from an aircraft name according to 'translationMap'."""
+            return acName.translate(translationMap).lower()
+
+        aircraftTreeData = [ (matchKey(ac.name), ac.name, ac.dir)
                              for ac in self.config.aircraftList ]
         # Update the aircraft list widget
         self.aircraftChooser.setTreeData(aircraftTreeData,

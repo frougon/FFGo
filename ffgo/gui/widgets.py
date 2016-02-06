@@ -699,6 +699,13 @@ class AirportChooser(IncrementalChooser):
 class AircraftChooser(IncrementalChooser):
     """Glue logic turning three widgets into a convenient aircraft chooser."""
 
+    def __init__(self, *args, **kwargs):
+        # Mapping for removing the listed characters from aircraft names
+        # using str.translate(). Must be set before calling
+        # IncrementalChooser's constructor.
+        self.acNameTranslationMap = str.maketrans("", "", " -_.,;:!?")
+        IncrementalChooser.__init__(self, *args, **kwargs)
+
     def findMatches(self):
         """Find all matches corresponding to the contents of 'self.searchVar'.
 
@@ -706,10 +713,11 @@ class AircraftChooser(IncrementalChooser):
 
         """
         unsortedMatches = []
-        text = self.searchVar.get().lower()
+        text = self.searchVar.get().translate(
+            self.acNameTranslationMap).lower()
 
-        for i, (name, *rest) in enumerate(self.treeData):
-            if text in name.lower():
+        for i, (matchKey, *rest) in enumerate(self.treeData):
+            if text in matchKey:
                 unsortedMatches.append(i)
 
         return unsortedMatches
