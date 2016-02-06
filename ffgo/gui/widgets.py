@@ -236,7 +236,7 @@ class IncrementalChooser(metaclass=abc.ABCMeta):
                  treeData, columnsMetadata, initSortBy,
                  entryWidget, clearButton, treeWidget,
                  repeatableNavKeyApplyDelay, treeUpdatedCallback=None,
-                 updateDelay=400):
+                 updateDelay=400, clearSearchOnInit=True):
         """Constructor for IncrementalChooser instances.
 
         Some of the terminology used here (e.g., “column identifier”,
@@ -281,8 +281,9 @@ class IncrementalChooser(metaclass=abc.ABCMeta):
         treeUpdatedCallback
                         -- function called after 'treeWidget' has been
                            updated (after every update of the widget
-                           contents). The function is called without any
-                           argument.
+                           *contents*---whether the selected item has
+                           changed is irrelevant). The function is
+                           called without any argument.
         updateDelay     -- delay in milliseconds before starting to
                            update 'treeWidget' after each character
                            typed in the search field. This allows to
@@ -292,6 +293,22 @@ class IncrementalChooser(metaclass=abc.ABCMeta):
                            matching entries, sort them and replace the
                            existing contents of 'treeWidget' with this
                            new data.
+        clearSearchOnInit
+                        -- whether to clear the search field, and thus
+                           update 'treeWidget', when this constructor is
+                           run. In some cases, this is undesirable
+                           because clearing the search field eventually
+                           updates the selection, and thus 'outputVar'.
+                           Such a case where clearing the search field
+                           as part of the constructor work is
+                           undesirable, is when 'treeWidget' is
+                           initialized in two steps: first as an empty
+                           tree with an empty 'treeData' sequence, that
+                           is later filled with a call to setTreeData().
+                           In such a case, the initial clearing of the
+                           search field would nullify 'outputVar',
+                           because there can't be any match for any
+                           search query in an empty tree.
 
         The three widgets used by this class (Entry, Button and
         MyTreeview) must be created by the caller. This constructor
@@ -345,7 +362,9 @@ class IncrementalChooser(metaclass=abc.ABCMeta):
             assert i == col.dataIndex, (i, col.dataIndex)
 
         self.treeWidget.bind('<<TreeviewSelect>>', self.onTreeviewSelect)
-        self.clearSearch(setFocusOnEntryWidget=False)
+
+        if clearSearchOnInit:
+            self.clearSearch(setFocusOnEntryWidget=False)
 
     @abc.abstractmethod
     def findMatches(self):
@@ -487,9 +506,10 @@ class IncrementalChooser(metaclass=abc.ABCMeta):
             self.matches = matches
             self._updateTreeWidget()
 
+        self._autoUpdateTreeSelection() # maybe change the selected item
+
     def _updateTreeWidget(self):
         """Update the contents of 'self.treeWidget' based on 'self.matches'."""
-        decodedOutputVar = self.decodedOutputVar()
         tree = self.treeWidget
         # Delete all children of the root element. Even when the elements just
         # need to be put in a different order, it is much faster this way than
@@ -518,10 +538,23 @@ class IncrementalChooser(metaclass=abc.ABCMeta):
             for idx in self.matches:
                 tree.insert("", "end", values=self.treeData[idx])
 
-        # Select a suitable item in the repopulated tree, if it is non-empty.
+        if self.treeUpdatedCallback is not None:
+            self.treeUpdatedCallback()
+
+    def _autoUpdateTreeSelection(self):
+        """Select a suitable item in self.treeWidget, if it is non-empty.
+
+        This method indirectly updates self.outputVar to reflect the new
+        selection (possibly empty, in which case self.setNullOutputVar()
+        is called).
+
+        """
         if self.matches:
+            tree = self.treeWidget
+            decodedOutputVar = self.decodedOutputVar()
             uSearchText = self.searchVar.get().upper()
             found = {}
+
             for item in tree.get_children():
                 if self.matchesOutputVar(item, decodedOutputVar):
                     found["current selection"] = item
@@ -552,9 +585,6 @@ class IncrementalChooser(metaclass=abc.ABCMeta):
                 tree.FFGoGotoItem(item)
         else:                   # empty tree, we can't select anything
             self.setNullOutputVar()
-
-        if self.treeUpdatedCallback is not None:
-            self.treeUpdatedCallback()
 
     def configColumn(self, col):
         """Configure column 'col' of 'self.treeWidget'."""

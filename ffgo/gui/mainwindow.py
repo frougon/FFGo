@@ -303,7 +303,12 @@ class App:
             self.aircraftSearch, self.aircraftSearchButton,
             self.aircraftList,   # MyTreeview instance (subclass of Treeview)
             150, # delay before propagating the effect of nav keys (arrows...)
-            treeUpdatedCallback=lambda self=self: self.aircraftTooltip.hide())
+            treeUpdatedCallback=lambda self=self: self.aircraftTooltip.hide(),
+            # Since the tree is empty for now, clearing the search field would
+            # “update” the MyTreeview widget to display an empty list, and
+            # since no item could be selected, self.config.aircraftId would get
+            # nullified via AircraftChooser.setNullOutputVar().
+            clearSearchOnInit=False)
 
 #------ Middle panel ----------------------------------------------------------
         self.frame2 = Frame(self.frame0, borderwidth=1, relief='sunken')
@@ -445,7 +450,12 @@ class App:
             self.airportSearch, self.airportSearchButton,
             self.airportList,   # MyTreeview instance (subclass of Treeview)
             150, # delay before propagating the effect of nav keys (arrows...)
-            treeUpdatedCallback=lambda self=self: self.airportTooltip.hide())
+            treeUpdatedCallback=lambda self=self: self.airportTooltip.hide(),
+            # Since the tree is empty for now, clearing the search field would
+            # “update” the MyTreeview widget to display an empty list, and
+            # since no item could be selected, self.config.airport would get
+            # nullified via AirportChooser.setNullOutputVar().
+            clearSearchOnInit=False)
 
 #------ FlightGear process status and buttons ---------------------------------
         self.frame4 = Frame(self.mainPanedWindow, borderwidth=4)
