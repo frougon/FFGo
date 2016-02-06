@@ -370,6 +370,11 @@ class App:
 
         self.thumbnail = Label(self.frame23, width=171, height=128)
         self.thumbnail.pack(side='top', fill='y')
+        # At application initialization, when reset() is called, the observers
+        # on Config.aircraftId have not been attached yet. Therefore, one has
+        # to explicitely call updateImage() in order to have an image in
+        # self.thumbnail and avoid severe layout problems.
+        self.updateImage()
 
 #------ Airport list ----------------------------------------------------------
         self.frame3 = Frame(self.frame0, borderwidth=8)
