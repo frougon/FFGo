@@ -453,7 +453,7 @@ class App:
         airportListColumnsList = [
             widgets.Column("icao", _("ICAO"), 0, "w", False, "width",
                            widthText="M"*4),
-            widgets.Column("name", _("Name"), 1, "w", True, "width",
+            widgets.Column("name", _("Airport name"), 1, "w", True, "width",
                            widthText="M"*20)]
         airportListColumns = { col.name: col
                                for col in airportListColumnsList }
