@@ -290,7 +290,7 @@ class App:
             widgets.Column("name", _("Aircraft name"), 0, "w", True, "width",
                            widthText="M"*15,
                            sortFunc=lambda name: name.lower()),
-            widgets.Column("directory", _("Directory"), 1, "w", True, "width")]
+            widgets.Column("directory", _("Directory"), 1, "w", True)]
         aircraftListColumns = { col.name: col
                                for col in aircraftListColumnsList }
 
