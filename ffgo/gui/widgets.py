@@ -371,7 +371,7 @@ class IncrementalChooser(metaclass=abc.ABCMeta):
         """Find all matches corresponding to the contents of 'self.searchVar'.
 
         This is used to determine the set of items that will remain in
-        the 'self.treeWidget' for a given search query. Return a list of
+        'self.treeWidget' for a given search query. Return a list of
         indices into 'self.treeData'.
 
         This is an abstract method. It must be overridden by subclasses
@@ -502,7 +502,7 @@ class IncrementalChooser(metaclass=abc.ABCMeta):
         l.sort(key=keyFunc, reverse=int(col.sortOrder))
         matches = [ t[1] for t in l ] # only keep the indices of matching items
 
-        if self.matches != matches:
+        if self.matches != matches: # tree contents changed?
             self.matches = matches
             self._updateTreeWidget()
 
