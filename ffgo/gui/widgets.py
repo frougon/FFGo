@@ -13,6 +13,7 @@ import enum
 import tkinter as tk
 from tkinter import ttk
 
+from .. import misc
 from .. import constants
 
 
@@ -312,7 +313,7 @@ class IncrementalChooser(metaclass=abc.ABCMeta):
         self.matches = []
 
         self.searchBufferVar = tk.StringVar()
-        self.searchVar = tk.StringVar()
+        self.searchVar = misc.Observable('')
         self.searchUpdateCancelId = None
         # If True, the next update to self.searchBufferVar will immediately
         # affect self.searchVar instead of being delayed. Has “one shot”
