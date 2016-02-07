@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: FFGo 1.10.0\n"
 "Report-Msgid-Bugs-To: f.rougon@free.fr\n"
 "POT-Creation-Date: 2016-02-07 12:00+0100\n"
-"PO-Revision-Date: 2016-01-19 11:00+0100\n"
+"PO-Revision-Date: 2016-02-07 12:02+0100\n"
 "Last-Translator: Florent Rougon <f.rougon@free.fr>\n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -1562,12 +1562,11 @@ msgstr "À propos de"
 
 #: ffgo/gui/mainwindow.py:307
 msgid "Aircraft"
-msgstr ""
+msgstr "Aéronef"
 
 #: ffgo/gui/mainwindow.py:310
-#, fuzzy
 msgid "Directory"
-msgstr "Sens"
+msgstr "Répertoire"
 
 #: ffgo/gui/mainwindow.py:342
 msgid "Select Scenario"
@@ -1586,9 +1585,8 @@ msgid "Airport:"
 msgstr "Aéroport :"
 
 #: ffgo/gui/mainwindow.py:456
-#, fuzzy
 msgid "Airport name"
-msgstr "Recherche d'un aérodrome"
+msgstr "Nom de l'aérodrome"
 
 #: ffgo/gui/mainwindow.py:488
 msgid "Ready"
