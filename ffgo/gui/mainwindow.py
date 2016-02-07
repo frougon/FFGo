@@ -36,6 +36,11 @@ from .tooltip import ToolTip
 from . import widgets
 from .configwindow import ConfigWindow
 from . import infowindow
+from .. import constants
+# Wildcard import inherited from FGo!. I suggest to rather use qualified names
+# such as 'constants.FOOBAR', except for very frequently used things such as
+# PROGNAME, which could be imported explicitely if this wildcard import were to
+# be removed.
 from ..constants import *
 from .. import fgdata
 from ..fgdata.parking import ParkingSource
@@ -794,8 +799,9 @@ want to follow this new default and set “Airport database update” to
         self.aboutFrame1 = Frame(self.aboutWindow, borderwidth=1,
                                  relief='sunken', padx=8, pady=12)
         self.aboutFrame1.pack(fill='x', expand=True)
-        self.aboutText = Label(self.aboutFrame1, text=about_text,
-                               justify='left')
+        self.aboutText = Label(
+            self.aboutFrame1, text=about_text, justify='left',
+            wraplength=constants.STANDARD_TEXT_WRAP_WIDTH)
         self.aboutText.pack()
         self.aboutFrame2 = Frame(self.aboutWindow, borderwidth=12)
         self.aboutFrame2.pack()
