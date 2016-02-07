@@ -304,7 +304,7 @@ class App:
 
         aircraftListColumnsList = [
             widgets.Column("match key", "", 0, "w", True),
-            widgets.Column("name", _("Aircraft name"), 1, "w", True, "width",
+            widgets.Column("name", _("Aircraft"), 1, "w", True, "width",
                            widthText="M"*15,
                            sortFunc=lambda name: name.lower()),
             widgets.Column("directory", _("Directory"), 2, "w", True)]
