@@ -2,7 +2,7 @@
 
 # fgversion.py --- Represent FlightGear version information
 #
-# Copyright (c) 2015, Florent Rougon
+# Copyright (c) 2015, 2016, Florent Rougon
 #
 # This file is distributed under the terms of the DO WHAT THE FUCK YOU WANT TO
 # PUBLIC LICENSE version 2, dated December 2004, by Sam Hocevar. You should
@@ -191,9 +191,15 @@ class FlightGearVersion:
 _FGVersionOutput_cre = re.compile(r"^FlightGear version: +(?P<version>.*)$",
                                   re.IGNORECASE | re.MULTILINE)
 
-def getFlightGearVersion(FG_bin):
+def getFlightGearVersion(FG_bin, FG_root):
+    # FlightGear 2016.1.0 (from February 2016) can spawn an annoying popup
+    # dialog when 'fgfs --version' is run, apparently meant to let the user
+    # graphically choose the FG_ROOT path to use in the built-in Qt lancher.
+    # Passing the --fg-root option seems to be enough to get --version to work
+    # properly.
+    FG_root_arg = "--fg-root=" + FG_root
     try:
-        output = subprocess.check_output([FG_bin, "--version"],
+        output = subprocess.check_output([FG_bin, FG_root_arg, "--version"],
                                          stderr=subprocess.STDOUT,
                                          universal_newlines=True)
     except OSError as e:
