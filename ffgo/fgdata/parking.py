@@ -124,7 +124,7 @@ class Parking:
                 ("heading", float, None),
                 ("radius", cls._convRadius, None),
                 ("airlineCodes", cls._splitAirlineCodes, None),
-                ("pushBackRoute", int, None)):
+                ("pushBackRoute", int, lambda n: (n > 0))):
             cls._setAttr(attrs, parkingElt, attr, conv, condition)
 
         return cls(**attrs)
