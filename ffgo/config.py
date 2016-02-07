@@ -310,8 +310,8 @@ class Config:
 
         if FG_bin and FG_root:
             try:
-                self.FG_version = fgversion.getFlightGearVersion(FG_bin,
-                                                                 FG_root)
+                self.FG_version = fgversion.getFlightGearVersion(
+                    FG_bin, FG_root, self.FG_working_dir.get())
             except fgversion.error as e:
                 exc = e         # may need to be raised later
 

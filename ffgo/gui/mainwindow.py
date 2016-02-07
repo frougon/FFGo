@@ -768,8 +768,9 @@ want to follow this new default and set “Airport database update” to
         else:
             FG_version =  pgettext('FlightGear version', 'none')
             comment =  '\n' +_(
-                "(you may want to check the 'fgfs' executable and FG_ROOT paths "
-                "defined in Settings → Preferences)")
+                "(you may want to check the 'fgfs' executable and FG_ROOT paths, "
+                "as well as the FlightGear working directory defined in "
+                "Settings → Preferences)")
         # Uses the same string as in Config.logDetectedFlightGearVersion()
         detected = _('Detected FlightGear version: {ver}').format(
             ver=FG_version) + comment
