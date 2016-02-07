@@ -72,18 +72,21 @@ class Parking:
         return self.fullName()
 
     @classmethod
-    def _setAttr(cls, d, parkingElt, attr, conv=None):
+    def _setAttr(cls, d, parkingElt, attr, conv=None, condition=None):
         if conv is None:
             conv = lambda x: x
 
         val = parkingElt.get(attr)
         if val is not None:
             try:
-                d[attr] = conv(val)
+                converted = conv(val)
             except ValueError as e:
                 raise error(_(
                     "invalid value for the {attr!r} attribute: {val!r}").format(
                         attr=attr, val=val)) from e
+            else:
+                if condition is None or condition(converted):
+                    d[attr] = converted
 
     @classmethod
     def _convRadius(cls, radiusStr):
@@ -111,17 +114,18 @@ class Parking:
         attrs = {}
 
         # Some parking positions have no 'number' attribute
-        for attr, conv in (("index", int),
-                           ("type", None),
-                           ("name", None),
-                           ("number", None),
-                           ("lat", misc.mixedToDecimalCoords),
-                           ("lon", misc.mixedToDecimalCoords),
-                           ("heading", float),
-                           ("radius", cls._convRadius),
-                           ("airlineCodes", cls._splitAirlineCodes),
-                           ("pushBackRoute", int)):
-            cls._setAttr(attrs, parkingElt, attr, conv)
+        for attr, conv, condition in (
+                ("index", int, None),
+                ("type", None, None),
+                ("name", None, None),
+                ("number", None, None),
+                ("lat", misc.mixedToDecimalCoords, None),
+                ("lon", misc.mixedToDecimalCoords, None),
+                ("heading", float, None),
+                ("radius", cls._convRadius, None),
+                ("airlineCodes", cls._splitAirlineCodes, None),
+                ("pushBackRoute", int, None)):
+            cls._setAttr(attrs, parkingElt, attr, conv, condition)
 
         return cls(**attrs)
 
