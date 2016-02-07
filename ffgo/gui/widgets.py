@@ -336,9 +336,6 @@ class IncrementalChooser(metaclass=abc.ABCMeta):
         # affect self.searchVar instead of being delayed. Has “one shot”
         # behavior.
         self.immediateSearchUpdate = False
-        # When False, self.searchBufferVarWritten() returns immediately without
-        # doing its normal work.
-        self.searchUpdateEnabled = True
         self.searchBufferVar.trace("w", self.searchBufferVarWritten)
         self.searchVar.trace("w", self.updateList)
         # Id obtained from self.master.after() when scheduling
@@ -441,9 +438,6 @@ class IncrementalChooser(metaclass=abc.ABCMeta):
     # Accept any arguments to allow safe use as a Tkinter variable observer
     def searchBufferVarWritten(self, *args):
         """Method called when self.searchBufferVar.set() is called."""
-        if not self.searchUpdateEnabled:
-            return
-
         if self.searchUpdateCancelId is not None:
             self.master.after_cancel(self.searchUpdateCancelId)
 
