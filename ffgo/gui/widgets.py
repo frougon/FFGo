@@ -689,16 +689,47 @@ class AirportChooser(IncrementalChooser):
         # upper case.
         return self.treeWidget.set(item, "icao") == massagedSearchText
 
+    def updateItemData(self, icao, updateTree=True):
+        """Refresh the data for the airport whose ICAO code is 'icao'.
+
+        Fetch the relevant data from the underlying AirportStub instance,
+        update self.treeData with this new data and refresh
+        'self.treeWidget'.
+
+        The current implementation simply rebuilds the whole MyTreeview
+        widget unless the optional argument 'updateTree' is False. This
+        can be slow if the amount of data in 'self.treeWidget' is large.
+
+        """
+        # Not very efficient...
+        for i, (itemIcao, *rest) in enumerate(self.treeData):
+            if itemIcao == icao:
+                airport = self.config.airports[icao]
+                self.treeData[i] = (airport.icao, airport.name,
+                                    airport.useCountForShow)
+
+                if updateTree:
+                    self.setTreeData(self.treeData)
+                break
+        else:
+            raise NoSuchItem(icao)
+
 
 class AircraftChooser(IncrementalChooser):
     """Glue logic turning three widgets into a convenient aircraft chooser."""
+
+    acNameTranslationMap = str.maketrans("", "", " -_.,;:!?")
 
     def __init__(self, *args, **kwargs):
         # Mapping for removing the listed characters from aircraft names
         # using str.translate(). Must be set before calling
         # IncrementalChooser's constructor.
-        self.acNameTranslationMap = str.maketrans("", "", " -_.,;:!?")
         IncrementalChooser.__init__(self, *args, **kwargs)
+
+    @classmethod
+    def aircraftNameMatchKey(cls, acName):
+        """Return the match key corresponding to a given aircraft name."""
+        return acName.translate(cls.acNameTranslationMap).lower()
 
     def findMatches(self):
         """Find all matches corresponding to the contents of 'self.searchVar'.
@@ -745,3 +776,31 @@ class AircraftChooser(IncrementalChooser):
                 "name", constants.DEFAULT_AIRCRAFT)
         except NoSuchItem:
             self.treeWidget.FFGoGotoItemWithIndex(0)
+
+    def updateItemData(self, aircraftId, updateTree=True):
+        """Refresh the data for the aircraft identified by 'aircraftId'.
+
+        'aircraftId' should be a tuple (or, more generally, an iterable)
+        of the form (aircraftName, aircraftDir). Fetch the relevant data
+        from the underlying Aircraft instance, update self.treeData with
+        this new data and refresh 'self.treeWidget'.
+
+        The current implementation simply rebuilds the whole MyTreeview
+        widget unless the optional argument 'updateTree' is False. This
+        can be slow if the amount of data in 'self.treeWidget' is large.
+
+        """
+        # Not very efficient...
+        for i, (matchKey, name, dir_, *rest) in enumerate(self.treeData):
+            if (name, dir_) == aircraftId:
+                aircraft = self.config.aircraftWithId(aircraftId)
+                self.treeData[i] = (self.aircraftNameMatchKey(aircraft.name),
+                                    aircraft.name,
+                                    aircraft.dir,
+                                    aircraft.useCountForShow)
+
+                if updateTree:
+                    self.setTreeData(self.treeData)
+                break
+        else:
+            raise NoSuchItem(str(aircraftId))

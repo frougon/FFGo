@@ -63,6 +63,15 @@ FlightGear executable, with suitable arguments.""",
                         help="""\
       only messages with the same or a higher priority will be printed to the
       terminal (default: %(default)s)""")
+    parser.add_argument('--save-stats-in-pretty-form', action='store_true',
+                        help="""\
+      When saving the files containing usage statistics, use a human-readable
+      form at the expense of, maybe, a little slowdown next time {prg} is
+      started. Useful for power users who have changed their aircraft paths and
+      want to keep their aircraft counts in spite of the change. Don't fear
+      using this option: if you stop using it, the very small possible slowdown
+      will disappear completely next time {prg} is started.""".format(
+          prg=PROGNAME))
     parser.add_argument('-t', '--test-mode', action='store_true',
                         help="""\
       enable test mode (useful to test pieces of code from the {prg} GUI)"""

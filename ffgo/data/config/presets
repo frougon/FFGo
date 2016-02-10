@@ -103,6 +103,30 @@
 #                                 normally be passed to fgfs for parking
 #                                 positions found in groundnet files) into
 #                                 three --lat, --lon and --heading options.
+# AIRPORT_STATS_SHOW_PERIOD=n (integer)
+#                               - The "Use count" of each airport is the
+#                                 number of days during which the airport has
+#                                 been visited at least once, in the period
+#                                 covering the last n days.
+# AIRPORT_STATS_EXPIRY_PERIOD=p (integer)
+#                               - To compute the aforementioned "use count",
+#                                 the date for each airport visit is stored
+#                                 (no more than once per day for a given
+#                                 airport). However, dates older than p days
+#                                 for any given airport are automatically
+#                                 discarded.
+# AIRCRAFT_STATS_SHOW_PERIOD=q (integer)
+#                               - The "Use count" of each aircraft is the
+#                                 number of days during which the aircraft has
+#                                 been used at least once, in the period
+#                                 covering the last q days.
+# AIRCRAFT_STATS_EXPIRY_PERIOD=r (integer)
+#                               - To compute the aforementioned "use count",
+#                                 the date for each aircraft use is stored (no
+#                                 more than once per day for a given
+#                                 aircraft). However, dates older than r days
+#                                 for any given aircraft are automatically
+#                                 discarded.
 #
 # Any number of options can be selected, but to get FFGo ready to work,
 # you only need:

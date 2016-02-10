@@ -262,6 +262,9 @@ class App:
             # the aircraft under the mouse pointer anymore.
             self.aircraftTooltip.hide()
 
+        # Used below for the tooltip function
+        aircraftListDisplayColumns = ["name", "use count"]
+        #
         # widgets.MyTreeview is a subclass of the Ttk Treeview widget. The
         # TreeviewSelect event binding is done in the AircraftChooser class.
         # Each item will have an associated “directory” value that can be used
@@ -284,9 +287,11 @@ class App:
         # efficient (no need to store unused values in local variables for
         # *each* aircraft of the list).
         self.aircraftList = widgets.MyTreeview(
-            self.frame12, columns=["match key", "name", "directory"],
-            displaycolumns=["name"], show="headings", selectmode="browse",
-            height=14, yscrollcommand=onAircraftListScrolled)
+            self.frame12, columns=["match key", "name", "directory",
+                                   "use count"],
+            displaycolumns=aircraftListDisplayColumns, show="headings",
+            selectmode="browse", height=14,
+            yscrollcommand=onAircraftListScrolled)
         self.aircraftList.pack(side='left', fill='both', expand=True)
 
         aircraftListScrollbar.config(command=self.aircraftList.yview)
@@ -301,6 +306,14 @@ class App:
                 aircraft = self.config.aircraftWithNameAndDir(aircraftName,
                                                               aircraftDir)
                 return aircraft.tooltipText()
+            elif region == "heading" and column == "#{num}".format(
+                 num=aircraftListDisplayColumns.index("use count")+1):
+                    tooltipText = _(
+                        "Number of days for which the aircraft has been used "
+                        "at least once during the "
+                        "“aircraft stats show period” (cf. Preferences "
+                        "dialog)")
+                    return textwrap.fill(tooltipText, width=62)
             else:
                 return None
 
@@ -312,7 +325,9 @@ class App:
             widgets.Column("name", _("Aircraft"), 1, "w", True, "width",
                            widthText="M"*15,
                            sortFunc=lambda name: name.lower()),
-            widgets.Column("directory", _("Directory"), 2, "w", True)]
+            widgets.Column("directory", _("Directory"), 2, "w", True),
+            widgets.Column("use count", _("Use count"), 3, "e", False, "width",
+                           widthText="M"*5)]
         aircraftListColumns = { col.name: col
                                for col in aircraftListColumnsList }
 
@@ -432,10 +447,12 @@ class App:
             # the airport under the mouse pointer anymore.
             self.airportTooltip.hide()
 
+        # Used below for the tooltip function
+        airportListDisplayColumns = ["icao", "name", "use count"]
         # Subclass of Ttk's Treeview. The TreeviewSelect event binding is done
         # in the AirportChooser class.
         self.airportList = widgets.MyTreeview(
-            self.frame32, columns=["icao", "name"],
+            self.frame32, columns=airportListDisplayColumns, # show all columns
             show="headings", selectmode="browse", height=14,
             yscrollcommand=onAirportListScrolled)
         self.airportList.pack(side='left', fill='both', expand=True)
@@ -449,6 +466,14 @@ class App:
                 found, airport = self.readAirportData(icao)
 
                 return airport.tooltipText() if found else None
+            elif region == "heading" and column == "#{num}".format(
+                 num=airportListDisplayColumns.index("use count")+1):
+                    tooltipText = _(
+                        "Number of days for which the airport has been "
+                        "visited at least once during the "
+                        "“airport stats show period” (cf. Preferences "
+                        "dialog)")
+                    return textwrap.fill(tooltipText, width=62)
             else:
                 return None
 
@@ -459,7 +484,9 @@ class App:
             widgets.Column("icao", _("ICAO"), 0, "w", False, "width",
                            widthText="M"*4),
             widgets.Column("name", _("Airport name"), 1, "w", True, "width",
-                           widthText="M"*20)]
+                           widthText="M"*20),
+            widgets.Column("use count", _("Use count"), 2, "e", False, "width",
+                           widthText="M"*5)]
         airportListColumns = { col.name: col
                                for col in airportListColumnsList }
 
@@ -821,13 +848,9 @@ want to follow this new default and set “Airport database update” to
         self.aboutLicense.destroy()
 
     def buildAircraftList(self, clearSearch=False):
-        def matchKey(acName,
-                     translationMap=self.aircraftChooser.acNameTranslationMap):
-            """
-            Remove characters from an aircraft name according to 'translationMap'."""
-            return acName.translate(translationMap).lower()
-
-        aircraftTreeData = [ (matchKey(ac.name), ac.name, ac.dir)
+        matchKeyFunc = self.aircraftChooser.aircraftNameMatchKey
+        aircraftTreeData = [ (matchKeyFunc(ac.name), ac.name, ac.dir,
+                              ac.useCountForShow)
                              for ac in self.config.aircraftList ]
         # Update the aircraft list widget
         self.aircraftChooser.setTreeData(aircraftTreeData,
@@ -838,11 +861,29 @@ want to follow this new default and set “Airport database update” to
             os.path.isfile(self.config.apt_path)):
             self.config._autoUpdateApt()
 
+        if self.config.airportStatsManager is None: # application init
+            # Requires the translation system to be in place
+            from .. import stats_manager
+            self.config.airportStatsManager = \
+                                stats_manager.AirportStatsManager(self.config)
+        else:
+            # Save the in-memory statistics (from AirportStub instances) to
+            # persistent storage. This expires old stats, according to
+            # 'Config.airportStatsExpiryPeriod'.
+            self.config.airportStatsManager.save()
+
         # This is limited to the list of installed airports if
         # 'Config.filteredAptList' is set to 1.
         self.browsableAirports = self.config._readApt()
 
-        airportListData = [ (airport.icao, airport.name)
+        # Load the saved statistics into the new in-memory AirportStub
+        # instances (the set of airports may have just changed, hence the need
+        # to save the stats before the in-memory airport list is updated, and
+        # reload them afterwards).
+        self.config.airportStatsManager.load()
+
+        airportListData = [ (airport.icao, airport.name,
+                             airport.useCountForShow)
                             for airport in self.browsableAirports ]
         # Update the airport list widget (as opposed to
         # 'self.browsableAirports', which is also an airport list in some way)
@@ -1261,6 +1302,10 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
 
     def quit(self):
         """Quit application."""
+        # Save the in-memory statistics to persistent storage
+        self.config.airportStatsManager.save()
+        self.config.aircraftStatsManager.save()
+
         self.master.quit()
 
     def readRunwayData(self, icao):
@@ -1483,6 +1528,16 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
         # Done here to avoid delaying the preceding 't.start()'...
         self.fgStatusText.set(_("FlightGear is running..."))
         self.fgStatusLabel.config(background="#ff8888")
+
+        # Update the airport and aircraft usage statistics
+        if not self.config.carrier.get(): # not in “carrier mode”
+            self.config.airportStatsManager.recordAsUsedToday(
+                self.config.airport.get())
+            self.airportChooser.updateItemData(self.config.airport.get())
+
+        self.config.aircraftStatsManager.recordAsUsedToday(
+            self.config.aircraftId.get())
+        self.aircraftChooser.updateItemData(self.config.aircraftId.get())
 
         return True
 

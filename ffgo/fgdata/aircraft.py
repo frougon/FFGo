@@ -17,12 +17,24 @@ class Aircraft:
     Could contain things such as the aircraft “radius”, etc.
     """
 
-    def __init__(self, name, dir_):
-        self._attrs = ("name", "dir")
+    def __init__(self, name, dir_, datesOfUse=None, useCountForShow=0):
+        self._attrs = ("name", "dir", "datesOfUse", "useCountForShow")
         self.name = name
         # Don't resolve symlinks, so that aircraft paths are effectively shown
         # under the components of Config.FG_aircraft as entered by the user.
         self.dir = os.path.abspath(dir_)
+
+        # Dates at which the aircraft has been used (subject to
+        # expiry; cf. the 'stats_manager' module). Will be
+        # overridden by AircraftStatsManager.load() if the file where
+        # these dates are normally stored between FFGo runs is present.
+        self.datesOfUse = datesOfUse if datesOfUse is not None else []
+        # The AircraftStatsManager class maintains a count of the number of
+        # days during which the aircraft has been used at least once, in a
+        # customizable period (cf. Config.aircraftStatsShowPeriod). This is the
+        # count in question (this initial value is likely to be later
+        # overridden by AircraftStatsManager.load()).
+        self.useCountForShow = useCountForShow
 
         # Good for displaying to the user
         self.setFile = os.path.join(self.dir, "{}-set.xml".format(self.name))

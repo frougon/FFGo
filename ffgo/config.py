@@ -122,6 +122,13 @@ class Config:
         # when --parkpos is broken in FlightGear)
         self.fakeParkposOption = IntVar()
 
+        self.airportStatsManager = None # will be initialized later
+        self.aircraftStatsManager = None # ditto
+        self.airportStatsShowPeriod = IntVar()
+        self.airportStatsExpiryPeriod = IntVar()
+        self.aircraftStatsShowPeriod = IntVar()
+        self.aircraftStatsExpiryPeriod = IntVar()
+
         self.keywords = {'--aircraft=': self.aircraft,
                          '--airport=': self.airport,
                          '--fg-root=': self.FG_root,
@@ -153,7 +160,15 @@ class Config:
                          self.showFGOutputInSeparateWindow,
                          'FG_OUTPUT_GEOMETRY=': self.FGOutputGeometry,
                          'AUTOSCROLL_FG_OUTPUT=': self.autoscrollFGOutput,
-                         'FAKE_PARKPOS_OPTION=': self.fakeParkposOption}
+                         'FAKE_PARKPOS_OPTION=': self.fakeParkposOption,
+                         'AIRPORT_STATS_SHOW_PERIOD=':
+                         self.airportStatsShowPeriod,
+                         'AIRPORT_STATS_EXPIRY_PERIOD=':
+                         self.airportStatsExpiryPeriod,
+                         'AIRCRAFT_STATS_SHOW_PERIOD=':
+                         self.aircraftStatsShowPeriod,
+                         'AIRCRAFT_STATS_EXPIRY_PERIOD=':
+                         self.aircraftStatsExpiryPeriod}
 
         # In order to avoid using a lot of memory, detailed airport data is
         # only loaded on demand. Since this is quite slow, keep a cache of the
@@ -421,6 +436,17 @@ class Config:
         path is a path to different than default config file
 
         """
+        if self.aircraftStatsManager is None: # application init
+            # Requires the translation system to be in place
+            from . import stats_manager
+            self.aircraftStatsManager = \
+                                      stats_manager.AircraftStatsManager(self)
+        else:
+            # Save the in-memory statistics (from Aircraft instances) to
+            # persistent storage. This expires old stats, according to
+            # self.aircraftStatsExpiryPeriod.
+            self.aircraftStatsManager.save()
+
         del self.settings
         del self.text
         del self.aircraft_dirs
@@ -463,6 +489,10 @@ class Config:
         self.rwy.set('')
         self.scenario.set('')
         self.filteredAptList.set(0)
+        self.airportStatsShowPeriod.set('365')    # approx. one year
+        self.airportStatsExpiryPeriod.set('3652') # approx. ten years
+        self.aircraftStatsShowPeriod.set('365')
+        self.aircraftStatsExpiryPeriod.set('3652')
 
         self.settings, self.text = self._read(path)
 
@@ -490,6 +520,11 @@ class Config:
         self.metar_path = os.path.join(self.FG_root.get(), METAR_DAT)
 
         self.aircraftDict, self.aircraftList = self._readAircraft()
+        # Load the saved statistics into the new in-memory Aircraft instances
+        # (the set of aircrafts may have just changed, hence the need to save
+        # the stats before the in-memory aircraft list is updated, and reload
+        # them afterwards).
+        self.aircraftStatsManager.load()
         # Choose a suitable aircraft, even if the one defined by
         # 'self.aircraft' and 'self.aircraftDir' isn't available.
         self.aircraftId.set(self._findAircraft(self.aircraft.get(),
@@ -592,8 +627,8 @@ class Config:
             return c, c + 1
 
     def _createUserDirectories(self):
-        """Create config and log directories if they don't exist."""
-        for d in USER_DATA_DIR, LOG_DIR:
+        """Create config, log and stats directories if they don't exist."""
+        for d in USER_DATA_DIR, LOG_DIR, STATS_DIR:
             os.makedirs(d, exist_ok=True)
 
     def _maybeMigrateFromFGoConfig_dialogs(self, parent):

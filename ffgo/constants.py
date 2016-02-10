@@ -46,6 +46,12 @@ USER_DATA_DIR = normpath(USER_DATA_DIR)
 
 # Place to store FG output logs.
 LOG_DIR = join(USER_DATA_DIR, 'Logs')
+# Place to store some statistics (when each plane or airport was used...)
+STATS_DIR = join(USER_DATA_DIR, 'Stats')
+# File where statistics about airports are stored
+AIRPORTS_STATS_FILE = join(STATS_DIR, "airports.json.gz")
+# File where statistics about aircrafts are stored
+AIRCRAFTS_STATS_FILE = join(STATS_DIR, "aircrafts.json.gz")
 # Path to airport data file.
 APT = join(USER_DATA_DIR, 'apt')
 # Path to locally installed airport list.

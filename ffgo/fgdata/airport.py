@@ -1,7 +1,7 @@
 # airport.py --- Handle FlightGear airport data (including runways)
 # -*- coding: utf-8 -*-
 #
-# Copyright (c) 2015  Florent Rougon
+# Copyright (c) 2015, 2016  Florent Rougon
 #
 # This file is distributed under the terms of the DO WHAT THE FUCK YOU WANT TO
 # PUBLIC LICENSE version 2, dated December 2004, by Sam Hocevar. You should
@@ -117,8 +117,17 @@ class Airport:
 class AirportStub:
     """Low-memory class for representing limited airport data.
 
-    This class can hold airport metadata present in the apt digest file,
-    but no more. The use of the __slots__ special class attribute, given
+    This class mostly holds airport metadata present in the apt digest
+    file. More precisely, the criterion is: if some attribute must be
+    looked up quickly for a large number of airports, it should be in
+    this class. When data is accessed on user demand, e.g., for one
+    airport at a time, and waiting one tenth of a second for it isn't a
+    problem, then such data more likely belongs to the Airport class.
+    This is because AirportStub instances are created and held into
+    memory for *all* airports listed in apt.dat.gz, as long as FFGo is
+    running, whereas Airport instances are created on-demand.
+
+    The use of the __slots__ special class attribute, given
     the large number of airports loaded on startup (34074 in my test),
     allows one to save about 6 MBytes of memory on Linux (amd64, with
     Python 3.4.3), which is 9 % of the resident memory used by FFGo
@@ -133,11 +142,11 @@ class AirportStub:
 
     __slots__ = ("icao", "name", "type", "lat", "lon", "nbLandRunways",
                 "nbWaterRunways", "nbHelipads", "minRwyLength", "maxRwyLength",
-                 "indexInAptDat")
+                 "indexInAptDat", "datesOfUse", "useCountForShow")
 
     def __init__(self, icao, name, type, lat, lon, nbLandRunways,
                  nbWaterRunways, nbHelipads, minRwyLength, maxRwyLength,
-                 indexInAptDat):
+                 indexInAptDat, datesOfUse=None, useCountForShow=0):
         """Initialize an AirportStub instance.
 
         'indexInAptDat' should be a tuple (byteOffset, lineNb) where
@@ -145,9 +154,25 @@ class AirportStub:
         airport in apt.dat, and 'lineNb' is the corresponding line
         number (starting from 1).
 
+        The AirportStatsManager class maintains a count of the number of
+        days during which the airport has been visited at least once, in
+        a customizable period (cf. Config.airportStatsShowPeriod). This
+        count is available as the 'useCountForShow' of this class. The
+        initial default value 0 will be overridden by
+        AirportStatsManager.load() if the file where the underlying
+        dates are stored between FFGo runs is present.
+
         """
         for attr in self.__slots__:
             setattr(self, attr, locals()[attr])
+
+        if datesOfUse is None:
+            # Dates at which the airport has been visited (subject to
+            # expiry; cf. the 'stats_manager' module). Will be
+            # overridden by AirportStatsManager.load() if the file where
+            # these dates are normally stored between FFGo runs is
+            # present.
+            self.datesOfUse = [] # effective default value
 
     def __repr__(self):
         argString = ", ".join([ "{}={!r}".format(attr, getattr(self, attr))
