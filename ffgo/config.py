@@ -49,7 +49,8 @@ class Config:
 
     """Read/write and store all data from config files."""
 
-    def __init__(self, master=None):
+    def __init__(self, cmdLineParams, master=None):
+        self.cmdLineParams = cmdLineParams
         self.master = master
 
         self.ai_path = ''  # Path to FG_ROOT/AI directory.

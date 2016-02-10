@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright (c) 2014, 2015  Florent Rougon
+# Copyright (c) 2014, 2015, 2016  Florent Rougon
 # Copyright (c) 2009-2014   Robert Leda
 #
 # This file is distributed under the terms of the DO WHAT THE FUCK YOU WANT TO
@@ -92,7 +92,7 @@ def run(master, params):
     # obtaining the screen dpi in Config methods using
     # master.winfo_fpixels('1i')).
     try:
-        config = Config(master)
+        config = Config(params, master)
     except AbortConfig:
         # We have a temporary translation setup at this point, based on the
         # environment.
