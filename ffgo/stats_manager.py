@@ -303,7 +303,7 @@ class StatsManagerBase(metaclass=abc.ABCMeta):
     def _treeToSaveMaybeAddItem(self, d, jsonKey, datesOfUse, today,
                                 expiryDays):
         d[jsonKey] = [ date for date in datesOfUse
-                      if today - date < expiryDays ]
+                       if today - date < expiryDays ]
         if not d[jsonKey]:
             del d[jsonKey]
 
