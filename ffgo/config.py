@@ -58,8 +58,10 @@ class Config:
         self.metar_path = ''  # Path to FG_ROOT/Airports/metar.dat.gz file.
 
         self.aircraft_dirs = [] # List of aircraft directories.
-        self.aircraftDict = {}  # Keys: aircraft names; values: Aircraft
-                                # instances.
+        # Dictionary whose keys are aircraft names. For each aircraft name 'n',
+        # self.aircraftDict[n] is the list, in self.aircraft_dirs priority
+        # order, of all Aircraft instances with that name.
+        self.aircraftDict = {}
         self.aircraftList = []  # Sorted list of Aircraft instances.
 
         self.scenario_list = []  # List of selected scenarios.
