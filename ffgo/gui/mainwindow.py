@@ -1300,14 +1300,6 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
             if i in self.config.scenario_list:
                 self.popup.selection_set(self.config.scenario_list.index(i))
 
-    def quit(self):
-        """Quit application."""
-        # Save the in-memory statistics to persistent storage
-        self.config.airportStatsManager.save()
-        self.config.aircraftStatsManager.save()
-
-        self.master.quit()
-
     def readRunwayData(self, icao):
         found, airport = self.readAirportData(icao)
 
@@ -1637,12 +1629,26 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
         if self.FGOutput.visible and self.FGOutput.windowDetached:
             self.FGOutput.saveGeometry()
 
+    def quit(self):
+        """Quit the application.
+
+        This method contains common code that should be run whenever
+        FFGo is to be quit, be it via a simple “Quit” or a “Save & Quit”
+        operation.
+
+        """
+        # Save the in-memory statistics to persistent storage
+        self.config.airportStatsManager.save()
+        self.config.aircraftStatsManager.save()
+
+        self.master.quit()
+
     def saveAndQuit(self, event=None):
         """Save options to file (incl. geometry of windows) and quit."""
         self.saveWindowsGeometry()
         t = self.options.get()
         self.config.write(text=t)
-        self.master.quit()
+        self.quit()             # run the “shared” quit() code
 
     def scenarioDescription(self, event):
         """Make pop up window showing AI scenario description."""
