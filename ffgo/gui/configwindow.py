@@ -5,6 +5,7 @@ import os
 from tkinter import *
 import tkinter.filedialog as fd
 from tkinter.messagebox import showinfo
+from tkinter import ttk
 
 from .. import misc
 from .tooltip import ToolTip
@@ -75,30 +76,22 @@ class ConfigWindow:
         self.top.title(_('Preferences'))
         self.top.transient(self.master)
 
-        self.main = Frame(self.top, borderwidth=0)
-        self.main.pack(side='top', padx=12, fill='x', expand=True, anchor='n')
+        self.main = ttk.Frame(self.top, padding=("12p", "12p", "12p", 0))
+        self.main.pack(side='top', fill='x', expand=True, anchor='n')
 
-        self.frame = Frame(self.main, borderwidth=1, relief='sunken')
-        self.frame.pack(side='top', fill='x', expand=True)
-# ----- Tabs ------------------------------------------------------------------
-        self.tabs = Frame(self.frame)
-        self.tabs.pack(side='top', fill='x', expand=True)
+        self.noteBook = ttk.Notebook(self.main)
+        self.noteBook.pack(side='top', fill='x', expand=True)
+        # Padding inside each pane of the notebook
+        self.paddingInsideNotebookPanes = "12p"
 
-        self.tabFG = Button(self.tabs, text=_('FlightGear settings'),
-                            borderwidth=1, relief='ridge',
-                            command=self.showFGSettings)
-        self.tabFG.pack(side='left')
+        self.frameFG = self.widgetFG(self.noteBook)
+        self.noteBook.add(self.frameFG, text=_('FlightGear settings'))
 
-        self.tabMisc = Button(self.tabs, text=_('Miscellaneous'),
-                              borderwidth=1, relief='ridge',
-                              command=self.showMiscSettings)
-        self.tabMisc.pack(side='left')
-# ----- Main content ----------------------------------------------------------
-        # Here is placed content from: widgetFG, widgetTS, and widgetMics.
-        self.frame = Frame(self.frame, borderwidth=1, relief='raised')
-        self.frame.pack(side='top', fill='x', expand=True)
+        self.frameMisc = self.widgetMisc(self.noteBook)
+        self.noteBook.add(self.frameMisc, text=_('Miscellaneous'))
+
 # ----- Buttons ---------------------------------------------------------------
-        self.frame_Buttons = Frame(self.main, borderwidth=12)
+        self.frame_Buttons = ttk.Frame(self.main, padding=(0, "12p", 0, "12p"))
         self.frame_Buttons.pack(side='bottom')
 
         self.frame_save_button = Frame(self.frame_Buttons, borderwidth=4)
@@ -115,20 +108,6 @@ class ConfigWindow:
                             command=self.quit)
         self.close.pack(side='left')
         self.top.bind('<Escape>', lambda event: self.close.invoke())
-# -----------------------------------------------------------------------------
-        # Show FG settings tab by default.
-        self.showFGSettings()
-
-    def cleanUpWidgets(self):
-        """Destroy active widget."""
-        try:
-            self.frame_FG.destroy()
-        except AttributeError:
-            pass
-        try:
-            self.frame_misc.destroy()
-        except AttributeError:
-            pass
 
     def findFG_bin(self):
         self.chooseExecutable(self.FG_bin)
@@ -322,15 +301,13 @@ When this option is unchecked, only the main window size is stored.""")
 
     def quit(self):
         """Quit without saving."""
-        self.top.destroy()
+        # Destroying more widgets would probably be better for memory...
+        for w in (self.top, self.main, self.noteBook, self.frameFG,
+                  self.frameMisc):
+            w.destroy()
 
     def resetBaseFontSize(self):
         self.baseFontSize.set(int(float(DEFAULT_BASE_FONT_SIZE)))
-
-    def resetTabs(self):
-        """Reset tabs."""
-        self.tabFG.configure(borderwidth=2, relief='ridge')
-        self.tabMisc.configure(borderwidth=2, relief='ridge')
 
     def saveAndQuit(self):
         if self.apt_data_source.get() == _('Scenery'):
@@ -360,7 +337,7 @@ When this option is unchecked, only the main window size is stored.""")
 
         self.config.write(text=self.text)
         self.reset_flag = True
-        self.top.destroy()
+        self.quit()
 
     def saveBaseFontSize(self):
         value = self.validateBaseFontSize()
@@ -393,30 +370,13 @@ When this option is unchecked, only the main window size is stored.""")
             v = int(float(DEFAULT_BASE_FONT_SIZE))
         return v
 
-    def showFGSettings(self):
-        if self.tabFG.cget('relief') != 'raised':
-            self.resetTabs()
-            self.tabFG.configure(borderwidth=1, relief='raised')
-            self.cleanUpWidgets()
-            self.widgetFG()
-
-    def showMiscSettings(self):
-        if self.tabMisc.cget('relief') != 'raised':
-            self.resetTabs()
-            self.tabMisc.configure(borderwidth=1, relief='raised')
-            self.cleanUpWidgets()
-            self.widgetMisc()
-
-    def widgetFG(self):
+    def widgetFG(self, parent):
         """FlightGear settings widget."""
-        self.frame_FG = Frame(self.frame, borderwidth=8)
-        self.frame_FG.pack(side='top', fill='x', expand=True)
-
-        self.FG_label = Label(self.frame_FG, text=_('FlightGear settings'))
-        self.FG_label.pack(side='top')
+        frame_FG = ttk.Frame(parent, padding=self.paddingInsideNotebookPanes)
+        frame_FG.pack(side='top', fill='x', expand=True)
 
         # FG_BIN
-        self.frame_FG_1 = Frame(self.frame_FG, borderwidth=4)
+        self.frame_FG_1 = Frame(frame_FG)
         self.frame_FG_1.pack(side='top', fill='x', expand=True)
 
         self.frame_FG_11 = Frame(self.frame_FG_1)
@@ -438,7 +398,7 @@ When this option is unchecked, only the main window size is stored.""")
                                  command=self.findFG_bin)
         self.FG_binFind.pack(side='left')
         # FG_ROOT
-        self.frame_FG_2 = Frame(self.frame_FG, borderwidth=4)
+        self.frame_FG_2 = Frame(frame_FG)
         self.frame_FG_2.pack(side='top', fill='x', expand=True)
 
         self.frame_FG_21 = Frame(self.frame_FG_2)
@@ -459,7 +419,7 @@ When this option is unchecked, only the main window size is stored.""")
                                   command=self.findFG_root)
         self.FG_rootFind.pack(side='left')
         # FG_SCENERY
-        self.frame_FG_3 = Frame(self.frame_FG, borderwidth=4)
+        self.frame_FG_3 = Frame(frame_FG)
         self.frame_FG_3.pack(side='top', fill='x', expand=True)
 
         self.frame_FG_31 = Frame(self.frame_FG_3)
@@ -481,7 +441,7 @@ When this option is unchecked, only the main window size is stored.""")
         self.FG_sceneryFind.pack(side='left')
 
         # FG_AIRCRAFT
-        self.frame_FG_4 = Frame(self.frame_FG, borderwidth=4)
+        self.frame_FG_4 = Frame(frame_FG)
         self.frame_FG_4.pack(side='top', fill='x', expand=True)
 
         self.frame_FG_41 = Frame(self.frame_FG_4)
@@ -503,7 +463,7 @@ When this option is unchecked, only the main window size is stored.""")
                                       command=self.findFG_aircraft)
         self.FG_aircraftFind.pack(side='left')
         # FG working directory
-        self.frame_FG_5 = Frame(self.frame_FG, borderwidth=4)
+        self.frame_FG_5 = Frame(frame_FG)
         self.frame_FG_5.pack(side='top', fill='x', expand=True)
 
         self.frame_FG_51 = Frame(self.frame_FG_5)
@@ -525,15 +485,14 @@ When this option is unchecked, only the main window size is stored.""")
                                          command=self.findFgWorkingDir)
         self.FG_working_dirFind.pack(side='left')
 
-    def widgetMisc(self):
+        return frame_FG
+
+    def widgetMisc(self, parent):
         """Miscellaneous settings widget."""
-        self.frame_misc = Frame(self.frame, borderwidth=8)
-        self.frame_misc.pack(side='top', fill='x', expand=True)
+        frame_misc = ttk.Frame(parent, padding=self.paddingInsideNotebookPanes)
+        frame_misc.pack(side='top', fill='x', expand=True)
 
-        self.misc_label = Label(self.frame_misc, text=_('Miscellaneous'))
-        self.misc_label.pack(side='top')
-
-        self.frame_misc_1 = Frame(self.frame_misc, borderwidth=4)
+        self.frame_misc_1 = Frame(frame_misc)
         self.frame_misc_1.pack(side='top', fill='x', expand=True)
         # Language menu
         self.frame_misc_11 = Frame(self.frame_misc_1)
@@ -576,7 +535,7 @@ When this option is unchecked, only the main window size is stored.""")
         fontsize_reset_button.pack(side='left')
 
         # Apt source menu
-        self.frame_misc_2 = Frame(self.frame_misc, borderwidth=8)
+        self.frame_misc_2 = Frame(frame_misc, borderwidth=8)
         self.frame_misc_2.pack(side='top', fill='x', expand=True)
 
         self.frame_misc_22 = Frame(self.frame_misc_2)
@@ -593,7 +552,7 @@ When this option is unchecked, only the main window size is stored.""")
         self.aptMenu.pack(side='left')
 
         # Rebuild apt menu
-        self.frame_misc_3 = Frame(self.frame_misc, borderwidth=8)
+        self.frame_misc_3 = Frame(frame_misc, borderwidth=8)
         self.frame_misc_3.pack(side='top', fill='x', expand=True)
         # Auto update apt menu
         self.frame_misc_31 = Frame(self.frame_misc_3)
@@ -610,7 +569,7 @@ When this option is unchecked, only the main window size is stored.""")
         self.autoAptMenu.pack(side='left')
 
         # Rebuild apt menu
-        self.frame_misc_4 = Frame(self.frame_misc, borderwidth=8)
+        self.frame_misc_4 = Frame(frame_misc, borderwidth=8)
         self.frame_misc_4.pack(side='top', fill='x', expand=True)
         # Rebuild apt button
         self.frame_misc_41 = Frame(self.frame_misc_4)
@@ -623,7 +582,7 @@ When this option is unchecked, only the main window size is stored.""")
         self.rebuildApt.pack(side='top', fill='x')
 
         # MagneticField executable
-        self.frame_MagField = Frame(self.frame_misc, borderwidth=8)
+        self.frame_MagField = Frame(frame_misc, borderwidth=8)
         self.frame_MagField.pack(side='top', fill='x', expand=True)
 
         self.frame_MagField1 = Frame(self.frame_MagField)
@@ -646,7 +605,7 @@ When this option is unchecked, only the main window size is stored.""")
         self.MagneticFieldBinFind.pack(side='left')
 
         # “Remember main windows position” checkbox
-        self.frame_rememberMainWinPos = Frame(self.frame_misc)
+        self.frame_rememberMainWinPos = Frame(frame_misc)
         self.frame_rememberMainWinPos.pack(side='top', fill='x', expand=True)
         self.rememberMainWinPosCb = Checkbutton(
             self.frame_rememberMainWinPos,
@@ -656,7 +615,7 @@ When this option is unchecked, only the main window size is stored.""")
         self.rememberMainWinPosCb.pack(side='left', fill='x')
 
         # “Automatically scroll the Output Window” checkbox
-        self.frame_autoscrollFGOutput = Frame(self.frame_misc)
+        self.frame_autoscrollFGOutput = Frame(frame_misc)
         self.frame_autoscrollFGOutput.pack(side='top', fill='x', expand=True)
         self.autoscrollFGOutputCb = Checkbutton(
             self.frame_autoscrollFGOutput,
@@ -667,7 +626,7 @@ When this option is unchecked, only the main window size is stored.""")
         self.autoscrollFGOutputCb.pack(side='left', fill='x')
 
         # “Fake the --parkpos option” checkbox
-        self.frame_fakeParkposOption = Frame(self.frame_misc)
+        self.frame_fakeParkposOption = Frame(frame_misc)
         self.frame_fakeParkposOption.pack(side='top', fill='x', expand=True)
         self.fakeParkposOptionCb = Checkbutton(
             self.frame_fakeParkposOption,
@@ -676,3 +635,5 @@ When this option is unchecked, only the main window size is stored.""")
         ToolTip(self.fakeParkposOptionCb, self.tooltip_fakeParkposOption,
                 autowrap=True)
         self.fakeParkposOptionCb.pack(side='left', fill='x')
+
+        return frame_misc
