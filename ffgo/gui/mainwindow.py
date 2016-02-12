@@ -309,10 +309,9 @@ class App:
             elif region == "heading" and column == "#{num}".format(
                  num=aircraftListDisplayColumns.index("use count")+1):
                     tooltipText = _(
-                        "Number of days for which the aircraft has been used "
-                        "at least once during the "
-                        "“aircraft stats show period” (cf. Preferences "
-                        "dialog)")
+                        "Number of days the aircraft was used during the "
+                        "selected period (cf. “Aircrafts statistics show "
+                        "period” in the Preferences dialog)")
                     return textwrap.fill(tooltipText, width=62)
             else:
                 return None
@@ -469,10 +468,9 @@ class App:
             elif region == "heading" and column == "#{num}".format(
                  num=airportListDisplayColumns.index("use count")+1):
                     tooltipText = _(
-                        "Number of days for which the airport has been "
-                        "visited at least once during the "
-                        "“airport stats show period” (cf. Preferences "
-                        "dialog)")
+                        "Number of days the airport was visited during the "
+                        "selected period (cf. “Airports statistics show "
+                        "period” in the Preferences dialog)")
                     return textwrap.fill(tooltipText, width=62)
             else:
                 return None
@@ -485,8 +483,8 @@ class App:
                            widthText="M"*4),
             widgets.Column("name", _("Airport name"), 1, "w", True, "width",
                            widthText="M"*20),
-            widgets.Column("use count", _("Use count"), 2, "e", False, "width",
-                           widthText="M"*5)]
+            widgets.Column("use count", _("Visit count"), 2, "e", False,
+                           "width", widthText="M"*5)]
         airportListColumns = { col.name: col
                                for col in airportListColumnsList }
 
