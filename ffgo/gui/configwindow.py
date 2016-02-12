@@ -2,9 +2,11 @@
 
 
 import os
-from tkinter import *
+import sys
+import tkinter as tk            # cleaner for new code IMHO
+from tkinter import *           # old way
 import tkinter.filedialog as fd
-from tkinter.messagebox import showinfo
+from tkinter.messagebox import showinfo, showerror
 from tkinter import ttk
 
 from .. import misc
@@ -19,6 +21,18 @@ def setupTranslationHelper(config):
     pgettext = translationHelper.pgettext
 
 
+class ValidatingWidget:
+    """Class holding widget-metadata to ease input validation.
+
+    This class allows a number of widgets to have their input validated
+    using the same code, with error reporting when the input is invalid.
+
+    """
+    def __init__(self, widget, paneWidget, validateFunc, invalidFunc):
+        for attr in ("widget", "paneWidget", "validateFunc", "invalidFunc"):
+            setattr(self, attr, locals()[attr])
+
+
 class ConfigWindow:
 
     def __init__(self, master, config, text):
@@ -27,6 +41,9 @@ class ConfigWindow:
         self.text = text
 
         setupTranslationHelper(config)
+
+        # List of ValidatingWidget instances for “standard” input validation.
+        self.validatingWidgets = []
 
         self.apt_data_source = StringVar()
         self.auto_update_apt = StringVar()
@@ -66,6 +83,12 @@ class ConfigWindow:
         self.autoscrollFGOutput.set(self.config.autoscrollFGOutput.get())
         self.fakeParkposOption.set(self.config.fakeParkposOption.get())
 
+        for name in ("aircraftStatsShowPeriod", "aircraftStatsExpiryPeriod",
+                     "airportStatsShowPeriod", "airportStatsExpiryPeriod"):
+            setattr(self, name, tk.IntVar())
+            tkVar = getattr(self, name)
+            tkVar.set(getattr(self.config, name).get())
+
         self.reset_flag = False
         self.initToolTipMessages()
 
@@ -86,6 +109,9 @@ class ConfigWindow:
 
         self.frameFG = self.widgetFG(self.noteBook)
         self.noteBook.add(self.frameFG, text=_('FlightGear settings'))
+
+        self.frameStats = self.widgetStats(self.noteBook)
+        self.noteBook.add(self.frameStats, text=_('Statistics'))
 
         self.frameMisc = self.widgetMisc(self.noteBook)
         self.noteBook.add(self.frameMisc, text=_('Miscellaneous'))
@@ -310,6 +336,9 @@ When this option is unchecked, only the main window size is stored.""")
         self.baseFontSize.set(int(float(DEFAULT_BASE_FONT_SIZE)))
 
     def saveAndQuit(self):
+        if not self.validateStandardWidgets():
+            return
+
         if self.apt_data_source.get() == _('Scenery'):
             self.config.apt_data_source.set(1)
         else:
@@ -334,6 +363,11 @@ When this option is unchecked, only the main window size is stored.""")
         self.config.saveWindowPosition.set(self.rememberMainWinPos.get())
         self.config.autoscrollFGOutput.set(self.autoscrollFGOutput.get())
         self.config.fakeParkposOption.set(self.fakeParkposOption.get())
+
+        for name in ("aircraftStatsShowPeriod", "aircraftStatsExpiryPeriod",
+                     "airportStatsShowPeriod", "airportStatsExpiryPeriod"):
+            tkConfigVar = getattr(self.config, name)
+            tkConfigVar.set(getattr(self, name).get())
 
         self.config.write(text=self.text)
         self.reset_flag = True
@@ -487,6 +521,99 @@ When this option is unchecked, only the main window size is stored.""")
 
         return frame_FG
 
+    def widgetStats(self, parent):
+        """Widget used for the “Statistics” pane of the Notebook."""
+        outerFrame = ttk.Frame(parent, padding=self.paddingInsideNotebookPanes)
+        outerFrame.pack(side='top', fill='x', expand=True)
+
+        # Necessary contorsions to fake a grid layout...
+        innerLeftFrame = ttk.Frame(outerFrame)
+        innerLeftFrame.pack(side='left', anchor="nw")
+        innerRightFrame = ttk.Frame(outerFrame)
+        innerRightFrame.pack(side='left', anchor="nw")
+
+        # Common width for all 4 Spinbox instances that are going to be created
+        spinboxWd = 6
+        nonNegativeIntValidateCmd = self.master.register(
+            self._nonNegativeIntValidateFunc)
+        statsPeriodInvalidCmd = self.master.register(
+            self._statsPeriodInvalidFunc)
+
+        def createLine(tkVar, labelText, tooltipText):
+            label = ttk.Label(innerLeftFrame, text=labelText)
+            label.pack(side='top', anchor="w")
+
+            spinbox = tk.Spinbox(
+                innerRightFrame, from_=0, to=sys.maxsize, increment=1,
+                repeatinterval=20, textvariable=tkVar,
+                width=spinboxWd, validate="focusout",
+                validatecommand=(nonNegativeIntValidateCmd, "%P"),
+                invalidcommand=(statsPeriodInvalidCmd, "%W", "%P"))
+            # Used to run the validation code manually in some cases, such as
+            # when the user clicks on the “Save” button (otherwise, the
+            # validate command isn't called).
+            self.validatingWidgets.append(
+                # 'outerFrame': pane of self.noteBook that must be selected to
+                # allow the user to see the widget with invalid contents
+                 ValidatingWidget(spinbox, outerFrame,
+                                  self._nonNegativeIntValidateFunc,
+                                  self._statsPeriodInvalidFunc))
+            spinbox.pack(side='top', anchor="n")
+            ToolTip(spinbox, tooltipText, autowrap=True)
+
+        for tkVar, labelText, tooltipText in (
+                (self.aircraftStatsShowPeriod,
+                 _("Aircrafts statistics show period: "),
+                 _("The “use count” for each aircraft is the number of days "
+                   "it was used during the last n days, where n is the number "
+                   "entered here.")),
+                (self.aircraftStatsExpiryPeriod,
+                 _("Aircrafts statistics expiry period: "),
+                 _("{prg} automatically forgets about dates you used a "
+                   "given aircraft when they get older than this number of "
+                   "days.").format(prg=PROGNAME)),
+                (self.airportStatsShowPeriod,
+                 _("Airports statistics show period: "),
+                 _("The “visit count” for each airport is the number of days "
+                   "it was visited during the last n days, where n is the "
+                   "number entered here.")),
+                (self.airportStatsExpiryPeriod,
+                 _("Airports statistics expiry period: "),
+                 _("{prg} automatically forgets about dates you visited a "
+                   "given airport when they get older than this number of "
+                   "days.").format(prg=PROGNAME))):
+            createLine(tkVar, labelText, tooltipText)
+
+        return outerFrame
+
+    def _nonNegativeIntValidateFunc(self, text):
+        """Validate a string that should contain a non-negative integer."""
+        try:
+            n = int(text)
+        except ValueError:
+            return False
+
+        return (n >= 0)
+
+    def _statsPeriodInvalidFunc(self, widgetPath, text):
+        """
+        Callback function used when an invalid number of days has been input."""
+        widget = self.master.nametowidget(widgetPath)
+
+        # Get the Tkinter “window name” of the current pane
+        currentPaneWPath = self.noteBook.select()
+        # If the validation failure was triggered by the user switching to
+        # another pane, get back to the pane where there is invalid input.
+        if (self.master.nametowidget(currentPaneWPath) is not self.frameStats):
+            self.noteBook.select(self.frameStats)
+
+        message = _('Invalid number of days')
+        detail = _("A non-negative integer is required.")
+        showerror(_('{prg}').format(prg=PROGNAME), message, detail=detail,
+                  parent=self.top)
+
+        widget.focus_set()      # give focus to the widget with invalid input
+
     def widgetMisc(self, parent):
         """Miscellaneous settings widget."""
         frame_misc = ttk.Frame(parent, padding=self.paddingInsideNotebookPanes)
@@ -637,3 +764,16 @@ When this option is unchecked, only the main window size is stored.""")
         self.fakeParkposOptionCb.pack(side='left', fill='x')
 
         return frame_misc
+
+    def validateStandardWidgets(self):
+        # Validate the contents of some widgets in case one of them still
+        # has the focus.
+        for validating in self.validatingWidgets:
+            val = validating.widget.get()
+            if not validating.validateFunc(val):
+                self.noteBook.select(validating.paneWidget)
+                validating.widget.focus_set()
+                validating.invalidFunc(str(validating.widget), val)
+                return False
+
+        return True
