@@ -326,7 +326,8 @@ class App:
                            sortFunc=lambda name: name.lower()),
             widgets.Column("directory", _("Directory"), 2, "w", True),
             widgets.Column("use count", _("Use count"), 3, "e", False, "width",
-                           widthText="M"*5)]
+                           widthText="M"*5,
+                           sortOrder=widgets.SortOrder.descending)]
         aircraftListColumns = { col.name: col
                                for col in aircraftListColumnsList }
 
@@ -335,7 +336,7 @@ class App:
             self.config.aircraftId, # output variable of the chooser
             [],                 # empty list for now, will be filled by reset()
             aircraftListColumns,
-            "name",             # initially sort by aircraft name
+            "use count",        # initially sort by aircraft use count
             self.aircraftSearch, self.aircraftSearchButton,
             self.aircraftList,   # MyTreeview instance (subclass of Treeview)
             150, # delay before propagating the effect of nav keys (arrows...)
@@ -484,7 +485,8 @@ class App:
             widgets.Column("name", _("Airport name"), 1, "w", True, "width",
                            widthText="M"*20),
             widgets.Column("use count", _("Visit count"), 2, "e", False,
-                           "width", widthText="M"*5)]
+                           "width", widthText="M"*5,
+                           sortOrder=widgets.SortOrder.descending)]
         airportListColumns = { col.name: col
                                for col in airportListColumnsList }
 
@@ -493,7 +495,7 @@ class App:
             self.config.airport, # output variable of the chooser
             [],                 # empty list for now, will be filled by reset()
             airportListColumns,
-            "icao",             # initially sort by airport ICAO code
+            "use count",        # initially sort by airport visit count
             self.airportSearch, self.airportSearchButton,
             self.airportList,   # MyTreeview instance (subclass of Treeview)
             150, # delay before propagating the effect of nav keys (arrows...)
