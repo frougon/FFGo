@@ -3,8 +3,7 @@
 
 import os
 import sys
-import tkinter as tk            # cleaner for new code IMHO
-from tkinter import *           # old way
+import tkinter as tk
 import tkinter.filedialog as fd
 from tkinter.messagebox import showinfo, showerror
 from tkinter import ttk
@@ -45,19 +44,19 @@ class ConfigWindow:
         # List of ValidatingWidget instances for “standard” input validation.
         self.validatingWidgets = []
 
-        self.apt_data_source = StringVar()
-        self.auto_update_apt = StringVar()
-        self.FG_bin = StringVar()
-        self.FG_root = StringVar()
-        self.FG_scenery = StringVar()
-        self.FG_aircraft = StringVar()
-        self.FG_working_dir = StringVar()
-        self.MagneticField_bin = StringVar()
-        self.language = StringVar()
-        self.baseFontSize = StringVar()
-        self.rememberMainWinPos = IntVar()
-        self.autoscrollFGOutput = IntVar()
-        self.fakeParkposOption = IntVar()
+        self.apt_data_source = tk.StringVar()
+        self.auto_update_apt = tk.StringVar()
+        self.FG_bin = tk.StringVar()
+        self.FG_root = tk.StringVar()
+        self.FG_scenery = tk.StringVar()
+        self.FG_aircraft = tk.StringVar()
+        self.FG_working_dir = tk.StringVar()
+        self.MagneticField_bin = tk.StringVar()
+        self.language = tk.StringVar()
+        self.baseFontSize = tk.StringVar()
+        self.rememberMainWinPos = tk.IntVar()
+        self.autoscrollFGOutput = tk.IntVar()
+        self.fakeParkposOption = tk.IntVar()
 
         if self.config.apt_data_source.get():
             self.apt_data_source.set(_('Scenery'))
@@ -94,16 +93,22 @@ class ConfigWindow:
 
 # -----------------------------------------------------------------------------
 
-        self.top = Toplevel(self.master)
+        self.top = tk.Toplevel(self.master)
+        self.top.grid_rowconfigure(0, weight=100)
+        self.top.grid_columnconfigure(0, weight=100)
         self.top.grab_set()  # Focus input on that window.
         self.top.title(_('Preferences'))
         self.top.transient(self.master)
 
         self.main = ttk.Frame(self.top, padding=("12p", "12p", "12p", 0))
-        self.main.pack(side='top', fill='x', expand=True, anchor='n')
+        self.main.grid(row=0, column=0, sticky="nsew")
+        self.top.grid_rowconfigure(0, weight=100)
+        self.top.grid_columnconfigure(0, weight=100)
 
         self.noteBook = ttk.Notebook(self.main)
-        self.noteBook.pack(side='top', fill='x', expand=True)
+        self.noteBook.grid(row=0, column=0, sticky="nsew")
+        self.main.grid_rowconfigure(0, weight=100)
+        self.main.grid_columnconfigure(0, weight=100)
         # Padding inside each pane of the notebook
         self.paddingInsideNotebookPanes = "12p"
 
@@ -117,23 +122,22 @@ class ConfigWindow:
         self.noteBook.add(self.frameMisc, text=_('Miscellaneous'))
 
 # ----- Buttons ---------------------------------------------------------------
-        self.frame_Buttons = ttk.Frame(self.main, padding=(0, "12p", 0, "12p"))
-        self.frame_Buttons.pack(side='bottom')
+        self.frame_Buttons = ttk.Frame(self.main, padding=(0, "16p", 0, "16p"))
+        self.frame_Buttons.grid(row=1, column=0, sticky="nse")
+        self.main.grid_rowconfigure(1, weight=100)
 
-        self.frame_save_button = Frame(self.frame_Buttons, borderwidth=4)
-        self.frame_save_button.pack(side='left')
+        saveButton = ttk.Button(self.frame_Buttons, text=_('Save settings'),
+                                command=self.saveAndQuit, padding="4p")
+        saveButton.grid(row=0, column=0)
+        self.frame_Buttons.grid_rowconfigure(0, weight=100)
+        self.frame_Buttons.grid_columnconfigure(0, pad="18p")
 
-        self.save = Button(self.frame_save_button, text=_('Save settings'),
-                           command=self.saveAndQuit)
-        self.save.pack(side='left')
+        closeButton = ttk.Button(self.frame_Buttons, text=_('Cancel'),
+                                 command=self.quit, padding="4p")
+        closeButton.grid(row=0, column=1)
 
-        self.frame_close_button = Frame(self.frame_Buttons, borderwidth=4)
-        self.frame_close_button.pack(side='right')
-
-        self.close = Button(self.frame_close_button, text=_('Cancel'),
-                            command=self.quit)
-        self.close.pack(side='left')
-        self.top.bind('<Escape>', lambda event: self.close.invoke())
+        self.top.protocol("WM_DELETE_WINDOW", closeButton.invoke)
+        self.top.bind('<Escape>', lambda event, b=closeButton: b.invoke())
 
     def findFG_bin(self):
         self.chooseExecutable(self.FG_bin)
@@ -148,7 +152,7 @@ class ConfigWindow:
                                    title=_('Path to executable file:'))
             if p:
                 cfgVar.set(p)
-        except TclError:
+        except tk.TclError:
             pass
 
     def findFG_root(self):
@@ -160,7 +164,7 @@ class ConfigWindow:
             if p:
                 self.FG_root.set(p)
 
-        except TclError:
+        except tk.TclError:
             return
 
     def findFG_scenery(self):
@@ -172,7 +176,7 @@ class ConfigWindow:
             if p:
                 self.FG_scenery.set(p)
 
-        except TclError:
+        except tk.TclError:
             return
 
     def findFG_aircraft(self):
@@ -184,7 +188,7 @@ class ConfigWindow:
             if p:
                 self.FG_aircraft.set(p)
 
-        except TclError:
+        except tk.TclError:
             return
 
     def findFgWorkingDir(self):
@@ -196,7 +200,7 @@ class ConfigWindow:
             if p:
                 self.FG_working_dir.set(p)
 
-        except TclError:
+        except tk.TclError:
             return
 
     def getInitialDir(self, path):
@@ -380,7 +384,8 @@ When this option is unchecked, only the main window size is stored.""")
             detail = _("It may be necessary to restart {prg} in order to "
                        "see the full effects of changing the font size.") \
                        .format(prg=PROGNAME)
-            showinfo(_('{prg}').format(prg=PROGNAME), message, detail=detail)
+            showinfo(_('{prg}').format(prg=PROGNAME), message, detail=detail,
+                     parent=self.top)
 
             self.config.baseFontSize.set(value)
             self.config.setupFonts()  # Apply the change
@@ -407,130 +412,54 @@ When this option is unchecked, only the main window size is stored.""")
     def widgetFG(self, parent):
         """FlightGear settings widget."""
         frame_FG = ttk.Frame(parent, padding=self.paddingInsideNotebookPanes)
-        frame_FG.pack(side='top', fill='x', expand=True)
+        frame_FG.grid_columnconfigure(0, weight=100)
 
-        # FG_BIN
-        self.frame_FG_1 = Frame(frame_FG)
-        self.frame_FG_1.pack(side='top', fill='x', expand=True)
+        def addSettingsLine(rowNum, isLast, container, labelText, tkVar,
+                            tooltipText, buttonCallback):
+            verticalSpaceBetweenRows = "12p"
 
-        self.frame_FG_11 = Frame(self.frame_FG_1)
-        self.frame_FG_11.pack(side='top', fill='x', expand=True)
+            label = ttk.Label(container, text=labelText)
+            label.grid(row=3*rowNum, column=0, columnspan=2, sticky="w")
+            container.grid_rowconfigure(3*rowNum, weight=100)
 
-        self.FG_binLabel = Label(self.frame_FG_11,
-                                 text=_('Path to executable file:'))
-        self.FG_binLabel.pack(side='left')
+            entry = ttk.Entry(container, width=50, textvariable=tkVar)
+            entry.grid(row=3*rowNum+1, column=0, sticky="ew")
+            container.grid_rowconfigure(3*rowNum+1, weight=100)
+            ToolTip(entry, tooltipText)
 
-        self.frame_FG_12 = Frame(self.frame_FG_1)
-        self.frame_FG_12.pack(side='top', fill='x', expand=True)
+            button = ttk.Button(container, text=_('Find'),
+                                command=buttonCallback)
+            button.grid(row=3*rowNum+1, column=1, padx="12p")
 
-        self.FG_binEntry = Entry(self.frame_FG_12, bg=TEXT_BG_COL,
-                                 width=50, textvariable=self.FG_bin)
-        ToolTip(self.FG_binEntry, self.tooltip_bin)
-        self.FG_binEntry.pack(side='left', fill='x', expand=True)
+            if not isLast:
+                spacer = ttk.Frame(container)
+                spacer.grid(row=3*rowNum+2, column=0, sticky="nsew")
+                container.grid_rowconfigure(
+                    3*rowNum+2, minsize=verticalSpaceBetweenRows, weight=100)
 
-        self.FG_binFind = Button(self.frame_FG_12, text=_('Find'),
-                                 command=self.findFG_bin)
-        self.FG_binFind.pack(side='left')
-        # FG_ROOT
-        self.frame_FG_2 = Frame(frame_FG)
-        self.frame_FG_2.pack(side='top', fill='x', expand=True)
+        t = ((_('Path to executable file:'), self.FG_bin,
+              self.tooltip_bin, self.findFG_bin),
+             ('FG_ROOT:', self.FG_root,
+              self.tooltip_root, self.findFG_root),
+             ('FG_SCENERY:', self.FG_scenery,
+              self.tooltip_scenery, self.findFG_scenery),
+             (_('Additional aircraft path(s):'), self.FG_aircraft,
+              self.tooltip_aircraft, self.findFG_aircraft),
+             (_('Working directory (optional):'), self.FG_working_dir,
+              self.tooltip_working_dir, self.findFgWorkingDir))
+        lt = len(t)
 
-        self.frame_FG_21 = Frame(self.frame_FG_2)
-        self.frame_FG_21.pack(side='top', fill='x', expand=True)
-
-        self.FG_rootLabel = Label(self.frame_FG_21, text='FG_ROOT:')
-        self.FG_rootLabel.pack(side='left')
-
-        self.frame_FG_22 = Frame(self.frame_FG_2)
-        self.frame_FG_22.pack(side='top', fill='x', expand=True)
-
-        self.FG_rootEntry = Entry(self.frame_FG_22, bg=TEXT_BG_COL,
-                                  width=50, textvariable=self.FG_root)
-        ToolTip(self.FG_rootEntry, self.tooltip_root)
-        self.FG_rootEntry.pack(side='left', fill='x', expand=True)
-
-        self.FG_rootFind = Button(self.frame_FG_22, text=_('Find'),
-                                  command=self.findFG_root)
-        self.FG_rootFind.pack(side='left')
-        # FG_SCENERY
-        self.frame_FG_3 = Frame(frame_FG)
-        self.frame_FG_3.pack(side='top', fill='x', expand=True)
-
-        self.frame_FG_31 = Frame(self.frame_FG_3)
-        self.frame_FG_31.pack(side='top', fill='x', expand=True)
-
-        self.FG_sceneryLabel = Label(self.frame_FG_31, text='FG_SCENERY:')
-        self.FG_sceneryLabel.pack(side='left')
-
-        self.frame_FG_32 = Frame(self.frame_FG_3)
-        self.frame_FG_32.pack(side='top', fill='x', expand=True)
-
-        self.FG_sceneryEntry = Entry(self.frame_FG_32, bg=TEXT_BG_COL,
-                                     width=50, textvariable=self.FG_scenery)
-        ToolTip(self.FG_sceneryEntry, self.tooltip_scenery)
-        self.FG_sceneryEntry.pack(side='left', fill='x', expand=True)
-
-        self.FG_sceneryFind = Button(self.frame_FG_32, text=_('Find'),
-                                     command=self.findFG_scenery)
-        self.FG_sceneryFind.pack(side='left')
-
-        # FG_AIRCRAFT
-        self.frame_FG_4 = Frame(frame_FG)
-        self.frame_FG_4.pack(side='top', fill='x', expand=True)
-
-        self.frame_FG_41 = Frame(self.frame_FG_4)
-        self.frame_FG_41.pack(side='top', fill='x', expand=True)
-
-        self.FG_aircraftLabel = Label(self.frame_FG_41,
-                                      text=_('Additional aircraft path(s):'))
-        self.FG_aircraftLabel.pack(side='left')
-
-        self.frame_FG_42 = Frame(self.frame_FG_4)
-        self.frame_FG_42.pack(side='top', fill='x', expand=True)
-
-        self.FG_aircraftEntry = Entry(self.frame_FG_42, bg=TEXT_BG_COL,
-                                      width=50, textvariable=self.FG_aircraft)
-        ToolTip(self.FG_aircraftEntry, self.tooltip_aircraft)
-        self.FG_aircraftEntry.pack(side='left', fill='x', expand=True)
-
-        self.FG_aircraftFind = Button(self.frame_FG_42, text=_('Find'),
-                                      command=self.findFG_aircraft)
-        self.FG_aircraftFind.pack(side='left')
-        # FG working directory
-        self.frame_FG_5 = Frame(frame_FG)
-        self.frame_FG_5.pack(side='top', fill='x', expand=True)
-
-        self.frame_FG_51 = Frame(self.frame_FG_5)
-        self.frame_FG_51.pack(side='top', fill='x', expand=True)
-
-        self.FG_working_dirLabel = Label(self.frame_FG_51,
-                                         text=_('Working directory (optional):'))
-        self.FG_working_dirLabel.pack(side='left')
-
-        self.frame_FG_52 = Frame(self.frame_FG_5)
-        self.frame_FG_52.pack(side='top', fill='x', expand=True)
-
-        self.FG_working_dirEntry = Entry(self.frame_FG_52, bg=TEXT_BG_COL,
-                                         width=50, textvariable=self.FG_working_dir)
-        ToolTip(self.FG_working_dirEntry, self.tooltip_working_dir)
-        self.FG_working_dirEntry.pack(side='left', fill='x', expand=True)
-
-        self.FG_working_dirFind = Button(self.frame_FG_52, text=_('Find'),
-                                         command=self.findFgWorkingDir)
-        self.FG_working_dirFind.pack(side='left')
+        for i, (labelText, tkVar, tooltipText, buttonCallback) in enumerate(t):
+            addSettingsLine(i, i == lt-1, frame_FG, labelText, tkVar,
+                            tooltipText, buttonCallback)
 
         return frame_FG
 
     def widgetStats(self, parent):
         """Widget used for the “Statistics” pane of the Notebook."""
         outerFrame = ttk.Frame(parent, padding=self.paddingInsideNotebookPanes)
-        outerFrame.pack(side='top', fill='x', expand=True)
-
-        # Necessary contorsions to fake a grid layout...
-        innerLeftFrame = ttk.Frame(outerFrame)
-        innerLeftFrame.pack(side='left', anchor="nw")
-        innerRightFrame = ttk.Frame(outerFrame)
-        innerRightFrame.pack(side='left', anchor="nw")
+        outerFrame.grid_columnconfigure(0, weight=0) # default: non-stretchable
+        outerFrame.grid_columnconfigure(1, weight=100)
 
         # Common width for all 4 Spinbox instances that are going to be created
         spinboxWd = 6
@@ -539,12 +468,16 @@ When this option is unchecked, only the main window size is stored.""")
         statsPeriodInvalidCmd = self.master.register(
             self._statsPeriodInvalidFunc)
 
-        def createLine(tkVar, labelText, tooltipText):
-            label = ttk.Label(innerLeftFrame, text=labelText)
-            label.pack(side='top', anchor="w")
+        def createLine(rowNum, isLast, container, tkVar, labelText,
+                       tooltipText):
+            verticalSpaceBetweenRows = "12p"
+
+            label = ttk.Label(container, text=labelText)
+            label.grid(row=2*rowNum, column=0, sticky="w")
+            container.grid_rowconfigure(2*rowNum, weight=0) # not stretchable
 
             spinbox = tk.Spinbox(
-                innerRightFrame, from_=0, to=sys.maxsize, increment=1,
+                container, from_=0, to=sys.maxsize, increment=1,
                 repeatinterval=20, textvariable=tkVar,
                 width=spinboxWd, validate="focusout",
                 validatecommand=(nonNegativeIntValidateCmd, "%P"),
@@ -553,36 +486,44 @@ When this option is unchecked, only the main window size is stored.""")
             # when the user clicks on the “Save” button (otherwise, the
             # validate command isn't called).
             self.validatingWidgets.append(
-                # 'outerFrame': pane of self.noteBook that must be selected to
+                # 'container': pane of self.noteBook that must be selected to
                 # allow the user to see the widget with invalid contents
-                 ValidatingWidget(spinbox, outerFrame,
+                 ValidatingWidget(spinbox, container,
                                   self._nonNegativeIntValidateFunc,
                                   self._statsPeriodInvalidFunc))
-            spinbox.pack(side='top', anchor="n")
+            spinbox.grid(row=2*rowNum, column=1, sticky="w")
             ToolTip(spinbox, tooltipText, autowrap=True)
 
-        for tkVar, labelText, tooltipText in (
-                (self.aircraftStatsShowPeriod,
-                 _("Aircrafts statistics show period: "),
-                 _("The “use count” for each aircraft is the number of days "
-                   "it was used during the last n days, where n is the number "
-                   "entered here.")),
-                (self.aircraftStatsExpiryPeriod,
-                 _("Aircrafts statistics expiry period: "),
-                 _("{prg} automatically forgets about dates you used a "
-                   "given aircraft when they get older than this number of "
-                   "days.").format(prg=PROGNAME)),
-                (self.airportStatsShowPeriod,
-                 _("Airports statistics show period: "),
-                 _("The “visit count” for each airport is the number of days "
-                   "it was visited during the last n days, where n is the "
-                   "number entered here.")),
-                (self.airportStatsExpiryPeriod,
-                 _("Airports statistics expiry period: "),
-                 _("{prg} automatically forgets about dates you visited a "
-                   "given airport when they get older than this number of "
-                   "days.").format(prg=PROGNAME))):
-            createLine(tkVar, labelText, tooltipText)
+            if not isLast:      # insert a non-stretchable spacer
+                spacer = ttk.Frame(container)
+                spacer.grid(row=2*rowNum+1, column=0, sticky="nsew")
+                container.grid_rowconfigure(
+                    2*rowNum+1, minsize=verticalSpaceBetweenRows, weight=0)
+
+        t = ((self.aircraftStatsShowPeriod,
+              _("Aircrafts statistics show period: "),
+              _("The “use count” for each aircraft is the number of days "
+                "it was used during the last n days, where n is the number "
+                "entered here.")),
+             (self.aircraftStatsExpiryPeriod,
+              _("Aircrafts statistics expiry period: "),
+              _("{prg} automatically forgets about dates you used a "
+                "given aircraft when they get older than this number of "
+                "days.").format(prg=PROGNAME)),
+             (self.airportStatsShowPeriod,
+              _("Airports statistics show period: "),
+              _("The “visit count” for each airport is the number of days "
+                "it was visited during the last n days, where n is the "
+                "number entered here.")),
+             (self.airportStatsExpiryPeriod,
+              _("Airports statistics expiry period: "),
+              _("{prg} automatically forgets about dates you visited a "
+                "given airport when they get older than this number of "
+                "days.").format(prg=PROGNAME)))
+        lt = len(t)
+
+        for i, (tkVar, labelText, tooltipText) in enumerate(t):
+            createLine(i, i == lt-1, outerFrame, tkVar, labelText, tooltipText)
 
         return outerFrame
 
@@ -616,154 +557,201 @@ When this option is unchecked, only the main window size is stored.""")
 
     def widgetMisc(self, parent):
         """Miscellaneous settings widget."""
-        frame_misc = ttk.Frame(parent, padding=self.paddingInsideNotebookPanes)
-        frame_misc.pack(side='top', fill='x', expand=True)
+        outerFrame = ttk.Frame(parent, padding=self.paddingInsideNotebookPanes)
+        verticalSpaceBetweenRows = "6p"
+        horizSpaceBetweenLabelAndControl = "6p"
+        horizSeparationForUnrelatedThings = "15p"
 
-        self.frame_misc_1 = Frame(frame_misc)
-        self.frame_misc_1.pack(side='top', fill='x', expand=True)
+        def addHorizSpacer(container, rowNum, colNum,
+                           minWidth=horizSpaceBetweenLabelAndControl,
+                           weight=0):
+            """Add a horizontal spacer."""
+            hSpacer = ttk.Frame(container)
+            hSpacer.grid(row=rowNum, column=colNum, sticky="ew")
+            container.grid_columnconfigure(colNum, minsize=minWidth,
+                                           weight=weight)
+
+        def addVertSpacer(container, rowNum, colNum=0,
+                          minHeight=verticalSpaceBetweenRows, weight=100):
+            """Add a vertical spacer."""
+            spacer = ttk.Frame(container)
+            spacer.grid(row=rowNum, column=colNum, sticky="ns")
+            container.grid_rowconfigure(
+                rowNum, minsize=minHeight, weight=weight)
+
+        # Logical row number in OuterFrame. For each “logical” row, there are
+        # two “physical” rows in OuterFrame's grid, one with widgets followed
+        # by one only containing a spacer frame (except there is no spacer
+        # after the last row).
+        rowNum = 0
+
+        frame1 = ttk.Frame(outerFrame)
+        frame1.grid(row=2*rowNum, column=0, sticky="ew")
+        outerFrame.grid_rowconfigure(2*rowNum, weight=0) # non-stretchable
+        outerFrame.grid_columnconfigure(0, weight=100) # stretchable
+
         # Language menu
-        self.frame_misc_11 = Frame(self.frame_misc_1)
-        self.frame_misc_11.pack(side='left', fill='x', expand=True)
+        rowNum += 1
+        frame1Left = ttk.Frame(frame1)
+        frame1Left.grid(row=0, column=0, sticky="ew")
+        frame1.grid_columnconfigure(0, weight=100) # stretchable
 
-        self.lang_label = Label(self.frame_misc_11, text=_('Change language:'))
-        ToolTip(self.lang_label, self.tooltip_langMenu)
-        self.lang_label.pack(side='left')
+        langLabel = ttk.Label(frame1Left, text=_('Language:'))
+        ToolTip(langLabel, self.tooltip_langMenu)
+        langLabel.grid(row=0, column=0, sticky="w")
 
-        self.langMenu = OptionMenu(self.frame_misc_11, self.language,
-                                   *self.getLanguages())
-        ToolTip(self.langMenu, self.tooltip_langMenu)
-        self.langMenu.pack(side='left')
+        addHorizSpacer(frame1Left, 0, 1)
+
+        languages = self.getLanguages()
+        langMenu = ttk.OptionMenu(frame1Left, self.language,
+                                  self.language.get(), *languages)
+        ToolTip(langMenu, self.tooltip_langMenu)
+        langMenu.grid(row=0, column=2, sticky="w")
+        frame1Left.grid_columnconfigure(2, weight=100)
+
+        # Make sure there is a space between what is defined above and what is
+        # defined below, even if some translated string is very long.
+        addHorizSpacer(frame1Left, 0, 3,
+                       minWidth=horizSeparationForUnrelatedThings, weight=100)
+
         # Font size
-        frame_misc_12 = Frame(self.frame_misc_1)
-        frame_misc_12.pack(side='left', fill='x', expand=True)
+        frame1Right = ttk.Frame(frame1)
+        frame1Right.grid(row=0, column=1, sticky="e")
 
-        fontsize_label = Label(frame_misc_12, text=_('Font size:'))
-        ToolTip(fontsize_label, self.tooltip_fontSize)
-        fontsize_label.pack(side='left')
+        fontsizeLabel = ttk.Label(frame1Right, text=_('Font size:'))
+        ToolTip(fontsizeLabel, self.tooltip_fontSize)
+        fontsizeLabel.grid(row=0, column=0, sticky="w")
+
+        addHorizSpacer(frame1Right, 0, 1)
 
         backupBaseFontSize = str(self.baseFontSize.get())
         v = ((0,) + tuple(range(int(float(MIN_BASE_FONT_SIZE)),
                                 int(float(MAX_BASE_FONT_SIZE)) + 1)))
-        self.fontsize_entry = Spinbox(frame_misc_12, values=v,
-                                      textvariable=self.baseFontSize,
-                                      width=4, justify='right')
+        fontsizeSpinbox = tk.Spinbox(frame1Right, values=v,
+                                     textvariable=self.baseFontSize,
+                                     width=4, justify='right')
         # Workaround for a bug (or undocumented feature) of the Spinbox widget
         # that overrides a textvariable value at its initialization if
         # a values option is used. Tested in Python 2.7.3
         self.baseFontSize.set(backupBaseFontSize)
 
-        ToolTip(self.fontsize_entry, self.tooltip_fontSize)
-        self.fontsize_entry.pack(side='left')
+        ToolTip(fontsizeSpinbox, self.tooltip_fontSize)
+        fontsizeSpinbox.grid(row=0, column=2, sticky="w")
 
-        fontsize_reset_button = Button(frame_misc_12,
-                                       text=pgettext('font size', 'Default'),
-                                       command=self.resetBaseFontSize)
-        ToolTip(fontsize_reset_button, self.tooltip_fontSize)
-        fontsize_reset_button.pack(side='left')
+        fontsizeResetButton = ttk.Button(
+            frame1Right, text=pgettext('font size', 'Default'),
+            command=self.resetBaseFontSize)
+        ToolTip(fontsizeResetButton, self.tooltip_fontSize)
+        fontsizeResetButton.grid(row=0, column=3, sticky="w", padx="12p")
+
+        addVertSpacer(outerFrame, 2*rowNum+1)
 
         # Apt source menu
-        self.frame_misc_2 = Frame(frame_misc, borderwidth=8)
-        self.frame_misc_2.pack(side='top', fill='x', expand=True)
+        rowNum += 1
+        frame2 = ttk.Frame(outerFrame)
+        frame2.grid(row=2*rowNum, column=0, sticky="w")
 
-        self.frame_misc_22 = Frame(self.frame_misc_2)
-        self.frame_misc_22.pack(side='right', fill='x', expand=True)
+        aptLabel = ttk.Label(frame2, text=_('Airport data source:'))
+        ToolTip(aptLabel, self.tooltip_aptMenu)
+        aptLabel.grid(row=0, column=0, sticky="w")
 
-        self.apt_label = Label(self.frame_misc_22,
-                               text=_('Airport data source:'))
-        ToolTip(self.apt_label, self.tooltip_aptMenu)
-        self.apt_label.pack(side='left')
+        addHorizSpacer(frame2, 0, 1)
 
-        self.aptMenu = OptionMenu(self.frame_misc_22, self.apt_data_source,
-                                  _('Scenery'), _('Old default'))
-        ToolTip(self.aptMenu, self.tooltip_aptMenu)
-        self.aptMenu.pack(side='left')
+        aptMenu = ttk.OptionMenu(frame2, self.apt_data_source,
+                                 self.apt_data_source.get(),
+                                 _('Scenery'), _('Old default'))
+        ToolTip(aptMenu, self.tooltip_aptMenu)
+        aptMenu.grid(row=0, column=2, sticky="w")
 
-        # Rebuild apt menu
-        self.frame_misc_3 = Frame(frame_misc, borderwidth=8)
-        self.frame_misc_3.pack(side='top', fill='x', expand=True)
-        # Auto update apt menu
-        self.frame_misc_31 = Frame(self.frame_misc_3)
-        self.frame_misc_31.pack(side='top', fill='x', expand=True)
+        addVertSpacer(outerFrame, 2*rowNum+1)
 
-        self.auto_apt_label = Label(self.frame_misc_31,
-                                    text=_('Airport database update:'))
-        ToolTip(self.auto_apt_label, self.tooltip_autoAptMenu)
-        self.auto_apt_label.pack(side='left')
+        # “Airport database update” menu and “Rebuild airport database” button
+        rowNum += 1
+        frame3 = ttk.Frame(outerFrame)
+        frame3.grid(row=2*rowNum, column=0, sticky="ew")
 
-        self.autoAptMenu = OptionMenu(self.frame_misc_31, self.auto_update_apt,
-                                      _('Automatic'), _('Manual'))
-        ToolTip(self.autoAptMenu, self.tooltip_autoAptMenu)
-        self.autoAptMenu.pack(side='left')
+        autoAptLabel = ttk.Label(frame3,
+                                 text=_('Airport database update:') + " ")
+        ToolTip(autoAptLabel, self.tooltip_autoAptMenu)
+        autoAptLabel.grid(row=0, column=0, sticky="w")
 
-        # Rebuild apt menu
-        self.frame_misc_4 = Frame(frame_misc, borderwidth=8)
-        self.frame_misc_4.pack(side='top', fill='x', expand=True)
-        # Rebuild apt button
-        self.frame_misc_41 = Frame(self.frame_misc_4)
-        self.frame_misc_41.pack(side='top', fill='x', expand=True)
+        addHorizSpacer(frame3, 0, 1)
 
-        self.rebuildApt = Button(self.frame_misc_41,
-                                 text=_('Rebuild Airport Database'),
-                                 command=self.config.rebuildApt)
-        ToolTip(self.rebuildApt, self.tooltip_rebuildApt)
-        self.rebuildApt.pack(side='top', fill='x')
+        autoAptMenu = ttk.OptionMenu(frame3, self.auto_update_apt,
+                                     self.auto_update_apt.get(),
+                                     _('Automatic'), _('Manual'))
+        ToolTip(autoAptMenu, self.tooltip_autoAptMenu)
+        autoAptMenu.grid(row=0, column=2, sticky="w")
+        frame3.grid_columnconfigure(2, weight=100) # stretchable
+
+        addHorizSpacer(frame3, 0, 3,
+                       minWidth=horizSeparationForUnrelatedThings, weight=100)
+
+        rebuildAptDbButton = ttk.Button(frame3,
+                                        text=_('Rebuild airport database'),
+                                        command=self.config.rebuildApt,
+                                        padding="6p")
+        ToolTip(rebuildAptDbButton, self.tooltip_rebuildApt)
+        rebuildAptDbButton.grid(row=0, column=4, sticky="e")
+
+        addVertSpacer(outerFrame, 2*rowNum+1)
 
         # MagneticField executable
-        self.frame_MagField = Frame(frame_misc, borderwidth=8)
-        self.frame_MagField.pack(side='top', fill='x', expand=True)
+        rowNum += 1
+        frame_MagField = ttk.Frame(outerFrame)
+        frame_MagField.grid(row=2*rowNum, column=0, sticky="ew")
 
-        self.frame_MagField1 = Frame(self.frame_MagField)
-        self.frame_MagField1.pack(side='top', fill='x', expand=True)
-        self.MagneticFieldBinLabel = Label(
-            self.frame_MagField1,
+        magneticFieldBinLabel = ttk.Label(frame_MagField,
             text=_("GeographicLib's MagneticField executable:"))
-        self.MagneticFieldBinLabel.pack(side='left')
+        ToolTip(magneticFieldBinLabel, self.tooltip_MagneticFieldBin)
+        magneticFieldBinLabel.grid(row=0, column=0, sticky="w")
 
-        self.frame_MagField2 = Frame(self.frame_MagField)
-        self.frame_MagField2.pack(side='top', fill='x', expand=True)
-        self.MagneticFieldBinEntry = Entry(
-            self.frame_MagField2, bg=TEXT_BG_COL, width=50,
-            textvariable=self.MagneticField_bin)
-        ToolTip(self.MagneticFieldBinEntry, self.tooltip_MagneticFieldBin)
-        self.MagneticFieldBinEntry.pack(side='left', fill='x', expand=True)
+        frame_MagFieldInner = ttk.Frame(frame_MagField)
+        frame_MagFieldInner.grid(row=1, column=0, sticky="ew")
+        magneticFieldBinEntry = ttk.Entry(frame_MagFieldInner, width=50,
+                                          textvariable=self.MagneticField_bin)
+        ToolTip(magneticFieldBinEntry, self.tooltip_MagneticFieldBin)
+        magneticFieldBinEntry.grid(row=0, column=0, sticky="ew")
 
-        self.MagneticFieldBinFind = Button(self.frame_MagField2, text=_('Find'),
-                                           command=self.findMagneticField_bin)
-        self.MagneticFieldBinFind.pack(side='left')
+        magneticFieldBinFind = ttk.Button(frame_MagFieldInner, text=_('Find'),
+                                          command=self.findMagneticField_bin)
+        magneticFieldBinFind.grid(row=0, column=1, sticky="w", padx="12p")
+
+        addVertSpacer(outerFrame, 2*rowNum+1)
 
         # “Remember main windows position” checkbox
-        self.frame_rememberMainWinPos = Frame(frame_misc)
-        self.frame_rememberMainWinPos.pack(side='top', fill='x', expand=True)
-        self.rememberMainWinPosCb = Checkbutton(
-            self.frame_rememberMainWinPos,
+        rowNum += 1
+        frame_checkboxes = ttk.Frame(outerFrame)
+        frame_checkboxes.grid(row=2*rowNum, column=0, sticky="ew")
+
+        rememberMainWinPosCb = ttk.Checkbutton(
+            frame_checkboxes,
             text=_('Remember the main window position'),
             variable=self.rememberMainWinPos)
-        ToolTip(self.rememberMainWinPosCb, self.tooltip_rememberMainWinPos)
-        self.rememberMainWinPosCb.pack(side='left', fill='x')
+        ToolTip(rememberMainWinPosCb, self.tooltip_rememberMainWinPos)
+        rememberMainWinPosCb.grid(row=0, column=0, sticky="w")
 
         # “Automatically scroll the Output Window” checkbox
-        self.frame_autoscrollFGOutput = Frame(frame_misc)
-        self.frame_autoscrollFGOutput.pack(side='top', fill='x', expand=True)
-        self.autoscrollFGOutputCb = Checkbutton(
-            self.frame_autoscrollFGOutput,
+        rowNum += 1
+        autoscrollFGOutputCb = ttk.Checkbutton(
+            frame_checkboxes,
             text=_('Automatically scroll the Output Window'),
             variable=self.autoscrollFGOutput)
-        ToolTip(self.autoscrollFGOutputCb, self.tooltip_autoscrollFGOutput,
+        ToolTip(autoscrollFGOutputCb, self.tooltip_autoscrollFGOutput,
                 autowrap=True)
-        self.autoscrollFGOutputCb.pack(side='left', fill='x')
+        autoscrollFGOutputCb.grid(row=1, column=0, sticky="w")
 
         # “Fake the --parkpos option” checkbox
-        self.frame_fakeParkposOption = Frame(frame_misc)
-        self.frame_fakeParkposOption.pack(side='top', fill='x', expand=True)
-        self.fakeParkposOptionCb = Checkbutton(
-            self.frame_fakeParkposOption,
+        rowNum += 1
+        fakeParkposOptionCb = ttk.Checkbutton(
+            frame_checkboxes,
             text=_('Fake the --parkpos option'),
             variable=self.fakeParkposOption)
-        ToolTip(self.fakeParkposOptionCb, self.tooltip_fakeParkposOption,
+        ToolTip(fakeParkposOptionCb, self.tooltip_fakeParkposOption,
                 autowrap=True)
-        self.fakeParkposOptionCb.pack(side='left', fill='x')
+        fakeParkposOptionCb.grid(row=2, column=0, sticky="w")
 
-        return frame_misc
+        return outerFrame
 
     def validateStandardWidgets(self):
         # Validate the contents of some widgets in case one of them still
