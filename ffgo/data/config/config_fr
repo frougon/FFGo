@@ -1,33 +1,42 @@
-## Liste des options de ligne de commande. Activez les options que vous
-## souhaitez utiliser en supprimant le symbole # au début de la ligne concernée.
-
-## OPTIONS RESEAU
-## Démarre FlightGear avec le mode multijoueurs activé. Remplacez
-## MPSERVER_ADDRESS avec une adresse de serveur valide. Pour une liste
-## des serveurs disponibles et des informations complémentaires sur le sujet,
-## consultez http://wiki.flightgear.org/Howto:Multiplayer
-# --multiplay=out,10,MPSERVER_ADDRESS,5000
-
-## Entrez votre indicatif. Notez qu'il est actuellement limité à sept
-## caractères. Vérifiez cette page http://fgfs.i-net.hu/modules/fgtracker/
-## pour savoir si votre indicatif est déjà utilisé ou non.
-# --callsign=
-
-## OPTIONS D'ENVIRONNEMENT
-## Récupère l'information météo à partir d'Internet.
-# --enable-real-weather-fetch
+## Liste des options de ligne de commande à passer à 'fgfs' (l'exécutable
+## FlightGear). Activez les options que vous souhaitez utiliser en supprimant
+## le symbole # au début de chaque ligne concernée.
 
 ## OPTIONS DE RENDU
-## Précise la géométrie de la fenêtre de FlightGear.
-# --geometry=800x600
-
 ## Active le mode plein écran.
 # --enable-fullscreen
 
+## Précise la géométrie de la fenêtre de FlightGear.
+# --geometry=800x600
+
 ## AUTRES
+## Entrez votre indicatif. Notez qu'il est actuellement limité à sept
+## caractères. Merci de ne pas utiliser un indicatif déjà utilisé par
+## quelqu'un d'autre sur le réseau multijoueurs.
+# --callsign=
+
+## Active le téléchargement automatique des scènes au fil du vol.
+#--enable-terrasync
+## En cas de problème (ou simplement pas d'accès à Internet), on peut le
+## désactiver avec cette option:
+#--disable-terrasync
+
+## Heure initiale (dans le simulateur) après lancement de FlightGear.
+#--timeofday=noon
+
+## Saison pour la simulation (visuels assez différents: herbe ou neige, etc.).
+#--season=summer
+
+## Il se peut que vous trouviez le HUD 2D (2D Head-Up Display) plus lisible
+## que le HUD 3D (cf. <http://wiki.flightgear.org/Head-up_display>).
+#--disable-hud-3d
+
 ## Limite le nombre d'images par seconde à un nombre fixe.
 # --prop:/sim/frame-rate-throttle-hz=35
 
-## Des informations complémentaires à propos des options de ligne de commande
-## peuvent être obtenues dans la documentation FlightGear, ou à l'adresse
-## http://wiki.flightgear.org/index.php/Command_Line_Options
+## Pour plus d'informations à propos des options de ligne de commande de
+## 'fgfs' (FlightGear), vous pouvez consulter :
+##   - la sortie de la commande 'fgfs --help --verbose';
+##   - la documentation de FlightGear;
+##   - la page <http://wiki.flightgear.org/index.php/Command_Line_Options> sur
+##     le wiki de FlightGear.

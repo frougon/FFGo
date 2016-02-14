@@ -1,13 +1,6 @@
 ## Lista przykładowych opcji wiersza poleceń. Aby aktywować wybraną opcję,
 ## usuń "płotek" (znak hash) na początku odpowiedniej linii.
 
-## OPCJE SIECI
-## Uruchom FlightGear z włączonym trybem multiplayer. Zamień MPSERVER_ADDRESS
-## na prawidłowy adres serwera z którym chcesz się połączyć. Więcej informacji
-## na temat trybu multiplayer oraz listę serwerów, można znaleźć pod adresem:
-## http://wiki.flightgear.org/Howto:Multiplayer
-# --multiplay=out,10,MPSERVER_ADDRESS,5000
-
 ## Twój znak wywoławczy. Uwaga! Callsign nie powinien mieć więcej niż
 ## siedmiu znaków. Zajrzyj na tę stronie: http://fgfs.i-net.hu/modules/fgtracker/
 ## aby sprawdzić czy twój callsign nie jest już używany przez kogoś innego.
@@ -31,4 +24,3 @@
 ## Więcej informacji na temat opcji wiersza poleceń
 ## można znaleźć w dokumentacji FlightGeara lub też na stronie:
 ## http://wiki.flightgear.org/index.php/Command_Line_Options
-

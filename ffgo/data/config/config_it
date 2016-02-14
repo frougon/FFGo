@@ -1,13 +1,6 @@
 ## Elenco di opzioni a linea di comando. Abilitare le opzioni che si desidera
 ## utilizzare eliminando il simbolo '#' all'inizio della riga corrispondente.
 
-## OPZIONI DI RETE
-## Avviare FlighGear con la funzione multiplayer. Sostituire MPSERVER_ADDRESS
-## con l'indirizzo valido di un server. Per una lista dei server disponibili e
-## per altre informazioni sul tema consultare la pagina:
-## http://wiki.flightgear.org/Howto:Multiplayer
-# --multiplay=out,10,MPSERVER_ADDRESS,5000
-
 ## Inserire il proprio indicativo di chiamata (call sign); attualmente questo
 ## è limitato a sette caratteri. Per verificare se il proprio indicativo è già
 ## utilizzato visitare il sito http://fgfs.i-net.hu/modules/fgtracker/
@@ -31,4 +24,3 @@
 ## Maggiori informazioni sulle opzioni a linea di comando si possono trovare
 ## nella documentazione di FlightGear, oppure consultando il sito:
 ## http://wiki.flightgear.org/index.php/Command_Line_Options
-
