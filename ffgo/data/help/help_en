@@ -57,11 +57,12 @@ Note: if you have installed GeographicLib's MagneticField program and it
 is not in your PATH, you can indicate its location in the
 “Miscellaneous” tab of the Preferences dialog.
 
-Changes in the “FlightGear settings” tab are immediately applied after
-clicking on the “Save Settings” button, however changes in other tabs
-may require restarting FFGo for them to be applied. Most notably,
-changing the interface language requires restarting FFGo to be fully
-effective---as far as the chosen translation is complete, of course.
+Changes in the “FlightGear settings” and “Statistics” tabs are
+immediately applied after clicking on the “Save Settings” button,
+however changes in the “Miscellaneous” tab may require restarting FFGo
+for them to be applied. Most notably, changing the interface language or
+font size requires restarting FFGo to be fully effective---as far as the
+chosen translation is complete, of course.
 
 -------------------------------------------------------------------------------
 
@@ -269,7 +270,9 @@ TIPS & TRICKS
 
 KNOWN BUGS AND LIMITATIONS
 
-* Very long parking places names don't fit in the parking button.
+* Very long names for parking positions don't fit in the parking button.
+  Just click on the button that makes the parking popup menu appear to
+  see the full name of such parking positions.
 
 -------------------------------------------------------------------------------
 
@@ -300,11 +303,14 @@ development.
 -------------------------------------------------------------------------------
 
 
-                                             Thank you for using this software,
-                                             Florent Rougon <f.rougon@free.fr>
+Thank you for using this software,
+Florent Rougon <f.rougon@free.fr>
 
-                                             (original text by FGo!'s author,
-                                             Robert 'erobo' Leda)
+And thank you so much to my parents, who have provided such a fantastic
+help to allow me to do this work despite the health problems.
+
+
+(original text by FGo!'s author, Robert 'erobo' Leda)
 
 Local Variables:
 coding: utf-8
