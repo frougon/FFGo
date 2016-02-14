@@ -475,6 +475,7 @@ When this option is unchecked, only the main window size is stored.""")
             label = ttk.Label(container, text=labelText)
             label.grid(row=2*rowNum, column=0, sticky="w")
             container.grid_rowconfigure(2*rowNum, weight=0) # not stretchable
+            ToolTip(label, tooltipText, autowrap=True)
 
             spinbox = tk.Spinbox(
                 container, from_=0, to=sys.maxsize, increment=1,
