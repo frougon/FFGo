@@ -77,6 +77,8 @@ HELP_STEM = 'data/help/help_'   # + two-letter language code
 LOCALE_DIR = resourceFilename('data/locale')
 # Name of localization file.
 MESSAGES = 'FFGo'
+# Seems to be the standard size for aircraft thumbnails in FlightGear
+STD_AIRCRAFT_THUMBNAIL_SIZE = (171, 128) # (width, height) in pixels
 # Path to substitutionary thumbnail (used when Pillow is not available).
 # (apparently, Tkinter needs a file name [not a file-like object] when loading
 # images without Pillow -> pkg_resources.resource_stream() doesn't work here)

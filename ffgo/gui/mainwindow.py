@@ -410,7 +410,9 @@ class App:
                                    textvariable=self.config.aircraft)
         self.aircraftLabel.pack(side='top')
 
-        self.thumbnail = Label(self.frame23, width=171, height=128)
+        self.thumbnail = Label(self.frame23,
+                               width=STD_AIRCRAFT_THUMBNAIL_SIZE[0],
+                               height=STD_AIRCRAFT_THUMBNAIL_SIZE[1])
         self.thumbnail.pack(side='top', fill='y')
         # At application initialization, when reset() is called, the observers
         # on Config.aircraftId have not been attached yet. Therefore, one has
@@ -956,18 +958,58 @@ want to follow this new default and set “Airport database update” to
         return self.config.aircraftWithNameAndDir(aircraftName, aircraftDir)
 
     def getImage(self, aircraft):
-        """Find thumbnail in aircraft directory."""
+        """Prepare a suitable thumbnail for 'aircraft'.
+
+        Find the thumbnail in the aircraft directory and convert it to
+        the appropriate size if necessary. Use a placeholder image for
+        aircrafts that have no thumbnail. Return an object that Tkinter
+        can use as an image.
+
+        """
         if HAS_PIL and aircraft is not None:
+            path = os.path.join(aircraft.dir, 'thumbnail.jpg')
             try:
-                path = os.path.join(aircraft.dir, 'thumbnail.jpg')
-                image = ImageTk.PhotoImage(Image.open(path))
-            except:
+                srcImage = Image.open(path)
+            except OSError:
                 with binaryResourceStream(NO_THUMBNAIL_PIC) as f:
+                    # Massage the image into something suitable for Tkinter
                     image = ImageTk.PhotoImage(Image.open(f))
+            else:
+                if srcImage.size == STD_AIRCRAFT_THUMBNAIL_SIZE:
+                    pilImage = srcImage
+                else:
+                    pilImage = self.fitImageIntoStdSize(srcImage)
+
+                image = ImageTk.PhotoImage(pilImage)
         else:
+            # This 'PhotoImage' class is from Tkinter, not from Pillow!
             image = PhotoImage(file=NO_PIL_PIC)
 
         return image
+
+    def fitImageIntoStdSize(self, srcImg):
+        """Scale 'srcImg' to make it fit into STD_AIRCRAFT_THUMBNAIL_SIZE.
+
+        Return an image with size exactly as given by
+        STD_AIRCRAFT_THUMBNAIL_SIZE---that is, a (width, height) tuple,
+        the unit being pixels. If 'srcImg' doesn't have the appropriate
+        aspect ratio to do this naturally, the necessary borders in the
+        resulting image are filled with transparent pixels.
+
+        """
+        # Create a new, fully transparent image with the standard size
+        outImg = Image.new("RGBA", STD_AIRCRAFT_THUMBNAIL_SIZE,
+                           (0, 0, 0, 0))
+        # Create a thumbnail of the source image that fits in the previous one
+        tmpImg = srcImg.copy()
+        tmpImg.thumbnail(STD_AIRCRAFT_THUMBNAIL_SIZE)
+        # Coordinates of the top-left corner to use when pasting tmpImg into
+        # outImg so that it is horizontally and vertically centered.
+        x = round(0.5*(STD_AIRCRAFT_THUMBNAIL_SIZE[0] - tmpImg.width))
+        y = round(0.5*(STD_AIRCRAFT_THUMBNAIL_SIZE[1] - tmpImg.height))
+        outImg.paste(tmpImg, box=(x, y))
+
+        return outImg
 
     def popupCarrier(self, event):
         """Make pop up menu."""
