@@ -1,26 +1,54 @@
-## Liste der Kommandozeilen-Optionen. Man aktiviert die Optionen indem man
+## Liste der 'fgfs' Kommandozeilenoptionen. Man aktiviert die Optionen indem man
 ## das Raute-Zeichen (#) am Anfang der Zeile entfernt.
 
-## Geben Sie ihr Rufzeichen an. Bis jetzt ist es auf 7 Zeichen begrenzt.
+## DARSTELLUNGSOPTIONEN
+## Vollbildmodus
+# --enable-fullscreen
+
+## Geben Sie die Geometrie des FlightGearfensters an (unnötig, wenn Sie
+## --enable-fullscreen nutzen)
+# --geometry=800x600
+
+## ANDERES
+## Geben Sie ihr Rufzeichen an. Bis jetzt ist es auf 7 Zeichen begrenzt. Bitte
+## wählen Sie kein Rufzeichen, daß schon im Multiplayernetzwerk benutzt wird.
 ## Sehen Sie im Web nach, ob ihr Rufzeichen schon in Benutzung ist:
 ## http://fgfs.i-net.hu/modules/fgtracker/
 # --callsign=
 
-## UMWELT OPTIONEN
-## Hole die aktuellen Wetter-Daten aus dem Web.
-# --enable-real-weather-fetch
+## Automatischer Download von Szenerie, während des Fliegens:
+#--enable-terrasync
+## ... oder stellen Sie es ab, falls es Probleme bereitet, oder Sie es einfach
+## nicht benutzen können (z.Bsp. wenn Sie keinen Internetanschluß zur Verfügung
+## haben).
+#--disable-terrasync
 
-## DARSTELLUNGS OPTIONEN
-## Die Fenstergröße von FlightGear angeben.
-# --geometry=800x600
+##  Wenn Sie das Verzeichnis für automatischen Szeneriedownload angeben wollen
+## (die Voreinstellung ist $GH_HOME/TerraSync).
+##
+## Anmerkung: Ist dieses Verzeichnis nicht unter FG_HOME, so kann das in neueren
+##            FlightGearversionen zu Fehlern beim Lesen von einigen Szenerie-
+##            dateien führen, da strengere Rechteregelungen eingeführt wurden
+##            (Dieses neue FlightGear Rechteregelung befindet sich immer noch in
+##            Bewegung, daher kann es sein, daß dies nicht mehr zutrifft, wenn
+##            Sie dies lesen).
+#--terrasync-dir=/path/to/the/folder/of/your/choice
 
-## FlightGear im Vollbild-Modus benutzen.
-# --enable-fullscreen
+## Wählen Sie die Starttageszeit:
+#--timeofday=noon
 
-## ANDERES
+## Sommer und Winter haben verschiedene Texturen:
+#--season=winter
+
+## Eventuell finden Sie die 2D Head-Up Anzeige lesbarer als die 3D Variante:
+## vgl. <http://wiki.flightgear.org/Head-up_display>.
+#--disable-hud-3d
+
 ## Begrenze fps auf angegebene Anzahl.
 # --prop:/sim/frame-rate-throttle-hz=35
 
 ## Mehr Informationen über die Kommandozeilen-Optionen
-## findet man in der FlightGear-Dokumentation oder im Web:
-## http://wiki.flightgear.org/index.php/Command_Line_Options
+## findet man:
+##   - mit dem Kommando 'fgfs --help --verbose';
+##   - in der FlightGear Dokumentation;
+##   - oder hier: <http://wiki.flightgear.org/index.php/Command_Line_Options>.

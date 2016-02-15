@@ -58,11 +58,12 @@ Anmerkung: falls GeographicLib's MagneticField Programm installiert sein sollte
 und es sich nicht in der PATH Variable befindet, können Sie den Ort unter
 “Verschiedenes” in den Einstellungen angeben.
 
-Änderungen Tab: “FlightGear Einstellungen” werden sofort angewendet, sobald der
-Knopf “Einstellungen speichern” gedrückt wird, Änderungen in den anderen Tabs
-können einen Neustart von FFGo erfordern. Dies ist am spürbarsten beim Ändern
-der Sprache, da muß FFGo neu gestartet werden -- natürlich gesetzt den Fall,
-daß die gewählte Übersetzung vollständig ist.
+Änderungen Tab: “FlightGear Einstellungen” und “Statistiken” Tabs werden sofort
+angewendet, sobald der Knopf “Einstellungen speichern” gedrückt wird, Änderungen
+im “Verschiedenes” Tab können einen Neustart von FFGo erfordern. Dies ist am
+spürbarsten beim Ändern der Sprache oder Schriftgröße, da muß FFGo neu gestartet
+werden -- natürlich gesetzt den Fall, daß die gewählte Übersetzung vollständig
+ist.
 
 -------------------------------------------------------------------------------
 
@@ -287,7 +288,9 @@ TIPS & TRICKS
 
 BEKANNTE FEHLER UND EINSCHRÄNKUNGEN
 
-* Sehr lange Parkplatznamen passen nicht in den Parkplatzknopf.
+* Sehr lange Parkplatznamen passen nicht in den Parkplatzknopf. Klicken Sie
+  einfach auf den Knopf, der das Parkplatzaufklappmenü erscheinen läßt um den
+  vollen Namen des Parkplatzes zu sehen.
 
 -------------------------------------------------------------------------------
 
@@ -319,11 +322,15 @@ genutzt.
 -------------------------------------------------------------------------------
 
 
-                                           Danke, daß sie diese Software nutzen,
-                                           Florent Rougon <f.rougon@free.fr>
+Danke, daß sie diese Software nutzen,
+Florent Rougon <f.rougon@free.fr>
 
-                                           (original text by FGo!'s author,
-                                           Robert 'erobo' Leda)
+Und vielen Dank an meine Eltern, die mir solch eine phantastische Hilfestellung
+geben, die es mir erlaubt diese Arbeit zu leisten, trotz der Gesundheits-
+probleme.
+
+
+(Originaler Text von FGo!'s Author, Robert 'erobo' Leda)
 
 Local Variables:
 coding: utf-8

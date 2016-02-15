@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: FFGo 1.10.0\n"
 "Report-Msgid-Bugs-To: f.rougon@free.fr\n"
 "POT-Creation-Date: 2016-02-14 11:03+0100\n"
-"PO-Revision-Date: 2016-01-20 19:40+0100\n"
+"PO-Revision-Date: 2016-02-15 15:58+0100\n"
 "Last-Translator: chris_blues <chris@musicchris.de>\n"
 "Language-Team: \n"
 "Language: de\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.6\n"
+"X-Generator: Poedit 1.8.7\n"
 
 #: ffgo/exceptions.py:52 ffgo/fgdata/apt_dat.py:68
 #, python-brace-format
@@ -622,7 +622,7 @@ msgstr "FlightGear Einstellungen"
 
 #: ffgo/gui/configwindow.py:119
 msgid "Statistics"
-msgstr ""
+msgstr "Statistiken"
 
 #: ffgo/gui/configwindow.py:122
 msgid "Miscellaneous"
@@ -904,17 +904,20 @@ msgstr "Zusätzliche Flugzeug-Verzeichnis(se):"
 
 #: ffgo/gui/configwindow.py:504
 msgid "Aircrafts statistics show period: "
-msgstr ""
+msgstr "Flugzeugstatistikanzeige Zeitspanne: "
 
 #: ffgo/gui/configwindow.py:505
 msgid ""
 "The “use count” for each aircraft is the number of days it was used during "
 "the last n days, where n is the number entered here."
 msgstr ""
+"Die “Nutzungszahl” für jedes Flugzeug gibt die Anzahl der Tage an, an denen "
+"das Flugzeug während der letzten n Tage genutzt wurde. n ist die Zahl, die "
+"hier angegeben wird."
 
 #: ffgo/gui/configwindow.py:509
 msgid "Aircrafts statistics expiry period: "
-msgstr ""
+msgstr "Flugzeugstatistik Verfallszeitspanne: "
 
 #: ffgo/gui/configwindow.py:510
 #, python-brace-format
@@ -922,20 +925,25 @@ msgid ""
 "{prg} automatically forgets about dates you used a given aircraft when they "
 "get older than this number of days."
 msgstr ""
+"{prg} vergißt automatisch die Daten, wie oft ein Flugzeug benutzt wurde, "
+"wenn diese Daten älter als diese Anzahl an Tagen werden."
 
 #: ffgo/gui/configwindow.py:514
 msgid "Airports statistics show period: "
-msgstr ""
+msgstr "Flughafenstatistikanzeige Zeitspanne: "
 
 #: ffgo/gui/configwindow.py:515
 msgid ""
 "The “visit count” for each airport is the number of days it was visited "
 "during the last n days, where n is the number entered here."
 msgstr ""
+"Die “Besuchsanzahl” für jeden Flughafen gibt die Anzahl der Tage an, an "
+"denen der Flughafen während der letzten n Tage besucht wurde. n ist die "
+"Zahl, die hier angegeben wird."
 
 #: ffgo/gui/configwindow.py:519
 msgid "Airports statistics expiry period: "
-msgstr ""
+msgstr "Flughafenstatistik Verfallszeitspanne: "
 
 #: ffgo/gui/configwindow.py:520
 #, python-brace-format
@@ -943,19 +951,20 @@ msgid ""
 "{prg} automatically forgets about dates you visited a given airport when "
 "they get older than this number of days."
 msgstr ""
+"{prg} vergißt automatisch die Daten, wie oft ein Flughafen besucht wurde, "
+"wenn diese Daten älter als diese Anzahl an Tagen werden."
 
 #: ffgo/gui/configwindow.py:551
 msgid "Invalid number of days"
-msgstr ""
+msgstr "Ungültige Anzahl an Tagen"
 
 #: ffgo/gui/configwindow.py:552
 msgid "A non-negative integer is required."
-msgstr ""
+msgstr "Eine nicht negative Zahl ist erforderlich."
 
 #: ffgo/gui/configwindow.py:599
-#, fuzzy
 msgid "Language:"
-msgstr "Sprache ändern:"
+msgstr "Sprache:"
 
 #: ffgo/gui/configwindow.py:621
 msgid "Font size:"
@@ -975,9 +984,8 @@ msgid "Airport database update:"
 msgstr "Flughafen Datenbank auffrischen:"
 
 #: ffgo/gui/configwindow.py:691
-#, fuzzy
 msgid "Rebuild airport database"
-msgstr "Flughafen-Datenbank neu erstellen"
+msgstr "Rebuild airport database"
 
 #: ffgo/gui/configwindow.py:705
 msgid "GeographicLib's MagneticField executable:"
@@ -1588,19 +1596,21 @@ msgid ""
 "Number of days the aircraft was used during the selected period "
 "(cf. “Aircrafts statistics show period” in the Preferences dialog)"
 msgstr ""
+"Anzahl der Tage, an denen das Flugzeug genutzt wurde, während der "
+"ausgewählten Zeit (vgl. “Flugzeugstatistikanzeige Zeitspanne” im "
+"Einstellungsdialog)"
 
 #: ffgo/gui/mainwindow.py:324
 msgid "Aircraft"
-msgstr ""
+msgstr "Flugzeug"
 
 #: ffgo/gui/mainwindow.py:327
-#, fuzzy
 msgid "Directory"
-msgstr "Richtung"
+msgstr "Verzeichnis"
 
 #: ffgo/gui/mainwindow.py:328
 msgid "Use count"
-msgstr ""
+msgstr "Nutzungsanzahl"
 
 #: ffgo/gui/mainwindow.py:362
 msgid "Select Scenario"
@@ -1623,15 +1633,17 @@ msgid ""
 "Number of days the airport was visited during the selected period "
 "(cf. “Airports statistics show period” in the Preferences dialog)"
 msgstr ""
+"Anzahl der Tage, an denen der Flughafen besucht wurde, während der "
+"ausgewählten Zeit (vgl. “Flugzeugstatistikanzeige Zeitspanne” im "
+"Einstellungsdialog)"
 
 #: ffgo/gui/mainwindow.py:487
-#, fuzzy
 msgid "Airport name"
-msgstr "Flughafensuche"
+msgstr "Flughafenname"
 
 #: ffgo/gui/mainwindow.py:489
 msgid "Visit count"
-msgstr ""
+msgstr "Besuchsanzahl"
 
 #: ffgo/gui/mainwindow.py:522
 msgid "Ready"
@@ -1817,12 +1829,12 @@ msgid "none"
 msgstr "keine"
 
 #: ffgo/gui/mainwindow.py:805
-#, fuzzy
 msgid ""
 "(you may want to check the 'fgfs' executable and FG_ROOT paths, as well as "
 "the FlightGear working directory defined in Settings → Preferences)"
 msgstr ""
-"(Sie sollten die ausführbare Datei 'fgfs' prüfen, definiert in "
+"(Sie sollten die ausführbare Datei 'fgfs' und FG_ROOT Pfade prüfen, sowie "
+"das FlightGear Arbeitsverzeichnis, definiert in "
 "Einstellungen → Eigenschaften)"
 
 #: ffgo/gui/mainwindow.py:809 ffgo/config.py:315
@@ -2420,37 +2432,35 @@ msgid "'{exec}' doesn't seem to work properly ({pb})"
 msgstr "'{exec}' scheint nicht richtig zu funktionieren ({pb})"
 
 #: ffgo/stats_manager.py:27
-#, fuzzy
 msgid "Error caught in the stats_manager module"
-msgstr "Fehler erkannt im apt_dat Modul"
+msgstr "Fehler erkannt im stats_manager Modul"
 
 #: ffgo/stats_manager.py:34
 msgid "No such aircraft"
-msgstr ""
+msgstr "Solch ein Flugzeug ist nicht vorhanden"
 
 #: ffgo/stats_manager.py:37
 #, python-brace-format
 msgid "'{aircraftName}' in '{aircraftDir}'"
-msgstr ""
+msgstr "'{aircraftName}' in '{aircraftDir}'"
 
 #: ffgo/stats_manager.py:49
-#, fuzzy
 msgid "No such airport"
-msgstr "Flughafen {} gefunden"
+msgstr "Solch ein Flughafen ist nicht vorhanden"
 
 #: ffgo/stats_manager.py:241
 msgid "no top-level pair with name 'format version'"
-msgstr ""
+msgstr "Kein Toplevel Paar namens 'format version'"
 
 #: ffgo/stats_manager.py:246
 #, python-brace-format
 msgid "unknown format version: {ver}"
-msgstr ""
+msgstr "unbekannte Format Version: {ver}"
 
 #: ffgo/stats_manager.py:252
 #, python-brace-format
 msgid "no top-level pair with name '{subject}'"
-msgstr ""
+msgstr "Kein Toplevel Paar namens '{subject}'"
 
 #~ msgid "Empty list for the default aircraft. Please report a bug."
 #~ msgstr "Leere Liste der Standard Flugzeuge. Bitte melden Sie diesen Fehler."
