@@ -26,9 +26,12 @@
 ##
 ## Note: setting this to a directory that is not under FG_HOME may cause
 ##       failure to read some scenery files in recent FlightGear versions, due
-##       to stricter permissions rules (this new FlightGear permission scheme
-##       is still in flux, therefore this won't necessarily be the case
+##       to stricter permissions rules[1] (this new FlightGear permission
+##       scheme is still in flux, therefore this won't necessarily be the case
 ##       anymore when you read it).
+##
+##         [1] https://sourceforge.net/p/flightgear/mailman/message/34833785/
+##
 #--terrasync-dir=/path/to/the/folder/of/your/choice
 
 ## You can choose the start time of day for your flight.
