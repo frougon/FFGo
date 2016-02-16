@@ -3,17 +3,17 @@
 
 ## RENDERING OPTIONS
 ## Enable fullscreen mode.
-# --enable-fullscreen
+#--enable-fullscreen
 
 ## Specify the geometry of FlightGear's window (no need to specify it if you
 ## use --enable-fullscreen).
-# --geometry=800x600
+#--geometry=800x600
 
 ## OTHER
 ## Enter your callsign. Note that it's currently limited to seven characters.
 ## Please don't choose a callsign already in use by someone else on the
 ## multiplayer network.
-# --callsign=
+#--callsign=
 
 ## Enable automatic scenery download as you fly:
 #--enable-terrasync
@@ -45,7 +45,7 @@
 #--disable-hud-3d
 
 ## Limit fps to the specified number.
-# --prop:/sim/frame-rate-throttle-hz=35
+#--prop:/sim/frame-rate-throttle-hz=35
 
 ## More information about 'fgfs' (FlightGear) command line options
 ## can be found:

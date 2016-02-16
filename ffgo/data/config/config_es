@@ -3,22 +3,22 @@
 
 ## Escribe tu apodo; limitado a siete carácteres. Para saber si tu apodo está 
 ## en uso o no visita: http://fgfs.i-net.hu/modules/fgtracker/ 
-# --callsign=
+#--callsign=
 
 ## OPCIONES METEOROLÓGICAS
 ## Extraer información meteorológica de la web.
-# --enable-real-weather-fetch
+#--enable-real-weather-fetch
 
 ## OPCIONES DE RENDERIZADO
 ## Especifica la resolución para FlightGear.
-# --geometry=800x600
+#--geometry=800x600
 
 ## Activa la pantalla completa.
-# --enable-fullscreen
+#--enable-fullscreen
 
 ## OTROS
 ## Limita los fps a un número específico.
-# --prop:/sim/frame-rate-throttle-hz=35
+#--prop:/sim/frame-rate-throttle-hz=35
 
 ## Más información sobre opciones de comandos en línea en los documentos de
 ## FlightGear, o en:

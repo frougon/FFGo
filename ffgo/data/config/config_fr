@@ -4,16 +4,16 @@
 
 ## OPTIONS DE RENDU
 ## Active le mode plein écran.
-# --enable-fullscreen
+#--enable-fullscreen
 
 ## Précise la géométrie de la fenêtre de FlightGear.
-# --geometry=800x600
+#--geometry=800x600
 
 ## AUTRES
 ## Entrez votre indicatif. Notez qu'il est actuellement limité à sept
 ## caractères. Merci de ne pas utiliser un indicatif déjà utilisé par
 ## quelqu'un d'autre sur le réseau multijoueurs.
-# --callsign=
+#--callsign=
 
 ## Active le téléchargement automatique des scènes au fil du vol.
 #--enable-terrasync
@@ -48,7 +48,7 @@
 #--disable-hud-3d
 
 ## Limite le nombre d'images par seconde à un nombre fixe.
-# --prop:/sim/frame-rate-throttle-hz=35
+#--prop:/sim/frame-rate-throttle-hz=35
 
 ## Pour plus d'informations à propos des options de ligne de commande de
 ## 'fgfs' (FlightGear), vous pouvez consulter :

@@ -4,22 +4,22 @@
 ## Twój znak wywoławczy. Uwaga! Callsign nie powinien mieć więcej niż
 ## siedmiu znaków. Zajrzyj na tę stronie: http://fgfs.i-net.hu/modules/fgtracker/
 ## aby sprawdzić czy twój callsign nie jest już używany przez kogoś innego.
-# --callsign=
+#--callsign=
 
 ## OPCJE ŚRODOWISKA
 ## Pobieraj informacje o pogodzie z internetu.
-# --enable-real-weather-fetch
+#--enable-real-weather-fetch
 
 ## OPCJE WYŚWIETLANIA
 ## Podaj rozmiar okna symulatora FlightGear.
-# --geometry=800x600
+#--geometry=800x600
 
 ## Uruchom program w trybie pełnoekranowym.
-# --enable-fullscreen
+#--enable-fullscreen
 
 ## INNE
 ## Ogranicz maksymalną prędkość odświeżania (fps) do podanej wartości.
-# --prop:/sim/frame-rate-throttle-hz=35
+#--prop:/sim/frame-rate-throttle-hz=35
 
 ## Więcej informacji na temat opcji wiersza poleceń
 ## można znaleźć w dokumentacji FlightGeara lub też na stronie:

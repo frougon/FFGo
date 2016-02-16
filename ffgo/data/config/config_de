@@ -3,18 +3,18 @@
 
 ## DARSTELLUNGSOPTIONEN
 ## Vollbildmodus
-# --enable-fullscreen
+#--enable-fullscreen
 
 ## Geben Sie die Geometrie des FlightGearfensters an (unnötig, wenn Sie
 ## --enable-fullscreen nutzen)
-# --geometry=800x600
+#--geometry=800x600
 
 ## ANDERES
 ## Geben Sie ihr Rufzeichen an. Bis jetzt ist es auf 7 Zeichen begrenzt. Bitte
 ## wählen Sie kein Rufzeichen, daß schon im Multiplayernetzwerk benutzt wird.
 ## Sehen Sie im Web nach, ob ihr Rufzeichen schon in Benutzung ist:
 ## http://fgfs.i-net.hu/modules/fgtracker/
-# --callsign=
+#--callsign=
 
 ## Automatischer Download von Szenerie, während des Fliegens:
 #--enable-terrasync
@@ -48,7 +48,7 @@
 #--disable-hud-3d
 
 ## Begrenze fps auf angegebene Anzahl.
-# --prop:/sim/frame-rate-throttle-hz=35
+#--prop:/sim/frame-rate-throttle-hz=35
 
 ## Mehr Informationen über die Kommandozeilen-Optionen
 ## findet man:

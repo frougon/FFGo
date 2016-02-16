@@ -4,22 +4,22 @@
 ## Inserire il proprio indicativo di chiamata (call sign); attualmente questo
 ## è limitato a sette caratteri. Per verificare se il proprio indicativo è già
 ## utilizzato visitare il sito http://fgfs.i-net.hu/modules/fgtracker/
-# --callsign=
+#--callsign=
 
 ## OPZIONI AMBIENTE
 ## Scaricare automaticamente dalla rete le informazioni meteo.
-# --enable-real-weather-fetch
+#--enable-real-weather-fetch
 
 ## OPZIONI DI RENDERING
 ## Specificare le dimensioni della finestra di FlightGear.
-# --geometry=800x600
+#--geometry=800x600
 
 ## Abilitare la modalità a schermo intero.
-# --enable-fullscreen
+#--enable-fullscreen
 
 ## ALTRO
 ## Limitare la frequenza dei fotogrammi (fps) a uno specifico valore.
-# --prop:/sim/frame-rate-throttle-hz=35
+#--prop:/sim/frame-rate-throttle-hz=35
 
 ## Maggiori informazioni sulle opzioni a linea di comando si possono trovare
 ## nella documentazione di FlightGear, oppure consultando il sito:
