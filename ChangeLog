@@ -775,3 +775,189 @@ you may want to consult the Git repository log.
           and MacOS X (in addition to Unix-like systems, of course).
           (Florent Rougon)
 [FEATURE] Update the German translation. (chris_blues)
+
+1.10.0
+[MAINT]   Rebase widgets.AirportChooser on a generic, abstract class:
+          widgets.IncrementalChooser. (Florent Rougon)
+[FEATURE] Reimplement the aircraft chooser using widgets.IncrementalChooser.
+          This improves its behavior in several respects:
+            - smarter automatic selection of an aircraft when the search query
+              is changed, based on the new search query and the previous
+              selection;
+            - better handling of navigation keys (up and down arrows, Page Up
+              and Page Down, Home and End; most notably, holding down one of
+              the first four of these, and pressing one of the last two should
+              have the expected effect);
+            - ability to display several proper columns of data and sort by
+              clicking on a column header;
+            - short delay before starting to search after the search query is
+              modified, in order to allow smooth typing in the search field.
+          (Florent Rougon)
+[FEATURE] Aircraft chooser: approximate matching of aircraft names
+
+          * With this commit, you don't have to remember that the 'f-14b'
+            aircraft has a hyphen, the 'EC-137D' also, but not the 'ec130b4'
+            nor the 'ec135p2'. Characters in the following string are simply
+            ignored during the first phase (filtering) of an aircraft search:
+            ' -_.,;:!?' (the list starts with a space). This means that an
+            aircraft search query can find an aircraft even if it has hyphens,
+            underscores, etc. missing or in excess compared to the actual
+            aircraft name.
+
+          * Note that this only concerns the aircraft list *filtering*. Given
+            a set of aircrafts that match the search query, one of them may be
+            automatically selected after the aircraft list is filtered if:
+              - it is either an exact (case-insensitive) match of the search
+                query (and for this purpose, characters such as hyphens and
+                underscores are *not* ignored: autoselection requires an exact
+                match);
+              - or it is the previously-selected aircraft (option only taken
+                if the first one couldn't be satisfied, and of course if the
+                previously-selected aircraft is in the just-updated, filtered
+                list).
+
+          * As said, both types of matching are case-insensitive:
+              1) the approximate matching process used to determine which
+                 aircrafts will be displayed in the aircraft list after a
+                 change to the search field;
+              2) the exact matching process used to autoselect the “best”
+                 among the matches found in 1), falling back to the first one
+                 if none of these fulfills any of the two conditions given in
+                 the previous paragraph.
+          (Florent Rougon)
+[FEATURE] Airport and aircraft statistics (“use counts” / “visit counts” for
+          customizable periods)
+
+          * New classes AirportStatsManager and AircraftStatsManager that are
+            used to maintain lists of dates when each airport was visited
+            (resp. each aircraft used).
+
+            Old data is automatically expired (new config file parameters
+            AIRPORT_STATS_EXPIRY_PERIOD and AIRCRAFT_STATS_EXPIRY_PERIOD).
+            Counts of how many days in a chosen period (new parameters
+            AIRPORT_STATS_SHOW_PERIOD and AIRCRAFT_STATS_SHOW_PERIOD) each
+            airport has been visited or each aircraft used are stored in
+            memory and maintained by the AirportStatsManager and
+            AircraftStatsManager classes. These counts are obtained from the
+            dates of visit/use of each airport/aircraft by counting the dates
+            selected with AIRPORT_STATS_SHOW_PERIOD and
+            AIRCRAFT_STATS_SHOW_PERIOD.
+
+          * All this data is loaded from $USER_DATA_DIR/Stats/airports.json.gz
+            and $USER_DATA_DIR/Stats/aircrafts.json.gz when FFGo is started,
+            and saved to the same files when it is quit. It is also saved just
+            before the airports/aircrafts set is possibly changed and reloaded
+            afterwards in order to avoid losing data stored in the .json.gz
+            files if it can't be applied to the current airports/aircrafts
+            set.
+
+          * Add a new column to the aircraft list showing how many days each
+            aircraft has been used at least once (“use count”) during the
+            period defined by AIRCRAFT_STATS_SHOW_PERIOD (which is interpreted
+            as a number of days). Similarly, add a column to the airport list
+            showing how many days each airport has been visited at least once
+            during the period defined by AIRPORT_STATS_SHOW_PERIOD (again,
+            number of days). The use (resp. visit) count for an aircraft
+            (resp. airport) is incremented whenever FlightGear is started from
+            FFGo with this aircraft (resp. at that airport). This is only done
+            in memory until $USER_DATA_DIR/Stats/airports.json.gz and
+            $USER_DATA_DIR/Stats/aircrafts.json.gz are saved, as mentioned
+            above.
+
+          * By default, these two .json.gz files are stored in the most
+            possible compact format (no space or newline to separate
+            syntactical elements in the uncompressed data stream). For users
+            who would like to examine or even modify these files (for
+            instance, in order to keep aircrafts use counts despite having
+            changed one's aircraft paths), FFGo supports a new command-line
+            option: '--save-stats-in-pretty-form' (pretty long, but I surmise
+            it should not be needed often). Start FFGo with this option, then
+            either do a reset (“Reload config file”) or quit FFGo; at this
+            point, both .json.gz files should be in human-readable form.
+
+          * AIRPORT_STATS_EXPIRY_PERIOD and AIRCRAFT_STATS_EXPIRY_PERIOD
+            default to 3652 days (ten years). AIRPORT_STATS_SHOW_PERIOD and
+            AIRCRAFT_STATS_SHOW_PERIOD default to 365 days (one year).
+
+          * The Preferences dialog has a new “Statistics” tab allowing to
+            configure these four parameters.
+
+          * This feature was presented in this message on the FlightGear
+            forum (maybe it has better/different explanations...):
+
+              http://forum.flightgear.org/viewtopic.php?f=18&t=27054&p=275923#p275774
+          (Florent Rougon)
+[FEATURE] Change the initial sorting of the aircraft and airport lists. These
+          two lists in FFGo's main window are now initially sorted:
+            - primarily, by decreasing use/visit count;
+            - secondarily, by aircraft or airport name for aircrafts/airports
+              having the same use/visit count.
+
+          Note that this only concerns the initial sorting at FFGo startup; it
+          is always possible to click on a column header to change the sort
+          order.
+          (Florent Rougon)
+[BUGFIX]  Fix loading of aircraft thumbnails:
+            - fix a long-standing little bug (present in FGo!): aircraft
+              thumbnails that don't have 171×128 dimensions are now displayed
+              correctly (appropriately scaled to fit in the 171×128 space
+              reserved for that). For maximum performance, this is bypassed
+              for aircraft thumbnails that already have the desired
+              dimensions.
+            - replace the catch-all “except:” clause with a more specific
+              “except OSError:” one. If another type of error is raised in
+              that place, it should be fixed where the actual problem belongs,
+              instead of sweeping the whole thing under the rug.
+          (Florent Rougon)
+[BUGFIX]  Fix detection of FlightGear version: debug builds of FlightGear have
+          a different 'fgfs --version' output than normal builds, and that
+          extented output wasn't properly recognized by FFGo. (Florent Rougon)
+[BUGFIX]  Pass --fg-root when running 'fgfs --version' to avoid the new popup.
+          FlightGear 2016.1.0 (from February 2016) can spawn an annoying popup
+          dialog when 'fgfs --version' is run, which is very confusing for
+          FFGo users and broke FFGo's detection of the FlightGear version
+          (this popup is apparently meant to let the user graphically choose
+          the FG_ROOT path to use in the built-in Qt lancher). Pass the
+          --fg-root option as well (assuming Config.FG_root is non-empty,
+          otherwise FlightGear version detection is not attempted) to work
+          around this new behavior of 'fgfs --version'. (Florent Rougon)
+[BUGFIX]  Run 'fgfs --fg-root=... --version' in the directory defined by
+          FG_WORKING_DIR (which can be configured from the Settings dialog).
+          This is a good idea, as FlightGear has a nasty tendency to leave
+          core files around, even when just trying to print the version...
+          (Florent Rougon)
+[MAINT]   Preferences dialog: use a Ttk Notebook widget instead of the
+          home-made one. This will be better for maintainability, and
+          hopefully is also an improvement regarding ergonomy and appearance
+          on various OSes. (Florent Rougon)
+[MAINT]   Preferences dialog: reimplement the whole dialog layout using the
+          grid() layout manager instead of pack(). This allows to have proper
+          horizontal and vertical alignments in the new “Statistics” tab. This
+          should also make it easier to add things or make changes to the
+          dialog in the future. Also replace Tk widgets with Ttk ones whenever
+          there is a Ttk equivalent, and get rid of the
+          'from tkinter import *' wildcard import. (Florent Rougon)
+[USABILITY] Enable automatic line wrapping in the About box. Otherwise, the
+          box can get very large depending on the text we display inside...
+          (Florent Rougon)
+[USABILITY] Update the translated template config files
+          ffgo/data/config/config_<language-code>.
+
+          * Remove the --multiplay option from all templates: nowadays, most
+            people should connect using the in-sim menu when they are ready
+            (not on a runway, not on someone else's aircraft, and ready to
+            answer to an eventual ATC operator, for a start). Other people can
+            find the option on the FlightGear wiki or forum, as well as in the
+            output of 'fgfs --help' anyway.
+
+          * Update the French template: it should now be up-to-date except for
+            --terrasync-dir which is not mentioned (the option may cause
+            problems due to new permission restrictions in current FlightGear
+            from Git 'next', but this is still in flux so, for now, this is
+            not translated).
+          (Florent Rougon)
+[USABILITY] Small update to the template config files
+          ffgo/data/config/config_* (only the English, French and German files
+          have an active maintainer; we can only do “blind corrections” for
+          other languages). (Florent Rougon & chris_blues)
+[FEATURE] Update the German translation. (chris_blues)
