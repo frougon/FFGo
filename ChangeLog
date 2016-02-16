@@ -903,21 +903,23 @@ you may want to consult the Git repository log.
               correctly (appropriately scaled to fit in the 171×128 space
               reserved for that). For maximum performance, this is bypassed
               for aircraft thumbnails that already have the desired
-              dimensions.
+              dimensions. An aircraft for which the difference is very visible
+              is the 707.
             - replace the catch-all “except:” clause with a more specific
               “except OSError:” one. If another type of error is raised in
               that place, it should be fixed where the actual problem belongs,
               instead of sweeping the whole thing under the rug.
           (Florent Rougon)
-[BUGFIX]  Fix detection of FlightGear version: debug builds of FlightGear have
-          a different 'fgfs --version' output than normal builds, and that
-          extented output wasn't properly recognized by FFGo. (Florent Rougon)
+[BUGFIX]  Fix detection of the FlightGear version: debug builds of FlightGear
+          have a different 'fgfs --version' output than normal builds, and
+          that extended output wasn't properly recognized by FFGo.
+          (Florent Rougon)
 [BUGFIX]  Pass --fg-root when running 'fgfs --version' to avoid the new popup.
           FlightGear 2016.1.0 (from February 2016) can spawn an annoying popup
           dialog when 'fgfs --version' is run, which is very confusing for
           FFGo users and broke FFGo's detection of the FlightGear version
           (this popup is apparently meant to let the user graphically choose
-          the FG_ROOT path to use in the built-in Qt lancher). Pass the
+          the FG_ROOT path to use in the built-in Qt launcher). Pass the
           --fg-root option as well (assuming Config.FG_root is non-empty,
           otherwise FlightGear version detection is not attempted) to work
           around this new behavior of 'fgfs --version'. (Florent Rougon)
@@ -948,14 +950,12 @@ you may want to consult the Git repository log.
             (not on a runway, not on someone else's aircraft, and ready to
             answer to an eventual ATC operator, for a start). Other people can
             find the option on the FlightGear wiki or forum, as well as in the
-            output of 'fgfs --help' anyway.
+            output of 'fgfs --help --verbose' anyway.
 
-          * Update the French template: it should now be up-to-date except for
-            --terrasync-dir which is not mentioned (the option may cause
-            problems due to new permission restrictions in current FlightGear
-            from Git 'next', but this is still in flux so, for now, this is
-            not translated).
-          (Florent Rougon)
+          * Update the French and German templates; both should now be
+            up-to-date.
+
+          (Florent Rougon & chris_blues)
 [USABILITY] Small update to the template config files
           ffgo/data/config/config_* (only the English, French and German files
           have an active maintainer; we can only do “blind corrections” for
