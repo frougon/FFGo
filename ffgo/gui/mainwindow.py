@@ -1005,8 +1005,12 @@ want to follow this new default and set “Airport database update” to
         tmpImg.thumbnail(STD_AIRCRAFT_THUMBNAIL_SIZE)
         # Coordinates of the top-left corner to use when pasting tmpImg into
         # outImg so that it is horizontally and vertically centered.
-        x = round(0.5*(STD_AIRCRAFT_THUMBNAIL_SIZE[0] - tmpImg.width))
-        y = round(0.5*(STD_AIRCRAFT_THUMBNAIL_SIZE[1] - tmpImg.height))
+        #
+        # Note: use the 'size' attribute instead of 'width' and 'height', as
+        #       these two attributes were only added to Pillow in version
+        #       2.9.0, released on 2015-07-01 according to Pillow's ChangeLog.
+        x = round(0.5*(STD_AIRCRAFT_THUMBNAIL_SIZE[0] - tmpImg.size[0]))
+        y = round(0.5*(STD_AIRCRAFT_THUMBNAIL_SIZE[1] - tmpImg.size[1]))
         outImg.paste(tmpImg, box=(x, y))
 
         return outImg
