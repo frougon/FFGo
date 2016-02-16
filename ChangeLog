@@ -961,3 +961,9 @@ you may want to consult the Git repository log.
           have an active maintainer; we can only do “blind corrections” for
           other languages). (Florent Rougon & chris_blues)
 [FEATURE] Update the German translation. (chris_blues)
+
+1.10.1
+[BUGFIX]  Fix image scaling to work with Pillow versions older than 2.9.0 (the
+          'width' and 'height' attributes of PIL.Image instances were only
+          added to Pillow in version 2.9.0, released on 2015-07-01 according
+          to Pillow's ChangeLog). (Florent Rougon)
