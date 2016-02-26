@@ -326,7 +326,7 @@ Hints concerning installation of the dependencies
       compilation. On Debian unstable (July 2015), the following is likely to
       be sufficent:
 
-        # apt-get install libpython3-dev tcl-dev tk-dev
+        # apt-get install gcc libpython3-dev tcl-dev tk-dev
         (tcl8.6-dev and tk8.6-dev can do as well)
 
       or, installing more packages:
