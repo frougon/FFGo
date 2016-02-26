@@ -220,6 +220,8 @@ class App:
 
         self.helpmenu = Menu(self.menubar, tearoff=0)
         self.helpmenu.add_command(label=_('Help'), command=self.showHelpWindow)
+        self.helpmenu.add_command(label=_("Show available fgfs options"),
+                                  command=self.showFgfsCmdLineHelp)
         self.helpmenu.add_separator()
         self.helpmenu.add_command(label=_('About'), command=self.about)
         self.menubar.add_cascade(label=_('Help'), menu=self.helpmenu)
@@ -1786,6 +1788,31 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
         self.showScrolledTextWindow("helpWindow",
                                     _("{prg} Help").format(prg=PROGNAME),
                                     text)
+
+    def showFgfsCmdLineHelp(self):
+        program = self.config.FG_bin.get()
+        FG_root_arg = "--fg-root=" + self.config.FG_root.get()
+        FG_working_dir = self.config.FG_working_dir.get()
+        if not FG_working_dir:
+            FG_working_dir = HOME_DIR
+
+        # Passing 'FG_root_arg' to avoid any undesirable popup dialog from FG
+        args = [program, FG_root_arg, "--help", "--verbose"]
+        try:
+            helpText = subprocess.check_output(args,
+                                               stderr=subprocess.DEVNULL,
+                                               universal_newlines=True,
+                                               cwd=FG_working_dir)
+        except OSError as exc:
+            self.runFGErrorMessage(exc, title=_(
+                "Unable to run 'fgfs --fg-root=... --help --verbose'"))
+        except subprocess.CalledProcessError as exc:
+            self.runFGErrorMessage(exc, title=_(
+                "Error when running 'fgfs --fg-root=... --help --verbose'"))
+        else:
+            title = _("Output of 'fgfs --help --verbose'")
+            self.showScrolledTextWindow("fgfsCmdLineHelpWindow", title,
+                                        helpText)
 
     def showScrolledTextWindow(self, attrName, title, text, width=80):
         """Display 'text' in a scrollable Text widget inside a new Toplevel.
