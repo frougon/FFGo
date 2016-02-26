@@ -117,7 +117,7 @@ COMMENT_COL = '#0014a7'
 # Color to apply to rwy button when inactive.
 GRAYED_OUT_COL = '#b2b2b2'
 # Background color for various messages.
-MESSAGE_BG_COL = '#fffeb2'
+MESSAGE_BG_COL = '#ededd1'
 # Background color for tooltips.
 TOOLTIP_BG_COL = '#ffffde'
 # Background color for various text windows.
