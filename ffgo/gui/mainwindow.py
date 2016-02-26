@@ -1579,12 +1579,14 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
 
         return True
 
-    def runFGErrorMessage(self, exc):
-        title = _('Unable to run FlightGear!')
-        msg = _('Please make sure that paths: FG_BIN and FG_ROOT\n'
-                'in "Preferences" window are pointing to right directories.')
-        message = '{0}\n\n{1}\n\n{2}'.format(title, exc, msg)
-        self.error_message = showerror(_('Error'), message)
+    def runFGErrorMessage(self, exc, title=None):
+        title = title if title is not None else _('Unable to run FlightGear!')
+        msg = _(
+            'Please make sure that the “Path to executable file”, “FG_ROOT” '
+            'and “Working directory” parameters are correctly set in the '
+            'Preferences dialog.')
+        detail = '{}\n\n{}'.format(exc, msg)
+        showerror(_('{prg}').format(prg=PROGNAME), title, detail=detail)
 
     def _monitorFgfsProcessThreadFunc(self, process, outputQueue, statusQueue):
         # We are using Tk.event_generate() to notify the main thread. This
