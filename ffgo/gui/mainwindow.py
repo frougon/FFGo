@@ -1767,10 +1767,6 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
 
     def showHelpWindow(self):
         """Display help window."""
-        try:
-            self.helpWindow.destroy()
-        except AttributeError:
-            pass
         # Find currently used language.
         lang_code = self.config.language.get()
         if not lang_code:
@@ -1787,18 +1783,42 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
         with textResourceStream(HELP_STEM + lang_code) as readme:
             text = readme.read()
 
-        self.helpWindow = Toplevel(self.master)
-        self.helpWindow.title(_('Help'))
-        self.helpWindow.transient(self.master)
-        self.helpWindow.bind('<Escape>', self._destroyHelpWindow)
+        self.showScrolledTextWindow("helpWindow",
+                                    _("{prg} Help").format(prg=PROGNAME),
+                                    text)
 
-        self.helpText = ScrolledText(self.helpWindow, bg=TEXT_BG_COL, width=80)
-        self.helpText.pack(side='left', fill='both', expand=True)
-        self.helpText.insert('end', text)
-        self.helpText.configure(state='disabled')
+    def showScrolledTextWindow(self, attrName, title, text, width=80):
+        """Display 'text' in a scrollable Text widget inside a new Toplevel.
 
-    def _destroyHelpWindow(self, event=None):
-        self.helpWindow.destroy()
+        Store the Toplevel instance in the attribute 'attrName' of
+        'self'. If such an instance already exists before this method is
+        called, it is first destroyed, then a new one is created.
+
+        """
+        try:
+            oldTopLevel = getattr(self, attrName)
+        except AttributeError:
+            pass
+        else:
+            oldTopLevel.destroy()
+            delattr(self, attrName)
+
+        topLevel = Toplevel(self.master)
+        setattr(self, attrName, topLevel)
+        topLevel.transient(self.master)
+        topLevel.title(title)
+
+        def destroyFunc(event=None, attrName=attrName, topLevel=topLevel):
+            topLevel.destroy()
+            delattr(self, attrName)
+
+        topLevel.protocol("WM_DELETE_WINDOW", destroyFunc)
+        topLevel.bind('<Escape>', destroyFunc)
+
+        scrolledText = ScrolledText(topLevel, bg=TEXT_BG_COL, width=width)
+        scrolledText.pack(side='left', fill='both', expand=True)
+        scrolledText.insert('end', text)
+        scrolledText.configure(state='disabled')
 
     def showAirportFinder(self, event=None):
         """Show the Airport Finder dialog."""
