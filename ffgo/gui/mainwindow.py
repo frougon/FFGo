@@ -1815,7 +1815,7 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
         topLevel.protocol("WM_DELETE_WINDOW", destroyFunc)
         topLevel.bind('<Escape>', destroyFunc)
 
-        scrolledText = ScrolledText(topLevel, bg=TEXT_BG_COL, width=width)
+        scrolledText = ScrolledText(topLevel, bg=MESSAGE_BG_COL, width=width)
         scrolledText.pack(side='left', fill='both', expand=True)
         scrolledText.insert('end', text)
         scrolledText.configure(state='disabled')
