@@ -28,6 +28,19 @@ def pythonVersionString():
         compl=compl)
 
 
+def isDescendantWidget(maybeParent, widget):
+    """Return True if 'widget' is 'maybeParent' or a descendant of it.
+
+    Widget parenthood is tested for Tk in this function.
+
+    """
+    if widget is maybeParent:
+        return True
+    else:
+        return any(( isDescendantWidget(w, widget)
+                     for w in maybeParent.winfo_children() ))
+
+
 # Based on an example from the 'enum' documentation
 class OrderedEnum(enum.Enum):
     """Base class for enumerations whose members can be ordered.
