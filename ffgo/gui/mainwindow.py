@@ -44,6 +44,7 @@ from .. import constants
 from ..constants import *
 from .. import fgdata
 from ..fgdata.parking import ParkingSource
+from .pressure_converter import PressureConverterDialog
 
 try:
     from PIL import Image, ImageTk
@@ -210,6 +211,8 @@ class App:
                                    command=self.showGPSTool)
         self.toolsmenu.add_command(label='METAR',
                                    command=self.showMETARWindow)
+        self.toolsmenu.add_command(label=_('Pressure converter'),
+                                   command=self.showPressureConverterDialog)
         self.toolsmenu.add_command(label=_('Copy FG shell-equivalent command'),
                                    command=self.copyFGCommandToClipboard)
         if self.params.test_mode:
@@ -583,6 +586,8 @@ class App:
         self.scenarioListOpen = False
         self.currentCarrier = []
         self.setMetarToNone()         # Initialize self.metar to None
+        self.setPressureConverterToNone() # Initialize
+                                          # self.pressureConverterDialog to None
         self.setAirportFinderToNone() # Initialize self.airportFinder to None
         self.setGPSToolToNone()       # Initialize self.gpsTool to None
         # Window to let the user know a long operation is taking place
@@ -1901,6 +1906,17 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
     # Method called from Metar.quit() (otherwise, that would be ridiculous)
     def setMetarToNone(self):
         self.metar = None
+
+    def showPressureConverterDialog(self, event=None):
+        if self.pressureConverterDialog is not None:
+            self.pressureConverterDialog.show()
+        else:
+            self.pressureConverterDialog = PressureConverterDialog(
+                self.master, self.config, self)
+
+    # Method called from PressureConverterDialog.quit()
+    def setPressureConverterToNone(self):
+        self.pressureConverterDialog = None
 
     def copyFGCommandToClipboard(self, event=None):
         # FGCommand.argList is None in case errors prevented its preparation
