@@ -47,7 +47,7 @@ class PressureConverterDialog:
         # These are used to break observer loops with widget A being modified,
         # causing an update of widget B, itself causing an update of widget
         # A...
-        self.dontUpdateAltSetting = self.dontUpdateQNH = False
+        self.dontUpdateInHg = self.dontUpdateHPa = False
         # Will be used to record all widgets that should be destroy()ed when
         # the dialog is closed. The Tkinter reference at
         # <http://infohost.nmt.edu/tcc/help/pubs/tkinter/web/index.html> says
@@ -95,7 +95,7 @@ class PressureConverterDialog:
             container.grid_rowconfigure(
                 rowNum, minsize=minHeight, weight=weight)
 
-        # Altimeter setting
+        # Value in inches of mercury (inHg)
         #
         # lRowNum: logical row number (because of spacer rows, the real row
         #          number is twice the logical row number for non-spacer rows)
@@ -103,52 +103,52 @@ class PressureConverterDialog:
         #          between columns)
         lRowNum = colNum = 0
         label = self._newWidget(ttk.Label(mainFrame,
-                                          text=_("Altimeter setting (inHg):")))
+                                          text=_("Inches of mercury (inHg):")))
         label.grid(row=2*lRowNum, column=colNum, sticky="w")
         mainFrame.grid_rowconfigure(2*lRowNum, weight=0) # not stretchable
         mainFrame.grid_columnconfigure(colNum, pad="20p", weight=100)
 
-        altSettingValidateCmd = self.master.register(
-            self._altSettingValidateFunc)
+        inHgValidateCmd = self.master.register(self._inHgValidateFunc)
 
         colNum += 1
-        self.altSetting = tk.StringVar()
-        self.altSettingSpinbox = self._newWidget(
+        self.inHg = tk.StringVar()
+        self.inHgSpinbox = self._newWidget(
             tk.Spinbox(mainFrame, from_=0, to=100, increment=0.01,
-                       repeatinterval=20, textvariable=self.altSetting,
+                       repeatinterval=20, textvariable=self.inHg,
                        width=spinboxWd, validate="all",
-                       validatecommand=(altSettingValidateCmd, "%P")))
-        self.altSettingSpinbox.grid(row=2*lRowNum, column=colNum, sticky="ew")
+                       validatecommand=(inHgValidateCmd, "%P")))
+        self.inHgSpinbox.grid(row=2*lRowNum, column=colNum, sticky="ew")
         mainFrame.grid_columnconfigure(colNum, weight=100)
 
         addVertSpacer(mainFrame, 2*lRowNum+1)
 
-        # QNH
+        # Value in hectopascals (hPa)
         lRowNum += 1
         colNum = 0
-        label = self._newWidget(ttk.Label(mainFrame, text=_("QNH (hPa):")))
+        label = self._newWidget(ttk.Label(mainFrame,
+                                          text=_("Hectopascals (hPa):")))
         label.grid(row=2*lRowNum, column=colNum, sticky="w")
         mainFrame.grid_rowconfigure(2*lRowNum, weight=0) # not stretchable
 
-        qnhValidateCmd = self.master.register(self._qnhValidateFunc)
+        hPaValidateCmd = self.master.register(self._hPaValidateFunc)
 
         colNum += 1
-        self.qnh = tk.StringVar()
-        self.qnhSpinbox = self._newWidget(
+        self.hPa = tk.StringVar()
+        self.hPaSpinbox = self._newWidget(
             tk.Spinbox(mainFrame, from_=0, to=10**6, increment=1,
-                       repeatinterval=20, textvariable=self.qnh,
+                       repeatinterval=20, textvariable=self.hPa,
                        width=spinboxWd, validate="all",
-                       validatecommand=(qnhValidateCmd, "%P")))
-        self.qnhSpinbox.grid(row=2*lRowNum, column=colNum, sticky="ew")
+                       validatecommand=(hPaValidateCmd, "%P")))
+        self.hPaSpinbox.grid(row=2*lRowNum, column=colNum, sticky="ew")
 
         colNum += 1
         addHorizSpacer(mainFrame, 2*lRowNum, colNum)
 
-        # QNH value rounded to the nearest integer
+        # Value in hectopascals (hPa) rounded to the nearest integer
         colNum += 1
-        self.roundedQnh = tk.StringVar()
+        self.roundedHPa = tk.StringVar()
         label = self._newWidget(ttk.Label(mainFrame,
-                                          textvariable=self.roundedQnh))
+                                          textvariable=self.roundedHPa))
         label.grid(row=2*lRowNum, column=colNum, sticky="w")
         mainFrame.grid_columnconfigure(colNum, pad="20p", weight=100)
 
@@ -179,15 +179,14 @@ class PressureConverterDialog:
         self.top.bind('<Escape>', lambda event, b=closeButton: b.invoke())
 
         # Setup callbacks for when the pressure values are changed
-        self.altSetting.trace("w", self.updateQNHValue)
-        self.qnh.trace("w", self.updateAltSetting)
-        self.qnh.trace("w", self.updateRoundedQnh)
+        self.inHg.trace("w", self.updateHPaValue)
+        self.hPa.trace("w", self.updateInHg)
+        self.hPa.trace("w", self.updateRoundedHPa)
 
         self.setStandardValues() # 1013.25 hPa, or 29.92 in Hg
-        self.altSettingSpinbox.focus_set() # set the initial focus
+        self.inHgSpinbox.focus_set() # set the initial focus
 
-    def _altSettingValidateFunc(self, text):
-        """Validate a string for the 'Altimeter setting' field."""
+    def _emptyOrFloatValidateFunc(self, text):
         if not text.strip():
             return True         # allow the field to be empty
         else:
@@ -198,66 +197,62 @@ class PressureConverterDialog:
 
             return (f >= 0.0)
 
-    def _qnhValidateFunc(self, text):
-        """Validate a string for the 'QNH' field."""
-        if not text.strip():
-            return True         # allow the field to be empty
-        else:
-            try:
-                f = locale.atof(text)
-            except ValueError:
-                return False
+    def _inHgValidateFunc(self, text):
+        """Validate a string giving the pressure value in inches of mercury."""
+        return self._emptyOrFloatValidateFunc(text)
 
-            return (f >= 0.0)
+    def _hPaValidateFunc(self, text):
+        """Validate a string giving the pressure value in hectopascals."""
+        return self._emptyOrFloatValidateFunc(text)
 
     # Accept any arguments to allow safe use as a Tkinter variable observer
-    def updateQNHValue(self, *args):
-        if self.dontUpdateQNH:
-            self.dontUpdateQNH = False
+    def updateHPaValue(self, *args):
+        """Update the value in hectopascals (hPa)."""
+        if self.dontUpdateHPa:
+            self.dontUpdateHPa = False
             return
 
-        # Every code path below sets self.qnh. This must not in turn cause an
-        # update to the altimeter setting...
-        self.dontUpdateAltSetting = True
+        # Every code path below sets self.hPa. This must not in turn cause an
+        # update to self.inHg...
+        self.dontUpdateInHg = True
 
-        altSetting = self.altSetting.get()
-        if not altSetting.strip():
-            self.qnh.set('')
+        inHg = self.inHg.get()
+        if not inHg.strip():
+            self.hPa.set('')
         else:
-            self.qnh.set(locale.format("%.02f",
-                                       locale.atof(altSetting)*33.8639))
+            self.hPa.set(locale.format("%.02f", locale.atof(inHg)*33.8639))
 
     # Accept any arguments to allow safe use as a Tkinter variable observer
-    def updateRoundedQnh(self, *args):
+    def updateRoundedHPa(self, *args):
         """
-        Update the value of the QNH that is rounded to the nearest integer."""
-        qnh = self.qnh.get()
-        if not qnh.strip():
-            self.roundedQnh.set('')
+        Update the value in hPa that is rounded to the nearest integer."""
+        hPa = self.hPa.get()
+        if not hPa.strip():
+            self.roundedHPa.set('')
         else:
-            self.roundedQnh.set("({})".format(round(locale.atof(qnh))))
+            self.roundedHPa.set("({})".format(round(locale.atof(hPa))))
 
     # Accept any arguments to allow safe use as a Tkinter variable observer
-    def updateAltSetting(self, *args):
-        if self.dontUpdateAltSetting:
-            self.dontUpdateAltSetting = False
+    def updateInHg(self, *args):
+        """Update the value in inches of mercury (inHg)."""
+        if self.dontUpdateInHg:
+            self.dontUpdateInHg = False
             return
 
-        # Every code path below sets self.altSetting. This must not in turn
-        # cause an update to the QNH...
-        self.dontUpdateQNH = True
+        # Every code path below sets self.inHg. This must not in turn
+        # cause an update to self.hPa...
+        self.dontUpdateHPa = True
 
-        qnh = self.qnh.get()
-        if not qnh.strip():
-            self.altSetting.set('')
+        hPa = self.hPa.get()
+        if not hPa.strip():
+            self.inHg.set('')
         else:
-            self.altSetting.set(locale.format("%.02f",
-                                              locale.atof(qnh)*0.02953))
+            self.inHg.set(locale.format("%.02f", locale.atof(hPa)*0.02953))
 
     def setStandardValues(self):
-        # This will cause the altimeter setting and the rounded QNH value to be
-        # updated.
-        self.qnh.set(locale.format("%.02f", 1013.25))
+        # This will cause the value in inHg as well as the rounded hPa
+        # value to be updated.
+        self.hPa.set(locale.format("%.02f", 1013.25))
 
     def show(self):
         """Make sure the Pressure Converter dialog is visible."""
