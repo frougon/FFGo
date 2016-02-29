@@ -138,6 +138,13 @@ Tools:
                    nearest airport providing METAR data. These reports
                    are downloaded from <http://weather.noaa.gov/>.
 
+    Pressure converter
+                -- convert a pressure between inches of mercury (inHg)
+                   and hectopascals (hPa). This can be useful to set the
+                   altimeter when the QNH value obtained from METAR, for
+                   instance, is not expressed in a unit that is directly
+                   usable with your aircraft's instruments.
+
     Copy FG shell-equivalent command -- copy a shell command to the
                    clipboard that should be equivalent to the FlightGear
                    invocation FFGo would do if you were to click on the
@@ -146,6 +153,15 @@ Tools:
 Help:
 
     Help        -- open the “Help” window
+
+    Show available fgfs options
+                -- display the output of 'fgfs --help --verbose' in a
+                   dedicated window; this is useful to see which fgfs
+                   options are available for use in the Options Window
+                   (actually, --fg-root=... is also passed in the above
+                   command in order to avoid a possible unwanted
+                   FlightGear popup dialog, but this is an
+                   implementation detail).
 
     About       -- open the “About” window
 
