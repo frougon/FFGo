@@ -113,7 +113,7 @@ class PressureConverterDialog:
         colNum += 1
         self.inHg = tk.StringVar()
         self.inHgSpinbox = self._newWidget(
-            tk.Spinbox(mainFrame, from_=0, to=100, increment=0.01,
+            tk.Spinbox(mainFrame, from_=0, to=9999, increment=0.01,
                        repeatinterval=20, textvariable=self.inHg,
                        width=spinboxWd, validate="all",
                        validatecommand=(inHgValidateCmd, "%P")))
