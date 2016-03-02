@@ -62,9 +62,8 @@ Let's examine them one by one:
 - Python 3.x should be available in any Linux distribution (package 'python3',
   or 'python', or 'python3.4', etc.). If your distribution doesn't have
   Python 3.4 or later, download the latest Python version from
-  <https://www.python.org/> and compile it following the instructions in the
-  README file. You don't need to perform the 'make install' step, you can use
-  the 'python' executable obtained in the build directory as is.
+  <https://www.python.org/>, compile and install it following the instructions
+  in the top-level README file found in the downloaded tarball.
 
 - Tkinter is normally shipped with Python when installing Python from source.
   However, when installing it from a Linux distribution package manager,
