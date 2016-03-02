@@ -214,6 +214,13 @@ directory in any release tarball or zip file. In short:
 
 .. _pip: https://pypi.python.org/pypi/pip
 
+You may also find the installation instructions from `FFGo's page on the
+FlightGear wiki`_ helpful. If you have a problem, you can always ask in
+FFGo's thread on the FlightGear forum (see below in `Getting help,
+discussing`_).
+
+.. _FFGo's page on the FlightGear wiki: http://wiki.flightgear.org/FFGo
+
 
 Running
 -------
@@ -259,28 +266,35 @@ etc.
 Documentation
 -------------
 
-Apart from this text (which corresponds to ``README.rst`` in a release
-tarball or zip file), FFGo's documentation can be found in the ``docs``
-top-level directory after unpacking a release tarball or zip file. Once
-FFGo is installed, users should start by reading
-``docs/README/README_<language code>`` (the language code is ``en`` for
-English; this text is also accessible from FFGo's *Help* menu). In a
-second time, ``docs/README.conditional-config`` (`available online
-<http://people.via.ecp.fr/~flo/projects/FFGo/doc/README-conditional-config/>`_)
-explains how to use the full power of the configuration system used by
-FFGo.
+- Apart from this text (which corresponds to ``README.rst`` in a release
+  tarball or zip file), FFGo's documentation can be found in the
+  ``docs`` top-level directory after unpacking a release tarball or zip
+  file. Once FFGo is installed, users should start by reading
+  ``docs/README/README_<language code>`` (the language code is ``en``
+  for English; this text is also accessible from FFGo's *Help* menu). In
+  a second time, ``docs/README.conditional-config`` (`available online
+  <http://people.via.ecp.fr/~flo/projects/FFGo/doc/README-conditional-config/>`_)
+  explains how to use the full power of the configuration system used by
+  FFGo.
 
-If you got FFGo from the `Git repository`_ instead of a release tarball,
-part of the documentation is in source form only (written for
-`Sphinx`_). There is a special section in ``docs/INSTALL`` which
-explains how to build it in this situation [#]_. In any case, this
-documentation (for the latest FFGo release) is always `available online
-<http://people.via.ecp.fr/~flo/projects/FFGo/doc/README-conditional-config/>`_.
+  If you got FFGo from the `Git repository`_ instead of a release tarball,
+  part of the documentation is in source form only (written for
+  `Sphinx`_). There is a special section in ``docs/INSTALL`` which
+  explains how to build it in this situation [#]_. In any case, this
+  documentation (for the latest FFGo release) is always `available online
+  <http://people.via.ecp.fr/~flo/projects/FFGo/doc/README-conditional-config/>`_.
 
-.. _Sphinx: http://sphinx-doc.org/
+  .. _Sphinx: http://sphinx-doc.org/
 
-.. [#] Basically, it boils down to installing a recent enough `Sphinx`_
-       and running ``make doc`` from the top-level directory.
+  .. [#] Basically, it boils down to installing a recent enough `Sphinx`_
+         and running ``make doc`` from the top-level directory.
+
+- There is also some `FFGo documentation on the FlightGear wiki`_, in
+  particular screenshots illustrating most features, and maybe more
+  practically-oriented installation instructions than those from
+  ``docs/INSTALL/INSTALL_en`` (at the time of this writing).
+
+  .. _FFGo documentation on the FlightGear wiki: http://wiki.flightgear.org/FFGo
 
 
 Getting help, discussing
