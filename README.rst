@@ -69,9 +69,9 @@ the following software if installed:
     to be installed in order to work properly (the
     ``geographiclib-get-magnetic`` script may be helpful to get them
     installed);
-  - `GeographicLib`_\'s binding for Python 3 (present in Debian testing
-    and unstable under the name ``python3-geographiclib`` at the time of
-    this writing).
+  - `GeographicLib`_\'s implementation for Python 3 (present in Debian
+    testing and unstable under the name ``python3-geographiclib`` at the
+    time of this writing).
 
 If some of these optional components are not installed, or if for some
 reason FFGo can't find them, some features will be disabled or work in

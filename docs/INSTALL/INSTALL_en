@@ -42,7 +42,7 @@ FFGo's dependencies are:
   - GeographicLib's MagneticField  program (optional; used to display the
     magnetic variation at a particular place and to compute magnetic headings
     from true headings);
-  - GeographicLib's binding for Python 3 (optional; used for geodesic
+  - GeographicLib's implementation for Python 3 (optional; used for geodesic
     calculations, e.g., to compute the distance and azimuths between two
     airports, or a runway length and heading based on the latitude and
     longitude of the two runway ends as found in apt.dat). FFGo includes
@@ -102,8 +102,8 @@ Let's examine them one by one:
   CondConfigParser; this is only to give non-Debian users ideas of what can be
   done to install the dependencies as easily as possible.
 
-- GeographicLib's binding for Python 3: the situation is similar in some ways
-  to that of CondConfigParser. Once you have a “working pip setup”
+- GeographicLib's implementation for Python 3: the situation is similar in
+  some ways to that of CondConfigParser. Once you have a “working pip setup”
   (cf. Appendix A), all that is needed is to run 'pip install geographiclib'.
   This does not require any compilation.
 
@@ -212,9 +212,9 @@ in order to install a Python package. In short, if you have Internet access
 and your pip is properly setup, all you have to do is 'pip install FFGo'.
 Optionally, you can also install Pillow with 'pip install Pillow', but this
 may fail if you don't have some particular software installed (see below). You
-may also want to install GeographicLib's binding for Python 3 with 'pip
-install geographiclib', and more importantly GeographicLib's MagneticField
-program using instructions from GeographicLib's home page.
+may also want to install GeographicLib's implementation for Python 3 with
+'pip install geographiclib', and more importantly GeographicLib's
+MagneticField program using instructions from GeographicLib's home page.
 
 Besides being cleaner in concept, the "standard procedure" makes upgrades and
 removals easier than the "easiest procedure" described above, and makes it
@@ -343,7 +343,7 @@ Hints concerning installation of the dependencies
           <https://pypi.python.org/pypi/Pillow> ships binary Pillow
           distributions for some combinations of platform and Python version.
 
-* GeographicLib's Python 3 implementation
+* GeographicLib's implementation for Python 3
 
   The situation is similar to that of Pillow, except this one doesn't need to
   be compiled. In general, it can be installed with
@@ -580,7 +580,7 @@ one thing that requires paying attention to before doing so:
           % python3 -m venv --system-site-packages foo-venv
 
     Once you have installed FFGo and maybe Pillow and/or GeographicLib's
-    binding for Python 3 in your venv (and maybe also GeographicLib's
+    implementation for Python 3 in your venv (and maybe also GeographicLib's
     MagneticField program), you will want to run FFGo using the Python
     interpreter from this venv. The 'ffgo' executable should be in
     'foo-venv/bin'. You may run it like this:

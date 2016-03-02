@@ -625,8 +625,8 @@ class App:
              _('CondConfigParser {}').format(condconfigparser.__version__)]
 
         if HAS_GEOGRAPHICLIB:
-            l.append(_("GeographicLib's Python binding {}").format(
-                geographiclib.__version__))
+            l.append(_("GeographicLib's Python 3 implementation: version {}")
+                     .format(geographiclib.__version__))
 
         if self.config.earthMagneticField is not None:
             l.append(self.config.earthMagneticField.getBackendDescription())
@@ -646,12 +646,12 @@ class App:
             logger.warningNP(textwrap.fill(s, width=textWidth))
 
         if not HAS_GEOGRAPHICLIB:
-            s = _("[{prg} notice] {libName}'s Python binding not found. {prg} "
-                  "has fallback strategies, therefore you shouldn't see much "
-                  "of a difference. However, some particular geodetic "
-                  "calculations can only be done with {libName}. You will be "
-                  "notified when such a case is encountered.").format(
-                      prg=PROGNAME, libName="GeographicLib")
+            s = _("[{prg} notice] {libName}'s implementation for Python 3 not "
+                  "found. {prg} has fallback strategies, therefore you "
+                  "shouldn't see much of a difference. However, some "
+                  "particular geodetic calculations can only be done with "
+                  "{libName}. You will be notified when such a case is "
+                  "encountered.").format(prg=PROGNAME, libName="GeographicLib")
             logger.noticeNP(textwrap.fill(s, width=textWidth))
 
         if self.config.earthMagneticField is None:
