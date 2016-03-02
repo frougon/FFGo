@@ -2,18 +2,39 @@
 
 Contents
 
-  1. Ready-to-use packages
-  2. Manual installation
+  1. A word about FFGo's page on the FlightGear wiki
+  2. Ready-to-use packages
+  3. Manual installation
     a) Overview of FFGo's dependencies
     b) Tips for Windows users
     c) Easiest procedure
     d) Standard procedure
-  3. Installation from the Git repository
+  4. Installation from the Git repository
 
   Appendices
 
     A. What is a "working pip setup"?
     B. Maintenance of a virtual environment
+
+-------------------------------------------------------------------------------
+
+A WORD ABOUT FFGO'S PAGE ON THE FLIGHTGEAR WIKI
+
+This file is supposed to document in a relatively detailed, but also general
+way, how to install the particular version of FFGo it was shipped with. It is
+as such partly redundant with FFGo's page on the FlightGear wiki:
+
+  http://wiki.flightgear.org/FFGo
+
+At the time of this writing, the installation instructions found on this wiki
+page are often less general than those from the file you are reading, on
+purpose; thus, you may find the wiki instructions easier to follow for the
+following reasons:
+  - more practically-oriented, at the expense of being a bit less general
+    sometimes;
+  - the HTML format used for the wiki allows nicer formatting and hyperlinks.
+
+See for yourself what you prefer!
 
 -------------------------------------------------------------------------------
 
