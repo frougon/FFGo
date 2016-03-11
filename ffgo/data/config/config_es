@@ -16,6 +16,10 @@
 ## Activa la pantalla completa.
 #--enable-fullscreen
 
+## “Anti-aliasing” (cf. <http://wiki.flightgear.org/Anti-aliasing>).
+#--prop:/sim/rendering/multi-sample-buffers=true
+#--prop:/sim/rendering/multi-samples=4
+
 ## OTROS
 ## Limita los fps a un número específico.
 #--prop:/sim/frame-rate-throttle-hz=35

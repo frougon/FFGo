@@ -18,6 +18,10 @@
 ## フルスクリーンモードを有効にします。
 #--enable-fullscreen
 
+## “Anti-aliasing” (cf. <http://wiki.flightgear.org/Anti-aliasing>).
+#--prop:/sim/rendering/multi-sample-buffers=true
+#--prop:/sim/rendering/multi-samples=4
+
 ## その他
 ## フレームレートを指示した値に制限します。
 #--prop:/sim/frame-rate-throttle-hz=35

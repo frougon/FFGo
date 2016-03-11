@@ -17,6 +17,10 @@
 ## Uruchom program w trybie pełnoekranowym.
 #--enable-fullscreen
 
+## “Anti-aliasing” (cf. <http://wiki.flightgear.org/Anti-aliasing>).
+#--prop:/sim/rendering/multi-sample-buffers=true
+#--prop:/sim/rendering/multi-samples=4
+
 ## INNE
 ## Ogranicz maksymalną prędkość odświeżania (fps) do podanej wartości.
 #--prop:/sim/frame-rate-throttle-hz=35

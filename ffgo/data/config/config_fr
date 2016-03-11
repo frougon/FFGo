@@ -9,6 +9,14 @@
 ## Précise la géométrie de la fenêtre de FlightGear.
 #--geometry=800x600
 
+## Active l'anticrénelage (“anti-aliasing” en anglais). Ceci peut améliorer la
+## qualité des images produites par FlightGear, en particulier aux basses
+## résolutions, au prix d'une probable diminution de la vitesse de rendu
+## (nombre d'images par seconde). Voir
+## <http://wiki.flightgear.org/Fr/Anti-aliasing> pour plus de détails.
+#--prop:/sim/rendering/multi-sample-buffers=true
+#--prop:/sim/rendering/multi-samples=4
+
 ## AUTRES
 ## Entrez votre indicatif. Notez qu'il est actuellement limité à sept
 ## caractères. Merci de ne pas utiliser un indicatif déjà utilisé par
