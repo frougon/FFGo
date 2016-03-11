@@ -60,7 +60,7 @@ FFGo's dependencies are:
   - Tkinter (for the aforementioned Python interpreter);
   - CondConfigParser;
   - Pillow (optional; only used to display aircraft thumbnails);
-  - GeographicLib's MagneticField  program (optional; used to display the
+  - GeographicLib's MagneticField program (optional; used to display the
     magnetic variation at a particular place and to compute magnetic headings
     from true headings);
   - GeographicLib's implementation for Python 3 (optional; used for geodesic
