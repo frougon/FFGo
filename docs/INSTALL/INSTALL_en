@@ -139,6 +139,8 @@ Let's examine them one by one:
   (not registering the added files with dpkg, which is a bit ugly,
   cf. <https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=687253>).
 
+  For Windows, details are given below in section “Tips for Windows users”.
+
 - the 'pkg_resources' Python 3 module should be available everywhere (being
   part of setuptools, which is a fundamental component of pip). In
   Debian, this module is shipped in the python3-pkg-resources package.
@@ -151,7 +153,8 @@ In order to install FFGo on Windows, I recommend to use the “Standard
 procedure” described a few paragraphs below. But before doing so, in the
 Python installer:
 
-  - make sure to enable the 'Tcl/tk' and 'pip' components;
+  - make sure to enable the 'Tcl/tk' and 'pip' components (this may be under
+    a label such as “Customize installation”);
 
   - don't change the default value for the Python installation folder,
     otherwise you are likely to run into permission problems (except for old
@@ -159,9 +162,11 @@ Python installer:
     special restrictions that may cause the 'pip install FFGo' step to fail);
 
   - if you are not comfortable with the command line (“Command Prompt”), it is
-    suggested you choose “Add python.exe to Path”. This way, you will be able
-    to run pip and ffgo directly at the Command Prompt without having to
-    specify their full paths.
+    suggested you choose “Add python.exe to Path” / “Add Python X.Y to PATH”
+    (the precise wording depends on the Python version). This way, you will be
+    able to run pip and ffgo directly at the Command Prompt without having to
+    specify their full paths. If you don't, you'll have to type things such as
+    'C:\PythonXY\Scripts\pip install ...' instead of 'pip install ...'.
 
 Then, when installing FFGo and its dependencies: since there is no system
 Python on Windows, you can use pip directly on your Python installation. There
@@ -169,8 +174,44 @@ should be *no need to create a virtual environment* for typical Windows users.
 Of course, if you are comfortable with virtual environments and want to use
 one, no problem, go ahead.
 
+If you want to install GeographicLib's MagneticField program:
+
+  1. Go to <http://geographiclib.sourceforge.net/html/install.html#binaryinst>
+     (“Using a binary installer”) and run the appropriate installer for your
+     system. This will install the MagneticField.exe executable. Take note of
+     the directory it is installed to, because you'll have to tell the full
+     path of this program to FFGo, unless you let the GeographicLib installer
+     modify your PATH environment variable.
+
+  2. MagneticField.exe needs one or more datasets to be installed, otherwise
+     it can't work properly. To get such a dataset, go to
+     <http://geographiclib.sourceforge.net/html/magnetic.html> and install the
+     magnetic model data of your choice. 'wmm2015' should be fine until 2020.
+
+  3. If you let the GeographicLib installer modify your PATH in step 1, there
+     is nothing else to do. Otherwise, you have to tell FFGo where to find
+     MagneticField.exe. For this, start FFGo and choose Preferences in the
+     Settings menu. In the Miscellaneous tab, there should be a field where
+     you can enter the full path to the MagneticField.exe executable.
+
+Note: installation of GeographicLib's implementation for Python 3 is a
+      different thing, and is covered by the “Standard procedure” below. In
+      short, it can be done with 'pip install geographiclib'.
+
 For Windows-specific instructions concerning Python installation and use, you
 may refer to <https://docs.python.org/3/using/windows.html>.
+
+In case pip doesn't work for you when following the “Standard procedure”:
+
+  1. Write down exactly what you did, copy the error messages, take
+     screenshots to make sure you won't miss anything, and report your problem
+     in FFGo's thread on the FlightGear forum (at the time of this writing:
+     <http://forum.flightgear.org/viewtopic.php?f=18&t=27054>).
+
+  2. If you feel adventurous and want to solve the problem all by yourself,
+     you may try running 'py -3 -m ensurepip' from a Command Prompt, or using
+     the get-pip.py script as explained on the pip home page at
+     <https://pip.pypa.io/>.
 
 
 Easiest procedure
