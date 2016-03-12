@@ -160,7 +160,7 @@ class PressureConverterDialog:
         mainFrame.grid_columnconfigure(colNum, weight=0) # not stretchable
         ToolTip(stdButton,
                 _("Set the standard pressure\n"
-                  "({std_hPa} hPa = {std_inHg} inHg)").format(
+                  "({std_hPa} hPa = {std_inHg} inHg)").format(
                       std_hPa=locale.format("%.02f", 1013.25),
                       std_inHg=locale.format("%.02f", 29.92)))
 
