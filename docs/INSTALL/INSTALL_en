@@ -165,8 +165,19 @@ Python installer:
     suggested you choose “Add python.exe to Path” / “Add Python X.Y to PATH”
     (the precise wording depends on the Python version). This way, you will be
     able to run pip and ffgo directly at the Command Prompt without having to
-    specify their full paths. If you don't, you'll have to type things such as
-    'C:\PythonXY\Scripts\pip install ...' instead of 'pip install ...'.
+    specify their full paths.
+
+    If you don't do that, you'll have to type things such as
+    'C:\PythonXY\Scripts\pip install ...' instead of 'pip install ...', where
+    XY would be 35 for a Python 3.5 installation, for instance. Alternatively,
+    you could change to the directory containing 'pip.exe':
+
+      C:
+      cd \PythonXY\Scripts
+
+    and then run the commands without any path qualifier, like this:
+
+      pip install ...
 
 Then, when installing FFGo and its dependencies: since there is no system
 Python on Windows, you can use pip directly on your Python installation. There
@@ -187,6 +198,8 @@ If you want to install GeographicLib's MagneticField program:
      it can't work properly. To get such a dataset, go to
      <http://geographiclib.sourceforge.net/html/magnetic.html> and install the
      magnetic model data of your choice. 'wmm2015' should be fine until 2020.
+     You may also install the 'emm2015' dataset, however I can't say whether
+     this will bring any visible change for typical aviation usage.
 
   3. If you let the GeographicLib installer modify your PATH in step 1, there
      is nothing else to do. Otherwise, you have to tell FFGo where to find
