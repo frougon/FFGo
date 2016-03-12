@@ -1245,7 +1245,7 @@ msgid ""
 "({std_hPa} hPa = {std_inHg} inHg)"
 msgstr ""
 "Standarddruck setzen\n"
-"({std_hPa} hPa = {std_inHg} inHg)"
+"({std_hPa} hPa = {std_inHg} inHg)"
 
 #: ffgo/gui/pressure_converter.py:174 ffgo/gui/mainwindow.py:847
 msgid "Close"
