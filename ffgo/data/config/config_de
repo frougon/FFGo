@@ -9,6 +9,13 @@
 ## --enable-fullscreen nutzen)
 #--geometry=800x600
 
+## Aktiviere Antialiasing. Dies kann die visuelle Qualität FlightGears steigern,
+## besonders bei geringen Auflösungen, kann aber sehr wahrscheinlich auch die
+## Bildfrequenz verringern. Siehe <http://wiki.flightgear.org/Anti-aliasing> für
+## Einzelheiten.
+#--prop:/sim/rendering/multi-sample-buffers=true
+#--prop:/sim/rendering/multi-samples=4
+
 ## ANDERES
 ## Geben Sie ihr Rufzeichen an. Bis jetzt ist es auf 7 Zeichen begrenzt. Bitte
 ## wählen Sie kein Rufzeichen, daß schon im Multiplayernetzwerk benutzt wird.

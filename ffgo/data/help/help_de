@@ -151,6 +151,12 @@ Werkzeuge:
 		   oder nächsten Flughafen, der METARdaten bereitstellt. Diese
 		   Wetterberichte werden von <http://weather.noaa.gov/>
 		   heruntergeladen.
+    Druck Umrechner
+		-- konvertiert einen Druck zwischen Zoll Quecksilber (inHg) und
+		   Hektopascal (hPa). Dies kann sinnvoll sein um den Höhenmesser
+		   einzustellen, wenn z.Bsp. der QNH-Wert aus dem METAR nicht in
+		   einer Einheit vorliegt, die direkt mit den Instrumenten ihres
+		   Flugzeugs benutzbar ist.
 
     Kopiere FG Shell Kommando
 		-- Kopiere das Shellkommando in die Zwischenablage, mit dem FFGo
@@ -160,6 +166,15 @@ Werkzeuge:
 Hilfe:
 
     Hilfe	-- Öffnet das Hilfefenster
+
+    Zeige verfügbare fgfs Optionen
+		-- Zeige die Ausgabe von 'fgfs --help --verbose' in einem
+		   bestimmten Fenster; dies ist sinnvoll, um zu sehen welche
+		   fgfs Optionen für die Nutzung im Optionenfenster verfügbar
+		   sind.
+		   (--fg-root=... wird auch übergeben, um möglicherweise einen
+		   ungewollten FlightGear Popup Dialog zu vermeiden, doch das
+		   ist ein Implementierungsdetail.)
 
     Über	-- Öffnet das “Über” Fenster
 

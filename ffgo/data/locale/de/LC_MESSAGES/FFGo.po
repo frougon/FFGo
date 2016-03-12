@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: FFGo 1.11.0\n"
 "Report-Msgid-Bugs-To: f.rougon@free.fr\n"
 "POT-Creation-Date: 2016-03-12 09:02+0100\n"
-"PO-Revision-Date: 2016-02-15 23:39+0100\n"
+"PO-Revision-Date: 2016-03-12 18:56+0100\n"
 "Last-Translator: chris_blues <chris@musicchris.de>\n"
 "Language-Team: \n"
 "Language: de\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.7\n"
+"X-Generator: Poedit 1.8.7.1\n"
 
 #: ffgo/exceptions.py:52 ffgo/fgdata/apt_dat.py:68
 #, python-brace-format
@@ -1223,20 +1223,20 @@ msgstr " km/h"
 
 #: ffgo/gui/pressure_converter.py:62
 msgid "Pressure Converter"
-msgstr ""
+msgstr "Druck Umrechner"
 
 #: ffgo/gui/pressure_converter.py:106
 msgid "Inches of mercury (inHg):"
-msgstr ""
+msgstr "Zoll Quecksilber (inHg):"
 
 #: ffgo/gui/pressure_converter.py:129
 msgid "Hectopascals (hPa):"
-msgstr ""
+msgstr "Hektopascal (hPa):"
 
 #: ffgo/gui/pressure_converter.py:157
 msgctxt "pressure"
 msgid "Standard"
-msgstr ""
+msgstr "Standard"
 
 #: ffgo/gui/pressure_converter.py:162
 #, python-brace-format
@@ -1244,6 +1244,8 @@ msgid ""
 "Set the standard pressure\n"
 "({std_hPa} hPa = {std_inHg} inHg)"
 msgstr ""
+"Standarddruck setzen\n"
+"({std_hPa} hPa = {std_inHg} inHg)"
 
 #: ffgo/gui/pressure_converter.py:174 ffgo/gui/mainwindow.py:847
 msgid "Close"
@@ -1596,7 +1598,7 @@ msgstr "Flughafensuche"
 
 #: ffgo/gui/mainwindow.py:214
 msgid "Pressure converter"
-msgstr ""
+msgstr "Druck Umrechner"
 
 #: ffgo/gui/mainwindow.py:216
 msgid "Copy FG shell-equivalent command"
@@ -1620,7 +1622,7 @@ msgstr "Hilfe"
 
 #: ffgo/gui/mainwindow.py:226
 msgid "Show available fgfs options"
-msgstr ""
+msgstr "Zeige verfügbare fgfs Optionen"
 
 #: ffgo/gui/mainwindow.py:229 ffgo/gui/mainwindow.py:826
 msgid "About"
@@ -1706,9 +1708,8 @@ msgid "CondConfigParser {}"
 msgstr "CondConfigParser {}"
 
 #: ffgo/gui/mainwindow.py:628
-#, fuzzy
 msgid "GeographicLib's Python 3 implementation: version {}"
-msgstr "GeographicLib's Python Anbindung {}"
+msgstr "GeographicLib's Python 3 Implementierung: version {}"
 
 #: ffgo/gui/mainwindow.py:635
 msgid "Using:\n"
@@ -1733,17 +1734,17 @@ msgstr ""
 "angezeigt werden."
 
 #: ffgo/gui/mainwindow.py:649
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid ""
 "[{prg} notice] {libName}'s implementation for Python 3 not found. {prg} has "
 "fallback strategies, therefore you shouldn't see much of a difference. "
 "However, some particular geodetic calculations can only be done with "
 "{libName}. You will be notified when such a case is encountered."
 msgstr ""
-"[{prg} notice] {libName}'s Python Anbindung nicht gefunden. {prg} hat "
-"Ausweichlösungen, daher sollten Sie keinen Unterschied bemerken. Allerdings "
-"können einige geodäsische Berechnungen nur mit {libName} vorgenommen werden. "
-"Sie werden benachrichtigt, wenn das passiert."
+"[{prg} notice] {libName}'s Implementierung für Python 3 nicht gefunden. "
+"{prg} hat Ausweichlösungen, daher sollten Sie keinen Unterschied bemerken. "
+"Allerdings können einige geodäsische Berechnungen nur mit {libName} "
+"vorgenommen werden. Sie werden benachrichtigt, wenn das passiert."
 
 #: ffgo/gui/mainwindow.py:658
 #, python-brace-format
@@ -2081,6 +2082,8 @@ msgid ""
 "Please make sure that the “Path to executable file”, “FG_ROOT” and “Working "
 "directory” parameters are correctly set in the Preferences dialog."
 msgstr ""
+"Stellen Sie bitte sicher daß der “Pfad zur ausführbaren Datei”, “FG_ROOT” "
+"und “Arbeitsverzeichnis” im Einstellungen-Dialog richtig gesetzt wurden."
 
 #: ffgo/gui/mainwindow.py:1657
 #, python-brace-format
@@ -2117,23 +2120,21 @@ msgid "Carrier:"
 msgstr "Träger:"
 
 #: ffgo/gui/mainwindow.py:1794
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "{prg} Help"
-msgstr "{prg}"
+msgstr "{prg} Hilfe"
 
 #: ffgo/gui/mainwindow.py:1813
-#, fuzzy
 msgid "Unable to run 'fgfs --fg-root=... --help --verbose'"
-msgstr "Kann 'fgfs --version' nicht starten"
+msgstr "Kann 'fgfs --fg-root=... --help --verbose' nicht starten"
 
 #: ffgo/gui/mainwindow.py:1816
-#, fuzzy
 msgid "Error when running 'fgfs --fg-root=... --help --verbose'"
-msgstr "Fehler beim Starten von 'fgfs --version'"
+msgstr "Fehler beim Starten von 'fgfs --fg-root=... --help --verbose'"
 
 #: ffgo/gui/mainwindow.py:1818
 msgid "Output of 'fgfs --help --verbose'"
-msgstr ""
+msgstr "Ausgabe von 'fgfs --help --verbose'"
 
 #: ffgo/gui/mainwindow.py:1932
 msgid "Impossible to copy the current FlightGear command"
