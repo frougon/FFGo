@@ -57,6 +57,8 @@
 
 ## More information about 'fgfs' (FlightGear) command line options
 ## can be found:
-##   - with the command 'fgfs --help --verbose';
+##   - with the command 'fgfs --help --verbose', which FFGo can run for you
+##     (Help menu, then choose "Show available fgfs options" at the time of
+##     this writing);
 ##   - in the FlightGear documentation;
 ##   - or at <http://wiki.flightgear.org/index.php/Command_Line_Options>.
