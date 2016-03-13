@@ -224,17 +224,19 @@ class ConfigWindow:
 
     def initToolTipMessages(self):
         self.tooltip_bin = _("""\
-Enter the path to the "fgfs" executable, or "run_fgfs.sh", if you are
-using download_and_compile.sh scripts.
+Name or path to the FlightGear executable ('{fgfs}'), or to
+'run_fgfs.sh' in case you are using the 'download_and_compile.sh' script.
 
-Note: this path corresponds to FG_BIN in the configuration file.""")
+Note: this corresponds to FG_BIN in the configuration file.""").format(
+    fgfs=FG_EXECUTABLE)
         self.tooltip_root = _("""\
 Path to FlightGear's main data directory, containing the “base package”.
 On Linux, this directory is likely to be something like
 /usr/share/games/flightgear if FlightGear was installed using your
-distribution package manager. This will be passed to fgfs as the value
-for the --fg-root= option. You may consult
-<http://wiki.flightgear.org/$FG_ROOT> for details.""")
+distribution package manager. This will be passed to '{fgfs}' (the
+FlightGear executable) as the value for the --fg-root option. You may
+consult <http://wiki.flightgear.org/$FG_ROOT> for details.""").format(
+    fgfs=FG_EXECUTABLE)
         self.tooltip_scenery = _("""\
 Path(s) to scenery directories.
 You can specify more than one path (separated by {separator!r}), ordered
@@ -243,7 +245,7 @@ directory (if any) in this list in order to specify its priority
 relatively to any custom scenery directories you may have installed.
 
 This setting will be passed to '{fgfs}' (the FlightGear executable) as
-the --fg-scenery option and is documented at
+the value for the --fg-scenery option. It is documented at
 <http://wiki.flightgear.org/$FG_SCENERY>.
 
 Note:
@@ -255,16 +257,19 @@ Note:
       prg=PROGNAME, separator=os.pathsep, fgfs=FG_EXECUTABLE)
         self.tooltip_aircraft = _("""\
 Path(s) to additional aircraft directories.
-Multiple directories separated by {separator!r} may be specified. Leave
-this field empty if you are not using additional aircraft directories.""") \
-        .format(separator=os.pathsep)
+Multiple directories separated by {separator!r} may be specified.
+
+The $FG_ROOT/{defaultAircraftDir} directory is always used; thus, there
+is no need to list it here. Leave this field empty unless you are using
+additional aircraft directories.""").format(
+    separator=os.pathsep, defaultAircraftDir=DEFAULT_AIRCRAFT_DIR)
         self.tooltip_working_dir = _("""\
 Optional parameter specifying FlightGear's working directory.
 That is the directory FlightGear will be run from. It can affect the
 default location of some files created by FlightGear (screenshots...).
 If left blank, the working directory is the user's home directory.""")
         self.tooltip_langMenu = _("""\
-Choose other language. If not selected, {prg} will try to choose the
+Language used in {prg}. If no language is selected, {prg} will use the
 system language.""").format(prg=PROGNAME)
         self.tooltip_aptMenu = _("""\
 Select the primary data source where {prg} will be looking for
@@ -313,8 +318,9 @@ Set the base font size in the range from {0} to {1}. Zero is a special
 value corresponding to a platform-dependent default size.""").format(
     MIN_BASE_FONT_SIZE, MAX_BASE_FONT_SIZE)
         self.tooltip_MagneticFieldBin = _("""\
-Name or path to GeographicLib's MagneticField executable. If left blank,
-'MagneticField' will be searched in your PATH.""")
+Name or path to GeographicLib's MagneticField executable. If left
+blank, '{MagneticField}' will be searched in your PATH.""").format(
+    MagneticField=misc.executableFileName("MagneticField"))
         self.tooltip_rememberMainWinPos = _("""\
 When saving the configuration, don't store the main window size only,
 but also its position (i.e., the offsets from the screen borders).
@@ -437,8 +443,8 @@ When this option is unchecked, only the main window size is stored.""")
                 container.grid_rowconfigure(
                     3*rowNum+2, minsize=verticalSpaceBetweenRows, weight=100)
 
-        t = ((_('Path to executable file:'), self.FG_bin,
-              self.tooltip_bin, self.findFG_bin),
+        t = ((_("FlightGear executable:"),
+              self.FG_bin, self.tooltip_bin, self.findFG_bin),
              ('FG_ROOT:', self.FG_root,
               self.tooltip_root, self.findFG_root),
              ('FG_SCENERY:', self.FG_scenery,

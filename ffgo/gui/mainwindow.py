@@ -807,9 +807,9 @@ want to follow this new default and set “Airport database update” to
         else:
             FG_version =  pgettext('FlightGear version', 'none')
             comment =  '\n' +_(
-                "(you may want to check the 'fgfs' executable and FG_ROOT paths, "
-                "as well as the FlightGear working directory defined in "
-                "Settings → Preferences)")
+                "(you may want to check the '{fgfs}' executable and FG_ROOT "
+                "paths, as well as the FlightGear working directory defined "
+                "in Settings → Preferences)").format(fgfs=FG_EXECUTABLE)
         # Uses the same string as in Config.logDetectedFlightGearVersion()
         detected = _('Detected FlightGear version: {ver}').format(
             ver=FG_version) + comment
@@ -1520,13 +1520,13 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
             FG_working_dir = HOME_DIR
 
         if not program.strip():
-            message = _('Path to the FlightGear executable not properly set')
+            message = _('FlightGear executable not properly set')
             detail = _(
-                "The path to the FlightGear executable is either empty or "
-                "only contains whitespace. Set this path in the Preferences "
-                "dialog accessible from the Settings menu. The FlightGear "
-                "executable is normally called '{execProgName}' on your "
-                "platform.").format(
+                "The name or path to the FlightGear executable is either "
+                "empty or only contains whitespace. Set it in the "
+                "Preferences dialog accessible from the Settings menu. The "
+                "FlightGear executable is normally called '{execProgName}' on "
+                "your platform.").format(
                     execProgName=misc.executableFileName("fgfs"))
             showerror(_('{prg}').format(prg=PROGNAME), message, detail=detail)
             return False
@@ -1596,7 +1596,7 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
     def runFGErrorMessage(self, exc, title=None):
         title = title if title is not None else _('Unable to run FlightGear!')
         msg = _(
-            'Please make sure that the “Path to executable file”, “FG_ROOT” '
+            'Please make sure that the “FlightGear executable”, “FG_ROOT” '
             'and “Working directory” parameters are correctly set in the '
             'Preferences dialog.')
         detail = '{}\n\n{}'.format(exc, msg)
