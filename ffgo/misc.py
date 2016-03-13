@@ -10,6 +10,7 @@
 
 import os
 import sys
+import platform
 import enum
 import gettext
 import locale
@@ -26,6 +27,14 @@ def pythonVersionString():
         minor=sys.version_info[1],
         micro=sys.version_info[2],
         compl=compl)
+
+
+def executableFileName(base):
+    """Return the platform-dependent name of an executable."""
+    if platform.system() == "Windows":
+        return base + ".exe"
+    else:
+        return base
 
 
 def isDescendantWidget(maybeParent, widget):
