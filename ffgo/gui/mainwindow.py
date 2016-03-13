@@ -1520,7 +1520,18 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
         if not FG_working_dir:
             FG_working_dir = HOME_DIR
 
-        if self.FGCommand.argList is None:
+        if not program.strip():
+            message = _('Path to the FlightGear executable not properly set')
+            detail = _(
+                "The path to the FlightGear executable is either empty or "
+                "only contains whitespace. Set this path in the Preferences "
+                "dialog accessible from the Settings menu. The FlightGear "
+                "executable is normally called '{execProgName}' on your "
+                "platform.").format(
+                    execProgName=misc.executableFileName("fgfs"))
+            showerror(_('{prg}').format(prg=PROGNAME), message, detail=detail)
+            return False
+        elif self.FGCommand.argList is None:
             message = _('Cannot start FlightGear now.')
             # str(self.lastConfigParsingExc) is not translated...
             detail = _("The configuration in the main text field has an "
