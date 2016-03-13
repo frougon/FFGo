@@ -1493,11 +1493,11 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
                 self.run_button.config(state=NORMAL)
                 self.runFGLock.release()
         else:
-            title = _('Sorry!')
-            msg = _("FlightGear is already running and we'd rather not run "
-                    "two instances simultaneously under the same account.")
-            message = '{0}\n\n{1}'.format(title, msg)
-            showerror(_('{prg}').format(prg=PROGNAME), message)
+            message = _("FlightGear is already running")
+            detail = _("Sorry, FlightGear is already running and we'd rather "
+                       "not run two instances simultaneously under the same "
+                       "account.")
+            showerror(_('{prg}').format(prg=PROGNAME), message, detail=detail)
 
     def _runFG(self, event=None):
         """Run FlightGear.
