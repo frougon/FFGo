@@ -1497,8 +1497,7 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
             msg = _("FlightGear is already running and we'd rather not run "
                     "two instances simultaneously under the same account.")
             message = '{0}\n\n{1}'.format(title, msg)
-            self.error_message = showerror(_('{prg}').format(prg=PROGNAME),
-                                           message)
+            showerror(_('{prg}').format(prg=PROGNAME), message)
 
     def _runFG(self, event=None):
         """Run FlightGear.
