@@ -114,8 +114,6 @@ MAX_BASE_FONT_SIZE = '36'
 CARRIER_COL = '#98afd9'
 # Color to highlight comments in text window.
 COMMENT_COL = '#0014a7'
-# Color to apply to rwy button when inactive.
-GRAYED_OUT_COL = '#b2b2b2'
 # Background color for various messages.
 MESSAGE_BG_COL = '#ededd1'
 # Background color for tooltips.

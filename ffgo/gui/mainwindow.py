@@ -393,13 +393,11 @@ class App:
                                textvariable=self.translatedPark,
                                relief='groove', borderwidth=2)
         self.parkLabel.pack(side='bottom')
-        self.parkLabel.bind('<Button-1>', self.popupPark)
 
         self.rwyLabel = Label(self.frame222, width=12,
                               textvariable=self.translatedRwy,
                               relief='groove', borderwidth=2)
         self.rwyLabel.pack(side='bottom')
-        self.rwyLabel.bind('<Button-1>', self.popupRwy)
 
         self.airportLabel = Label(self.frame222, width=12,
                                   textvariable=self.config.airport,
@@ -604,7 +602,7 @@ class App:
         # Config.sanityChecks(), before the creation of the App object anyway).
         # Therefore, calling registerTracedVariables() before reset() wouldn't
         # be enough to render this call unnecessary.
-        self.updateRunwayAndParkingLabels()
+        self.updateRunwayAndParkingButtons()
 
         # Lock used to prevent concurent calls of self._runFG()
         # (disabling the "Run FG" button is not enough, as self.runFG()
@@ -1452,8 +1450,7 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
         self.airport_label.config(text=_('Airport:'))
         self.airportLabel.config(textvariable=self.config.airport,
                                  bg=self.default_bg)
-        self.rwy_label.config(fg=self.default_fg)
-        self.rwyLabel.config(fg=self.default_fg)
+        self.updateRunwayAndParkingButtons()
 
         try:
             scenario = self.currentCarrier[-1]
@@ -1749,8 +1746,6 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
         self.airport_label.config(text=_('Carrier:'))
         self.airportLabel.config(textvariable=self.config.carrier,
                                  bg=CARRIER_COL)
-        self.rwy_label.config(fg=GRAYED_OUT_COL)
-        self.rwyLabel.config(fg=GRAYED_OUT_COL)
         self.config.rwy.set('')
         scenario = self.currentCarrier[-1]
 
@@ -1974,7 +1969,7 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
         if self.config.rwy.get():
             self.config.park.set('')
 
-        self.updateRunwayAndParkingLabels()
+        self.updateRunwayAndParkingButtons()
 
     def onParkingUpdate(self, *args):
         """Method run when self.config.park is changed."""
@@ -1982,14 +1977,14 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
         if self.config.park.get():
             self.config.rwy.set('')
 
-        self.updateRunwayAndParkingLabels()
+        self.updateRunwayAndParkingButtons()
 
-    def updateRunwayAndParkingLabels(self):
-        """Update runway and parking button labels.
+    def updateRunwayAndParkingButtons(self):
+        """Update runway and parking buttons (label, state and binding).
 
-        Update self.translatedPark and self.translatedRwy based on
-        self.config.park and self.config.rwy. In each case, only the
-        default value is translated.
+        Concerning the labels: update self.translatedPark and
+        self.translatedRwy based on self.config.park and self.config.rwy. In
+        each case, only the default value is translated.
 
         """
         for cfgVarName, labelVarName, default in (
@@ -2013,8 +2008,38 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
                 elif status == "invalid":
                     cfgValue = pgettext('parking position', 'Invalid')
 
+            # Update the button label
             labelVar = getattr(self, labelVarName)
             labelVar.set(cfgValue if cfgValue else default)
+
+        # Enable the parking button if an airport is selected or we are in
+        # carrier mode
+        self.setParkingButtonState(
+            self.config.airport.get() or self.config.carrier.get())
+        # Enable the runway button if an airport is selected and we are not
+        # in carrier mode
+        self.setRunwayButtonState(
+            self.config.airport.get() and not self.config.carrier.get())
+
+    def setParkingButtonState(self, state):
+        """Enable or disable the button that triggers the parking popup."""
+        if state:
+            self.parkLabel.bind('<Button-1>', self.popupPark)
+            self.parkLabel.config(state="normal")
+        else:
+            self.parkLabel.config(state="disabled")
+            # Tkinter's <widget>.unbind() doesn't work with a function id
+            self.parkLabel.unbind('<Button-1>')
+
+    def setRunwayButtonState(self, state):
+        """Enable or disable the button that triggers the runway popup."""
+        if state:
+            self.rwyLabel.bind('<Button-1>', self.popupRwy)
+            self.rwyLabel.config(state="normal")
+        else:
+            self.rwyLabel.config(state="disabled")
+            # Tkinter's <widget>.unbind() doesn't work with a function id
+            self.rwyLabel.unbind('<Button-1>')
 
     # Accept any arguments to allow safe use as a Tkinter variable observer
     def updateImage(self, *args):
