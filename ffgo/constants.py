@@ -7,6 +7,7 @@ import textwrap
 from os.path import expanduser, join, pardir, normpath
 
 from .version import __version__ as PROGVERSION
+from . import misc
 from .misc import resourceFilename
 
 
@@ -52,6 +53,8 @@ STATS_DIR = join(USER_DATA_DIR, 'Stats')
 AIRPORTS_STATS_FILE = join(STATS_DIR, "airports.json.gz")
 # File where statistics about aircrafts are stored
 AIRCRAFTS_STATS_FILE = join(STATS_DIR, "aircrafts.json.gz")
+# Base name of the FlightGear executable (ends with '.exe' on Windows)
+FG_EXECUTABLE = misc.executableFileName("fgfs")
 # Path to airport data file.
 APT = join(USER_DATA_DIR, 'apt')
 # Path to locally installed airport list.
