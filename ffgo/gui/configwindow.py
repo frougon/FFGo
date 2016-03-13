@@ -242,17 +242,17 @@ from highest to lowest priority. You may want to include your TerraSync
 directory (if any) in this list in order to specify its priority
 relatively to any custom scenery directories you may have installed.
 
-This setting will be passed to fgfs (the FlightGear executable) as the
---fg-scenery option and is documented at
+This setting will be passed to '{fgfs}' (the FlightGear executable) as
+the --fg-scenery option and is documented at
 <http://wiki.flightgear.org/$FG_SCENERY>.
 
 Note:
 
-  The default TerraSync directory in FlightGear 3.6 should be
+  The default TerraSync directory in FlightGear 2016.1.1 is
   $FG_HOME/TerraSync. You may consult
   <http://wiki.flightgear.org/TerraSync> and
   <http://wiki.flightgear.org/$FG_HOME> for more information.""").format(
-      prg=PROGNAME, separator=os.pathsep)
+      prg=PROGNAME, separator=os.pathsep, fgfs=FG_EXECUTABLE)
         self.tooltip_aircraft = _("""\
 Path(s) to additional aircraft directories.
 Multiple directories separated by {separator!r} may be specified. Leave
