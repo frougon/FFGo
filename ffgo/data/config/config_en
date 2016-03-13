@@ -30,13 +30,15 @@
 ## If you want to choose the directory used for automatic scenery download
 ## (the default being $FG_HOME/TerraSync).
 ##
-## Note: setting this to a directory that is not under FG_HOME may cause
-##       failure to read some scenery files in recent FlightGear versions, due
-##       to stricter permissions rules[1] (this new FlightGear permission
-##       scheme is still in flux, therefore this won't necessarily be the case
-##       anymore when you read it).
+## Note: in FlightGear 2016.1.1, setting this to a directory that is not under
+##       FG_HOME may cause failure to read some scenery files, due to
+##       inadequate permissions rules[1]. This has normally been fixed[2] in
+##       FlightGear commit 41b78ce1505aced494f588d6f3591c8af68a8bbe (dated
+##       Sunday, Feb 21), therefore FlightGear 2016.2.1 and later should not
+##       be affected.
 ##
 ##         [1] https://sourceforge.net/p/flightgear/mailman/message/34833785/
+##         [2] https://sourceforge.net/p/flightgear/flightgear/ci/41b78ce1505aced494f588d6f3591c8af68a8bbe/
 ##
 #--terrasync-dir=/path/to/the/folder/of/your/choice
 
