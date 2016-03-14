@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: FFGo 1.11.0\n"
 "Report-Msgid-Bugs-To: f.rougon@free.fr\n"
 "POT-Creation-Date: 2016-03-13 20:29+0100\n"
-"PO-Revision-Date: 2016-03-12 18:56+0100\n"
+"PO-Revision-Date: 2016-03-14 02:37+0100\n"
 "Last-Translator: chris_blues <chris@musicchris.de>\n"
 "Language-Team: \n"
 "Language: de\n"
@@ -650,20 +650,21 @@ msgid "Working directory (optional):"
 msgstr "Arbeitsverzeichnis (optional):"
 
 #: ffgo/gui/configwindow.py:226
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid ""
 "Name or path to the FlightGear executable ('{fgfs}'), or to\n"
 "'run_fgfs.sh' in case you are using the 'download_and_compile.sh' script.\n"
 "\n"
 "Note: this corresponds to FG_BIN in the configuration file."
 msgstr ""
-"Geben Sie den Ort an, wo sich die ausführbare Datei \"fgfs\" oder,\n"
-"falls Sie Download_und_Kompilier-Skripte nutzen, \"run_fgfs.sh\" befindet.\n"
+"Geben Sie den Ort an, wo sich FlightGears ausführbare Datei ('{fgfs}')\n"
+"oder falls Sie das 'download_and_compile.sh' Skript nutzen, \"run_fgfs.sh\" "
+"befindet.\n"
 "\n"
 "Anmerkung: dieser Pfad entspricht FG_BIN in der Konfigurationsdatei."
 
 #: ffgo/gui/configwindow.py:232
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid ""
 "Path to FlightGear's main data directory, containing the “base package”.\n"
 "On Linux, this directory is likely to be something like\n"
@@ -675,11 +676,11 @@ msgstr ""
 "Pfad zu FlightGears Hauptdatenverzeichnis, das das “Basispaket” enthält.\n"
 "Auf Linux, ist das wahrscheinlich etwas, wie /usr/share/games/flightgear\n"
 "falls FG mit dem Distributionspaketmanager installiert wurde. Das wird\n"
-"an fgfs als Wert für die Option --fg-root= mitgegeben. Siehe auch \n"
-"<http://wiki.flightgear.org/$FG_ROOT> für weitergehenede Details."
+"an '{fgfs}' (FlightGears ausführbare Datei) als Wert für die Option\n"
+"--fg-root= mitgegeben. Siehe auch <http://wiki.flightgear.org/$FG_ROOT>\n"
+"für weitergehenede Details."
 
 #: ffgo/gui/configwindow.py:240
-#, fuzzy
 msgid ""
 "Path(s) to scenery directories.\n"
 "You can specify more than one path (separated by {separator!r}), ordered\n"
@@ -704,19 +705,18 @@ msgstr ""
 "sich die Priorität zu TerraSync Szenerie und spezieller Szenerie relativ\n"
 "angeben.\n"
 "\n"
-"Diese Einstellung wird als --fg-scenery Option an FlightGear weitergegeben.\n"
-"Dokumentation:\n"
+"Diese Einstellung wird als --fg-scenery Option an '{fgfs}' (FlightGears\n"
+"ausführbare Datei) weitergegeben. Dokumentation:\n"
 "<http://wiki.flightgear.org/$FG_SCENERY>\n"
 "\n"
 "Anmerkung:\n"
 "\n"
-"  Das Standardverzeichnis für TerraSync in FlightGear 3.6 sollte\n"
-"  $FG_HOME/TerraSync in Ihrem Betriebssystem heißen. Siehe:\n"
+"  Das Standardverzeichnis für TerraSync in FlightGear 2016.1.1 heißt\n"
+"  $FG_HOME/TerraSync. Siehe:\n"
 "  <http://wiki.flightgear.org/TerraSync> und\n"
 "  <http://wiki.flightgear.org/$FG_HOME>"
 
 #: ffgo/gui/configwindow.py:258
-#, fuzzy
 msgid ""
 "Path(s) to additional aircraft directories.\n"
 "Multiple directories separated by {separator!r} may be specified.\n"
@@ -725,9 +725,13 @@ msgid ""
 "is no need to list it here. Leave this field empty unless you are using\n"
 "additional aircraft directories."
 msgstr ""
-"Pfad zu zusätzlichen Flugzeug-Verzeichnissen. Mehrere Verzeichnisse können\n"
-"mit {separator!r} getrennt angegeben werden. Lassen Sie es leer, falls Sie\n"
-"keine zusätzlichen Flugzeug Verzeichnisse benutzen."
+"Pfad zu zusätzlichen Flugzeug-Verzeichnissen.\n"
+"Mehrere Verzeichnisse können mit {separator!r} getrennt angegeben werden.\n"
+"\n"
+"Das $FG_ROOT/{defaultAircraftDir} Verzeichnis wird immer benutzt; also "
+"besteht\n"
+"kein Grund es hier anzugeben. Lassen Sie es leer, es sei denn Sie nutzen\n"
+"zusätzliche Flugzeugverzeichnisse."
 
 #: ffgo/gui/configwindow.py:266
 msgid ""
@@ -742,13 +746,13 @@ msgstr ""
 "Bleibt dieses Feld leer, wird das Home-Verzeichnis des Benutzers benutzt."
 
 #: ffgo/gui/configwindow.py:271
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid ""
 "Language used in {prg}. If no language is selected, {prg} will use the\n"
 "system language."
 msgstr ""
-"Wählen Sie eine andere Sprache. Falls keine Sprache ausgewählt ist wird\n"
-"{prg} versuchen die System-Sprache zu erkennen."
+"Sprache, die in {prg} genutzt wird. Ist keine Sprache angegeben, wird\n"
+"{prg} die System-Sprache nutzen."
 
 #: ffgo/gui/configwindow.py:274
 #, python-brace-format
@@ -852,13 +856,13 @@ msgstr ""
 "Schrift auf die Standardgröße der Oberfläche."
 
 #: ffgo/gui/configwindow.py:320
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid ""
 "Name or path to GeographicLib's MagneticField executable. If left\n"
 "blank, '{MagneticField}' will be searched in your PATH."
 msgstr ""
 "Name oder Pfad zu GeographicLib's MagneticField ausführbarer Datei.\n"
-"Falls leer, wird 'MagneticField' in PATH gesucht."
+"Falls leer, wird '{MagneticField}' in PATH gesucht."
 
 #: ffgo/gui/configwindow.py:324
 msgid ""
@@ -908,9 +912,8 @@ msgid "Find"
 msgstr "Finden"
 
 #: ffgo/gui/configwindow.py:446
-#, fuzzy
 msgid "FlightGear executable:"
-msgstr "FlightGear Terminalausgaben"
+msgstr "FlightGears ausführbare Datei:"
 
 #: ffgo/gui/configwindow.py:452
 msgid "Additional aircraft path(s):"
@@ -1880,12 +1883,12 @@ msgid "none"
 msgstr "keine"
 
 #: ffgo/gui/mainwindow.py:810
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid ""
 "(you may want to check the '{fgfs}' executable and FG_ROOT paths, as well as "
 "the FlightGear working directory defined in Settings → Preferences)"
 msgstr ""
-"(Sie sollten die ausführbare Datei 'fgfs' und FG_ROOT Pfade prüfen, sowie "
+"(Sie sollten die ausführbare Datei '{fgfs}' und FG_ROOT Pfade prüfen, sowie "
 "das FlightGear Arbeitsverzeichnis, definiert in "
 "Einstellungen → Eigenschaften)"
 
@@ -2047,22 +2050,20 @@ msgid "OK"
 msgstr "OK"
 
 #: ffgo/gui/mainwindow.py:1496
-#, fuzzy
 msgid "FlightGear is already running"
-msgstr "Flightgear läuft..."
+msgstr "Flightgear läuft bereits"
 
 #: ffgo/gui/mainwindow.py:1497
-#, fuzzy
 msgid ""
 "Sorry, FlightGear is already running and we'd rather not run two instances "
 "simultaneously under the same account."
 msgstr ""
-"FlightGear läuft schon und wir wollen lieber nicht zwei Instanzen "
-"gleichzeitig unter demselben Konto starten."
+"Verzeihung, FlightGear läuft bereits und wir wollen lieber nicht zwei "
+"Instanzen gleichzeitig unter demselben Konto starten."
 
 #: ffgo/gui/mainwindow.py:1523
 msgid "FlightGear executable not properly set"
-msgstr ""
+msgstr "Flightgears ausführbare Datei nicht korrekt gesetzt"
 
 #: ffgo/gui/mainwindow.py:1525
 #, python-brace-format
@@ -2072,6 +2073,10 @@ msgid ""
 "Settings menu. The FlightGear executable is normally called '{execProgName}' "
 "on your platform."
 msgstr ""
+"Der Name oder Pfad zu FlightGears ausführbarer Datei ist entweder leer oder "
+"enthält nur Leerzeichen. Setzen Sie dies im Eigenschaftendialog im "
+"Einstellungsmenü. Die ausführbare Datei Flightgears heißt normalerweise "
+"'{execProgName}' auf ihrem Betriebssystem."
 
 #: ffgo/gui/mainwindow.py:1534
 msgid "Cannot start FlightGear now."
@@ -2108,12 +2113,11 @@ msgid "Unable to run FlightGear!"
 msgstr "Kann FlightGear nicht starten!"
 
 #: ffgo/gui/mainwindow.py:1599
-#, fuzzy
 msgid ""
 "Please make sure that the “FlightGear executable”, “FG_ROOT” and “Working "
 "directory” parameters are correctly set in the Preferences dialog."
 msgstr ""
-"Stellen Sie bitte sicher daß der “Pfad zur ausführbaren Datei”, “FG_ROOT” "
+"Stellen Sie bitte sicher, daß der “Pfad zur ausführbaren Datei”, “FG_ROOT” "
 "und “Arbeitsverzeichnis” im Einstellungen-Dialog richtig gesetzt wurden."
 
 #: ffgo/gui/mainwindow.py:1664
