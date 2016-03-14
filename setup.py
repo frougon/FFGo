@@ -53,6 +53,7 @@ def do_setup():
             'Operating System :: OS Independent',
             'Programming Language :: Python :: 3',
             'Programming Language :: Python :: 3.4',
+            'Programming Language :: Python :: 3.5',
             'Topic :: Games/Entertainment :: Simulation',
         ],
         keywords=\
