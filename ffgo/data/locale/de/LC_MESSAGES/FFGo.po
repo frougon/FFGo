@@ -2117,8 +2117,7 @@ msgid ""
 "directory” parameters are correctly set in the Preferences dialog."
 msgstr ""
 "Stellen Sie bitte sicher, daß “FlightGears ausführbare Datei”, “FG_ROOT” "
-"und\n"
-"“Arbeitsverzeichnis” im Einstellungen-Dialog richtig gesetzt wurden."
+"und “Arbeitsverzeichnis” im Einstellungen-Dialog richtig gesetzt wurden."
 
 #: ffgo/gui/mainwindow.py:1664
 #, python-brace-format
