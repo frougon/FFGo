@@ -427,6 +427,7 @@ When this option is unchecked, only the main window size is stored.""")
             label = ttk.Label(container, text=labelText)
             label.grid(row=3*rowNum, column=0, columnspan=2, sticky="w")
             container.grid_rowconfigure(3*rowNum, weight=100)
+            ToolTip(label, tooltipText)
 
             entry = ttk.Entry(container, width=50, textvariable=tkVar)
             entry.grid(row=3*rowNum+1, column=0, sticky="ew")
