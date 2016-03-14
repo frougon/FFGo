@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FFGo 1.11.0\n"
 "Report-Msgid-Bugs-To: f.rougon@free.fr\n"
-"POT-Creation-Date: 2016-03-13 20:23+0100\n"
+"POT-Creation-Date: 2016-03-14 12:55+0100\n"
 "PO-Revision-Date: 2016-03-13 20:33+0100\n"
 "Last-Translator: Florent Rougon <f.rougon@free.fr>\n"
 "Language-Team: \n"
@@ -533,7 +533,7 @@ msgstr ""
 "{msg} :\n"
 "{details}"
 
-#: ffgo/main.py:156 ffgo/gui/configwindow.py:393 ffgo/gui/configwindow.py:560
+#: ffgo/main.py:156 ffgo/gui/configwindow.py:393 ffgo/gui/configwindow.py:561
 #: ffgo/gui/infowindow.py:22 ffgo/gui/gps_tool.py:560
 #: ffgo/gui/airport_finder.py:788 ffgo/gui/airport_finder.py:809
 #: ffgo/gui/airport_finder.py:891 ffgo/gui/airport_finder.py:1037
@@ -611,20 +611,20 @@ msgstr ""
 "pour l'aéroport sélectionné (ou le plus proche)."
 
 #: ffgo/gui/configwindow.py:62 ffgo/gui/configwindow.py:352
-#: ffgo/gui/configwindow.py:669
+#: ffgo/gui/configwindow.py:670
 msgid "Scenery"
 msgstr "Scènes"
 
-#: ffgo/gui/configwindow.py:64 ffgo/gui/configwindow.py:669
+#: ffgo/gui/configwindow.py:64 ffgo/gui/configwindow.py:670
 msgid "Old default"
 msgstr "Ancienne val. défaut"
 
 #: ffgo/gui/configwindow.py:67 ffgo/gui/configwindow.py:357
-#: ffgo/gui/configwindow.py:689
+#: ffgo/gui/configwindow.py:690
 msgid "Automatic"
 msgstr "Automatique"
 
-#: ffgo/gui/configwindow.py:69 ffgo/gui/configwindow.py:689
+#: ffgo/gui/configwindow.py:69 ffgo/gui/configwindow.py:690
 msgid "Manual"
 msgstr "Manuel"
 
@@ -660,7 +660,7 @@ msgstr "Chemin vers le fichier exécutable :"
 msgid "Additional aircraft path:"
 msgstr "Répertoire pour les aéronefs additionnels :"
 
-#: ffgo/gui/configwindow.py:199 ffgo/gui/configwindow.py:454
+#: ffgo/gui/configwindow.py:199 ffgo/gui/configwindow.py:455
 msgid "Working directory (optional):"
 msgstr "Répertoire de travail (optionnel) :"
 
@@ -936,23 +936,23 @@ msgstr ""
 "Il peut être nécessaire de redémarrer {prg} pour voir tous les effets du "
 "changement de taille de police."
 
-#: ffgo/gui/configwindow.py:436 ffgo/gui/configwindow.py:723
+#: ffgo/gui/configwindow.py:437 ffgo/gui/configwindow.py:724
 msgid "Find"
 msgstr "Choisir"
 
-#: ffgo/gui/configwindow.py:446
+#: ffgo/gui/configwindow.py:447
 msgid "FlightGear executable:"
 msgstr "Exécutable de FlightGear :"
 
-#: ffgo/gui/configwindow.py:452
+#: ffgo/gui/configwindow.py:453
 msgid "Additional aircraft path(s):"
 msgstr "Répertoire(s) pour les aéronefs additionnels :"
 
-#: ffgo/gui/configwindow.py:511
+#: ffgo/gui/configwindow.py:512
 msgid "Aircrafts statistics show period: "
 msgstr "Période visu. des statistiques sur les aéronefs : "
 
-#: ffgo/gui/configwindow.py:512
+#: ffgo/gui/configwindow.py:513
 msgid ""
 "The “use count” for each aircraft is the number of days it was used during "
 "the last n days, where n is the number entered here."
@@ -960,11 +960,11 @@ msgstr ""
 "Le « compteur d'utilisation » de chaque aéronef est le nombre de jours "
 "d'utilisation au cours des n derniers jours, où n est le nombre entré ici."
 
-#: ffgo/gui/configwindow.py:516
+#: ffgo/gui/configwindow.py:517
 msgid "Aircrafts statistics expiry period: "
 msgstr "Période d'expiration des statistiques aéronefs : "
 
-#: ffgo/gui/configwindow.py:517
+#: ffgo/gui/configwindow.py:518
 #, python-brace-format
 msgid ""
 "{prg} automatically forgets about dates you used a given aircraft when they "
@@ -973,11 +973,11 @@ msgstr ""
 "{prg} oublie automatiquement les dates d'utilisation d'un aéronef "
 "lorsqu'elles sont plus anciennes que ce nombre de jours."
 
-#: ffgo/gui/configwindow.py:521
+#: ffgo/gui/configwindow.py:522
 msgid "Airports statistics show period: "
 msgstr "Période visu. des statistiques sur les aérodromes : "
 
-#: ffgo/gui/configwindow.py:522
+#: ffgo/gui/configwindow.py:523
 msgid ""
 "The “visit count” for each airport is the number of days it was visited "
 "during the last n days, where n is the number entered here."
@@ -986,11 +986,11 @@ msgstr ""
 "démarré sur cet aérodrome au cours des n derniers jours, où n est le nombre "
 "entré ici."
 
-#: ffgo/gui/configwindow.py:526
+#: ffgo/gui/configwindow.py:527
 msgid "Airports statistics expiry period: "
 msgstr "Période d'expiration des statistiques aérodromes : "
 
-#: ffgo/gui/configwindow.py:527
+#: ffgo/gui/configwindow.py:528
 #, python-brace-format
 msgid ""
 "{prg} automatically forgets about dates you visited a given airport when "
@@ -999,52 +999,52 @@ msgstr ""
 "{prg} oublie automatiquement les dates de visite d'un aérodrome lorsqu'elles "
 "sont plus anciennes que ce nombre de jours."
 
-#: ffgo/gui/configwindow.py:558
+#: ffgo/gui/configwindow.py:559
 msgid "Invalid number of days"
 msgstr "Nombre de jours invalide"
 
-#: ffgo/gui/configwindow.py:559
+#: ffgo/gui/configwindow.py:560
 msgid "A non-negative integer is required."
 msgstr "Il faut entrer un entier positif ou nul."
 
-#: ffgo/gui/configwindow.py:606
+#: ffgo/gui/configwindow.py:607
 msgid "Language:"
 msgstr "Langue :"
 
-#: ffgo/gui/configwindow.py:628
+#: ffgo/gui/configwindow.py:629
 msgid "Font size:"
 msgstr "Taille de la police:"
 
-#: ffgo/gui/configwindow.py:649
+#: ffgo/gui/configwindow.py:650
 msgctxt "font size"
 msgid "Default"
 msgstr "Défaut"
 
-#: ffgo/gui/configwindow.py:661
+#: ffgo/gui/configwindow.py:662
 msgid "Airport data source:"
 msgstr "Source des données d'aéroport :"
 
-#: ffgo/gui/configwindow.py:681
+#: ffgo/gui/configwindow.py:682
 msgid "Airport database update:"
 msgstr "Mise à jour de la base de données des aéroports :"
 
-#: ffgo/gui/configwindow.py:698
+#: ffgo/gui/configwindow.py:699
 msgid "Rebuild airport database"
 msgstr "Reconstruire la base de données des aéroports"
 
-#: ffgo/gui/configwindow.py:712
+#: ffgo/gui/configwindow.py:713
 msgid "GeographicLib's MagneticField executable:"
 msgstr "Exécutable MagneticField de GeographicLib :"
 
-#: ffgo/gui/configwindow.py:736
+#: ffgo/gui/configwindow.py:737
 msgid "Remember the main window position"
 msgstr "Se souvenir de la position de la fenêtre principale"
 
-#: ffgo/gui/configwindow.py:745
+#: ffgo/gui/configwindow.py:746
 msgid "Automatically scroll the Output Window"
 msgstr "Défilement automatique de la Fenêtre de Sortie"
 
-#: ffgo/gui/configwindow.py:755
+#: ffgo/gui/configwindow.py:756
 msgid "Fake the --parkpos option"
 msgstr "Succédané pour l'option --parkpos"
 
