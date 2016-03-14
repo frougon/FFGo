@@ -967,3 +967,56 @@ you may want to consult the Git repository log.
           'width' and 'height' attributes of PIL.Image instances were only
           added to Pillow in version 2.9.0, released on 2015-07-01 according
           to Pillow's ChangeLog). (Florent Rougon)
+
+1.11.0
+[FEATURE] New Pressure Converter dialog. This dialog, accessible from the
+          Tools menu, allows one to quickly convert a pressure value from
+          inches of mercury (inHg) to hectoPascals (hPa) and vice versa. This
+          is useful when the QNH value obtained from METAR or ATIS (the
+          “altimeter setting”) is not in a unit that is directly usable with
+          your aircraft's instruments. (Florent Rougon)
+[FEATURE] Help menu: add an entry (“Show available fgfs options”) to show the
+          output of 'fgfs --help --verbose'. This allows one to easily see (a
+          subset of) what can be put in the Options Window (command-line
+          options such as --enable-fullscreen or --disable-hud-3d).
+          (Florent Rougon)
+[BUGFIX]  Fix state management for the runway and parking buttons. With the
+          default, empty config (FG_ROOT config parameter not filled, etc.),
+          clicking on either the runway or the parking button was possible,
+          but triggered an error (a harmless one, though). FFGo now ensures
+          that said buttons are disabled when appropriate. (Florent Rougon)
+[USABILITY] Use a color suitable for prolonged reading when displaying
+          potentially long texts (e.g., the FFGo help file accessible from the
+          Help menu, or when doing Help → Show available fgfs options).
+          (Florent Rougon)
+[USABILITY] Improve the documentation concerning FFGo installation
+          (docs/INSTALL/INSTALL_en and <http://wiki.flightgear.org/FFGo>).
+          Among other changes, there is now a precise description of how to
+          install MagneticField on Windows. Thanks to jaxsin on the FlightGear
+          forum for testing things on Windows and reporting. (Florent Rougon)
+[USABILITY] Don't attempt to run FlightGear if Config.FG_bin is empty or
+          whitespace-only. Rather, display a helpful message. (Florent Rougon)
+[USABILITY] Improve the error reporting dialog boxes displayed when FlightGear
+          can't be run or when trying to start FlightGear while it is already
+          running. (Florent Rougon)
+[USABILITY] Add commented-out property settings for anti-aliasing to the
+            default FlightGear options. The commented-out lines are:
+
+              --prop:/sim/rendering/multi-sample-buffers=true
+
+            and
+
+              --prop:/sim/rendering/multi-samples=4
+
+            Thanks to jaxsin on the FlightGear forum for the suggestion.
+            (Florent Rougon)
+[USABILITY] Update other comments in the default FlightGear options:
+              - the comment about --terrasync-dir, which benefits from a fix
+                in FlightGear 2016.2.0 (FlightGear commit
+                41b78ce1505aced494f588d6f3591c8af68a8bbe of Sunday, Feb 21);
+              - the comment about running 'fgfs --help --verbose',
+                which can now be easily done from FFGo's Help menu).
+            (Florent Rougon)
+[USABILITY] Improve or polish several tooltip texts and labels.
+            (Florent Rougon)
+[FEATURE] Update the German translation. (chris_blues)
