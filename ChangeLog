@@ -1008,6 +1008,8 @@ you may want to consult the Git repository log.
 
               --prop:/sim/rendering/multi-samples=4
 
+            as mentioned on the Anti-aliasing page of the FlightGear wiki
+            (<http://wiki.flightgear.org/Anti-aliasing>).
             Thanks to jaxsin on the FlightGear forum for the suggestion.
             (Florent Rougon)
 [USABILITY] Update other comments in the default FlightGear options:
@@ -1015,7 +1017,7 @@ you may want to consult the Git repository log.
                 in FlightGear 2016.2.0 (FlightGear commit
                 41b78ce1505aced494f588d6f3591c8af68a8bbe of Sunday, Feb 21);
               - the comment about running 'fgfs --help --verbose',
-                which can now be easily done from FFGo's Help menu).
+                which can now be easily done from FFGo's Help menu.
             (Florent Rougon)
 [USABILITY] Improve or polish several tooltip texts and labels.
             (Florent Rougon)
