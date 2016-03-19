@@ -337,7 +337,7 @@ class IncrementalChooser(metaclass=abc.ABCMeta):
         # behavior.
         self.immediateSearchUpdate = False
         self.searchBufferVar.trace("w", self.searchBufferVarWritten)
-        self.searchVar.trace("w", self.updateList)
+        self.searchVar.trace("w", self.updateList_callback)
         # Id obtained from self.master.after() when scheduling
         # self.applySelection() for delayed execution after a repeatable
         # navigation key has triggered a TreeviewSelect event (assuming
@@ -457,14 +457,35 @@ class IncrementalChooser(metaclass=abc.ABCMeta):
         if setFocusOnEntryWidget:
             self.entryWidget.focus_set()
 
-    def setTreeData(self, treeData, clearSearch=False):
+    def setTreeData(self, treeData, clearSearch=False, preserveSelection=False):
         """Change the underlying data for 'self.treeWidget'.
 
         When 'clearSearch' is True, the search field is cleared at the
         same time and special care is taken to avoid updating
         'self.treeWidget' twice.
 
+        If 'clearSearch' is True, 'preserveSelection' must be False
+        (limitation due to how Tkinter variable observers are called).
+
+        If 'preserveSelection' is True, the item of 'self.treeWidget'
+        that was selected when this method is called will be selected
+        again (if possible) after the tree is rebuilt, before this
+        method returns.
+
         """
+        if clearSearch and preserveSelection:
+            # When 'clearSearch' is True, self.updateList() is called
+            # indirectly as a consequence of self.clearSearch(...) (see below).
+            # In this case, it is impossible to propagate the value of
+            # 'preserveSelection'. Therefore, only the value of
+            # 'preserveSelection' used in self.updateList_callback() will be
+            # passed to self.updateList(), which is False at the time of this
+            # writing.
+            assert False, (
+                "{}.setTreeData(): passing both 'clearSearch' and "
+                "'preserveSelection' as True is not supported.".format(
+                    type(self).__name__))
+
         self.treeData = treeData
         # This will force an update of 'self.treeWidget' by
         # self.updateList().
@@ -474,11 +495,26 @@ class IncrementalChooser(metaclass=abc.ABCMeta):
             # chain of observers for self.searchBufferVar and self.searchVar.
             self.clearSearch(setFocusOnEntryWidget=False)
         else:
-            self.updateList()
+            self.updateList(preserveSelection=preserveSelection)
 
     # Accept any arguments to allow safe use as a Tkinter variable observer
-    def updateList(self, *args):
-        """Update the list based on the search query in 'self.searchVar'."""
+    def updateList_callback(self, *args):
+        # This method is supposed to be called by Tkinter when some variable is
+        # changed. In such a case, it is unfortunately impossible, due to the
+        # Tkinter observers API, to obtain 'preserveSelection' from the caller
+        # without resorting to ugly hacks such as using an instance attribute
+        # to pass the value. Since this is not needed in the current state of
+        # FFGo, just hardcode the value to False.
+        self.updateList(preserveSelection=False)
+
+    def updateList(self, preserveSelection=False):
+        """Update the list based on the search query in 'self.searchVar'.
+
+        If 'preserveSelection' is True, the item of 'self.treeWidget'
+        that was selected when this method is called will still be
+        selected (if possible) when this method returns.
+
+        """
         # Find all matches corresponding to the contents of 'self.searchVar'.
         # 'unsortedMatches' is a list of their indices in 'self.treeData'.
         unsortedMatches = self.findMatches()
@@ -500,7 +536,9 @@ class IncrementalChooser(metaclass=abc.ABCMeta):
             self.matches = matches
             self._updateTreeWidget()
 
-        self._autoUpdateTreeSelection() # maybe change the selected item
+        # Select a suitable item in the updated MyTreeview widget
+        self._autoUpdateTreeSelection(
+            preserveSelection=preserveSelection)
 
     def _updateTreeWidget(self):
         """Update the contents of 'self.treeWidget' based on 'self.matches'."""
@@ -535,12 +573,17 @@ class IncrementalChooser(metaclass=abc.ABCMeta):
         if self.treeUpdatedCallback is not None:
             self.treeUpdatedCallback()
 
-    def _autoUpdateTreeSelection(self):
+    def _autoUpdateTreeSelection(self, preserveSelection=False):
         """Select a suitable item in self.treeWidget, if it is non-empty.
 
         This method indirectly updates self.outputVar to reflect the new
         selection (possibly empty, in which case self.setNullOutputVar()
         is called).
+
+        'preserveSelection' determines whether to prefer selecting the
+        previously selected item (according to 'self.outputVar') or the
+        first item that matches the search text (according to
+        self.matchesSearchText()).
 
         """
         if self.matches:
@@ -552,19 +595,27 @@ class IncrementalChooser(metaclass=abc.ABCMeta):
             for item in tree.get_children():
                 if self.matchesOutputVar(item, decodedOutputVar):
                     found["current selection"] = item
+                    if preserveSelection:
+                        break
                 elif self.matchesSearchText(item, uSearchText):
                     # This one, if available, is preferred over the current
                     # selection.
                     found["match of search text"] = item
-                    break
+                    if not preserveSelection:
+                        break
+
+            if preserveSelection:
+                preferredChoice = "current selection"
+                bestFallbackChoice = "match of search text"
+            else:
+                preferredChoice = "match of search text"
+                bestFallbackChoice = "current selection"
 
             try:
-                # Is there an item whose search key is the search text?
-                item = found["match of search text"]
+                item = found[preferredChoice]
             except KeyError:
                 try:
-                    # Is the previously-selected item in the list?
-                    item = found["current selection"]
+                    item = found[bestFallbackChoice]
                 except KeyError:
                     if uSearchText:
                         # Select the first item in the list. This will set
@@ -606,7 +657,8 @@ class IncrementalChooser(metaclass=abc.ABCMeta):
             self.sortBy = col.name
             col.sortOrder = SortOrder.ascending
 
-        self.updateList()       # repopulate 'self.treeWidget'
+        # Sorting the tree is not supposed to change the selected item.
+        self.updateList(preserveSelection=True) # repopulate 'self.treeWidget'
 
     def onTreeviewSelect(self, event=None):
         tree = self.treeWidget
@@ -709,7 +761,8 @@ class AirportChooser(IncrementalChooser):
                                     airport.useCountForShow)
 
                 if updateTree:
-                    self.setTreeData(self.treeData)
+                    # Update the tree, but don't change the selected item.
+                    self.setTreeData(self.treeData, preserveSelection=True)
                 break
         else:
             raise NoSuchItem(icao)
@@ -800,7 +853,8 @@ class AircraftChooser(IncrementalChooser):
                                     aircraft.useCountForShow)
 
                 if updateTree:
-                    self.setTreeData(self.treeData)
+                    # Update the tree, but don't change the selected item.
+                    self.setTreeData(self.treeData, preserveSelection=True)
                 break
         else:
             raise NoSuchItem(str(aircraftId))
