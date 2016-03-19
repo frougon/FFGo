@@ -1022,3 +1022,16 @@ you may want to consult the Git repository log.
 [USABILITY] Improve or polish several tooltip texts and labels.
             (Florent Rougon)
 [FEATURE] Update the German translation. (chris_blues)
+
+1.11.1
+[BUGFIX]  Prevent unwanted selection changes in the airport and aircraft
+          choosers. The airport and aircraft choosers suffered from the
+          following problem: if the associated search field was not empty,
+          some operations such as running FlightGear or changing the sort
+          order in the airport or aircraft list, could cause the selected item
+          to be changed based on the contents of the search field. Such
+          unwanted changes could only happen after FlightGear was started,
+          which somehow mitigated the impact of the bug, but still, this was
+          clearly undesirable and could be confusing. (Florent Rougon)
+[MAINT]   Declare Python 3.5 support in the setup.py metadata.
+          (Florent Rougon)
