@@ -250,9 +250,13 @@ the value for the --fg-scenery option. It is documented at
 
 Note:
 
-  The default TerraSync directory in FlightGear 2016.1.1 is
-  $FG_HOME/TerraSync. You may consult
-  <http://wiki.flightgear.org/TerraSync> and
+  The default TerraSync directory in FlightGear 2016.1.1 is:
+    - $FG_HOME/TerraSync on non-Windows systems;
+    - something such as
+      C:\\Users\\<username>\\Documents\\FlightGear\\TerraSync
+      on Windows.
+
+  You may consult <http://wiki.flightgear.org/TerraSync> and
   <http://wiki.flightgear.org/$FG_HOME> for more information.""").format(
       prg=PROGNAME, separator=os.pathsep, fgfs=FG_EXECUTABLE)
         self.tooltip_aircraft = _("""\
