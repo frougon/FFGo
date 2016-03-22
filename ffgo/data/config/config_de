@@ -51,12 +51,67 @@
 ## Sommer und Winter haben verschiedene Texturen:
 #--season=winter
 
+## Wenn Sie Zugang zum Internet haben, wird automatisch die aktuelle
+## Wetterinformation (METAR) beim Start von FlightGear abgerufen. Falls Sie
+## sich selbst genaue Wetterkonditionen aussuchen wollen (um z.Bsp.
+## Seitenwindlandungen zu üben), können Sie die --metar option nutzen.
+##
+## Hinweis: falls Ihre FlightGearversion älter als vom 20.März 2016 ist
+##          (FG commit 0cfa4ced9cd5e2ec26e753ddd5f61da7558221a6, gehört zu
+##          FlightGear 2016.2.0), dann müssen Sie außerdem
+##          --disable-real-weather-fetch angeben, damit die --metar Option
+##          in Kraft tritt.
+#--metar=LOWI 212150Z 26004KT 9999 FEW035 BKN050 06/02 Q1014 NOSIG
+##
+## Mehr Informationen unter <http://wiki.flightgear.org/Weather_reports>.
+
 ## Eventuell finden Sie die 2D Head-Up Anzeige lesbarer als die 3D Variante:
 ## vgl. <http://wiki.flightgear.org/Head-up_display>.
 #--disable-hud-3d
 
+## Aktiviere das Phi Webinterface für FlightGear. Um es zu nutzen, starten Sie
+## FlightGear und geben Sie in Ihrem Browser <http://127.0.0.1:8080/> ein.
+## Firefox wird gut unterstützt, andere Browser könnten Probleme haben ---
+## zum Zeitpunkt dieses Texts.
+## Hinweis: dies macht FlightGear zu einem HTTP-server.
+##
+#--httpd=127.0.0.1:8080       # nur lokalen Zugriff erlauben
+##                            # (maximale Sicherheit)
+#--httpd=8080                 # Auf das Webinterface kann von anderen Computern
+##                            # zugegriffen werden.
+##
+## 127.0.0.1 ist eine spezielle Adresse, die nur von Ihrem Computer
+## angesprochen werden kann (loopback). Wenn Sie den Browser von diesem
+## Computerlaufen lassen, benutzen Sie die erste Form (--httpd=127.0.0.1:8080).
+## Andernfalls, wenn Sie Phi von einem anderen Computer (oder Smartphone, oder
+## was-auch-immer) aufrufen wollen, dann müssen Sie die zweite Form, oder eine
+## Variante der ersten Form, wobei 127.0.0.1 mit einer passenden Adresse
+## ersetzt werden muß (der HTTP Server wird seinen listening socket an diese
+## Adresse binden; daher muß es die Adresse der lokalen Schnittstelle des
+## Computers sein, auf dem FlightGear läuft).
+## Für weitere Details siehe <http://wiki.flightgear.org/Phi>
+
 ## Begrenze fps auf angegebene Anzahl.
 #--prop:/sim/frame-rate-throttle-hz=35
+
+## FÜR FLUGZEUGENTWICKLER
+## Sie können die Multiplayerfunktionalität eines Flugzeugs testen mit nur
+## einem Computer ohne Internetzugriff testen---man braucht sich nicht einmal
+## mit einem Multiplayerserver zu verbinden. Dafür muß FlightGear unter zwei
+## verschiedenen Benutzerkonten zur selben Zeit ausgeführt werden.
+## Für die erste FlightGear Instanz nutzen Sie:
+##
+#--callsign=test1
+#--multiplay=out,10,127.0.0.1,5001
+#--multiplay=in,10,127.0.0.1,5000
+##
+## Für die zweite FlightGear Instanz nutzen Sie:
+##
+#--callsign=test2
+#--multiplay=out,10,127.0.0.1,5000
+#--multiplay=in,10,127.0.0.1,5001
+##
+## Für weitere Details siehe <http://wiki.flightgear.org/Howto:Multiplayer>
 
 ## Mehr Informationen über die Kommandozeilen-Optionen
 ## findet man:
