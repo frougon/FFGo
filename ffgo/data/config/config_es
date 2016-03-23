@@ -1,29 +1,119 @@
-## Lista de opciones de comandos en línea. Activa las opciones que quieras usar
-## quitando o poniendo el símbolo '#' al principio de la línea correspondiente.
-
-## Escribe tu apodo; limitado a siete carácteres. Para saber si tu apodo está 
-## en uso o no visita: http://fgfs.i-net.hu/modules/fgtracker/ 
-#--callsign=
-
-## OPCIONES METEOROLÓGICAS
-## Extraer información meteorológica de la web.
-#--enable-real-weather-fetch
+## Lista de opciones de la línea de comandos (fgfs). Activa las opciones 
+## que quieras usar quitando el símbolo '#' al principio de la línea  
+## correspondiente.
 
 ## OPCIONES DE RENDERIZADO
-## Especifica la resolución para FlightGear.
-#--geometry=800x600
-
 ## Activa la pantalla completa.
 #--enable-fullscreen
 
-## “Anti-aliasing” (cf. <http://wiki.flightgear.org/Anti-aliasing>).
+## Especifica la resolución para FlightGear (el tamaño de la ventana).
+## No es necesario especificarlo si usas --enable-fullscreen.
+#--geometry=800x600
+
+## Activar “anti-aliasing”. Esto puede mejorar la calidad visual del
+## renderizado de FlightGear, especialmente en bajas resoluciones, pero
+## también puede reducir el "frame rate" (la frecuencia con la que se
+## actualizan las imágenes). Más información en
+## <http://wiki.flightgear.org/Anti-aliasing>.
 #--prop:/sim/rendering/multi-sample-buffers=true
 #--prop:/sim/rendering/multi-samples=4
 
 ## OTROS
+## Escribe tu apodo. Se encuentra limitado a siete caracteres.
+## Por favor no uses uno que ya esté en uso en la red multijugador.
+#--callsign=
+
+## Activa la descarga automática de escenarios mientras vuelas:
+#--enable-terrassync
+## ... o desactívala si te da problemas o no puedes utilizarla
+## (por ejempo si no estás conectado a Internet).
+#--disable-terrasync
+
+## En caso de que quieras elegir la carpeta utilizada para la descarga 
+## automática de escenario
+##
+## Nota: en FlightGear 2016.1.1, seleccionar una carpeta que no esté en
+##       FG_HOME puede causar fallos en la lectura de algunos archivos de
+##       escenarios, debido a permisos inadecuados[1]. Esto se ha
+##       solucionado[2] en "FlightGear commit"
+##       41b78ce1505aced494f588d6f3591c8af68a8bbe (a fecha domingo 21 de
+##       febrero), por lo que FlightGear 2016.2.1 y posteriores no deberían
+##       verse afectados.
+##
+##         [1] https://sourceforge.net/p/flightgear/mailman/message/34833785/
+##         [2] https://sourceforge.net/p/flightgear/flightgear/ci/41b78ce1505aced494f588d6f3591c8af68a8bbe/
+##
+#--terrasync-dir=/path/to/the/folder/of/your/choice
+
+## Elección de la hora de inicio del vuelo:
+#--timeofday=noon
+
+## Verano e invierno tienen diferentes texturas:
+#--season=summer
+
+## Por defecto, si estás conectado a Internet, la información actual del
+## tiempo (METAR) se descarga en el startup de FlightGear. Si quieres elegir
+## condiciones particulares del tiempo (por ejemplo para practicar despegues o
+## aterrizajes a viento cruzado), puedes utilizar la opción --metar.
+##
+## Nota: si la versión de tu FlightGear es anterior al 20 de marzo de 2016
+##       (FlightGear commit 0cfa4ced9cd5e2ec26e753ddd5f61da7558221a6, que
+##       pertenece a FlightGear 2016.2.0), para que la opción --metar sea
+##       efectiva también tienes que usar --disable-real-weather-fetch
+#--metar=LOWI 212150Z 26004KT 9999 FEW035 BKN050 06/02 Q1014 NOSIG
+##
+## Más información en <http://wiki.flightgear.org/Weather_reports>.
+
+## Si el display Head up 3D no funciona bien, activa el 2D:
+## cf. <http://wiki.flightgear.org/Head-up_display>.
+#--disable-hud-3d
+
+## Activa la interfaz web Phi con FlightGear. Para usarla, enciende FlightGear
+## y escribe en tu buscador la siguiente dirección: <http://127.0.0.1:8080/>.
+## Firefox es compatible. En otros buscadores depende de la hora que sea.
+## Nota: esto hace que FlightGear funcione como un servidor HTTP.
+##
+#--httpd=127.0.0.1:8080       # permite únicamente el acceso local (máxima
+##                            # seguridad)
+#--httpd=8080                 # la interfaz web puede accederse desde otros
+##                            # ordenadores
+##
+## 127.0.0.1 es una dirección a la que únicamente se puede acceder desde tu
+## ordenador (loopback). Si vas a utilizar el navegador web desde el mismo
+## ordeandor que FlightGear, usa la primera forma (--httpd=127.0.0.1:8080).
+## Por otro lado, si quieres ejecutar Phi en otro ordenador (o smartphone o lo
+## que sea), tienes que utilizar la segunda manera o una variante de la
+## primera, poniendo una dirección apropiada en lugar de 127.0.0.1 (el
+## servidor HTTP en FlightGear dirige su listening socket (puerto de
+## escucha/entrada) a esa dirección, por lo que tiene que ser la dirección de
+## una interfaz local del ordenador en el que está funcionando FlightGear).
+## Más información en <http://wiki.flightgear.org/Phi>.
+
 ## Limita los fps a un número específico.
 #--prop:/sim/frame-rate-throttle-hz=35
 
-## Más información sobre opciones de comandos en línea en los documentos de
-## FlightGear, o en:
-## http://wiki.flightgear.org/index.php/Command_Line_Options
+## PARA LOS DESARROLLADORES DE AVIONES
+## Puedes probar la funcionalidad multijugador de un avión utilizando sólo un
+## ordenador y sin acceso a Internet -- ni siquiera es necesario estar
+## conectado a un servidor multijugador. Para ello tienes que ejecutar
+## FlightGear con dos usuarios dieferentes a la vez. Para el primer FlightGear
+## por ejemplo, puedes usar:
+##
+#--callsign=test1
+#--multiplay=out,10,127.0.0.1,5001
+#--multiplay=in,10,127.0.0.1,5000
+##
+## Y en el segundo (con un usuario distinto), usar:
+##
+#--callsign=test2
+#--multiplay=out,10,127.0.0.1,5000
+#--multiplay=in,10,127.0.0.1,5001
+##
+## Más información en: <http://wiki.flightgear.org/Howto:Multiplayer>
+
+## PARA MÁS INFORMACIÓN SOBRE OPCIONES DE LA LÍNEA DE COMANDOS
+## Más información sobre opciones de la línea de comandos se puede encontrar:
+##  - con el comando 'fgfs --help --verbose', que FFGo puede ejecutar
+##    (Menú Help, elegir "Show available fgfs options");
+##  - en la documentación de FlightGear;
+##  - o en: <http://wiki.flightgear.org/index.php/Command_Line_Options>.
