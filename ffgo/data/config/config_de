@@ -30,8 +30,7 @@
 ## haben).
 #--disable-terrasync
 
-##  Wenn Sie das Verzeichnis für automatischen Szeneriedownload angeben wollen
-## (die Voreinstellung ist $GH_HOME/TerraSync).
+## Wenn Sie das Verzeichnis für automatischen Szeneriedownload angeben wollen.
 ##
 ## Anmerkung: Sollte in FlightGear 2016.1.1 dieses Verzeichnis nicht unter
 ## FG_HOME sein, so kann das zu Fehlern beim Lesen von einigen Szeneriedateien

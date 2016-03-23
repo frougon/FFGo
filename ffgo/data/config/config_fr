@@ -32,8 +32,7 @@
 #--disable-terrasync
 
 ## Si vous souhaitez choisir le répertoire dans lequel TerraSync va stocker
-## les données de scènes téléchargées (paysage, bâtiments...), le répertoire
-## par défaut étant $FG_HOME/TerraSync.
+## les données de scènes téléchargées (paysage, bâtiments...).
 ##
 ## Remarque : avec FlightGear 2016.1.1, des problèmes de permissions peuvent
 ##            se produire si le répertoire choisi ici n'est pas sous FG_HOME,
