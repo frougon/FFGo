@@ -2,6 +2,7 @@
 
 
 import os
+import platform
 import sys
 import tkinter as tk
 import tkinter.filedialog as fd
@@ -206,10 +207,19 @@ class ConfigWindow:
     def getInitialDir(self, path):
         if os.path.isdir(path):
             return path
-        if os.path.isfile(path) or os.path.islink(path):
+        elif os.path.isfile(path) or os.path.islink(path):
             return os.path.split(path)[0]
-        else:
+        elif os.path.isdir(HOME_DIR):
             return HOME_DIR
+        elif platform.system() == "Windows":
+             if os.path.isdir("C:\\"):
+                 return "C:\\"
+             else:
+                 return os.getenv("USERPROFILE", os.getcwd())
+        elif os.path.isdir("/"):
+            return "/"
+        else:
+            return os.getcwd()
 
     def getLanguages(self):
         """Walk through a locale directory and return list of
