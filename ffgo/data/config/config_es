@@ -1,5 +1,5 @@
-## Lista de opciones de la línea de comandos (fgfs). Activa las opciones 
-## que quieras usar quitando el símbolo '#' al principio de la línea  
+## Lista de opciones de la línea de comandos (fgfs). Activa las opciones
+## que quieras usar quitando el símbolo '#' al principio de la línea
 ## correspondiente.
 
 ## OPCIONES DE RENDERIZADO
@@ -29,7 +29,7 @@
 ## (por ejempo si no estás conectado a Internet).
 #--disable-terrasync
 
-## En caso de que quieras elegir la carpeta utilizada para la descarga 
+## En caso de que quieras elegir la carpeta utilizada para la descarga
 ## automática de escenario
 ##
 ## Nota: en FlightGear 2016.1.1, seleccionar una carpeta que no esté en
@@ -64,7 +64,7 @@
 ##
 ## Más información en <http://wiki.flightgear.org/Weather_reports>.
 
-## Si el display Head up 3D no funciona bien, activa el 2D:
+## Puede ser que se lea mejor el HUD (visualización Head-Up) 2D que el 3D.
 ## cf. <http://wiki.flightgear.org/Head-up_display>.
 #--disable-hud-3d
 
