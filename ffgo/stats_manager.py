@@ -58,7 +58,7 @@ class StatsManagerBase(metaclass=abc.ABCMeta):
     """Abstract base class for managing usage statistics.
 
     The most recent dates of use of each “item” (where items can be
-    airports, aircrafts or anything else) are stored in json.gz format
+    airports, aircraft or anything else) are stored in json.gz format
     under constants.STATS_DIR. This class manages expiry of such data
     after a customizable period. It can also compute and update the
     number of times each item has been used during a chosen period,
@@ -119,13 +119,13 @@ class StatsManagerBase(metaclass=abc.ABCMeta):
               "c172p\u0000/home/flo/flightgear/src/fgdata/Aircraft/c172p": [
                   736003
               ],
-              "c172p\u0000/mm/flightgear-data/aircrafts-misc/c172p": [
+              "c172p\u0000/mm/flightgear-data/aircraft-misc/c172p": [
                   735998,
                   736000,
                   736003,
                   736004
               ],
-              "ec130b4\u0000/mm/flightgear-data/aircrafts-misc/ec130": [
+              "ec130b4\u0000/mm/flightgear-data/aircraft-misc/ec130": [
                   736003
               ],
           },
@@ -150,12 +150,12 @@ class StatsManagerBase(metaclass=abc.ABCMeta):
             setattr(self, attr, locals()[attr])
 
         # It may be that FFGo is not always run with the same airports (from
-        # apt.dat.gz) or aircrafts installed. It would be a pity to lose
-        # statistic data about airports or aircrafts just because they are
+        # apt.dat.gz) or aircraft installed. It would be a pity to lose
+        # statistic data about airports or aircraft just because they are
         # temporarily unavailable, for instance because the user (re)moved one
         # of his aircraft paths. To circumvent this problem, items loaded from
         # the json.gz file (self.saveFile) that can't be used in the
-        # current state (for instance aircrafts not available under the
+        # current state (for instance aircraft not available under the
         # configured aircraft paths anymore) are stored in this
         # dictionary. This way, the save() method will be able to store
         # them back in self.saveFile when it is called.
@@ -177,7 +177,7 @@ class StatsManagerBase(metaclass=abc.ABCMeta):
         For instance, if the items managed by a concrete class derived
         from this one are airports, the ICAO code can be
         conveniently used for both JSON keys and getItem()'s argument.
-        For aircrafts, it's a bit more tricky because we identify an
+        For aircraft, it's a bit more tricky because we identify an
         aircraft in FFGo by a tuple (aircraftName, aircraftDir).
         Therefore, the JSON key for an aircraft has to unambiguously
         represent such a tuple in string form. A simple and robust way
@@ -198,7 +198,7 @@ class StatsManagerBase(metaclass=abc.ABCMeta):
         for a given airport. This method could then return the
         corresponding AirportStub instance.
 
-        In the case of aircrafts, one way that would make sense given
+        In the case of aircraft, one way that would make sense given
         FFGo's architecture would be to use a tuple of the form
         (aircraftName, aircraftDir) for 'itemId'. This method could then
         return the corresponding Aircraft instance.
@@ -419,7 +419,7 @@ class AircraftStatsManager(StatsManagerBase):
     def __init__(self, config):
         StatsManagerBase.__init__(
             self, config, "aircrafts", config.aircraftStatsShowPeriod,
-            config.aircraftStatsExpiryPeriod, constants.AIRCRAFTS_STATS_FILE)
+            config.aircraftStatsExpiryPeriod, constants.AIRCRAFT_STATS_FILE)
 
     def jsonKeyToItemId(self, key):
         return key.split('\0')

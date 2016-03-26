@@ -42,7 +42,7 @@ $PATH, as well as icons to be in the right place.
 = Presets =
 The default FFGo settings are quite minimal and the user is required to
 perform a few minor tasks, such as setting the needed paths for FlightGear
-data, aircrafts, scenery, etc. as well as for the 'fgfs' executable. However,
+data, aircraft, scenery, etc. as well as for the 'fgfs' executable. However,
 a 'presets' file is available in 'ffgo/data/config', which can be used to
 specify settings that the packager wants to be enabled by default.
 

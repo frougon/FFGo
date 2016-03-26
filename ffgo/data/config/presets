@@ -22,7 +22,7 @@
 #                                 extension) separated by spaces.
 # AIRCRAFT_DIR=directory        - Passed as --aircraft-dir to FlightGear. Used
 #                                 to distinguish between identically-named
-#                                 aircrafts. If left empty, FFGo will use the
+#                                 aircraft. If left empty, FFGo will use the
 #                                 highest priority aircraft with the chosen
 #                                 name, according to the order of aircraft
 #                                 paths in FG_AIRCRAFT.

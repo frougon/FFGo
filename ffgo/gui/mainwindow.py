@@ -315,7 +315,7 @@ class App:
                  num=aircraftListDisplayColumns.index("use count")+1):
                     tooltipText = _(
                         "Number of days the aircraft was used during the "
-                        "selected period (cf. “Aircrafts statistics show "
+                        "selected period (cf. “Aircraft statistics show "
                         "period” in the Preferences dialog)")
                     return textwrap.fill(tooltipText, width=62)
             else:
@@ -967,7 +967,7 @@ want to follow this new default and set “Airport database update” to
 
         Find the thumbnail in the aircraft directory and convert it to
         the appropriate size if necessary. Use a placeholder image for
-        aircrafts that have no thumbnail. Return an object that Tkinter
+        aircraft that have no thumbnail. Return an object that Tkinter
         can use as an image.
 
         """

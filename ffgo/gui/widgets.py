@@ -223,7 +223,7 @@ class IncrementalChooser(metaclass=abc.ABCMeta):
 
     Abstract class used to build a convenient chooser from three
     widgets: a MyTreeview instance displaying a list of available items
-    (airports, aircrafts...), an Entry widget allowing the user to enter
+    (airports, aircraft...), an Entry widget allowing the user to enter
     a search query, and a Button to clear the Entry and display the full
     list of available items.
 

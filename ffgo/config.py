@@ -348,11 +348,11 @@ class Config:
     def aircraftWithNameAndDir(self, name, dir_):
         """Get the Aircraft instance for a given name and directory."""
         try:
-            aircrafts = self.aircraftDict[name]
+            aircraftSeq = self.aircraftDict[name]
         except KeyError:
             raise NoSuchAircraft(name, dir_)
 
-        for aircraft in aircrafts:
+        for aircraft in aircraftSeq:
             # The idea is that the directory 'dir_' passed here should have
             # been discovered earlier by a filesystem exploration, therefore
             # there must be one Aircraft instance that has an exact match for
@@ -400,14 +400,14 @@ class Config:
                           aircraft=acName, dir=acDir, fallback=aircraft.dir))
         else:
             try:
-                defaultAircrafts = self.aircraftDict[DEFAULT_AIRCRAFT]
+                defaultAircraftSeq = self.aircraftDict[DEFAULT_AIRCRAFT]
             except KeyError:
                 aircraft = None
                 logger.warning(
                     _("Could not find the default aircraft: {aircraft}")
                     .format(aircraft=DEFAULT_AIRCRAFT))
             else:
-                aircraft = defaultAircrafts[0]
+                aircraft = defaultAircraftSeq[0]
                 logger.notice(
                     _("Could not find aircraft '{aircraft}', using "
                       "'{fallback}' from '{dir}' instead").format(
@@ -523,7 +523,7 @@ class Config:
 
         self.aircraftDict, self.aircraftList = self._readAircraft()
         # Load the saved statistics into the new in-memory Aircraft instances
-        # (the set of aircrafts may have just changed, hence the need to save
+        # (the set of aircraft may have just changed, hence the need to save
         # the stats before the in-memory aircraft list is updated, and reload
         # them afterwards).
         self.aircraftStatsManager.load()
@@ -818,14 +818,13 @@ configurations are kept separate.""")
         return (settings, ''.join(condConfLines))
 
     def _readAircraft(self):
-        """
-        Walk through Aircraft directories and return the available aircrafts.
+        """Walk through Aircraft directories and return the available aircraft.
 
-        Return a tuple (aircraftDict, aircraftList) listing all
-        aircrafts found via self.aircraft_dirs.
+        Return a tuple (aircraftDict, aircraftList) listing all aircraft
+        found via self.aircraft_dirs.
 
         aircraftDict is a dictionary whose keys are the names (derived
-        from the -set.xml files) of all aircrafts. For each aircraft
+        from the -set.xml files) of all aircraft. For each aircraft
         name 'n', aircraftDict[n] is the list, in self.aircraft_dirs
         priority order, of all Aircraft instances with that name.
 

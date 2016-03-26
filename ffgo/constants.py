@@ -51,8 +51,9 @@ LOG_DIR = join(USER_DATA_DIR, 'Logs')
 STATS_DIR = join(USER_DATA_DIR, 'Stats')
 # File where statistics about airports are stored
 AIRPORTS_STATS_FILE = join(STATS_DIR, "airports.json.gz")
-# File where statistics about aircrafts are stored
-AIRCRAFTS_STATS_FILE = join(STATS_DIR, "aircrafts.json.gz")
+# File where statistics about aircraft are stored (“aircrafts” shouldn't have
+# an “s”, it is invariable...)
+AIRCRAFT_STATS_FILE = join(STATS_DIR, "aircrafts.json.gz")
 # Base name of the FlightGear executable (ends with '.exe' on Windows)
 FG_EXECUTABLE = misc.executableFileName("fgfs")
 # Path to airport data file.

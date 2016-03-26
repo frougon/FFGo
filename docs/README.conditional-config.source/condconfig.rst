@@ -455,16 +455,16 @@ A useful example of what can be done with lists could be the following::
   --nav1=122:112.3 # Toncontin (TNT)
 
 This simple configuration defines two different parking positions for
-the Toncontin Intl airport, one for aircrafts that take their passengers
+the Toncontin Intl airport, one for aircraft that take their passengers
 via jet bridges (of class “gate”), the other for usually smaller
-aircrafts (“general aviation”, abbreviated “ga”). It also automatically
+aircraft (“general aviation”, abbreviated “ga”). It also automatically
 sets up the NAV1 frequency to 112.3 MHz and the radial to 122, which is
 useful for the RNAV (RNP) approach of runway 02 (a particularly
 interesting one!).
 
 For FFGo to know which aircraft belongs to which class, we have defined
 the two variables, ``gate_class`` and ``ga_class``, as booleans using
-membership tests. Of course, you have to add the aircrafts you fly to
+membership tests. Of course, you have to add the aircraft you fly to
 the appropriate list if you want to use this feature. When you want to
 start on a runway or on a parking position selected from the popup list
 of FFGo's interface at the same airport, just replace ``"parking"`` with

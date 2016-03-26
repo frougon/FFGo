@@ -523,12 +523,12 @@ When this option is unchecked, only the main window size is stored.""")
                     2*rowNum+1, minsize=verticalSpaceBetweenRows, weight=0)
 
         t = ((self.aircraftStatsShowPeriod,
-              _("Aircrafts statistics show period: "),
+              _("Aircraft statistics show period: "),
               _("The “use count” for each aircraft is the number of days "
                 "it was used during the last n days, where n is the number "
                 "entered here.")),
              (self.aircraftStatsExpiryPeriod,
-              _("Aircrafts statistics expiry period: "),
+              _("Aircraft statistics expiry period: "),
               _("{prg} automatically forgets about dates you used a "
                 "given aircraft when they get older than this number of "
                 "days.").format(prg=PROGNAME)),
