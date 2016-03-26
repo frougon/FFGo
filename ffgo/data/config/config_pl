@@ -6,10 +6,6 @@
 ## aby sprawdzić czy twój callsign nie jest już używany przez kogoś innego.
 #--callsign=
 
-## OPCJE ŚRODOWISKA
-## Pobieraj informacje o pogodzie z internetu.
-#--enable-real-weather-fetch
-
 ## OPCJE WYŚWIETLANIA
 ## Podaj rozmiar okna symulatora FlightGear.
 #--geometry=800x600

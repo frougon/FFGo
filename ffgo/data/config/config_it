@@ -6,10 +6,6 @@
 ## utilizzato visitare il sito http://fgfs.i-net.hu/modules/fgtracker/
 #--callsign=
 
-## OPZIONI AMBIENTE
-## Scaricare automaticamente dalla rete le informazioni meteo.
-#--enable-real-weather-fetch
-
 ## OPZIONI DI RENDERING
 ## Specificare le dimensioni della finestra di FlightGear.
 #--geometry=800x600

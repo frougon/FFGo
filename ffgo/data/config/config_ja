@@ -7,10 +7,6 @@
 ## http://fgfs.i-net.hu/modules/fgtracker/ を参照してください。
 #--callsign=
 
-## 環境オプション
-## Webから天候情報を取得することができます。
-#--enable-real-weather-fetch
-
 ## レンダリングオプション
 ## FlightGear のウインドウのサイズを指定してください。
 #--geometry=800x600
