@@ -27,14 +27,15 @@ as such partly redundant with FFGo's page on the FlightGear wiki:
   http://wiki.flightgear.org/FFGo
 
 At the time of this writing, the installation instructions found on this wiki
-page are often less general than those from the file you are reading, on
+page are sometimes less general than those from the file you are reading, on
 purpose; thus, you may find the wiki instructions easier to follow for the
 following reasons:
   - more practically-oriented, at the expense of being a bit less general
     sometimes;
   - the HTML format used for the wiki allows nicer formatting and hyperlinks.
 
-See for yourself what you prefer!
+If in doubt, I suggest to start with the wiki instructions, and consult this
+file in case you need for more information on certain subjects.
 
 -------------------------------------------------------------------------------
 
@@ -161,23 +162,54 @@ Python installer:
     versions of Windows, writing to “Program Files”, at least, is subject to
     special restrictions that may cause the 'pip install FFGo' step to fail);
 
+  - it is recommended not to disable the Python Launcher for Windows, as it
+    may prove very useful later;
+
   - if you are not comfortable with the command line (“Command Prompt”), it is
     suggested you choose “Add python.exe to Path” / “Add Python X.Y to PATH”
     (the precise wording depends on the Python version). This way, you will be
-    able to run pip and ffgo directly at the Command Prompt without having to
-    specify their full paths.
+    able to run the pip and ffgo programs directly at the Command Prompt in
+    the simplest possible way (this mainly matters for pip, because for ffgo,
+    you can easily create a shortcut on the Desktop, for instance).
 
-    If you don't do that, you'll have to type things such as
-    'C:\PythonXY\Scripts\pip install ...' instead of 'pip install ...', where
-    XY would be 35 for a Python 3.5 installation, for instance. Alternatively,
-    you could change to the directory containing 'pip.exe':
+    If you choose not to do this:
 
-      C:
-      cd \PythonXY\Scripts
+    * In such a case, assuming you didn't disable the Python Launcher for
+      Windows in the Python installer, you'll have to type commands such as:
 
-    and then run the commands without any path qualifier, like this:
+        py -3.5 -m pip install ...
 
-      pip install ...
+      instead of:
+
+        pip install ...
+
+      Such a command is similar to 'pip install ...', but makes sure that pip
+      is run by Python 3.5, in case there are several Python installations on
+      your Windows system. 'py -3 -m pip install ...' would do the same, but
+      using the latest Python 3.x installation available on your system.
+
+    * Another way would be to call the desired pip executable by specifying
+      its full path, like this:
+
+        C:\PythonXY\Scripts\pip install ...
+
+      (where XY would be 35 for a Python 3.5 installation, for instance)
+
+    * A variant of this method would be to change to the directory containing
+      'pip.exe':
+
+        C:
+        cd \PythonXY\Scripts
+
+      and then run the commands without any path qualifier, like this:
+
+        pip install ...
+
+    * The last two methods both require knowing where the Python installation
+      you are interested in is installed ('C:\PythonXY' in these examples),
+      which seems to depend on the Windows version. Therefore, the
+      'py -X.Y -m pip ...' method, using the Python Launcher for Windows, is
+      generally preferred.
 
 Then, when installing FFGo and its dependencies: since there is no system
 Python on Windows, you can use pip directly on your Python installation. There
@@ -201,6 +233,11 @@ If you want to install GeographicLib's MagneticField program:
      You may also install the 'emm2015' dataset, however I can't say whether
      this will bring any visible change for typical aviation usage.
 
+     When asked for the installation folder for the dataset(s), you should
+     probably choose 'C:\ProgramData\GeographicLib' as per the above link
+     (<http://geographiclib.sourceforge.net/html/magnetic.html>). Otherwise,
+     it is likely that MagneticField won't work at all.
+
   3. If you let the GeographicLib installer modify your PATH in step 1, there
      is nothing else to do. Otherwise, you have to tell FFGo where to find
      MagneticField.exe. For this, start FFGo and choose Preferences in the
@@ -210,6 +247,14 @@ If you want to install GeographicLib's MagneticField program:
 Note: installation of GeographicLib's implementation for Python 3 is a
       different thing, and is covered by the “Standard procedure” below. In
       short, it can be done with 'pip install geographiclib'.
+
+The FFGo dialog reachable via Help → About displays the versions of the main
+dependencies used by FFGo. In case you entered an invalid path, or some other
+error, a hint is generally given there. In any case, troubleshooting
+information is always printed to the terminal (if you ran 'ffgo.exe' as
+opposed to 'ffgo-noconsole.exe') and to the FFGo log file located in the
+%APPDATA%\FFGo\Logs folder (do a Google search with keywords “Windows” and
+“APPDATA” if you don't know what this means).
 
 For Windows-specific instructions concerning Python installation and use, you
 may refer to <https://docs.python.org/3/using/windows.html>.
