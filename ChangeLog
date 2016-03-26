@@ -1035,3 +1035,52 @@ you may want to consult the Git repository log.
           clearly undesirable and could be confusing. (Florent Rougon)
 [MAINT]   Declare Python 3.5 support in the setup.py metadata.
           (Florent Rougon)
+
+1.11.2
+[BUGFIX]  Fix FG_SCENERY tooltip concerning the default TerraSync directory.
+          The previously-indicated default ($FG_HOME/TerraSync) was correct
+          for non-Windows systems, but for Windows it wasn't. This is because
+          Windows uses a different code path in FlightGear to determine
+          FlightGear's download directory, and the FlightGear wiki page for
+          TerraSync (<http://wiki.flightgear.org/TerraSync>) was incorrect.
+          Both FFGo's tooltip and the TerraSync wiki page are now fixed.
+          (Florent Rougon)
+[BUGFIX]  There was a similar problem in config_en, config_de and config_fr
+          (default config options). Don't mention $FG_HOME/TerraSync anymore,
+          point to <http://wiki.flightgear.org/TerraSync> instead.
+          (Florent Rougon)
+[BUGFIX]  Make the file and directory selectors more robust in case the HOME
+          environment variable points to a non-existent file or directory.
+          (Florent Rougon)
+[USABILITY] Add more commented out options to the default configuration.
+
+          * Example for --metar (to choose specific weather conditions).
+
+          * How to enable the Phi web interface to FlightGear, using
+            --httpd=127.0.0.1:8080 or --httpd=8080.
+
+          * Example of --multiplay options to establish direct multiplayer
+            connection between two FlightGear instances running on the same
+            computer, without going through an fgms server (FlightGear
+            multiplayer server).
+          (Florent Rougon)
+[USABILITY] Remove useless --enable-real-weather-fetch option from
+          unmaintained config_ll files (Italian, Japanese and Polish outdated
+          translations of ffgo/data/config/config_en). This option is already
+          enabled by default in contemporary FlightGear. We already have to
+          choose between useful options, so let's not waste config space/add
+          complexity with useless ones... (Florent Rougon)
+[USABILITY] Improve the installation instructions. Actually, most of the
+          recent improvements in this area went to
+          <http://wiki.flightgear.org/FFGo>, but some of these have been
+          “backported” to docs/INSTALL/INSTALL_en in this release. Moreover,
+          this file now clearly suggests users to start with the installation
+          instructions from the FFGo wiki page first, then to consult
+          docs/INSTALL/INSTALL_en in case they need more information on
+          certain subjects. (Florent Rougon)
+[MAINT]   Aircraft is an invariable noun. Argh. Fix spelling in all places
+          where this is safe for a “stable update”.
+          (Florent Rougon)
+[FEATURE] Update the German translation. (chris_blues)
+[FEATURE] Update the Spanish translation of ffgo/data/config/config_en.
+          (carmen890)
