@@ -26,6 +26,7 @@
 ## ... or disable it in case it causes problems, or you just can't use it
 ## (for instance, if you are not connected to the Internet).
 #--disable-terrasync
+## See <http://wiki.flightgear.org/TerraSync> for more details.
 
 ## If you want to choose the directory used for automatic scenery download.
 ##

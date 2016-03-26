@@ -29,6 +29,7 @@
 ## nicht benutzen können (z.Bsp. wenn Sie keinen Internetanschluß zur Verfügung
 ## haben).
 #--disable-terrasync
+## Mehr Informationen unter <http://wiki.flightgear.org/TerraSync>.
 
 ## Wenn Sie das Verzeichnis für automatischen Szeneriedownload angeben wollen.
 ##

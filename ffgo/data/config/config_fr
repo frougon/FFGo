@@ -30,6 +30,7 @@
 ## En cas de problème (ou simplement pas d'accès à Internet), on peut le
 ## désactiver avec cette option:
 #--disable-terrasync
+## Voir <http://wiki.flightgear.org/TerraSync> pour plus d'informations.
 
 ## Si vous souhaitez choisir le répertoire dans lequel TerraSync va stocker
 ## les données de scènes téléchargées (paysage, bâtiments...).

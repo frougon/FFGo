@@ -28,6 +28,7 @@
 ## ... o desactívala si te da problemas o no puedes utilizarla
 ## (por ejempo si no estás conectado a Internet).
 #--disable-terrasync
+## Más información en <http://wiki.flightgear.org/TerraSync>.
 
 ## En caso de que quieras elegir la carpeta utilizada para la descarga
 ## automática de escenario
