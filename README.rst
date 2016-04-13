@@ -44,11 +44,10 @@ FFGo requires the following software:
 
   - Operating system:
 
-      * GNU/Linux surely works, as should any Unix-like system;
-      * Windows is reported to work;
-      * MacOS X should also work, except *maybe* for MacOS-specific
-        Tcl/Tk bugs as explained at
-        `<https://www.python.org/download/mac/tcltk/>`_. Please report.
+      * works on Unix-like systems (including GNU/Linux);
+      * works on Windows;
+      * should also work on MacOS X, but no one has reported about this
+        so far.
 
   - `FlightGear`_;
   - `Python`_ 3.4 or later;
