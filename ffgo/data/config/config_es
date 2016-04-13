@@ -91,7 +91,7 @@
 ## Más información en <http://wiki.flightgear.org/Phi>.
 
 ## Limita los fps a un número específico.
-#--prop:/sim/frame-rate-throttle-hz=35
+#--max-fps=60
 
 ## PARA LOS DESARROLLADORES DE AVIONES
 ## Puedes probar la funcionalidad multijugador de un avión utilizando sólo un

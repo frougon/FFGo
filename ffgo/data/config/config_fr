@@ -95,8 +95,8 @@
 ## fait tourner FlightGear).
 ## cf. <http://wiki.flightgear.org/Phi> pour de plus amples informations.
 
-## Limite le nombre d'images par seconde à un nombre fixe.
-#--prop:/sim/frame-rate-throttle-hz=35
+## Limite le nombre d'images par seconde à la valeur spécifiée.
+#--max-fps=60
 
 ## POUR LES DÉVELOPPEURS D'AÉRONEFS
 ## Vous pouvez tester les fonctionnalités multi-joueurs (MP) d'un aéronef avec

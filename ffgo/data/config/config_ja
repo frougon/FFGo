@@ -20,7 +20,7 @@
 
 ## その他
 ## フレームレートを指示した値に制限します。
-#--prop:/sim/frame-rate-throttle-hz=35
+#--max-fps=60
 
 ## 更に詳しいコマンドラインオプションの情報は FlightGear のドキュメントと、
 ## http://wiki.flightgear.org/index.php/Command_Line_Options にあります。

@@ -85,8 +85,8 @@
 ## to be the address of a local interface of the computer running FlightGear).
 ## See <http://wiki.flightgear.org/Phi> for more details.
 
-## Limit fps to the specified number.
-#--prop:/sim/frame-rate-throttle-hz=35
+## Limit the number of frames per second to the specified value.
+#--max-fps=60
 
 ## FOR AIRCRAFT DEVELOPERS
 ## You can test multiplayer functionality of an aircraft using only one

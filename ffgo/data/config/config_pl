@@ -19,7 +19,7 @@
 
 ## INNE
 ## Ogranicz maksymalną prędkość odświeżania (fps) do podanej wartości.
-#--prop:/sim/frame-rate-throttle-hz=35
+#--max-fps=60
 
 ## Więcej informacji na temat opcji wiersza poleceń
 ## można znaleźć w dokumentacji FlightGeara lub też na stronie:

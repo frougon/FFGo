@@ -19,7 +19,7 @@
 
 ## ALTRO
 ## Limitare la frequenza dei fotogrammi (fps) a uno specifico valore.
-#--prop:/sim/frame-rate-throttle-hz=35
+#--max-fps=60
 
 ## Maggiori informazioni sulle opzioni a linea di comando si possono trovare
 ## nella documentazione di FlightGear, oppure consultando il sito:

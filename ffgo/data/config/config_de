@@ -92,7 +92,7 @@
 ## Für weitere Details siehe <http://wiki.flightgear.org/Phi>
 
 ## Begrenze fps auf angegebene Anzahl.
-#--prop:/sim/frame-rate-throttle-hz=35
+#--max-fps=60
 
 ## FÜR FLUGZEUGENTWICKLER
 ## Sie können die Multiplayerfunktionalität eines Flugzeugs testen mit nur
