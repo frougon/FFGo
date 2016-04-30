@@ -16,7 +16,7 @@ PROGNAME = 'FFGo'
 NAME_WITH_VERSION = '{prg} {version}'.format(prg=PROGNAME, version=PROGVERSION)
 USER_AGENT = \
  '{prg}/{version} ' \
- '(+http://people.via.ecp.fr/~flo/projects/FFGo/)'.format(
+ '(+http://frougon.net/projects/FFGo/)'.format(
      prg=PROGNAME, version=PROGVERSION)
 # See also COPYRIGHT_HELP below.
 COPYRIGHT = "Copyright © 2009-2015  Robert 'erobo' Leda <erobo@wp.pl>\n" \

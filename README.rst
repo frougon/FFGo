@@ -13,19 +13,19 @@ program whose purpose is to allow easy assembling and running of an
 .. _FGo!: https://sites.google.com/site/erobosprojects/flightgear/add-ons/fgo
 .. _FlightGear: http://www.flightgear.org/
 .. _Python: https://www.python.org/
-.. _CondConfigParser: http://people.via.ecp.fr/~flo/projects/CondConfigParser/
+.. _CondConfigParser: http://frougon.net/projects/CondConfigParser/
 
 FFGo is written in `Python`_ 3 and is based on `CondConfigParser`_,
 which allows many interesting things as shown at:
 
-  http://people.via.ecp.fr/~flo/projects/FFGo/doc/README-conditional-config/
+  http://frougon.net/projects/FFGo/doc/README-conditional-config/
 
 
 Screenshots
 -----------
 
 Screenshots are available from the `FFGo screenshots gallery page
-<http://people.via.ecp.fr/~flo/projects/FFGo/gallery/>`_.
+<http://frougon.net/projects/FFGo/gallery/>`_.
 
 .. _end-of-intro:
 
@@ -34,7 +34,9 @@ Home page
 
 FFGo's home page is located at:
 
-  http://people.via.ecp.fr/~flo/projects/FFGo/
+  http://frougon.net/projects/FFGo/
+
+(it was on people.via.ecp.fr before April 30, 2016)
 
 
 Requirements
@@ -93,7 +95,7 @@ Download
 
 Release tarballs or zip files can be downloaded from:
 
-  http://people.via.ecp.fr/~flo/projects/FFGo/dist/
+  http://frougon.net/projects/FFGo/dist/
 
 
 Git repository
@@ -127,8 +129,8 @@ need to:
   - add the following lines to your ``/etc/apt/sources.list`` (given for
     Debian *unstable* here)::
 
-      deb http://people.via.ecp.fr/~flo/debian-ffgo unstable main
-      deb-src http://people.via.ecp.fr/~flo/debian-ffgo unstable main
+      deb http://frougon.net/debian-ffgo unstable main
+      deb-src http://frougon.net/debian-ffgo unstable main
 
     Packages for Debian *stable* are also available. If this is what you
     need, just replace *unstable* with *jessie*, or whatever is the
@@ -140,7 +142,7 @@ need to:
     you don't do this, the installation should still be possible, but
     with warnings and, of course, reduced security).
 
-    .. _Florent Rougon's OpenPGP key: https://people.via.ecp.fr/~flo/keys.html
+    .. _Florent Rougon's OpenPGP key: https://frougon.net/keys.html
 
     In order to do this, you should first get the key using the above
     link, and save it to a file. Let's assume you have the key in file
@@ -272,7 +274,7 @@ Documentation
   ``docs/README/README_<language code>`` (the language code is ``en``
   for English; this text is also accessible from FFGo's *Help* menu). In
   a second time, ``docs/README.conditional-config`` (`available online
-  <http://people.via.ecp.fr/~flo/projects/FFGo/doc/README-conditional-config/>`_)
+  <http://frougon.net/projects/FFGo/doc/README-conditional-config/>`_)
   explains how to use the full power of the configuration system used by
   FFGo.
 
@@ -281,7 +283,7 @@ Documentation
   `Sphinx`_). There is a special section in ``docs/INSTALL`` which
   explains how to build it in this situation [#]_. In any case, this
   documentation (for the latest FFGo release) is always `available online
-  <http://people.via.ecp.fr/~flo/projects/FFGo/doc/README-conditional-config/>`_.
+  <http://frougon.net/projects/FFGo/doc/README-conditional-config/>`_.
 
   .. _Sphinx: http://sphinx-doc.org/
 

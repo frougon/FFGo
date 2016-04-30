@@ -43,7 +43,7 @@ READY-TO-USE PACKAGES
 
 Debian packages for FFGo and its dependencies are available, see README.rst
 for specific instructions (or, equivalently, the FFGo home page at
-<http://people.via.ecp.fr/~flo/projects/FFGo/>).
+<http://frougon.net/projects/FFGo/>).
 
 Apart from Debian, it may be that your distribution offers a ready-to-use
 package of FFGo. Please check on its website and contact me (email address at

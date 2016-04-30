@@ -35,7 +35,7 @@ def do_setup():
         description="A powerful graphical launcher for the FlightGear "
                     "flight simulator",
         long_description=long_description,
-        url="http://people.via.ecp.fr/~flo/projects/{}/".format(setuptools_pkg),
+        url="http://frougon.net/projects/{}/".format(setuptools_pkg),
         license='WTFPLv2',
 
         author="Robert Leda, Florent Rougon",

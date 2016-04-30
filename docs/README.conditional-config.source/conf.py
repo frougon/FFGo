@@ -34,7 +34,7 @@ extensions = [
 ]
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3', None),
-    'ccp':    ('http://people.via.ecp.fr/~flo/projects/CondConfigParser/doc',
+    'ccp':    ('http://frougon.net/projects/CondConfigParser/doc',
                None)}
 
 # Add any paths that contain templates here, relative to this directory.
@@ -53,7 +53,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'FFGo.condconfig'
-copyright = '2015, Florent Rougon'
+copyright = '2015-2016, Florent Rougon'
 author = 'Florent Rougon'
 
 # The version info for the project you're documenting, acts as replacement for

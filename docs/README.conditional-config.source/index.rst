@@ -6,7 +6,7 @@ FFGo conditional config documentation
    :maxdepth: 2
 
    condconfig
-   CondConfigParser Manual <http://people.via.ecp.fr/~flo/projects/CondConfigParser/doc/>
+   CondConfigParser Manual <http://frougon.net/projects/CondConfigParser/doc/>
 
 
 Indices and tables

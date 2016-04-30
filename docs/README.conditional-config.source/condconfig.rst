@@ -18,8 +18,8 @@ configuration file that is displayed in the main window, which you can use
 to pass specific options to the FlightGear executable (typically,
 :program:`fgfs`).
 
-.. _CondConfigParser: http://people.via.ecp.fr/~flo/projects/CondConfigParser/
-.. _CondConfigParser Manual: http://people.via.ecp.fr/~flo/projects/CondConfigParser/doc/
+.. _CondConfigParser: http://frougon.net/projects/CondConfigParser/
+.. _CondConfigParser Manual: http://frougon.net/projects/CondConfigParser/doc/
 
 Notes:
 
