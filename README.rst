@@ -142,7 +142,7 @@ need to:
     you don't do this, the installation should still be possible, but
     with warnings and, of course, reduced security).
 
-    .. _Florent Rougon's OpenPGP key: https://frougon.net/keys.html
+    .. _Florent Rougon's OpenPGP key: http://frougon.net/keys.html
 
     In order to do this, you should first get the key using the above
     link, and save it to a file. Let's assume you have the key in file
