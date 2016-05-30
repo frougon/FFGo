@@ -14,6 +14,10 @@ import platform
 import enum
 import gettext
 import locale
+import textwrap
+import traceback
+
+from .constants import PROGNAME
 
 
 def pythonVersionString():
@@ -236,8 +240,28 @@ class TranslationHelper:
                 # There is no translation for the current locale, use English
                 langCode = "en"
 
-        self.translator = gettext.translation(
-            MESSAGES, LOCALE_DIR, languages=[langCode])
+        try:
+            self.translator = gettext.translation(
+                MESSAGES, LOCALE_DIR, languages=[langCode])
+        except FileNotFoundError as e:
+            moResource = "data/locale/{}/LC_MESSAGES/{}.mo".format(langCode,
+                                                                   MESSAGES)
+            if not resourceExists(moResource):
+                msg = textwrap.dedent("""\
+                Error: unable to initialize the translation system. Your
+                installation is missing the file '{moFile}'. If you simply
+                cloned or downloaded {prg}'s Git repository, it is quite normal
+                that .mo files are missing (they must be generated from their
+                .po sources). Please refer to {prg}'s installation guide:
+                docs/INSTALL/INSTALL_en. It has specific instructions that
+                must be followed for a successful installation from the Git
+                repository.""").format(
+                    moFile=resourceFilename(moResource), prg=PROGNAME)
+                l = [traceback.format_exc(), textwrap.fill(msg, width=78)]
+                print(*l, sep='\n', file=sys.stderr)
+                sys.exit(1)
+            else:
+                raise
 
     def pgettext(self, context, msgid):
         s = "{}\x04{}".format(context, msgid)
