@@ -6,13 +6,13 @@ import platform
 import textwrap
 from os.path import expanduser, join, pardir, normpath
 
+PROGNAME = 'FFGo'               # may be needed for some of these imports
 from .version import __version__ as PROGVERSION
 from . import misc
 from .misc import resourceFilename
 
 
 # FFGo-related constants
-PROGNAME = 'FFGo'
 NAME_WITH_VERSION = '{prg} {version}'.format(prg=PROGNAME, version=PROGVERSION)
 USER_AGENT = \
  '{prg}/{version} ' \
