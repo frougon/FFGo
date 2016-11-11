@@ -47,8 +47,9 @@ class error(FFGoException):
 
 class ErrorParsingAptDatFile(error):
     """Exception raised when we cannot parse an apt.dat file."""
-    ExceptionShortDescription = _(
-        "Error parsing an apt.dat file")
+
+    ExceptionShortDescription = _("Error parsing an apt.dat file")
+
     def __init__(self, aptDatFilePath, lineNb, message=None):
         error.__init__(self, message)
         self.aptDatFilePath = aptDatFilePath
@@ -57,7 +58,7 @@ class ErrorParsingAptDatFile(error):
     def __repr__(self):
         return "{}.{}({!r}, {!r}, {!r})".format(
             __name__, type(self).__name__,
-            aptDatFilePath, self.lineNb, self.message)
+            self.aptDatFilePath, self.lineNb, self.message)
 
     def detail(self):
         if self.message:

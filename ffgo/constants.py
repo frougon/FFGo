@@ -135,15 +135,15 @@ POPUP_HEADER_BG_COL = "#000066"
 
 # FG related constants.
 
-# FG_DATA/AI directory name.
+# $FG_ROOT/AI directory name.
 AI_DIR = 'AI'
-# FG_DATA/Aircraft directory name.
+# $FG_ROOT/Aircraft directory name.
 DEFAULT_AIRCRAFT_DIR = 'Aircraft'
-# FG_DATA(or FG_SCENERY)/Airports directory name.
+# $FG_ROOT(or FG_SCENERY)/Airports directory name.
 DEFAULT_AIRPORTS_DIR = 'Airports'
-# FG_DATA/Airports/apt.dat.gz file path.
+# $FG_ROOT/Airports/apt.dat.gz file path.
 APT_DAT = join('Airports', 'apt.dat.gz')
-# FG_DATA/Airports/apt.dat.gz file path.
+# $FG_ROOT/Airports/apt.dat.gz file path.
 METAR_DAT = join('Airports', 'metar.dat.gz')
 
 
