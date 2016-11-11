@@ -45,10 +45,10 @@ class error(FFGoException):
     """Base class for exceptions in the apt_dat module."""
     ExceptionShortDescription = _("Error caught in the apt_dat module")
 
-class UnableToParseAptDat(error):
+class ErrorParsingAptDatFile(error):
     """Exception raised when we cannot parse an apt.dat file."""
     ExceptionShortDescription = _(
-        "Unable to parse an apt.dat file")
+        "Error parsing an apt.dat file")
     def __init__(self, aptDatFilePath, lineNb, message=None):
         error.__init__(self, message)
         self.aptDatFilePath = aptDatFilePath
@@ -61,11 +61,11 @@ class UnableToParseAptDat(error):
 
     def detail(self):
         if self.message:
-            return _("{file}:{line}: {msg}").format(
+            return _("in '{file}', line {line}: {msg}").format(
                 file=self.aptDatFilePath, line=self.lineNb, msg=self.message)
         else:
-            return _("{file}:{line}").format(file=self.aptDatFilePath,
-                                                     line=self.lineNb)
+            return _("in '{file}', line {line}").format(
+                file=self.aptDatFilePath, line=self.lineNb)
 
     def completeMessage(self):
         if self.message:
@@ -77,7 +77,7 @@ class UnableToParseAptDat(error):
                 shortDesc=self.ExceptionShortDescription,
                 detail=self.detail())
 
-class UnableToParseAptDatHeader(UnableToParseAptDat):
+class UnableToParseAptDatHeader(ErrorParsingAptDatFile):
     """
     Exception raised when we cannot parse an apt.dat header."""
     ExceptionShortDescription = _("Unable to parse an apt.dat header")
@@ -294,7 +294,7 @@ class AptDatReader:
 
         mo = self._record_cre.match(line)
         if not mo:
-            raise UnableToParseAptDat(
+            raise ErrorParsingAptDatFile(
                 self.path, self.lineNb,
                 _("not a valid record: {!r}").format(self.line))
 
@@ -378,7 +378,7 @@ class AptDatReader:
                 # Land airport, seaplane base or heliport
                 l = payload.split(None, maxsplit=4)
                 if len(l) < 5:
-                    raise UnableToParseAptDat(
+                    raise ErrorParsingAptDatFile(
                         self.path, self.lineNb,
                         _("not enough fields in record: {!r}")
                         .format(self.line))
@@ -438,7 +438,7 @@ class AptDatReader:
 
         firstLineRest = payload.split(None, maxsplit=4)
         if len(firstLineRest) < 5:
-            raise UnableToParseAptDat(
+            raise ErrorParsingAptDatFile(
                 self.path, self.lineNb,
                 _("not enough fields in record: {!r}").format(self.line))
 
@@ -498,9 +498,9 @@ class RawAirportInfoParser:
             lineInfo = self.aptInfo.otherLines[self.lineIdx-1]
             return lineInfo[0]
 
-    def raiseUnableToParseAptDat(self, message, cause=None):
-        exc = UnableToParseAptDat(self.aptDatPath(), self.curLineNum(),
-                                  message)
+    def raiseErrorParsingAptDatFile(self, message, cause=None):
+        exc = ErrorParsingAptDatFile(self.aptDatPath(), self.curLineNum(),
+                                     message)
         if cause is not None:
             raise exc from cause
         else:
@@ -510,7 +510,7 @@ class RawAirportInfoParser:
         try:
             res = misc.DecimalCoord(s)
         except ValueError as e:
-            self.raiseUnableToParseAptDat(
+            self.raiseErrorParsingAptDatFile(
                 _("unable to parse as a latitude: {0!r} in line {1!r}").format(
                     s, self.curLine()),
                 e)
@@ -521,7 +521,7 @@ class RawAirportInfoParser:
         try:
             res = misc.DecimalCoord(s)
         except ValueError as e:
-            self.raiseUnableToParseAptDat(
+            self.raiseErrorParsingAptDatFile(
                 _("unable to parse as a longitude: {0!r} in line {1!r}")
                 .format(s, self.curLine()),
                 e)
@@ -532,7 +532,7 @@ class RawAirportInfoParser:
         try:
             res = float(s)
         except ValueError as e:
-            self.raiseUnableToParseAptDat(
+            self.raiseErrorParsingAptDatFile(
                 _("unable to parse as a heading: {0!r} in line {1!r}").format(
                     s, self.curLine()),
                 e)
@@ -543,7 +543,7 @@ class RawAirportInfoParser:
         try:
             res = float(s)
         except ValueError as e:
-            self.raiseUnableToParseAptDat(
+            self.raiseErrorParsingAptDatFile(
                 _("unable to parse as a length: {0!r} in line {1!r}")
                 .format(s, self.curLine()),
                 e)
@@ -554,7 +554,7 @@ class RawAirportInfoParser:
         try:
             res = float(s)
         except ValueError as e:
-            self.raiseUnableToParseAptDat(
+            self.raiseErrorParsingAptDatFile(
                 _("unable to parse as an elevation: {0!r} in line {1!r}")
                 .format(s, self.curLine()),
                 e)
@@ -565,7 +565,7 @@ class RawAirportInfoParser:
         try:
             res = SurfaceType(int(s))
         except ValueError as e:
-            self.raiseUnableToParseAptDat(
+            self.raiseErrorParsingAptDatFile(
                 _("unable to parse as a surface type code: {0!r} in line "
                   "{1!r}").format(s, self.curLine()),
                 e)
@@ -576,7 +576,7 @@ class RawAirportInfoParser:
         try:
             res = V810SurfaceType(int(s))
         except ValueError as e:
-            self.raiseUnableToParseAptDat(
+            self.raiseErrorParsingAptDatFile(
                 _("unable to parse as a v810 surface type code: {0!r} in line "
                   "{1!r}").format(s, self.curLine()),
                 e)
@@ -587,7 +587,7 @@ class RawAirportInfoParser:
         try:
             res = ShoulderSurfaceType(int(s))
         except ValueError as e:
-            self.raiseUnableToParseAptDat(
+            self.raiseErrorParsingAptDatFile(
                 _("unable to parse as a shoulder surface type code: {0!r} in "
                   "line {1!r}").format(s, self.curLine()),
                 e)
@@ -617,7 +617,7 @@ class RawAirportInfoParser:
         try:
             res = RunwayMarkings(int(s))
         except ValueError as e:
-            self.raiseUnableToParseAptDat(
+            self.raiseErrorParsingAptDatFile(
                 _("unable to parse as a code for runway markings: {0!r} in "
                   "line {1!r}").format(s, self.curLine()),
                 e)
@@ -633,7 +633,7 @@ class RawAirportInfoParser:
                 raise ValueError(_("invalid v810 code for runway markings: "
                                    "{0!r}").format(code))
         except ValueError as e:
-            self.raiseUnableToParseAptDat(
+            self.raiseErrorParsingAptDatFile(
                 _("unable to parse as a v810 code for runway markings: "
                   "{0!r} in line {1!r}").format(s, self.curLine()),
                 e)
@@ -644,7 +644,7 @@ class RawAirportInfoParser:
         try:
             res = PerimeterBuoys(int(s))
         except ValueError as e:
-            self.raiseUnableToParseAptDat(
+            self.raiseErrorParsingAptDatFile(
                 _("unable to parse as a perimeter buoys flag: {0!r} in line "
                   "{1!r}").format(s, self.curLine()),
                 e)
@@ -655,7 +655,7 @@ class RawAirportInfoParser:
         try:
             res = HelipadEdgeLighting(int(s))
         except ValueError as e:
-            self.raiseUnableToParseAptDat(
+            self.raiseErrorParsingAptDatFile(
                 _("unable to parse as an helipad edge lighting flag: {0!r} in "
                   "line {1!r}").format(s, self.curLine()),
                 e)
@@ -679,7 +679,7 @@ class RawAirportInfoParser:
         if code == 15: # Startup location (v850, deprecated)
             l = payload.split(None, maxsplit=3)
             if len(l) < 3:
-                self.raiseUnableToParseAptDat(
+                self.raiseErrorParsingAptDatFile(
                     _("not enough fields in record: {!r}").format(
                         self.curLine()))
             elif len(l) == 3:
@@ -700,7 +700,7 @@ class RawAirportInfoParser:
                               # code 15)
             l = payload.split(None, maxsplit=5)
             if len(l) < 6:
-                self.raiseUnableToParseAptDat(
+                self.raiseErrorParsingAptDatFile(
                     _("not enough fields in record: {!r}").format(
                         self.curLine()))
 
@@ -739,7 +739,7 @@ class RawAirportInfoParser:
             elif code in (1, 16, 17): # Land airport, seaplane base or heliport
                 l = payload.split(None, maxsplit=4)
                 if len(l) < 5:
-                    self.raiseUnableToParseAptDat(
+                    self.raiseErrorParsingAptDatFile(
                         _("not enough fields in record: {!r}").format(
                             self.curLine()))
 
@@ -1005,7 +1005,7 @@ class RawAirportInfoParser:
         # This whole method is untested, as apt.dat 2013.10 (build 20131335)
         # does not contain any runway declared in this old format...
         if len(e) < 14:
-            self.raiseUnableToParseAptDat(
+            self.raiseErrorParsingAptDatFile(
                 _("not enough fields in record: {!r}").format(self.curLine()))
 
         landRunways = []
@@ -1102,7 +1102,7 @@ class RawAirportInfoParser:
         elif 0 < number <= 18:
             other = number + 18
         else:
-            self.raiseUnableToParseAptDat(
+            self.raiseErrorParsingAptDatFile(
                 _("unexpected runway number: {num!r}").format(num=number))
 
         return other
@@ -1112,7 +1112,7 @@ class RawAirportInfoParser:
     def getRwyNum(self, rwy):
         mo = self._rwyNum_cre.match(rwy)
         if not mo:
-            self.raiseUnableToParseAptDat(
+            self.raiseErrorParsingAptDatFile(
                 _("runway name not starting with digits: {rwy!r}")
                 .format(rwy=rwy))
 
@@ -1171,7 +1171,7 @@ class RawAirportInfoParser:
         """Process a runway record with code 100."""
         e = payload.split()
         if len(e) < 22:
-            self.raiseUnableToParseAptDat(
+            self.raiseErrorParsingAptDatFile(
                 _("not enough fields in record: {!r}").format(self.curLine()))
 
         lat1 = self._readLatitude(e[8])
@@ -1204,7 +1204,7 @@ class RawAirportInfoParser:
         """Process a runway record with code 101."""
         e = payload.split()
         if len(e) < 8:
-            self.raiseUnableToParseAptDat(
+            self.raiseErrorParsingAptDatFile(
                 _("not enough fields in record: {!r}").format(self.curLine()))
 
         lat1 = self._readLatitude(e[3])
@@ -1232,7 +1232,7 @@ class RawAirportInfoParser:
         """Process a “runway” record with code 102 (i.e., a helipad)."""
         e = payload.split()
         if len(e) < 11:
-            self.raiseUnableToParseAptDat(
+            self.raiseErrorParsingAptDatFile(
                 _("not enough fields in record: {!r}").format(self.curLine()))
 
         lat = self._readLatitude(e[1])
