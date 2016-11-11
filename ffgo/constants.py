@@ -65,8 +65,9 @@ CONFIG = join(USER_DATA_DIR, 'config')
 # To allow easy migration from FGo! to FFGo
 FGO_CONFIG = join(HOME_DIR, '.fgo', 'config')
 
-# Path to apt.dat.gz timestamp file.
-APT_TIMESTAMP = join(USER_DATA_DIR, 'timestamp')
+# Path to the obsolete (since apt digest file format version 4) timestamp file
+# for the apt digest file. The timestamp is now stored inside the file.
+OBSOLETE_APT_TIMESTAMP_FILE = join(USER_DATA_DIR, 'timestamp')
 
 DEFAULT_LOG_NAME = 'FlightGear.log'
 

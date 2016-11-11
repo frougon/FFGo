@@ -588,8 +588,6 @@ class App:
                                           # self.pressureConverterDialog to None
         self.setAirportFinderToNone() # Initialize self.airportFinder to None
         self.setGPSToolToNone()       # Initialize self.gpsTool to None
-        # Window to let the user know a long operation is taking place
-        self.aptDatParkLookupInfoWindow = None
 
         rereadCfgFile = self.proposeConfigChanges()
         # Will set self.FGCommand.{argList,lastConfigParsingExc}
@@ -722,11 +720,11 @@ available for this airport in $FG_SCENERY, allowing {prg} to use it.""")
                 "AUTO_UPDATE_APT_to_Automatic" in alreadyProposedChanges):
             message = _('Change “Airport database update” to “Automatic”?')
             detail = (_("""\
-Whenever FlightGear's FG_ROOT/Airports/apt.dat.gz file is updated, {prg}
+Whenever FlightGear's apt.dat files are updated, {prg}
 must rebuild its own airport database for proper operation. This can be
 done manually with the “Rebuild Airport Database” button from the
-Preferences dialog, or automatically whenever {prg} detects a timestamp
-change for FlightGear's apt.dat.gz.""")
+Preferences dialog, or automatically whenever {prg} detects a change in
+its apt.dat files.""")
             .replace('\n', ' ') + "\n\n" + _("""\
 The default setting in {prg} for this option is now “Automatic”, because
 it is convenient, with no significant drawback in my opinion. Do you
@@ -864,9 +862,9 @@ want to follow this new default and set “Airport database update” to
                                          clearSearch=clearSearch)
 
     def buildAirportList(self, clearSearch=False):
-        if (self.config.auto_update_apt.get() and
-            os.path.isfile(self.config.apt_path)):
-            self.config._autoUpdateApt()
+        if (self.config.auto_update_apt.get() or
+            not os.path.isfile(constants.APT)):
+            self.config.autoUpdateApt()
 
         if self.config.airportStatsManager is None: # application init
             # Requires the translation system to be in place
@@ -881,7 +879,7 @@ want to follow this new default and set “Airport database update” to
 
         # This is limited to the list of installed airports if
         # 'Config.filteredAptList' is set to 1.
-        self.browsableAirports = self.config._readApt()
+        self.browsableAirports = self.config.readAptDigestFile()
 
         # Load the saved statistics into the new in-memory AirportStub
         # instances (the set of airports may have just changed, hence the need
@@ -1050,7 +1048,8 @@ want to follow this new default and set “Airport database update” to
              "hangar":      pgettext("flight type", "Hangar"),
              "misc":        pgettext("flight type", "Misc"),
              "tie-down":    pgettext("flight type", "Tie-down"),
-             # There are inconsistencies between apt.dat and its spec...
+             # There are inconsistencies between X-Plane's apt.dat file and its
+             # specification...
              "tie_down":    pgettext("flight type", "Tie-down"),
              # Fallback
              "":            pgettext("flight type", "Unspecified")}
@@ -1136,17 +1135,17 @@ want to follow this new default and set “Airport database update” to
 
             popup.tk_popup(event.x_root, event.y_root, 0)
 
-    def _readAirportDataWrongIndexErrMsg(self, pbType, icao, aptPath,
-                                         byteOffset):
+    def _readAirportDataWrongIndexErrMsg(self, pbType, icao, aptDatPath,
+                                         aptDatUncompSize, byteOffset):
         message = _('Unable to load airport data')
 
         if pbType == "index too large":
             startOfMsg = _("""\
 Attempt to load data for airport {icao} from apt digest file '{aptDigest}' \
 using index {index}, which is greater than, or equal to the supposed size of \
-uncompressed '{aptDat}' ({aptDatSize} bytes) as recorded in '{aptDigest}'."""
+uncompressed '{aptDat}' ({uncompSize} bytes) as recorded in '{aptDigest}'."""
             ).format(icao=icao, aptDigest=APT, index=byteOffset,
-                     aptDat=aptPath, aptDatSize=self.config.aptDatSize)
+                     aptDat=aptDatPath, uncompSize=aptDatUncompSize)
         elif pbType == "airport not found at index":
             startOfMsg = _("""\
 Unable to find data for airport {icao} in apt digest file '{aptDigest}' \
@@ -1165,11 +1164,11 @@ instructions on {prg}'s home page including:
   - a copy of the '{aptDat}' and '{aptDigest}' files (DON'T REBUILD THE \
 AIRPORT DATABASE before making a copy of '{aptDigest}', otherwise it will be \
 useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
-                                 aptDigest=APT, aptDat=aptPath)
+                                 aptDigest=APT, aptDat=aptDatPath)
         showerror(_('{prg}').format(prg=PROGNAME), message, detail=detail)
 
     def readAirportData(self, icao):
-        """Read airport data from self.config.aptDatCache or apt.dat.
+        """Read airport data from self.config.aptDatCache or apt.dat files.
 
         Return a tuple of the form (found, airport) where 'found' is a
         boolean and airport an Airport instance, or None when 'found' is
@@ -1182,25 +1181,27 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
                 airport = cachedAirport
                 break
         else:
-            from ..fgdata.apt_dat import AptDat
-            aptPath = os.path.join(self.config.FG_root.get(), APT_DAT)
-
-            # index[0] is the byte offset in apt.dat, and index[1] the
-            # corresponding line number.
-            index = self.config.airports[icao].indexInAptDat
-            if index[0] >= self.config.aptDatSize:
-                self._readAirportDataWrongIndexErrMsg("index too large",
-                                                      icao, aptPath, index[0])
+            # index[0] is the file index in Config.aptDatFilesInfoFromDigest,
+            # index[1] is the byte offset in that file and
+            # index[2] is the corresponding line number.
+            index = self.config.airports[icao].airportIndex
+            aptDatFileInfo = self.config.aptDatFilesInfoFromDigest[index[0]]
+            aptDatPath = aptDatFileInfo.path
+            if index[1] >= aptDatFileInfo.uncompSize:
+                self._readAirportDataWrongIndexErrMsg(
+                    "index too large", icao, aptDatPath,
+                    aptDatFileInfo.uncompSize, index[1])
                 return (False, None)
 
-            with AptDat(aptPath) as aptDat:
-                found, airport = aptDat.readAirportDataUsingIndex(icao, index)
+            found, airport = \
+            self.config.aptDatSetManager.readAirportDataUsingIndex(icao, index)
 
             if found:
                 self.config.aptDatCache.append((icao, airport))
             else:
                 self._readAirportDataWrongIndexErrMsg(
-                    "airport not found at index", icao, aptPath, index[0])
+                    "airport not found at index", icao, aptDatPath,
+                    aptDatFileInfo.uncompSize, index[1])
 
         return (found, airport)
 
@@ -1221,8 +1222,8 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
         Return a dictionary if successful, or None if the apt.dat lookup
         (done as a last resort) failed. The keys of the dictionary are
         flight types (if the data was found in a groundnet) or type of
-        location (if it comes from apt.dat). Its values are sequences of
-        Parking instances.
+        location (if it comes from an apt.dat file). Its values are
+        sequences of Parking instances.
 
         """
         res = {}
@@ -2003,7 +2004,8 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
             cfgValue = getattr(self.config, cfgVarName).get()
 
             # Special case for the parking name because of the special format
-            # used to represent parkings obtained from apt.dat in Config.park.
+            # used in Config.park to represent startup locations obtained from
+            # an apt.dat file.
             if cfgVarName == 'park':
                 status, parkName, *rest = self.config.decodeParkingSetting(
                     cfgValue)
@@ -2012,8 +2014,8 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
                     # Safety measure in case parkName were the empty string,
                     # which should not be the case unless there is a bug.
                     if not cfgValue:
-                        logger.notice(
-                            "Empty parking name obtained from apt.dat. Bug?")
+                        logger.notice("Empty parking name obtained from an "
+                                      "apt.dat file. Bug?")
                         cfgValue = '?'
                 elif status == "invalid":
                     cfgValue = pgettext('parking position', 'Invalid')

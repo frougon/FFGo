@@ -354,3 +354,48 @@ class Observable:
         else:
             raise ValueError("invalid access type for trace(): {accessType}"
                              .format(accessType=accessType))
+
+
+class ProgressFeedbackHandler:
+    """Simple class to interface with widgets indicating progress of a task."""
+    def __init__(self, text="", min=0.0, max=100.0, value=0.0):
+        self.setMinMax(min, max)
+        self.setTextAndValue(text, value)
+
+    def setMin(self, value):
+        self.min = float(value)
+        self.amplitude = self.max - self.min
+
+    def setMax(self, value):
+        self.max = float(value)
+        self.amplitude = self.max - self.min
+
+    def setMinMax(self, min, max):
+        self.min, self.max = float(min), float(max)
+        self.amplitude = self.max - self.min
+
+    def setText(self, text):
+        self.text = text
+        self.onUpdated()
+
+    def setValue(self, value):
+        self.value = float(value)
+        self.onUpdated()
+
+    def setTextAndValue(self, text, value):
+        self.text = text
+        self.value = float(value)
+        self.onUpdated()
+
+    def startPhase(self, text, min, max):
+        self.text = text
+        self.setMinMax(min, max)
+        self.setValue(min)
+        self.onUpdated()
+
+    def forceUpdate(self):
+        self.onUpdated()
+
+    def onUpdated(self):
+        """No-op. To be overridden by subclasses."""
+        pass

@@ -39,7 +39,6 @@ class Metar:
 
         self.config = config
         self.icao = config.airport
-        self.apt_path = config.apt_path
         self.metar_path = config.metar_path
 
         self.decoded = IntVar()

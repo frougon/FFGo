@@ -1,8 +1,8 @@
-# apt_dat.py --- Parse X-Plane/FlightGear's apt.dat file; create and read the
+# apt_dat.py --- Parse X-Plane/FlightGear's apt.dat files; create and read the
 #                “apt digest file”
 # -*- coding: utf-8 -*-
 #
-# Copyright (c) 2015  Florent Rougon
+# Copyright (c) 2015, 2016  Florent Rougon
 #
 # This file is distributed under the terms of the DO WHAT THE FUCK YOU WANT TO
 # PUBLIC LICENSE version 2, dated December 2004, by Sam Hocevar. You should
@@ -14,6 +14,8 @@ import gzip
 import re
 import textwrap
 import bisect
+import collections
+import itertools
 from math import degrees, radians, cos, sin
 
 try:
@@ -44,24 +46,26 @@ class error(FFGoException):
     ExceptionShortDescription = _("Error caught in the apt_dat module")
 
 class UnableToParseAptDat(error):
-    """
-    Exception raised when we cannot parse the apt.dat (or apt.dat.gz) file."""
+    """Exception raised when we cannot parse an apt.dat file."""
     ExceptionShortDescription = _(
-        "Unable to parse the apt.dat (or apt.dat.gz) file")
-    def __init__(self, lineNb, message=None):
+        "Unable to parse an apt.dat file")
+    def __init__(self, aptDatFilePath, lineNb, message=None):
         error.__init__(self, message)
+        self.aptDatFilePath = aptDatFilePath
         self.lineNb = lineNb
 
     def __repr__(self):
-        return "{0}.{1}({2!r}, {3!r})".format(__name__, type(self).__name__,
-                                              self.lineNb, self.message)
+        return "{}.{}({!r}, {!r}, {!r})".format(
+            __name__, type(self).__name__,
+            aptDatFilePath, self.lineNb, self.message)
 
     def detail(self):
         if self.message:
-            return _("line {line}: {msg}").format(line=self.lineNb,
-                                                  msg=self.message)
+            return _("{file}:{line}: {msg}").format(
+                file=self.aptDatFilePath, line=self.lineNb, msg=self.message)
         else:
-            return _("line {line}").format(line=self.lineNb)
+            return _("{file}:{line}").format(file=self.aptDatFilePath,
+                                                     line=self.lineNb)
 
     def completeMessage(self):
         if self.message:
@@ -75,13 +79,16 @@ class UnableToParseAptDat(error):
 
 class UnableToParseAptDatHeader(UnableToParseAptDat):
     """
-    Exception raised when we cannot parse the apt.dat (or apt.dat.gz) header."""
-    ExceptionShortDescription = _(
-        "Unable to parse the apt.dat (or apt.dat.gz) header")
+    Exception raised when we cannot parse an apt.dat header."""
+    ExceptionShortDescription = _("Unable to parse an apt.dat header")
 
 class UnableToParseAptDigest(error):
     """Exception raised when we can't parse the apt digest file."""
     ExceptionShortDescription = _("Unable to parse the apt digest file")
+
+class AptDigestIndexMismatch(error):
+    """Exception raised when we don't find the expected airport at some index."""
+    ExceptionShortDescription = _("Index mismatch")
 
 class UnrecognizedFormatForAptDigest(UnableToParseAptDigest):
     """
@@ -90,19 +97,85 @@ class UnrecognizedFormatForAptDigest(UnableToParseAptDigest):
         "Unable to recognize the format of the apt digest file")
 
 
-class AptDat:
-    """Class for reading X-Plane/FlightGear's apt.dat file.
+# Metadata concerning an apt.dat file
+# 'path': str; 'size' and 'uncompSize': int; 'timestamp': float
+AptDatFileInfo = collections.namedtuple(
+    "AptDatFileInfo", ["path", "size", "uncompSize", "timestamp"])
 
-    The makeAptDigest() method can be used to write an apt digest file
-    from the input apt.dat (or apt.dat.gz...). Read support for such
-    files is provided by the AptDatDigest class.
+
+class RawAirportInfo:
+    """Very basic, cheap container class for airport data.
+
+    Since this class will be instantiated for every airport in every
+    apt.dat file, try to make it as lightweight as possible.
 
     """
 
-    geodCalc = geodesy.GeodCalc()
+    __slots__ = ("aptDatIndex", "byteOffset", "firstLineNum", "rowCode",
+                 "firstLineRest", "otherLines")
 
-    def __init__(self, path):
+    def __init__(self, aptDatIndex, byteOffset, firstLineNum, rowCode,
+                 firstLineRest, otherLines):
+        """Initialize a RawAirportInfo instance.
+
+        aptDatIndex:   index (in some externally-defined list) of the
+                       apt.dat file this data comes from---normally an
+                       integer, or None if unused
+        byteOffset:    file offset in bytes where the airport definition
+                       starts
+        firstLineNum:  line number in the apt.dat file where this
+                       airport definition starts
+        rowCode:       row code for the airport (1, 16 or 17 in the
+                       v1000 spec, “row code” being the term used in the
+                       apt.dat spec)
+        firstLineRest: list of strings representing the contents of line
+                       'firstLineNum' after its row code
+        otherLines:    list of tuples of the form (lineNb, rowCode,
+                       payload), one for each line after the first line
+                       of the airport definition, where 'payload' is a
+                       string representing the line contents following
+                       its row code. These are all non-blank,
+                       non-comment, inside-one-airport-definition lines,
+                       therefore the various 'lineNb' are not
+                       necessarily consecutive.
+
+        """
+        for attr in self.__slots__:
+            setattr(self, attr, locals()[attr])
+
+    def __repr__(self):
+        argString = ", ".join([ "{}={!r}".format(attr, getattr(self, attr))
+                                for attr in self.__slots__ ])
+
+        return "{}.{}({})".format(__name__, type(self).__name__, argString)
+
+
+class AptDatReader:
+    """Class for reading an X-Plane/FlightGear's apt.dat file.
+
+    The main methods of this class, readFile() and
+    getRawAirportInfoUsingIndex(), return RawAirportInfo instances.
+
+    """
+
+    def __init__(self, path, index=None, progressFeedbackHandler=None):
+        """Constructor for an AptDatReader instance.
+
+        'path' may be gzipped (ending in '.gz') or uncompressed.
+        If 'index' is provided, it should be an integer giving the index
+        of 'path' in an externally-defined ordered list of apt.dat files
+        (cf. AptDatSetManager).
+
+        """
         self.path = os.path.abspath(path)
+        self.isGZipCompressed = self.path.endswith(".gz")
+        # Index of this file inside an ordered list of files (used to
+        # save memory or space in some situations, as it can replace the
+        # apt.dat file path given the proper mapping)
+        self.index = index
+        self.progressFeedbackHandler = (
+            progressFeedbackHandler if progressFeedbackHandler is not None
+            else misc.ProgressFeedbackHandler())
 
     def open(self):
         logger.info("Opening '{}' for reading".format(self.path))
@@ -116,7 +189,8 @@ class AptDat:
         #   - it considerably increases the speed of tell(), making the
         #     “rebuild airport database” operation take about 25 s on my
         #     computer as opposed to 56 s when apt.dat.gz is opened in text
-        #     mode!
+        #     mode! (measures with an older version of the code, pre-November
+        #     2016, but the argument still applies to the current code)
         #
         # Note: alternatively, using the line number as an index instead of the
         #       return value of tell() allows to build the database in less
@@ -125,7 +199,13 @@ class AptDat:
         #       YSSL in apt.dat 'cycle 2013.10', as opposed to 0.8 s with
         #       an index obtained using tell() [the latter in text as well as
         #       binary mode]).
-        self.file = gzip.open(self.path, mode="rb")
+        self.rawFileObj = open(self.path, mode="rb")
+
+        if self.isGZipCompressed:
+            # Offers transparent decompression
+            self.file = gzip.GzipFile(mode="rb", fileobj=self.rawFileObj)
+        else:
+            self.file = self.rawFileObj
 
         return self.file
 
@@ -134,18 +214,39 @@ class AptDat:
 
         try:
             self.lineNb = 0
-            self._readHeader()
             return self
         except:
-            self.file.close()
+            try:
+                self.close()
+            except Exception:
+                pass
             raise
 
     def __exit__(self, excType, excVal, excTb):
-        self.file.close()
+        self.close()
         return False
 
+    def close(self):
+        self.file.close()
+        # Calling a GzipFile object’s close() method does not close its
+        # underlying file object
+        if self.isGZipCompressed:
+            self.rawFileObj.close()
+
+    def approxOffset(self):
+        """Return an offset inside self.rawFileObj suitable for progress indicators.
+
+        The offset represents a position inside the compressed data if
+        the file is compressed, and may be influenced by buffering
+        performed by the gzip decompression code, hence the “approx”
+        qualifier. It should be suitable for progress indicators and
+        similar things, though.
+
+        """
+        return self.rawFileObj.tell()
+
     def _readline(self):
-        """Read a non-empty, non-comment line from apt.dat.
+        """Read a non-empty, non-comment line from an apt.dat file.
 
         Store the line read in self.line and its number in self.lineNb
         (starting from 1). Return the empty string when reaching EOF.
@@ -153,10 +254,13 @@ class AptDat:
         """
         while True:
             self.lineNb += 1
-            # As indicated by the copyright sign at the top, apt.dat seems to
-            # use the ISO 8859-1 encoding (it might be a similar one such as
-            # ISO 8859-15, but I believe the X-Plane maintainers try to use
-            # ASCII only in the actual data).
+            offsetBeforeStartOfLine = self.file.tell()
+            # As indicated by the copyright sign at the top, X-Plane's
+            # apt.dat seems to use the ISO 8859-1 encoding (it might be
+            # a similar one such as ISO 8859-15, but I believe the
+            # X-Plane maintainers try to use ASCII only in the actual
+            # data). This may have to be reconsidered---watch evolution
+            # of the apt.dat spec.
             line = self.file.readline().decode("latin_1", errors="replace")
             if not line:
                 self.line = ""
@@ -171,6 +275,7 @@ class AptDat:
                 break
 
         self.line = line        # used when reporting parse errors, etc.
+        self.offsetBeforeStartOfLine = offsetBeforeStartOfLine
         return line
 
     _record_cre = re.compile(r"(?P<code>\d+)[ \t]*(?P<rest>.*)$")
@@ -190,7 +295,7 @@ class AptDat:
         mo = self._record_cre.match(line)
         if not mo:
             raise UnableToParseAptDat(
-                self.lineNb,
+                self.path, self.lineNb,
                 _("not a valid record: {!r}").format(self.line))
 
         return (int(mo.group("code")), mo.group("rest"))
@@ -201,24 +306,24 @@ class AptDat:
         line = self._readline()
         if not line:
             raise UnableToParseAptDatHeader(
-                self.lineNb,
+                self.path, self.lineNb,
                 _("EOF reached while looking for the first non-empty line"))
         if len(line) != 1:     # should be either 'I' (“PC”) or 'A' (“MAC”)
             raise UnableToParseAptDatHeader(
-                self.lineNb,
+                self.path, self.lineNb,
                 _("first non-empty line should contain exactly one character"))
 
         line = self._readline()
         if not line:
             raise UnableToParseAptDatHeader(
-                self.lineNb,
+                self.path, self.lineNb,
                 _("EOF reached while looking for the version of the format"))
 
         mo = self._formatLine_cre.match(line)
         if not mo:
             raise UnableToParseAptDatHeader(
-                self.lineNb,
-                _("unexpected header line: {line!r}").format(line=self.line))
+                self.path, self.lineNb,
+                _("unexpected header line: {line!r}").format(line=line))
 
         self.formatVersion = int(mo.group("version"))
         if self.formatVersion > 1000:
@@ -241,14 +346,174 @@ class AptDat:
         self.file.seek(self.endOfHeader)
         self.lineNb = self.endOfHeaderLineNb
 
+    def readFile(self, airportInfoDict, bytesReadSoFar=None):
+        """Read an apt.dat file.
+
+        RawAirportInfo instances for airports that are not shadowed by
+        airports-with-the-same-name in earlier apt.dat files are added
+        to 'airportInfoDict'.
+
+        'bytesReadSoFar' accounts for all apt.dat files already read
+        (i.e., coming earlier in AptDatSetManager.aptDatList).
+
+        Return the uncompressed size of the possibly-gzipped input
+        apt.dat file.
+
+        """
+        self._readHeader()
+        # In case the apt.dat file doesn't have a start-of-airport row
+        # code (1, 16 or 17) after its header (which would be invalid,
+        # except maybe if the file has nothing apart from its header)
+        skipAirport = True
+
+        while True:
+            rowCode, payload = self._readRecord()
+            if rowCode is None:    # EOF
+                break
+            elif not (bytesReadSoFar is None or (self.lineNb % 1000)):
+                self.progressFeedbackHandler.setValue(
+                    bytesReadSoFar + self.approxOffset())
+
+            if rowCode in (1, 16, 17):
+                # Land airport, seaplane base or heliport
+                l = payload.split(None, maxsplit=4)
+                if len(l) < 5:
+                    raise UnableToParseAptDat(
+                        self.path, self.lineNb,
+                        _("not enough fields in record: {!r}")
+                        .format(self.line))
+
+                currentAirportId = l[3].upper() # often an ICAO, but not always
+                if currentAirportId in airportInfoDict:
+                    logger.info(_("{aptDat}:{lineNb}: skipping airport "
+                                  "{aptId} (already defined earlier)")
+                                .format(aptDat=self.path, lineNb=self.lineNb,
+                                        aptId=currentAirportId))
+                    skipAirport = True
+                else:
+                    airportInfoDict[currentAirportId] = rawAirportInfo = \
+                        RawAirportInfo(self.index, self.offsetBeforeStartOfLine,
+                                       self.lineNb, rowCode, l, [])
+                    skipAirport = False
+            elif rowCode == 99:
+                logger.debug(_("{aptDat}:{lineNb}: row code 99 found "
+                               "(normally at end of file)")
+                             .format(aptDat=self.path, lineNb=self.lineNb))
+                skipAirport = True
+            elif not skipAirport:
+                # Line belonging to an already started, and not skipped airport
+                # entry; just append it.
+                rawAirportInfo.otherLines.append((self.lineNb, rowCode,
+                                                  payload))
+        return self.file.tell() # past-the-end offset in the uncompressed stream
+
+    def getRawAirportInfoUsingIndex(self, airportID, localIndex):
+        """Get raw airport info from self.file using a local index.
+
+        'localIndex' should be a sequence (byteOffset, lineNb) where
+        'byteOffset' points to the start of the first line defining the
+        airport in self.file, and 'lineNb' is the corresponding line
+        number (starting from 1).
+
+        Return a tuple of the form (found, data) where:
+          - 'found' is a boolean indicating whether airport data for
+             the specified 'airportID' was found at 'localIndex';
+          - 'data' is an RawAirportInfo instance if the data was found,
+            otherwise None.
+
+        """
+        logger.debug("{meth}(): entered method".format(
+            meth=self.getRawAirportInfoUsingIndex.__qualname__))
+        self.file.seek(localIndex[0])
+        logger.debug("{meth}(): after the seek()".format(
+            meth=self.getRawAirportInfoUsingIndex.__qualname__))
+        # Pretend we've just read the line preceding the start-of-airport
+        # record
+        self.lineNb = localIndex[1] - 1
+
+        airportRowCode, payload = self._readRecord()
+        # 1, 16, 17: land airport, seaplane base or heliport
+        if airportRowCode not in (1, 16, 17):
+            return (False, None)
+
+        firstLineRest = payload.split(None, maxsplit=4)
+        if len(firstLineRest) < 5:
+            raise UnableToParseAptDat(
+                self.path, self.lineNb,
+                _("not enough fields in record: {!r}").format(self.line))
+
+        foundAirportId = firstLineRest[3].upper() # often an ICAO, not always
+        if foundAirportId != airportID:
+            raise AptDigestIndexMismatch(
+                _("expected {aptId1!r}, but found {aptId2!r} instead")
+                .format(aptId1=airportID, aptId2=foundAirportId))
+
+        otherLines = []
+
+        while True:
+            rowCode, payload = self._readRecord()
+            if rowCode in (None, 1, 16, 17, 99):
+                break           # EOF, start of next airport or end of data
+            else:
+                otherLines.append((self.lineNb, rowCode, payload))
+
+        rawAirportInfo = RawAirportInfo(self.index, localIndex[0],
+                                        localIndex[1], airportRowCode,
+                                        firstLineRest, otherLines)
+        return (True, rawAirportInfo)
+
+
+class RawAirportInfoParser:
+    """Parser for RawAirportInfo instances.
+
+    Depending on the method used, the result can be an Airport instance
+    or data specifically tailored for apt digest file generation.
+
+    """
+    geodCalc = geodesy.GeodCalc()
+
+    def __init__(self, rawAirportInfo, indexToAptDatPath):
+        self.aptInfo = rawAirportInfo
+        # Any sequence is fine if the 'aptDatIndex' inside 'rawAirportInfo' is
+        # an integer (which is normally the case); otherwise, this should be a
+        # mapping.
+        self.indexToAptDatPath = indexToAptDatPath
+        self.lineIdx = 0        # among the lines of the airport definition
+
+    def aptDatPath(self):
+        return self.indexToAptDatPath[self.aptInfo.aptDatIndex]
+
+    def curLine(self):
+        if not self.lineIdx:
+            return (str(self.aptInfo.rowCode) + ' ' +
+                    ' '.join(self.aptInfo.firstLineRest))
+        else:
+            lineInfo = self.aptInfo.otherLines[self.lineIdx-1]
+            return str(lineInfo[1]) + ' ' + lineInfo[2]
+
+    def curLineNum(self):
+        if not self.lineIdx:
+            return self.aptInfo.firstLineNum
+        else:
+            lineInfo = self.aptInfo.otherLines[self.lineIdx-1]
+            return lineInfo[0]
+
+    def raiseUnableToParseAptDat(self, message, cause=None):
+        exc = UnableToParseAptDat(self.aptDatPath(), self.curLineNum(),
+                                  message)
+        if cause is not None:
+            raise exc from cause
+        else:
+            raise exc
+
     def _readLatitude(self, s):
         try:
             res = misc.DecimalCoord(s)
         except ValueError as e:
-            raise UnableToParseAptDat(
-                self.lineNb,
+            self.raiseUnableToParseAptDat(
                 _("unable to parse as a latitude: {0!r} in line {1!r}").format(
-                    s, self.line)) from e
+                    s, self.curLine()),
+                e)
         else:
             return res
 
@@ -256,10 +521,10 @@ class AptDat:
         try:
             res = misc.DecimalCoord(s)
         except ValueError as e:
-            raise UnableToParseAptDat(
-                self.lineNb,
+            self.raiseUnableToParseAptDat(
                 _("unable to parse as a longitude: {0!r} in line {1!r}")
-                .format(s, self.line)) from e
+                .format(s, self.curLine()),
+                e)
         else:
             return res
 
@@ -267,10 +532,10 @@ class AptDat:
         try:
             res = float(s)
         except ValueError as e:
-            raise UnableToParseAptDat(
-                self.lineNb,
+            self.raiseUnableToParseAptDat(
                 _("unable to parse as a heading: {0!r} in line {1!r}").format(
-                    s, self.line)) from e
+                    s, self.curLine()),
+                e)
         else:
             return res
 
@@ -278,10 +543,10 @@ class AptDat:
         try:
             res = float(s)
         except ValueError as e:
-            raise UnableToParseAptDat(
-                self.lineNb,
+            self.raiseUnableToParseAptDat(
                 _("unable to parse as a length: {0!r} in line {1!r}")
-                .format(s, self.line)) from e
+                .format(s, self.curLine()),
+                e)
         else:
             return res
 
@@ -289,10 +554,10 @@ class AptDat:
         try:
             res = float(s)
         except ValueError as e:
-            raise UnableToParseAptDat(
-                self.lineNb,
+            self.raiseUnableToParseAptDat(
                 _("unable to parse as an elevation: {0!r} in line {1!r}")
-                .format(s, self.line)) from e
+                .format(s, self.curLine()),
+                e)
         else:
             return res
 
@@ -300,10 +565,10 @@ class AptDat:
         try:
             res = SurfaceType(int(s))
         except ValueError as e:
-            raise UnableToParseAptDat(
-                self.lineNb,
+            self.raiseUnableToParseAptDat(
                 _("unable to parse as a surface type code: {0!r} in line "
-                  "{1!r}").format(s, self.line)) from e
+                  "{1!r}").format(s, self.curLine()),
+                e)
         else:
             return res
 
@@ -311,10 +576,10 @@ class AptDat:
         try:
             res = V810SurfaceType(int(s))
         except ValueError as e:
-            raise UnableToParseAptDat(
-                self.lineNb,
+            self.raiseUnableToParseAptDat(
                 _("unable to parse as a v810 surface type code: {0!r} in line "
-                  "{1!r}").format(s, self.line)) from e
+                  "{1!r}").format(s, self.curLine()),
+                e)
         else:
             return res
 
@@ -322,10 +587,10 @@ class AptDat:
         try:
             res = ShoulderSurfaceType(int(s))
         except ValueError as e:
-            raise UnableToParseAptDat(
-                self.lineNb,
+            self.raiseUnableToParseAptDat(
                 _("unable to parse as a shoulder surface type code: {0!r} in "
-                  "line {1!r}").format(s, self.line)) from e
+                  "line {1!r}").format(s, self.curLine()),
+                e)
         else:
             return res
 
@@ -340,9 +605,10 @@ class AptDat:
             # present in some versions of apt.dat, cf.
             # <http://gatewaybugs.x-plane.com/browse/XSG-1218>).
             logger.warning(
-                _("Error in apt.dat: unable to parse as a smoothness value: "
+                _("Error in {aptDat}: unable to parse as a smoothness value: "
                   "{val!r} in line {lineNb} ({line!r})")
-                .format(val=s, lineNb=self.lineNb, line=self.line))
+                .format(aptDat=self.aptDatPath(), val=s,
+                        lineNb=self.curLineNum(), line=self.curLine()))
             res = None
 
         return res
@@ -351,10 +617,10 @@ class AptDat:
         try:
             res = RunwayMarkings(int(s))
         except ValueError as e:
-            raise UnableToParseAptDat(
-                self.lineNb,
+            self.raiseUnableToParseAptDat(
                 _("unable to parse as a code for runway markings: {0!r} in "
-                  "line {1!r}").format(s, self.line)) from e
+                  "line {1!r}").format(s, self.curLine()),
+                e)
         else:
             return res
 
@@ -367,10 +633,10 @@ class AptDat:
                 raise ValueError(_("invalid v810 code for runway markings: "
                                    "{0!r}").format(code))
         except ValueError as e:
-            raise UnableToParseAptDat(
-                self.lineNb,
+            self.raiseUnableToParseAptDat(
                 _("unable to parse as a v810 code for runway markings: "
-                  "{0!r} in line {1!r}").format(s, self.line)) from e
+                  "{0!r} in line {1!r}").format(s, self.curLine()),
+                e)
         else:
             return res
 
@@ -378,10 +644,10 @@ class AptDat:
         try:
             res = PerimeterBuoys(int(s))
         except ValueError as e:
-            raise UnableToParseAptDat(
-                self.lineNb,
+            self.raiseUnableToParseAptDat(
                 _("unable to parse as a perimeter buoys flag: {0!r} in line "
-                  "{1!r}").format(s, self.line)) from e
+                  "{1!r}").format(s, self.curLine()),
+                e)
         else:
             return res
 
@@ -389,10 +655,10 @@ class AptDat:
         try:
             res = HelipadEdgeLighting(int(s))
         except ValueError as e:
-            raise UnableToParseAptDat(
-                self.lineNb,
+            self.raiseUnableToParseAptDat(
                 _("unable to parse as an helipad edge lighting flag: {0!r} in "
-                  "line {1!r}").format(s, self.line)) from e
+                  "line {1!r}").format(s, self.curLine()),
+                e)
         else:
             return res
 
@@ -413,12 +679,11 @@ class AptDat:
         if code == 15: # Startup location (v850, deprecated)
             l = payload.split(None, maxsplit=3)
             if len(l) < 3:
-                raise UnableToParseAptDat(
-                    self.lineNb,
+                self.raiseUnableToParseAptDat(
                     _("not enough fields in record: {!r}").format(
-                        self.line))
+                        self.curLine()))
             elif len(l) == 3:
-                l.append('?') # parking name missing in apt.dat
+                l.append('?') # parking name missing in apt.dat file
 
             parkName = l[3] or '?'
             p = parking.Parking(
@@ -435,10 +700,9 @@ class AptDat:
                               # code 15)
             l = payload.split(None, maxsplit=5)
             if len(l) < 6:
-                raise UnableToParseAptDat(
-                    self.lineNb,
+                self.raiseUnableToParseAptDat(
                     _("not enough fields in record: {!r}").format(
-                        self.line))
+                        self.curLine()))
 
             locType = l[3]
             parkName = l[5] or '?'
@@ -454,12 +718,13 @@ class AptDat:
 
             startupLocations[locType].append(p)
 
-    # This method is not used anymore.
-    def readParkingForIcao(self, icao):
+    # This method is not used anymore and hasn't been tested with the
+    # latest code.
+    def readParkingForIcao(self, airportID):
         """Read startup locations for an airport without using any index.
 
-        apt.dat.gz being large, this method can be very slow (on the
-        order of 10 seconds).
+        apt.dat files being large sometimes, this method can be very
+        slow (on the order of 10 seconds).
 
         """
         self.reset()
@@ -474,12 +739,11 @@ class AptDat:
             elif code in (1, 16, 17): # Land airport, seaplane base or heliport
                 l = payload.split(None, maxsplit=4)
                 if len(l) < 5:
-                    raise UnableToParseAptDat(
-                        self.lineNb,
+                    self.raiseUnableToParseAptDat(
                         _("not enough fields in record: {!r}").format(
-                            self.line))
+                            self.curLine()))
 
-                if l[3].upper() != icao:
+                if l[3].upper() != airportID:
                     continue
 
                 while not finished:
@@ -496,172 +760,130 @@ class AptDat:
 
         return parkings
 
-    def makeAptDigest(self, outputFile=None):
-        """Write the apt digest file.
+    def airportInstance(self):
+        """Return the Airport instance corresponding to self.
 
-        The resulting file is read on each startup of FFGo, therefore
-        parsing it must be much quicker than parsing apt.dat. The file
-        thus contains the minimum information needed to:
-          - build the airport list;
-          - find the nearest METAR station for a given airport;
-          - look up more information about a given airport in apt.dat
-            (an index allows to do that efficiently), and be able to
-            display the relevant apt.dat line number in case an error is
-            encountered;
-          - perform the searches offered by the Airport Finder.
+        Similar to readAirportDataForAptDigest() below.
 
         """
-        if outputFile is None:
-            outputFile = constants.APT
+        aptInfo = self.aptInfo
 
-        self.reset()
-        airports = []
-        eof = False
-        # Start index for the first airport header (byte offset + line number)
-        index = (self.file.tell(), self.lineNb)
-        code, payload = self._readRecord()
-
-        while not eof:
-            if code in (1, 16, 17): # Land airport, seaplane base or heliport
-                icao, type_, name, elev = self._processAirportHeader(code,
-                                                                     payload)
-                eof, nextIndex, code, payload, avgLat, avgLon, landRunways, \
-                    waterRunways, helipads, minRwyLength, maxRwyLength, \
-                    parkings = self._readAirportData(calcCoords=True,
-                                                     readDetails=False)
-                # This should be better than sorting the list once complete
-                # from an algorithmic point of view, however the difference is
-                # hardly measurable with apt.dat 2013.10, build 20131335,
-                # containing 34074 airports (the sort() taking about 0.04 s).
-                bisect.insort_right(airports,
-                                    (icao, type_.value, name, elev, avgLat,
-                                     avgLon, len(landRunways),
-                                     len(waterRunways), len(helipads),
-                                     minRwyLength, maxRwyLength, index))
-                index = nextIndex
-            elif code in (None, 99): # None: EOF; 99: X-Plane's convention
-                break
-            else:
-                raise UnableToParseAptDat(
-                    self.lineNb,
-                    _("unexpected row code: {code} (line: {line!r})").format(
-                        code=code, line=self.line))
-
-        if code is not None:
-            self.file.read()    # go to the end of the file
-        # This will be used later for a basic safety check when using an
-        # index, because the seek() method of gzip.GzipFile behaves
-        # pretty badly in some cases (seemingly never returning), and I
-        # suppose this may be due to the use of an invalid index.
-        aptDatSize = self.file.tell()
-
-        logger.info("Opening {prg}'s apt digest file ('{aptDigest}') for "
-                    "writing".format(prg=PROGNAME, aptDigest=outputFile))
-
-        with open(outputFile, "w", encoding="utf-8") as f:
-            f.write(AptDatDigest.header(aptDatSize))
-
-            # Optimizing this with writelines() doesn't seem to be worth it
-            # (0.11 seconds instead of 0.12, while the whole method takes about
-            # 28 seconds for 34074 airprts).
-            for icao, type_, name, elev, avgLat, avgLon, nbLandRunways, \
-                nbWaterRunways, nbHelipads, minRwyLength, maxRwyLength, \
-                index in airports:
-                nbRunways = ';'.join(( str(s) for s in
-                                       (nbLandRunways, nbWaterRunways,
-                                        nbHelipads) ))
-                if minRwyLength is None:
-                    minMaxRwyLengths = ""
-                else:
-                    minMaxRwyLengths = "{:.04f};{:.04f}".format(minRwyLength,
-                                                                maxRwyLength)
-
-                # Byte offset followed by line number
-                indexRepr = ';'.join(( str(i) for i in index ))
-
-                f.write(
-                    '\0'.join([icao, name, str(type_),
-                               avgLat.precisionRepr(), avgLon.precisionRepr(),
-                               nbRunways, minMaxRwyLengths, indexRepr])
-                    + '\n')
-
-    def _processAirportHeader(self, code, payload):
-        l = payload.split(None, maxsplit=4)
-        if len(l) < 5:
-            raise UnableToParseAptDat(
-                self.lineNb,
-                _("not enough fields in record: {!r}").format(
-                    self.line))
-
+        self.lineIdx = 0
+        firstLineRest = aptInfo.firstLineRest
         # Land airport, seaplane base or heliport
-        type_ = AirportType(code)
+        airportType = AirportType(aptInfo.rowCode)
         # The type (int or float) is unspecified in X-Plane's APT1000 spec
-        elev = self._readElevation(l[0])
-        icao = l[3].upper()
-        name = l[4]
+        airportElev = self._readElevation(firstLineRest[0])
+        airportID = firstLineRest[3].upper() # often an ICAO, but not always
+        airportName = firstLineRest[4]
 
-        return (icao, type_, name, elev)
-
-    def _readAirportData(self, calcCoords=False, readRunways=False,
-                         readParkings=False, readDetails=True):
         landRunways = []
         waterRunways = []
         helipads = []
-        # Will give the coordinates of the centroid of all runway ends +
-        # helipads of the airport (each runway has a sort of “double weight”
-        # because of its two ends, contrary to a helipad).
-        avgLat, avgLon = None, None
         nvecSum = NVector(0.0, 0.0, 0.0)
         minRwyLength = maxRwyLength = None
         parkings = {}
-        eof = False
 
-        while True:
-            index = (self.file.tell(), self.lineNb)
-            code, payload = self._readRecord()
+        for lineNb, code, payload in aptInfo.otherLines:
+            self.lineIdx += 1
+            isRwyRecord, nvecSum0, rwyLength = \
+                self._processPotentialRunwayRow(
+                    code, payload, landRunways, waterRunways, helipads,
+                    readDetails=True)
+            if isRwyRecord:
+                nvecSum += nvecSum0
 
-            if code in (1, 16, 17): # Land airport, seaplane base or heliport
-                break
-            elif code in (None, 99):    # None: EOF; 99: X-Plane's convention
-                eof = True
-                break
+                if rwyLength is not None:
+                    if minRwyLength is None: # no length encountered yet
+                        minRwyLength = maxRwyLength = rwyLength
+                    else:
+                        minRwyLength = min(minRwyLength, rwyLength)
+                        maxRwyLength = max(maxRwyLength, rwyLength)
             else:
-                if calcCoords or readRunways:
-                    isRwyRecord, nvecSum0, rwyLength = \
-                        self._processPotentialRunwayRow(
-                            code, payload, landRunways, waterRunways, helipads,
-                            readDetails=readDetails)
-                    if isRwyRecord:
-                        nvecSum += nvecSum0
+                self._processPotentialParkingRow(code, payload, parkings)
 
-                        if rwyLength is not None:
-                            if minRwyLength is None: # no length encountered yet
-                                minRwyLength = maxRwyLength = rwyLength
-                            else:
-                                minRwyLength = min(minRwyLength, rwyLength)
-                                maxRwyLength = max(maxRwyLength, rwyLength)
+        # Each land or water runway is counted twice, once for each runway
+        # end.
+        n = 2*len(landRunways) + 2*len(waterRunways) + len(helipads)
+        if n > 0:
+            # Will give the coordinates of the centroid of all runway ends +
+            # helipads of the airport (each runway has a sort of “double
+            # weight” because of its two ends, contrary to a helipad).
+            avgLat, avgLon = map(misc.DecimalCoord,
+                                 nvecSum.scalarDiv(n).latLon())
+        else:
+            avgLat, avgLon = None, None
 
-                if readParkings:
-                    self._processPotentialParkingRow(code, payload, parkings)
+        for runwayList in (landRunways, waterRunways, helipads):
+            runwayList.sort(key=lambda runway: runway.name)
 
-        if calcCoords:
-            # Each land or water runway is counted twice, once for each runway
-            # end.
-            n = 2*len(landRunways) + 2*len(waterRunways) + len(helipads)
-            if n > 0:
-                avgLat, avgLon = map(misc.DecimalCoord,
-                                     nvecSum.scalarDiv(n).latLon())
+        for parkList in parkings.values():
+            parkList.sort(key=parking.Parking.fullNameSortKey)
 
-        if readRunways:
-            for runwayList in (landRunways, waterRunways, helipads):
-                runwayList.sort(key=lambda runway: runway.name)
+        airportIndex = (aptInfo.aptDatIndex, aptInfo.byteOffset,
+                        aptInfo.firstLineNum)
+        airport = Airport(airportID, airportName, airportType, avgLat, avgLon,
+                          airportElev, airportIndex, landRunways, waterRunways,
+                          helipads, parkings)
+        return airport
 
-        if readParkings:
-            for parkList in parkings.values():
-                parkList.sort(key=parking.Parking.fullNameSortKey)
+    # Not the prettiest method ever written, but trying to be fast!
+    def readAirportDataForAptDigest(self):
+        """Extract info from self for the apt digest file.
 
-        return (eof, index, code, payload, avgLat, avgLon, landRunways,
-                waterRunways, helipads, minRwyLength, maxRwyLength, parkings)
+        Similar to airportInstance() above.
+
+        """
+        aptInfo = self.aptInfo
+
+        self.lineIdx = 0
+        firstLineRest = aptInfo.firstLineRest
+        # Land airport, seaplane base or heliport
+        airportType = AirportType(aptInfo.rowCode)
+        # The type (int or float) is unspecified in X-Plane's APT1000 spec
+        airportElev = self._readElevation(firstLineRest[0])
+        airportID = firstLineRest[3].upper() # often an ICAO, but not always
+        airportName = firstLineRest[4]
+
+        landRunways = []
+        waterRunways = []
+        helipads = []
+        nvecSum = NVector(0.0, 0.0, 0.0)
+        minRwyLength = maxRwyLength = None
+
+        for lineNb, code, payload in aptInfo.otherLines:
+            self.lineIdx += 1
+            isRwyRecord, nvecSum0, rwyLength = \
+                self._processPotentialRunwayRow(
+                    code, payload, landRunways, waterRunways, helipads,
+                    readDetails=False)
+            if isRwyRecord:
+                nvecSum += nvecSum0
+
+                if rwyLength is not None:
+                    if minRwyLength is None: # no length encountered yet
+                        minRwyLength = maxRwyLength = rwyLength
+                    else:
+                        minRwyLength = min(minRwyLength, rwyLength)
+                        maxRwyLength = max(maxRwyLength, rwyLength)
+
+        # Each land or water runway is counted twice, once for each runway
+        # end.
+        n = 2*len(landRunways) + 2*len(waterRunways) + len(helipads)
+        if n > 0:
+            # Will give the coordinates of the centroid of all runway ends +
+            # helipads of the airport (each runway has a sort of “double
+            # weight” because of its two ends, contrary to a helipad).
+            avgLat, avgLon = map(misc.DecimalCoord,
+                                 nvecSum.scalarDiv(n).latLon())
+        else:
+            avgLat, avgLon = None, None
+
+        # The first element (the 3-tuple) is the “airport index”
+        return ((aptInfo.aptDatIndex, aptInfo.byteOffset, aptInfo.firstLineNum),
+                airportID, airportName, airportType, airportElev,
+                avgLat, avgLon, len(landRunways), len(waterRunways),
+                len(helipads), minRwyLength, maxRwyLength)
 
     def _processPotentialRunwayRow(self, code, payload, landRunways,
                                    waterRunways, helipads, readDetails=True):
@@ -783,10 +1005,8 @@ class AptDat:
         # This whole method is untested, as apt.dat 2013.10 (build 20131335)
         # does not contain any runway declared in this old format...
         if len(e) < 14:
-            raise UnableToParseAptDat(
-                self.lineNb,
-                _("not enough fields in record: {!r}").format(
-                    self.line))
+            self.raiseUnableToParseAptDat(
+                _("not enough fields in record: {!r}").format(self.curLine()))
 
         landRunways = []
         waterRunways = []
@@ -882,10 +1102,8 @@ class AptDat:
         elif 0 < number <= 18:
             other = number + 18
         else:
-            raise UnableToParseAptDat(
-                self.lineNb,
-                _("unexpected runway number: {num!r} "
-                  "(line: {line!r})").format(num=number, line=self.line))
+            self.raiseUnableToParseAptDat(
+                _("unexpected runway number: {num!r}").format(num=number))
 
         return other
 
@@ -894,10 +1112,9 @@ class AptDat:
     def getRwyNum(self, rwy):
         mo = self._rwyNum_cre.match(rwy)
         if not mo:
-            raise UnableToParseAptDat(
-                self.lineNb,
-                _("runway name not starting with digits: {rwy!r} "
-                  "(line: {line!r})").format(rwy=rwy, line=self.line))
+            self.raiseUnableToParseAptDat(
+                _("runway name not starting with digits: {rwy!r}")
+                .format(rwy=rwy))
 
         return int(mo.group("num"))
 
@@ -954,9 +1171,8 @@ class AptDat:
         """Process a runway record with code 100."""
         e = payload.split()
         if len(e) < 22:
-            raise UnableToParseAptDat(
-                self.lineNb,
-                _("not enough fields in record: {!r}").format(self.line))
+            self.raiseUnableToParseAptDat(
+                _("not enough fields in record: {!r}").format(self.curLine()))
 
         lat1 = self._readLatitude(e[8])
         lon1 = self._readLongitude(e[9])
@@ -988,9 +1204,8 @@ class AptDat:
         """Process a runway record with code 101."""
         e = payload.split()
         if len(e) < 8:
-            raise UnableToParseAptDat(
-                self.lineNb,
-                _("not enough fields in record: {!r}").format(self.line))
+            self.raiseUnableToParseAptDat(
+                _("not enough fields in record: {!r}").format(self.curLine()))
 
         lat1 = self._readLatitude(e[3])
         lon1 = self._readLongitude(e[4])
@@ -1017,9 +1232,8 @@ class AptDat:
         """Process a “runway” record with code 102 (i.e., a helipad)."""
         e = payload.split()
         if len(e) < 11:
-            raise UnableToParseAptDat(
-                self.lineNb,
-                _("not enough fields in record: {!r}").format(self.line))
+            self.raiseUnableToParseAptDat(
+                _("not enough fields in record: {!r}").format(self.curLine()))
 
         lat = self._readLatitude(e[1])
         lon = self._readLongitude(e[2])
@@ -1041,115 +1255,216 @@ class AptDat:
 
         return (lat, lon, (rwy,))
 
-    def readAirportDataUsingIndex(self, icao, index):
-        """Read detailed airport data from apt.dat using an index.
 
-        'index' should be a sequence (byteOffset, lineNb) where
-        'byteOffset' points to the start of the first line defining the
-        airport in apt.dat, and 'lineNb' is the corresponding line
-        number (starting from 1).
+class AptDatSetManager:
+    """High-level class for working with apt.dat files.
+
+    Airport data from the various files in self.aptDatList is agregated;
+    airports defined in files coming earlier in self.aptDatList override
+    those from later files in this sequence. This overriding is
+    all-or-nothing: the data retained for any given airport comes from
+    only one apt.dat file. In other words: for the same airport, data is
+    *not* gathered from several files.
+
+    """
+    def __init__(self, aptDatList, aptDatSizes=None, aptDatTimestamps=None,
+                 progressFeedbackHandler=None):
+        """Initialize an AptDatSetManager instance.
+
+        If 'aptDatSizes' and 'aptDatTimestamps' are None, the
+        corresponding lists are automatically generated from
+        'aptDatList'.
+
+        If 'progressFeedbackHandler' is None, a do-nothing
+        misc.ProgressFeedbackHandler instance is created.
+
+        """
+        self.updateListsAndTotalSize(aptDatList, aptDatSizes, aptDatTimestamps)
+        # Allows this class to give progress feedback during time-consuming
+        # operations
+        self.progressFeedbackHandler = (
+            progressFeedbackHandler if progressFeedbackHandler is not None
+            else misc.ProgressFeedbackHandler())
+
+    def updateListsAndTotalSize(self, aptDatList, aptDatSizes=None,
+                                aptDatTimestamps=None):
+        self.aptDatList = aptDatList
+        self.aptDatSizes = (
+            self.findAptDatSizes() if aptDatSizes is None else aptDatSizes)
+        self.aptDatTimestamps = (self.findAptDatTimestamps()
+                                 if aptDatTimestamps is None
+                                 else aptDatTimestamps)
+        self.totalSize = sum(self.aptDatSizes)
+
+    def findAptDatTimestamps(self):
+        return [ os.path.getmtime(path) for path in self.aptDatList ]
+
+    def findAptDatSizes(self):
+        return [ os.path.getsize(path) for path in self.aptDatList ]
+
+    def isFresh(self, aptDatFilesInfo):
+        """Tell whether metadata from an apt digest file header is fresh.
+
+        Typically, 'aptDatFilesInfo' is metadata obtained from the
+        header of an apt digest file, and self.aptDatList,
+        self.aptDatSizes, self.aptDatTimestamps correspond to the apt
+        digest files used by FlightGear. This method tells whether the
+        apt digest file should be rebuilt to be in sync with the files
+        listed in self.aptDatList.
+
+        """
+        if len(self.aptDatList) != len(aptDatFilesInfo):
+            return False
+
+        for i, (path, size, uncompSize, timestamp) in enumerate(aptDatFilesInfo):
+            if (path, size, timestamp) != (self.aptDatList[i],
+                                           self.aptDatSizes[i],
+                                           self.aptDatTimestamps[i]):
+                return False
+        else:
+            return True
+
+    def writeAptDigestFile(self, outputFile=None):
+        """Write the apt digest file.
+
+        The resulting file is read on each startup of FFGo, therefore
+        parsing it must be much quicker than parsing the apt.dat files.
+        The file thus contains the minimum information needed to:
+          - build the airport list;
+          - find the nearest METAR station for a given airport;
+          - look up more information about a given airport in the
+            appropriate apt.dat file---an “airport index” allows to do
+            that efficiently---and be able to display the relevant
+            apt.dat line number in case an error is encountered;
+          - perform the searches offered by the Airport Finder.
+
+        """
+        if outputFile is None:
+            outputFile = constants.APT
+
+        airportInfoDict = {}
+        airports = []
+        bytesReadSoFar = 0
+        aptDatUncompressedSizes = []
+
+        self.progressFeedbackHandler.startPhase(_("Reading apt.dat files..."),
+                                                0, self.totalSize)
+
+        for i, f in enumerate(self.aptDatList):
+            with \
+             AptDatReader(
+               f, i,
+               progressFeedbackHandler=self.progressFeedbackHandler) as reader:
+                aptDatUncompressedSizes.append(
+                    reader.readFile(airportInfoDict,
+                                    bytesReadSoFar=bytesReadSoFar))
+
+            bytesReadSoFar += self.aptDatSizes[i]
+
+        nbAirports = len(airportInfoDict)
+        self.progressFeedbackHandler.startPhase(
+            _("Loading data for {nbAirports} airports...")
+            .format(nbAirports=nbAirports),
+            0, nbAirports)
+
+        for i, rawAirportInfo in enumerate(airportInfoDict.values()):
+            airportIndex, airportID, airportName, airportType, airportElev, \
+                avgLat, avgLon, nbLandRunways, nbWaterRunways, nbHelipads, \
+                minRwyLength, maxRwyLength = \
+                    RawAirportInfoParser(
+                        rawAirportInfo,
+                        self.aptDatList).readAirportDataForAptDigest()
+
+            if not (i % 300):
+                self.progressFeedbackHandler.setValue(i+1)
+
+            # This should be better than sorting the list once complete
+            # from an algorithmic point of view, however the difference is
+            # hardly measurable with apt.dat 2013.10, build 20131335,
+            # containing 34074 airports (the sort() taking about 0.04 s).
+            bisect.insort_right(
+                airports,
+                (airportID, airportType.value, airportName, airportElev,
+                 avgLat, avgLon, nbLandRunways, nbWaterRunways,
+                 nbHelipads, minRwyLength, maxRwyLength, airportIndex))
+
+        logger.info("Opening {prg}'s apt digest file ('{aptDigest}') for "
+                    "writing".format(prg=PROGNAME, aptDigest=outputFile))
+
+        self.progressFeedbackHandler.startPhase(
+            _("Writing {prg}'s apt digest file...").format(prg=PROGNAME),
+            0, nbAirports)
+
+        with open(outputFile, "w", encoding="utf-8") as f:
+            # The uncompressed file sizes will be used later for a basic safety
+            # check when using an index, because the seek() method of
+            # gzip.GzipFile behaves pretty badly in some cases (seemingly never
+            # returning), and I think this happens when using an invalid index.
+            f.write(AptDatDigest.header(
+                # Create an iterable of AptDatFileInfo instances
+                map(AptDatFileInfo._make,
+                    zip(self.aptDatList, self.aptDatSizes,
+                        aptDatUncompressedSizes, self.aptDatTimestamps))))
+
+            # Optimizing this with writelines() doesn't seem to be worth it
+            # (measured with with older code, but this certainly still applies:
+            # 0.11 seconds with writelines() instead of 0.12, while the whole
+            # method took about 28 seconds for 34074 airprts).
+            for i, (airportID, type_, name, elev, avgLat, avgLon,
+                    nbLandRunways, nbWaterRunways, nbHelipads, minRwyLength,
+                    maxRwyLength, airportIndex) in enumerate(airports):
+                nbRunways = ';'.join(( str(s) for s in
+                                       (nbLandRunways, nbWaterRunways,
+                                        nbHelipads) ))
+                if minRwyLength is None:
+                    minMaxRwyLengths = ""
+                else:
+                    minMaxRwyLengths = "{:.04f};{:.04f}".format(minRwyLength,
+                                                                maxRwyLength)
+
+                # Encode the airport index:
+                #   - aptDatIndex (index of an apt.dat file inside the ordered
+                #     list of apt.dat files used by FlightGear) followed by;
+                #   - byte offset inside said file, followed by;
+                #   - line number (where the airport definition starts).
+                indexRepr = ';'.join(( str(i) for i in airportIndex ))
+
+                f.write(
+                    '\0'.join([airportID, name, str(type_),
+                               avgLat.precisionRepr(), avgLon.precisionRepr(),
+                               nbRunways, minMaxRwyLengths, indexRepr])
+                    + '\n')
+
+                if not (i % 300):
+                    self.progressFeedbackHandler.setValue(i+1)
+
+    def readAirportDataUsingIndex(self, airportID, index):
+        """Read detailed airport data from an apt.dat file using an index.
+
+        - 'index' should be a sequence (aptDatIndex, byteOffset, lineNb)
+          where 'aptDatIndex' is the index of an apt.dat file listed in
+          self.aptDatList;
+        - 'byteOffset' points to the start of the first line defining
+          the airport in that file, and;
+        - 'lineNb' is the corresponding line number (starting from 1).
 
         Return a tuple of the form (found, data) where:
           - 'found' is a boolean indicating whether airport data for
-            the specified 'icao' was found at 'index';
+            the specified 'airportID' was found at 'index';
           - 'data' is an Airport instance if the data was found,
             otherwise None.
 
         """
-        logger.debug("{meth}(): entered method".format(
-            meth=self.readAirportDataUsingIndex.__qualname__))
-        self.file.seek(index[0])
-        logger.debug("{meth}(): after the seek()".format(
-            meth=self.readAirportDataUsingIndex.__qualname__))
-        self.lineNb = index[1]
+        with AptDatReader(self.aptDatList[index[0]], index[0]) as aptDat:
+            found, rawAirportInfo = aptDat.getRawAirportInfoUsingIndex(
+                airportID, index[1:])
 
-        code, payload = self._readRecord()
-
-        # 1, 16, 17: land airport, seaplane base or heliport
-        if code not in (1, 16, 17):
-            return (False, None)
-
-        try:
-            foundIcao, type_, name, elev = self._processAirportHeader(code,
-                                                                      payload)
-        except UnableToParseAptDat:
-            return (False, None)
-
-        if foundIcao == icao:
-            eof, nextIndex, code, payload, avgLat, avgLon, \
-                landRunways, waterRunways, helipads, minRwyLength, \
-                maxRwyLength, parkings = self._readAirportData(
-                    calcCoords=True, readRunways=True,
-                    readParkings=True, readDetails=True)
-            airport = Airport(icao, name, type_, avgLat, avgLon, elev, index,
-                              landRunways, waterRunways, helipads, parkings)
+        if found:
+            airport = RawAirportInfoParser(
+                rawAirportInfo, self.aptDatList).airportInstance()
             return (True, airport)
         else:
             return (False, None)
-
-    # Method largely based on makeAptDigest()
-    def testAllAirports(self, outputFile):
-        self.reset()
-        airports = []
-        eof = False
-        # Start index for the first airport header (byte offset + line number)
-        index = (self.file.tell(), self.lineNb)
-        code, payload = self._readRecord()
-
-        while not eof:
-            if code in (1, 16, 17): # Land airport, seaplane base or heliport
-                icao, type_, name, elev = self._processAirportHeader(code,
-                                                                     payload)
-                try:
-                    eof, nextIndex, code, payload, avgLat, avgLon, \
-                    landRunways, waterRunways, helipads, minRwyLength, \
-                    maxRwyLength, parkings = self._readAirportData(
-                        calcCoords=True, readDetails=True)
-                except UnableToParseAptDat as e:
-                    logger.error("in airport {}: {}".format(icao, e))
-                    # Skip to the next airport
-                    while True:
-                        code, payload = self._readRecord()
-                        if code in (1, 16, 17):
-                            index = (self.file.tell(), self.lineNb)
-                            break
-                        elif code in (None, 99):
-                            break
-                else:
-                    bisect.insort_right(
-                        airports,
-                        (icao, type_.value, name, elev, avgLat, avgLon, index,
-                         landRunways, waterRunways, helipads, parkings))
-                    index = nextIndex
-            elif code in (None, 99): # None: EOF; 99: X-Plane's convention
-                break
-            else:
-                raise UnableToParseAptDat(
-                    self.lineNb,
-                    _("unexpected row code: {code} (line: {line!r})").format(
-                        code=code, line=self.line))
-
-        with open(outputFile, "w", encoding="utf-8") as f:
-            first = True
-            for icao, type_, name, elev, avgLat, avgLon, index, landRunways, \
-                waterRunways, helipads, parkings in airports:
-                if first:
-                    first = False
-                    l = []
-                else:
-                    l = ['']
-
-                airport = Airport(icao, name, type_, avgLat, avgLon, elev,
-                                  index, landRunways, waterRunways, helipads,
-                                  parkings)
-                logger.notice("Final: processing airport {0} ({1})...".format(
-                    icao, name))
-                l.append("* {} ({})\n".format(icao, airport.name))
-                for rwy in airport.runways():
-                    l.append(rwy.name + '\n'
-                             + textwrap.indent(rwy.tooltipText(), '  ')
-                             + '\n')
-                f.write('\n'.join(l))
 
 
 class AptDatDigest:
@@ -1157,21 +1472,31 @@ class AptDatDigest:
 
     # Magic number for reliable identification of FFGo's apt file format
     FORMAT_MAGIC_NB = 7856251374982125
+    # Current version of the apt digest file format
+    CURRENT_FMT_VERSION = 4
 
     @classmethod
-    def header(cls, aptDatSize, formatVersion=3):
+    def header(cls, aptDatFilesInfo, formatVersion=CURRENT_FMT_VERSION):
+        l = [ '\0'.join(["apt.dat file: " + path, repr(size) + " bytes",
+                         repr(uncomp) + " uncompressed",
+                         "timestamp " + repr(timestamp)])
+              for path, size, uncomp, timestamp in aptDatFilesInfo ]
+
         return textwrap.dedent("""\
    -*- coding: utf-8 -*-
-   {prg}'s airport database, generated from FlightGear's apt.dat (or apt.dat.gz)
+   {prg}'s airport database, generated from FlightGear's apt.dat files)
    Magic number: {magicNumber}
    Format version: {fmtVer}
-   apt.dat size: {aptDatSize} bytes\n\n""").format(
+   {aptDatFilesInfo}\n\n""").format(
        prg=PROGNAME, magicNumber=cls.FORMAT_MAGIC_NB, fmtVer=formatVersion,
-   aptDatSize=aptDatSize)
+       aptDatFilesInfo='\n'.join(l))
 
     _magicNb_cre = re.compile(r"^Magic number: (?P<number>\d+)$")
     _fmtVersion_cre = re.compile(r"^Format version: (?P<version>\d+)$")
-    _aptDatSize_cre = re.compile(r"^apt\.dat size: (?P<size>\d+) bytes$")
+    _aptDatFile_cre = re.compile(r"^apt\.dat file: (?P<path>.*)$")
+    _aptDatSize_cre = re.compile(r"^(?P<size>\d+) bytes$")
+    _aptDatUncompSize_cre = re.compile(r"^(?P<size>\d+) uncompressed$")
+    _aptDatTimestamp_cre = re.compile(r"^timestamp (?P<timestamp>\d*\.\d*)$")
 
     @classmethod
     def _checkHeader(cls, fileObj):
@@ -1196,41 +1521,85 @@ class AptDatDigest:
         if not verMo:
             raise UnrecognizedFormatForAptDigest(
                 _("could not find a valid line specifying the format version"))
-
-        line = fileObj.readline()
-        sizeMo = cls._aptDatSize_cre.match(line)
-        if not sizeMo:
+        elif int(verMo.group("version")) != cls.CURRENT_FMT_VERSION:
             raise UnrecognizedFormatForAptDigest(
-                _("could not find a valid line specifying the apt.dat size"))
+                    _("unsupported format version number {num}, current is "
+                      "{current}").format(num=int(verMo.group("version")),
+                                          current=cls.CURRENT_FMT_VERSION))
 
-        return map(int, (verMo.group("version"), sizeMo.group("size")))
+        aptDatFilesInfo = []
+
+        for lineNum in itertools.count(start=1):
+            line = fileObj.readline()
+            if line == '\n':
+                break
+
+            l = line.split('\0')
+            if len(l) != 4:
+                raise UnrecognizedFormatForAptDigest(
+                _("illegal number of components in apt.dat line #{lineNum}: "
+                  "{num1} (expected {num2})").format(lineNum=lineNum,
+                                                     num1=len(l), num2=4))
+            fileMo = cls._aptDatFile_cre.match(l[0])
+            if not fileMo:
+                raise UnrecognizedFormatForAptDigest(
+                    _("could not find a valid #{lineNum} apt.dat path "
+                      "specification").format(lineNum=lineNum))
+
+            sizeMo = cls._aptDatSize_cre.match(l[1])
+            if not sizeMo:
+                raise UnrecognizedFormatForAptDigest(
+                    _("could not find a valid #{lineNum} apt.dat size "
+                      "specification").format(lineNum=lineNum))
+
+            uncompSizeMo = cls._aptDatUncompSize_cre.match(l[2])
+            if not uncompSizeMo:
+                raise UnrecognizedFormatForAptDigest(
+                    _("could not find a valid #{lineNum} apt.dat uncompressed "
+                      "size specification").format(lineNum=lineNum))
+
+            timestampMo = cls._aptDatTimestamp_cre.match(l[3])
+            if not timestampMo:
+                raise UnrecognizedFormatForAptDigest(
+                    _("could not find a valid #{lineNum} apt.dat timestamp "
+                      "specification").format(lineNum=lineNum))
+
+            aptDatFilesInfo.append(
+                AptDatFileInfo(fileMo.group("path"),
+                               int(sizeMo.group("size")),
+                               int(uncompSizeMo.group("size")),
+                               float(timestampMo.group("timestamp"))))
+
+        return (int(verMo.group("version")), aptDatFilesInfo)
 
     @classmethod
-    def read(cls, path):
+    def read(cls, path, onlyReadHeader=False):
         """Read an apt digest file.
 
-        Return a tuple of the form (aptDatSize, airports) where:
-          - 'aptDatSize' is an integer indicating the size in bytes of
-            the uncompressed apt.dat file from which the digest file in
-            'path' was built;
+        Return a tuple of the form (aptDatFilesInfo, airports) where:
+          - 'aptDatFilesInfo' is a sequence of AptDatFileInfo instances
+            giving precise information about all apt.dat files from
+            which the apt digest file given by 'path' was built;
           - 'airports' is a dictionary whose keys are ICAO codes and
             values AirportStub instances for the corresponding airports.
 
         """
         airports = {}
         logger.info("Opening {prg}'s apt digest file ('{aptDigest}') for "
-                    "reading".format(prg=PROGNAME, aptDigest=path))
+                    "reading{cmpl}".format(prg=PROGNAME, aptDigest=path,
+                    cmpl=" (header only)" if onlyReadHeader else ""))
 
         with open(path, "r", encoding="utf-8") as f:
-            formatVersion, aptDatSize = cls._checkHeader(f)
-            if formatVersion != 3:
-                raise UnrecognizedFormatForAptDigest(
-                    _("format version number {num} not supported").format(
-                    num=formatVersion))
+            formatVersion, aptDatFilesInfo = cls._checkHeader(f)
 
-            if f.readline() != "\n":
+            if formatVersion != cls.CURRENT_FMT_VERSION:
                 raise UnrecognizedFormatForAptDigest(
-                    _("header not terminated by a blank line"))
+                    _("unsupported format version number {num}, current is "
+                      "{current}").format(num=formatVersion,
+                                          current=cls.CURRENT_FMT_VERSION))
+
+            if onlyReadHeader:
+                return (formatVersion, aptDatFilesInfo)
 
             while True:
                 line = f.readline()
@@ -1239,7 +1608,7 @@ class AptDatDigest:
 
                 try:
                     l = line[:-1].split('\0')
-                    icao = l[0]
+                    airportID = l[0]
                     name = l[1]
                     type_ = AirportType(int(l[2]))
                     lat, lon = map(misc.DecimalCoord, l[3:5])
@@ -1254,13 +1623,14 @@ class AptDatDigest:
                         # helipads!)
                         minRwyLength, maxRwyLength = None, None
 
-                    # Byte offset and line number (2-tuple)
-                    indexInAptDat = tuple(map(int, l[7].split(';')))
+                    # aptDatIndex, byte offset and line number (3-tuple)
+                    airportIndex = tuple(map(int, l[7].split(';')))
                 except Exception as e: # could be refined a little bit...
                     raise UnableToParseAptDigest() from e
 
-                airports[icao] = AirportStub(
-                    icao, name, type_, lat, lon, nbLandRunways, nbWaterRunways,
-                    nbHelipads, minRwyLength, maxRwyLength, indexInAptDat)
+                airports[airportID] = AirportStub(
+                    airportID, name, type_, lat, lon, nbLandRunways,
+                    nbWaterRunways, nbHelipads, minRwyLength, maxRwyLength,
+                    airportIndex)
 
-        return (aptDatSize, airports)
+        return (aptDatFilesInfo, airports)

@@ -150,7 +150,7 @@ class StatsManagerBase(metaclass=abc.ABCMeta):
             setattr(self, attr, locals()[attr])
 
         # It may be that FFGo is not always run with the same airports (from
-        # apt.dat.gz) or aircraft installed. It would be a pity to lose
+        # apt.dat files) or aircraft installed. It would be a pity to lose
         # statistic data about airports or aircraft just because they are
         # temporarily unavailable, for instance because the user (re)moved one
         # of his aircraft paths. To circumvent this problem, items loaded from
@@ -258,10 +258,11 @@ class StatsManagerBase(metaclass=abc.ABCMeta):
                 # Get the Airport or Aircraft instance
                 item = self.getItem(itemId)
             except NoSuchItem:
-                # Maybe the user is experimenting with a “smaller” apt.dat.gz,
-                # or has temporarily removed one of his aircraft paths... Keep
-                # his data in 'self.unusedItems' so it can be saved to
-                # 'self.saveFile'.
+                # Maybe the user is experimenting with smaller or less apt.dat
+                # files (e.g., removal of a scenery path that had apt.dat
+                # files), or has temporarily removed one of his aircraft paths.
+                # Keep his data in 'self.unusedItems' so that it can be saved
+                # to 'self.saveFile'.
                 self.unusedItems[jsonKey] = datesOfUse
             else:
                 item.datesOfUse = datesOfUse

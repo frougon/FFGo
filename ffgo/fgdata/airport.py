@@ -53,18 +53,20 @@ class AirportType(enum.Enum):
 class Airport:
     """Class for representing airport data."""
 
-    def __init__(self, icao, name, type, lat, lon, elevation, indexInAptDat,
+    def __init__(self, icao, name, type, lat, lon, elevation, airportIndex,
                  landRunways, waterRunways, helipads, parkings):
         """Initialize an Airport instance.
 
-        'indexInAptDat' should be a tuple (byteOffset, lineNb) where
-        'byteOffset' points to the start of the first line defining the
-        airport in apt.dat, and 'lineNb' is the corresponding line
-        number (starting from 1).
+        'airportIndex' should be a tuple (aptDatIndex, byteOffset,
+        lineNb) where 'airportIndex' is an index (in some
+        externally-defined list) of the apt.dat file this airport data
+        comes from, 'byteOffset' points to the start of the first line
+        defining the airport in said apt.dat file, and 'lineNb' is the
+        corresponding line number (starting from 1).
 
         """
         self._attrs = ("icao", "name", "type", "lat", "lon", "elevation",
-                       "indexInAptDat", "landRunways", "waterRunways",
+                       "airportIndex", "landRunways", "waterRunways",
                        "helipads", "parkings")
         for attr in self._attrs:
             setattr(self, attr, locals()[attr])
@@ -142,17 +144,19 @@ class AirportStub:
 
     __slots__ = ("icao", "name", "type", "lat", "lon", "nbLandRunways",
                 "nbWaterRunways", "nbHelipads", "minRwyLength", "maxRwyLength",
-                 "indexInAptDat", "datesOfUse", "useCountForShow")
+                 "airportIndex", "datesOfUse", "useCountForShow")
 
     def __init__(self, icao, name, type, lat, lon, nbLandRunways,
                  nbWaterRunways, nbHelipads, minRwyLength, maxRwyLength,
-                 indexInAptDat, datesOfUse=None, useCountForShow=0):
+                 airportIndex, datesOfUse=None, useCountForShow=0):
         """Initialize an AirportStub instance.
 
-        'indexInAptDat' should be a tuple (byteOffset, lineNb) where
-        'byteOffset' points to the start of the first line defining the
-        airport in apt.dat, and 'lineNb' is the corresponding line
-        number (starting from 1).
+        'airportIndex' should be a tuple (aptDatIndex, byteOffset,
+        lineNb) where 'airportIndex' is an index (in some
+        externally-defined list) of the apt.dat file this airport data
+        comes from, 'byteOffset' points to the start of the first line
+        defining the airport in said apt.dat file, and 'lineNb' is the
+        corresponding line number (starting from 1).
 
         The AirportStatsManager class maintains a count of the number of
         days during which the airport has been visited at least once, in

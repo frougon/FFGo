@@ -38,7 +38,7 @@
 #                                 FG_SCENERY/Airports (for contemporary
 #                                 FlightGear versions).
 # AUTO_UPDATE_APT=boolean       - 0 or 1 (defaults to 1). Keep track of
-#                                 changes to FG_ROOT/Airports/apt.dat.gz file,
+#                                 changes to FlightGear's apt.dat files,
 #                                 and rebuild FFGo's own airport database
 #                                 automatically when it is needed.
 # BASE_FONT_SIZE=size           - Font size in points. Should be in the range

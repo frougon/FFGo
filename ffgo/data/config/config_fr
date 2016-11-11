@@ -31,22 +31,11 @@
 ## désactiver avec cette option:
 #--disable-terrasync
 ## Voir <http://wiki.flightgear.org/TerraSync> pour plus d'informations.
-
+##
 ## Si vous souhaitez choisir le répertoire dans lequel TerraSync va stocker
-## les données de scènes téléchargées (paysage, bâtiments...).
-##
-## Remarque : avec FlightGear 2016.1.1, des problèmes de permissions peuvent
-##            se produire si le répertoire choisi ici n'est pas sous FG_HOME,
-##            ceci en raison de règles de sécurité quelque peu inadéquates[1].
-##            Ce problème a été a priori corrigé[2] dans le commit
-##            41b78ce1505aced494f588d6f3591c8af68a8bbe de FlightGear (daté du
-##            21 février 2016), par conséquent FlightGear 2016.2.1 et suivants
-##            ne devraient pas être affectés.
-##
-##         [1] https://sourceforge.net/p/flightgear/mailman/message/34833785/
-##         [2] https://sourceforge.net/p/flightgear/flightgear/ci/41b78ce1505aced494f588d6f3591c8af68a8bbe/
-##
-#--terrasync-dir=/chemin/de/votre/choix
+## les données de scènes téléchargées, n'utilisez PAS --terrasync-dir ni
+## --download-dir, mais ajustez le répertoire de téléchargement dans la boîte
+## de dialogue Préférences accessible depuis le menu Paramètres.
 
 ## Heure initiale (dans le simulateur) après lancement de FlightGear.
 #--timeofday=noon

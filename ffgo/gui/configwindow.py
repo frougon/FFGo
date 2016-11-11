@@ -51,6 +51,7 @@ class ConfigWindow:
         self.FG_root = tk.StringVar()
         self.FG_scenery = tk.StringVar()
         self.FG_aircraft = tk.StringVar()
+        self.FG_download_dir = tk.StringVar()
         self.FG_working_dir = tk.StringVar()
         self.MagneticField_bin = tk.StringVar()
         self.language = tk.StringVar()
@@ -72,6 +73,7 @@ class ConfigWindow:
         self.FG_root.set(self.config.FG_root.get())
         self.FG_scenery.set(self.config.FG_scenery.get())
         self.FG_aircraft.set(self.config.FG_aircraft.get())
+        self.FG_download_dir.set(self.config.FG_download_dir.get())
         self.FG_working_dir.set(self.config.FG_working_dir.get())
         self.MagneticField_bin.set(self.config.MagneticField_bin.get())
         if self.config.language.get():
@@ -192,6 +194,18 @@ class ConfigWindow:
         except tk.TclError:
             return
 
+    def findFgDownloadDir(self):
+        try:
+            p = fd.askdirectory(parent=self.top,
+                                initialdir=self.getInitialDir(
+                                    self.FG_download_dir.get()),
+                                title=_('Download directory (optional):'))
+            if p:
+                self.FG_download_dir.set(p)
+
+        except tk.TclError:
+            return
+
     def findFgWorkingDir(self):
         try:
             p = fd.askdirectory(parent=self.top,
@@ -277,6 +291,14 @@ The $FG_ROOT/{defaultAircraftDir} directory is always used; thus, there
 is no need to list it here. Leave this field empty unless you are using
 additional aircraft directories.""").format(
     separator=os.pathsep, defaultAircraftDir=DEFAULT_AIRCRAFT_DIR)
+        self.tooltip_download_dir = _("""\
+Optional parameter specifying FlightGear's download directory.
+FlightGear uses this directory to store things it automatically
+downloads, such as TerraSync scenery and aircraft (the latter: when
+using FlightGear's built-in launcher).
+
+Leave this field empty if you want to use FlightGear's default download
+directory.""")
         self.tooltip_working_dir = _("""\
 Optional parameter specifying FlightGear's working directory.
 That is the directory FlightGear will be run from. It can affect the
@@ -303,7 +325,7 @@ EDDF, [I] with E, [C] with D, [A] with D and [O] with F:
 Note:
 
   In both cases, if no parking position is found, {prg} will look into
-  apt.dat.gz as a fallback, but this is much slower.
+  the apt.dat files present inside scenery paths under NavData/apt.
 
 With FlightGear 2.6 and later, it is advised to choose "Scenery"; it
 is now the default in {prg}.
@@ -312,21 +334,20 @@ For more information, you may consult:
 
   http://wiki.flightgear.org/About_Scenery/Airports""").format(prg=PROGNAME)
         self.tooltip_autoAptMenu = _("""\
-Automatic - {prg} will try to keep track of changes to the
-    FG_ROOT/Airports/apt.dat.gz file, and will automatically rebuild
-    its own airport database ({aptDigest}) when this happens.
+Automatic - {prg} will try to keep track of changes to the apt.dat
+    files, and will automatically rebuild its own airport database
+    ({aptDigest}) when this happens.
 
 Manual - The “Rebuild Airport Database” button must be used every time
-    FG_ROOT/Airports/apt.dat.gz is changed (for instance, this is
-    likely to happen when FlightGear is updated).""").format(
-        prg=PROGNAME, aptDigest=APT)
+    the ordered list of apt.dat files is changed, or any of these
+    files.""").format(prg=PROGNAME, aptDigest=APT)
         self.tooltip_rebuildApt = _("""\
-Rebuild the airport database from current FG_ROOT/Airports/apt.dat.gz.
-This must be done every time the apt.dat.gz file is changed. If you
-have left “Airport database update” to its default setting of
-Automatic, you don't have to worry about that: the rebuild will be
-done automatically every time the apt.dat.gz file is found with a
-timestamp that is more recent than the last rebuild.""")
+Rebuild the airport database from the apt.dat files present inside
+scenery paths under NavData/apt. This must be done every time the
+ordered list of these files is changed, or any of their contents. If you
+have left “Airport database update” to its default setting of Automatic,
+you don't have to worry about that: the rebuild will be done
+automatically every time it is needed.""")
         self.tooltip_fontSize = _("""\
 Set the base font size in the range from {0} to {1}. Zero is a special
 value corresponding to a platform-dependent default size.""").format(
@@ -377,6 +398,7 @@ When this option is unchecked, only the main window size is stored.""")
         self.config.FG_root.set(self.FG_root.get())
         self.config.FG_scenery.set(self.FG_scenery.get())
         self.config.FG_aircraft.set(self.FG_aircraft.get())
+        self.config.FG_download_dir.set(self.FG_download_dir.get())
         self.config.FG_working_dir.set(self.FG_working_dir.get())
         self.config.MagneticField_bin.set(self.MagneticField_bin.get())
         if self.language.get() == '-':
@@ -466,6 +488,8 @@ When this option is unchecked, only the main window size is stored.""")
               self.tooltip_scenery, self.findFG_scenery),
              (_('Additional aircraft path(s):'), self.FG_aircraft,
               self.tooltip_aircraft, self.findFG_aircraft),
+             (_('Download directory (optional):'), self.FG_download_dir,
+              self.tooltip_download_dir, self.findFgDownloadDir),
              (_('Working directory (optional):'), self.FG_working_dir,
               self.tooltip_working_dir, self.findFgWorkingDir))
         lt = len(t)
@@ -711,7 +735,7 @@ When this option is unchecked, only the main window size is stored.""")
 
         rebuildAptDbButton = ttk.Button(frame3,
                                         text=_('Rebuild airport database'),
-                                        command=self.config.rebuildApt,
+                                        command=self.config.makeAptDigest,
                                         padding="6p")
         ToolTip(rebuildAptDbButton, self.tooltip_rebuildApt)
         rebuildAptDbButton.grid(row=0, column=4, sticky="e")

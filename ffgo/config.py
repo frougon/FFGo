@@ -9,6 +9,7 @@ import gettext
 import traceback
 import collections
 import itertools
+import textwrap
 from xml.etree import ElementTree
 from tkinter import IntVar, StringVar
 from tkinter.messagebox import askyesno, showinfo, showerror
@@ -54,7 +55,7 @@ class Config:
         self.master = master
 
         self.ai_path = ''  # Path to FG_ROOT/AI directory.
-        self.apt_path = ''  # Path to FG_ROOT/Airports/apt.dat.gz file.
+        self.defaultAptDatFile = '' # Path to FG_ROOT/Airports/apt.dat.gz file.
         self.metar_path = ''  # Path to FG_ROOT/Airports/metar.dat.gz file.
 
         self.aircraft_dirs = [] # List of aircraft directories.
@@ -96,6 +97,7 @@ class Config:
         self.FG_bin = StringVar()
         self.FG_root = StringVar()
         self.FG_scenery = StringVar()
+        self.FG_download_dir = StringVar()
         self.FG_working_dir = StringVar()
 
         self.MagneticField_bin = StringVar()
@@ -146,6 +148,7 @@ class Config:
                          'AUTO_UPDATE_APT=': self.auto_update_apt,
                          'FG_BIN=': self.FG_bin,
                          'FG_AIRCRAFT=': self.FG_aircraft,
+                         'FG_DOWNLOAD_DIR=': self.FG_download_dir,
                          'FG_WORKING_DIR=': self.FG_working_dir,
                          'MAGNETICFIELD_BIN=': self.MagneticField_bin,
                          'FILTER_APT_LIST=': self.filteredAptList,
@@ -172,6 +175,10 @@ class Config:
                          'AIRCRAFT_STATS_EXPIRY_PERIOD=':
                          self.aircraftStatsExpiryPeriod}
 
+        # List of apt_dat.AptDatFileInfo instances extracted from the apt
+        # digest file: nothing so far (this indicates the list of apt.dat files
+        # used to build the apt digest file, with some metadata).
+        self.aptDatFilesInfoFromDigest = []
         # In order to avoid using a lot of memory, detailed airport data is
         # only loaded on demand. Since this is quite slow, keep a cache of the
         # last retrieved data.
@@ -284,10 +291,6 @@ class Config:
                     res.append(line.strip())
 
         return res
-
-    def rebuildApt(self):
-        """Rebuild apt file."""
-        self._makeAptDigest()
 
     def _computeAircraftDirList(self):
         FG_AIRCRAFT_env = os.getenv("FG_AIRCRAFT", "")
@@ -452,7 +455,7 @@ class Config:
         del self.settings
         del self.text
         del self.aircraft_dirs
-        del self.apt_path
+        del self.defaultAptDatFile
         del self.ai_path
         del self.metar_path
         del self.aircraftDict
@@ -473,6 +476,7 @@ class Config:
         self.FG_bin.set('')
         self.FG_root.set('')
         self.FG_scenery.set('')
+        self.FG_download_dir.set('')
         self.FG_working_dir.set('')
         self.MagneticField_bin.set('')
         self.language.set('')
@@ -517,7 +521,10 @@ class Config:
         setupTranslationHelper(self)
 
         self.aircraft_dirs = self._computeAircraftDirList()
-        self.apt_path = os.path.join(self.FG_root.get(), APT_DAT)
+        if self.FG_root.get():
+            self.defaultAptDatFile = os.path.join(self.FG_root.get(), APT_DAT)
+        else:
+            self.defaultAptDatFile = ""
         self.ai_path = os.path.join(self.FG_root.get(), AI_DIR)
         self.metar_path = os.path.join(self.FG_root.get(), METAR_DAT)
 
@@ -534,8 +541,35 @@ class Config:
 
         self.scenario_list, self.carrier_list = self._readScenarios()
         self.sanityChecks()
+
         self.getFlightGearVersion(ignoreFGVersionError=ignoreFGVersionError,
                                   log=logFGVersion)
+
+        # These imports require the translation system [_() function] to be in
+        # place.
+        from .fgdata import apt_dat, json_report
+        from .fgcmdbuilder import FGCommandBuilder
+        from .fgdata.fgversion import FlightGearVersion
+        fgBin = self.FG_bin.get()
+
+         # The fgfs option --json-report appeared in FlightGear 2016.4.0
+        if (fgBin and self.FG_version is not None and
+            self.FG_version >= FlightGearVersion([2016, 4])):
+            # This may take a while!
+            logger.info(_("Querying FlightGear's JSON report..."), end=' ')
+            fgReport = json_report.getFlightGearJSONReport(
+                fgBin, self.FG_working_dir.get(),
+                FGCommandBuilder.sceneryPathsArgs(self))
+            logger.info(_("OK."))
+            # The FlightGear code for --json-report ensures that every element
+            # of this list is an existing file.
+            aptDatList = fgReport["navigation data"]["apt.dat files"]
+        elif os.path.isfile(self.defaultAptDatFile):
+            aptDatList = [self.defaultAptDatFile]
+        else:
+            aptDatList = []
+
+        self.aptDatSetManager = apt_dat.AptDatSetManager(aptDatList)
 
     def write(self, text=None, path=None):
         """Write the configuration to a file.
@@ -731,11 +765,6 @@ configurations are kept separate.""")
             else:
                 assert choice == "create default cfg", repr(choice)
 
-    def _makeAptDigest(self, head=None):
-        """Build apt database from apt.dat.gz"""
-        if self.FG_root.get():
-            _ProcessApt(self.master, self, self.apt_path, head)
-
     def _read(self, path=None):
         """Read the specified or a default configuration file.
 
@@ -870,32 +899,36 @@ configurations are kept separate.""")
     def sortedIcao(self):
         return sorted(self.airports.keys())
 
-    def _readApt(self):
-        """Read the apt digest file (create a new one if none exists).
+    def readAptDigestFile(self):
+        """Read the apt digest file.
 
-        Return a list of AirportStub instances.
+        Recreate a new one if there is already one, but written in an
+        old version of the format. Return a list of AirportStub
+        instances.
 
         """
         from .fgdata import apt_dat
 
-        if not os.path.exists(APT):
-            # Create a new file if self.FG_root is non-empty
-            self._makeAptDigest()
-
-        if not os.path.isfile(APT): # may happen if self.FG_root was empty
-            self.aptDatSize, self.airports = 0, {}
-            return []
-
-        for attempt in itertools.count(start=1):
-            try:
-                self.aptDatSize, self.airports = apt_dat.AptDatDigest.read(APT)
-            except apt_dat.UnableToParseAptDigest:
-                if attempt < 2:
-                    self._makeAptDigest()
+        if not os.path.isfile(APT):
+            self.aptDatFilesInfoFromDigest, self.airports = [], {}
+        else:
+            for attempt in itertools.count(start=1):
+                try:
+                    self.aptDatFilesInfoFromDigest, self.airports = \
+                                                apt_dat.AptDatDigest.read(APT)
+                except apt_dat.UnableToParseAptDigest:
+                    # Rebuild once in case the apt digest file was written
+                    # in an outdated format.
+                    if attempt < 2:
+                        self.makeAptDigest()
+                    else:
+                        raise
                 else:
-                    raise
-            else:
-                break
+                    break
+
+        if os.path.isfile(OBSOLETE_APT_TIMESTAMP_FILE):
+            # Obsolete file since version 4 of the apt digest file format
+            os.unlink(OBSOLETE_APT_TIMESTAMP_FILE)
 
         if self.filteredAptList.get():
             installedApt = self._readInstalledAptSet()
@@ -925,6 +958,40 @@ configurations are kept separate.""")
             res = frozenset([ line[:-1] for line in f ])
 
         return res
+
+    def makeAptDigest(self, headText=None):
+        """
+        Build the FFGo apt digest file from the apt.dat files used by FlightGear"""
+        AptDigestBuilder(self.master, self).start(headText)
+
+    def autoUpdateApt(self):
+        """Rebuild the apt digest file if it is outdated."""
+        from .fgdata import apt_dat
+
+        if os.path.isfile(APT):
+            # Extract metadata (list of apt.dat files, sizes, timestamps) from
+            # the existing apt digest file
+            try:
+                formatVersion, self.aptDatFilesInfoFromDigest = \
+                        apt_dat.AptDatDigest.read(APT, onlyReadHeader=True)
+            except apt_dat.UnableToParseAptDigest:
+                self.aptDatFilesInfoFromDigest = []
+        else:
+            self.aptDatFilesInfoFromDigest = []
+
+        # Check if the list, size or timestamps of the apt.dat files changed
+        if not self.aptDatSetManager.isFresh(self.aptDatFilesInfoFromDigest):
+            self.makeAptDigest(
+                headText=_('Modification of apt.dat files detected.'))
+            # The new apt.dat files may invalidate the current parking
+            status, *rest = self.decodeParkingSetting(self.park.get())
+            if status == "apt.dat":
+                # This was a startup location obtained from an apt.dat file; it
+                # may be invalid with the new files, reset.
+                self.park.set('')
+
+        # This is also outdated with respect to the new set of apt.dat files.
+        self.aptDatCache.clear()
 
     def _readScenarios(self):
         """Walk through AI scenarios and read carrier data.
@@ -1058,47 +1125,6 @@ configurations are kept separate.""")
         lon_range = self._calculateRange(lon)
         return lat_range, lon_range
 
-    def _autoUpdateApt(self):
-        if not self.auto_update_apt.get() or not os.path.exists(self.apt_path):
-            return
-        old_timestamp = self._readAptTimestamp()
-        self._updateApt(old_timestamp)
-
-    def _readAptTimestamp(self):
-        if not os.path.exists(APT_TIMESTAMP):
-            self._writeAptTimestamp('')
-
-        logger.info("Opening apt timestamp file '{}' for reading".format(
-            APT_TIMESTAMP))
-        with open(APT_TIMESTAMP, "r", encoding="utf-8") as timestamp:
-            old_modtime = timestamp.read()
-        return old_modtime
-
-    def _writeAptTimestamp(self, s=None):
-        if s is None:
-            s = self._getAptModTime()
-
-        logger.info("Opening apt timestamp file '{}' for writing".format(
-            APT_TIMESTAMP))
-        with open(APT_TIMESTAMP, "w", encoding="utf-8") as timestamp:
-            timestamp.write(s)
-
-    def _getAptModTime(self):
-        return str(os.path.getmtime(self.apt_path))
-
-    def _updateApt(self, old_timestamp):
-        if old_timestamp != self._getAptModTime():
-            self._makeAptDigest(head=_('Modification of apt.dat.gz detected.'))
-            # The new apt.dat may invalidate the current parking
-            status, *rest = self.decodeParkingSetting(self.park.get())
-            if status == "apt.dat":
-                # This was a parking position obtained from apt.dat; it may be
-                # invalid with the new file, reset.
-                self.park.set('')
-
-            # This is also outdated with respect to the new apt.dat.
-            self.aptDatCache.clear()
-
     # Accept any arguments to allow safe use as a Tkinter variable observer
     def updateMagFieldProvider(self, *args):
         from .geo.magfield import EarthMagneticField, MagVarUnavailable
@@ -1118,51 +1144,79 @@ configurations are kept separate.""")
             module.setupEarthMagneticFieldProvider(self.earthMagneticField)
 
 
-class _ProcessApt:
+class AptDigestBuilderProgressFeedbackHandler(misc.ProgressFeedbackHandler):
+    def __init__(self, progressWidget, progressTextVar, progressValueVar,
+                 *args, **kwargs):
+        self.progressWidget = progressWidget
+        self.progressTextVar = progressTextVar
+        self.progressValueVar = progressValueVar
+        misc.ProgressFeedbackHandler.__init__(self, *args, **kwargs)
 
-    """Build apt database from apt.dat.gz"""
+    def onUpdated(self):
+        self.progressTextVar.set(self.text)
+        # The default range in ttk.Progressbar() is [0, 100]
+        self.progressValueVar.set(100*self.value/self.amplitude)
+        # Useful when we don't get back to the Tk main loop for long periods
+        self.progressWidget.update_idletasks()
 
-    def __init__(self, master, config, aptPath, head=None):
+
+class AptDigestBuilder:
+    """
+    Build the FFGo apt digest file from the apt.dat files used by FlightGear."""
+
+    def __init__(self, master, config):
         self.master = master
         self.config = config
-        self.aptPath = aptPath
-        self.main(head)
+        # For progress feedback, since rebuilding the apt digest file is
+        # time-consuming
+        self.progressTextVar = StringVar()
+        self.progressValueVar = StringVar()
+        self.progressValueVar.set("0.0")
 
-    def main(self, head):
-        if os.path.exists(self.aptPath):
-            self.make_window(head)
+    def start(self, headText=None):
+        # Check if there are apt.dat files that FlightGear would consider
+        # (based on scenery paths, including the TerraSync directory)
+        if self.config.aptDatSetManager.aptDatList:
+            self.makeWindow(headText)
             try:
                 self.makeAptDigest()
             except Exception:
-                self.close_window()
+                self.closeWindow()
                 # Will be handled by master.report_callback_exception
                 raise
-            self.close_window()
+            self.closeWindow()
         else:
-            self.show_no_aptdat_error()
+            message = _('Cannot find any apt.dat file.')
+            showerror(_('Error'), message)
 
-    def make_window(self, head=None):
+    def makeWindow(self, headText=None):
         message = _('Generating the airport database,\n'
                     'this may take a while...')
-        if head:
-            message = '\n'.join((head, message))
-        self.window = InfoWindow(self.master, text=message)
+        if headText:
+            message = '\n'.join((headText, message))
+        self.window = InfoWindow(
+            self.master, text=message, withProgress=True,
+            progressLabelKwargs={"textvariable": self.progressTextVar},
+            progressWidgetKwargs={"orient": "horizontal",
+                                  "variable": self.progressValueVar,
+                                  "mode": "determinate"})
+        self.config.aptDatSetManager.progressFeedbackHandler = \
+          AptDigestBuilderProgressFeedbackHandler(self.window.progressWidget,
+                                                  self.progressTextVar,
+                                                  self.progressValueVar)
 
     def makeAptDigest(self):
         from .fgdata import apt_dat
 
-        with apt_dat.AptDat(self.aptPath) as aptDat:
-            logger.notice(
-                _("Generating {prg}'s apt digest file ('{aptDigest}') from "
-                  "'{aptDat}'...").format(prg=PROGNAME, aptDigest=APT,
-                                          aptDat=self.aptPath))
-            aptDat.makeAptDigest(outputFile=APT)
+        aptDatFilesStr = textwrap.indent(
+            '\n'.join(self.config.aptDatSetManager.aptDatList),
+            "  ")
+        s = _("Generating {prg}'s apt digest file ('{aptDigest}') "
+              "from:\n\n{aptDatFiles}").format(
+                  prg=PROGNAME, aptDigest=APT, aptDatFiles=aptDatFilesStr)
+        logger.notice(s)
 
-        self.config._writeAptTimestamp()
+        self.config.aptDatSetManager.writeAptDigestFile(outputFile=APT)
 
-    def show_no_aptdat_error(self):
-        message = _('Cannot find apt.dat database.')
-        showerror(_('Error'), message)
-
-    def close_window(self):
+    def closeWindow(self):
         self.window.destroy()

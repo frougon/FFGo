@@ -1,7 +1,7 @@
 # fgcmdbuilder.py --- Prepare the fgfs argument list (“FlightGear command line”)
 # -*- coding: utf-8 -*-
 #
-# Copyright (c) 2014, 2015  Florent Rougon
+# Copyright (c) 2014, 2015, 2016  Florent Rougon
 #
 # This file is distributed under the terms of the DO WHAT THE FUCK YOU WANT TO
 # PUBLIC LICENSE version 2, dated December 2004, by Sam Hocevar. You should
@@ -176,6 +176,19 @@ class FGCommandBuilder:
         # optionList starting with that prefix.
         return [ s if isOpt else d[s] for isOpt, s in l ]
 
+    @classmethod
+    def sceneryPathsArgs(cls, config):
+        res = []
+        sceneryDirs = config.FG_scenery.get()
+        if sceneryDirs and sceneryDirs != 'None': # != 'None' test: legacy
+            res.append('--fg-scenery=' + sceneryDirs)
+
+        downloadDir = config.FG_download_dir.get()
+        if downloadDir:
+            res.append('--download-dir=' + downloadDir)
+
+        return res
+
     def getUIExposedOptions(self):
         options = []
         # --fg-aircraft may be split into several options, as for
@@ -187,9 +200,7 @@ class FGCommandBuilder:
             if cfg:
                 options.append(opt + cfg)
 
-        scenery_dirs = self.app.config.FG_scenery.get()
-        if scenery_dirs and scenery_dirs != 'None':
-            options.append('--fg-scenery=' + scenery_dirs)
+        options.extend(self.sceneryPathsArgs(self.app.config))
 
         aircraftOpts = [('--aircraft=', self.app.config.aircraft.get())]
 
@@ -209,8 +220,8 @@ class FGCommandBuilder:
         parkStatus, parkName, parkOpts = self.app.config.decodeParkingSetting(
             self.app.config.park.get())
 
-        # Parking positions from apt.dat use --lat and --lon, so don't pass
-        # --airport/--runway/--carrier in such a case.
+        # Startup locations from apt.dat files use --lat and --lon, so don't
+        # pass --airport/--runway/--carrier in such a case.
         if parkStatus == "apt.dat":
             locationOpts = []
         elif self.app.config.carrier.get(): # carrier mode
