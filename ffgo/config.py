@@ -552,7 +552,7 @@ class Config:
         from .fgdata.fgversion import FlightGearVersion
         fgBin = self.FG_bin.get()
 
-         # The fgfs option --json-report appeared in FlightGear 2016.4.0
+        # The fgfs option --json-report appeared in FlightGear 2016.4.0
         if (fgBin and self.FG_version is not None and
             self.FG_version >= FlightGearVersion([2016, 4])):
             # This may take a while!
@@ -611,18 +611,42 @@ class Config:
             config_out.write(text)
 
     def _findInstalledApt(self):
-        """Walk thru all scenery and find installed airports.
+        """Walk through all scenery paths and find installed airports.
 
-        Take geographic coordinates from directories names and compare them
-        with airports coordinates in apt file.
+        Take geographic coordinates from directory names and compare them
+        with airport coordinates from the apt digest file.
 
-        The result is a sorted list of ICAO codes for matching airports.
+        The result is a sorted list of airport identifiers for matching
+        airports.
 
         """
-        coord_dict = {}
-        sceneries = self.FG_scenery.get().split(os.pathsep)
+        # These imports require the translation system [_() function] to be in
+        # place.
+        from .fgdata import json_report
+        from .fgcmdbuilder import FGCommandBuilder
+        from .fgdata.fgversion import FlightGearVersion
+        fgBin = self.FG_bin.get()
 
-        for scenery in sceneries:
+        # The fgfs option --json-report appeared in FlightGear 2016.4.0
+        if (fgBin and self.FG_version is not None and
+            self.FG_version >= FlightGearVersion([2016, 4])):
+            # This may take a while!
+            logger.info(_("Querying FlightGear's JSON report..."), end=' ')
+            fgReport = json_report.getFlightGearJSONReport(
+                fgBin, self.FG_working_dir.get(),
+                FGCommandBuilder.sceneryPathsArgs(self))
+            logger.info(_("OK."))
+            sceneryPaths = fgReport["config"]["scenery paths"]
+        else:
+            # Fallback method when --json-report isn't available. It is
+            # imperfect in case TerraSync is enabled and the TerraSync
+            # directory isn't listed in self.FG_scenery, because FlightGear
+            # *is* going to use it as a scenery path.
+            sceneryPaths = self.FG_scenery.get().split(os.pathsep)
+
+        coord_dict = {}
+
+        for scenery in sceneryPaths:
             path = os.path.join(scenery, 'Terrain')
             if os.path.exists(path):
                 for dir in os.listdir(path):
