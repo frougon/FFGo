@@ -1512,6 +1512,8 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
         started.
 
         """
+        # Can only be imported once the translation system is set up
+        from .. import fgcmdbuilder
         t = self.options.get()
         self.config.write(text=t)
 
@@ -1532,14 +1534,31 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
             showerror(_('{prg}').format(prg=PROGNAME), message, detail=detail)
             return False
         elif self.FGCommand.argList is None:
-            message = _('Cannot start FlightGear now.')
-            # str(self.lastConfigParsingExc) is not translated...
-            detail = _("The configuration in the main text field has an "
-                       "invalid syntax:\n\n{errmsg}\n\n"
-                       "See docs/README.conditional-config or the "
-                       "CondConfigParser Manual for a description of the "
-                       "syntax rules.").format(
-                           errmsg=self.FGCommand.lastConfigParsingExc)
+            if isinstance(self.FGCommand.lastConfigParsingExc,
+                          fgcmdbuilder.InvalidEscapeSequenceInOptionLine):
+                message = _('Cannot start FlightGear now.')
+                # str(self.lastConfigParsingExc) is not translated...
+                detail = _("The configuration in the main text field has an "
+                           "invalid syntax:\n\n{errmsg}.\n\n"
+                           "See docs/README.conditional-config or the "
+                           "CondConfigParser Manual for a description of the "
+                           "syntax rules.").format(
+                               errmsg=self.FGCommand.lastConfigParsingExc)
+            elif isinstance(self.FGCommand.lastConfigParsingExc,
+                            fgcmdbuilder.UnsupportedOption):
+                message = _('Unsupported option in the Options Window.')
+                detail = _("The configuration in the main text field uses the "
+                           "fgfs option {option}, which is unsupported because "
+                           "every change to its value could potentially "
+                           "require a time-consuming rebuild of the airport "
+                           "database. Use the “download directory” setting "
+                           "of the Preferences dialog for equivalent "
+                           "functionality.").format(
+                              option=self.FGCommand.lastConfigParsingExc.option)
+            else:
+                assert False, "Unexpected exception: {!r}".format(
+                    self.FGCommand.lastConfigParsingExc)
+
             showerror(_('{prg}').format(prg=PROGNAME), message, detail=detail)
             return False
 

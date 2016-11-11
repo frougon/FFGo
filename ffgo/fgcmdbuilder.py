@@ -14,25 +14,50 @@ import functools
 import operator
 import condconfigparser
 
+from .constants import PROGNAME
 from .fgdata.fgversion import FlightGearVersion
+from .exceptions import FFGoException
 
 
-class InvalidEscapeSequenceInOptionLine(Exception):
+class error(FFGoException):
+    """Base class for exceptions in the fgcmdbuilder module."""
+
+    ExceptionShortDescription = _("Error caught in the fgcmdbuilder module")
+
+class InvalidEscapeSequenceInOptionLine(error):
     """Exception raised when an option line contains an invalid escape sequence.
 
     This happens when the escape sequence is not recognized by FFGo.
-
     """
+
+    ExceptionShortDescription = _("Invalid escape sequence in an option line")
+
     def __init__(self, char):
+        message = _(
+                "the \\{char} escape sequence is not recognized by {prg} "
+                "in the Options Window").format(prg=PROGNAME, char=char)
+        error.__init__(self, message)
         self.char = char
 
-    def __str__(self):
-        return _("invalid escape sequence in option line: \\{0}").format(
-            self.char)
+    def __repr__(self):
+        return "{}.{}({!r})".format(__name__, type(self).__name__, self.char)
+
+
+class UnsupportedOption(error):
+    """Exception raised when encountering an unsupported option."""
+
+    ExceptionShortDescription = _("Unsupported option")
+
+    def __init__(self, option):
+        message = _(
+                "the \\{option} fgfs option is not supported by {prg} "
+                "in the Options Window").format(prg=PROGNAME,
+                                                option=option)
+        error.__init__(self, message)
+        self.option = option
 
     def __repr__(self):
-        return "{0}.{1}({2!r})".format(__name__, type(self).__name__,
-                                       self.char)
+        return "{}.{}({!r})".format(__name__, type(self).__name__, self.option)
 
 
 class FGCommandBuilder:
@@ -244,6 +269,12 @@ class FGCommandBuilder:
 
         return options
 
+    def checkForUnsupportedOptions(self, argList):
+        for arg in argList:
+            for option in ("download-dir", "terrasync-dir"):
+                if arg.startswith("--{}=".format(option)):
+                    raise UnsupportedOption("--{}".format(option))
+
     def update(self):
         """Update self.argList and self.lastConfigParsingExc."""
         t = self.app.options.get()
@@ -275,6 +306,7 @@ class FGCommandBuilder:
             # Concatenate all lists together
             additionalLines = functools.reduce(operator.add, optionLineGroups,
                                                [])
+            self.checkForUnsupportedOptions(additionalLines)
             options.extend(additionalLines)
 
             # Merge options starting with an element of MERGED_OPTIONS
@@ -282,7 +314,7 @@ class FGCommandBuilder:
             mergedOptions = configVars.get("MERGED_OPTIONS", [])
             # Will be available for App._runFG()
             self.argList = self.mergeFGOptions(mergedOptions, options)
-        except (condconfigparser.error, InvalidEscapeSequenceInOptionLine) as e:
+        except (condconfigparser.error, error) as e:
             self.argList = None
             self.lastConfigParsingExc = e
         else:
