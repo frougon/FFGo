@@ -427,7 +427,7 @@ class App:
         # self.thumbnail and avoid severe layout problems.
         self.updateImage()
 
-#------ Time settings ---------------------------------------------------------
+#------ Misc FlightGear settings ----------------------------------------------
         self.translatedTimeOfDay = tk.StringVar()
         self.translatedSeason = tk.StringVar()
 
@@ -463,10 +463,10 @@ class App:
         self.translatedTimeOfDay.trace('w', _updateTimeOfDay)
         self.translatedSeason.trace('w', _updateSeason)
 
-        # The “Time settings”-related widgets
+        # The “Misc settings”-related widgets
         self.frame3 = Frame(self.frame0, borderwidth=1, relief='sunken')
         self.frame3.pack(side='left', fill='both')
-        titleLabel = ttk.Label(self.frame3, text=_("Time settings"),
+        titleLabel = ttk.Label(self.frame3, text=_("Misc settings"),
                                anchor="center", borderwidth=2, relief="groove",
                                padding=3)
         titleLabel.pack(side='top', fill='x')
@@ -518,6 +518,16 @@ class App:
         for widget in (timeOfDayMenu, seasonMenu):
             # Stupid interface that seems to work with a number of characters!
             widget.config(width=maxLen)
+
+        self.frame32 = Frame(self.frame3, borderwidth=4)
+        self.frame32.pack(side='top', fill='x')
+
+        # Back to one-column layout, “Start FlightGear full screen” checkbutton
+        startFGFullScreenCb = ttk.Checkbutton(
+            self.frame32,
+            text=_('Start FlightGear in full screen'),
+            variable=self.config.startFGFullScreen)
+        startFGFullScreenCb.pack(side='top', fill='x', expand=True)
 
 #------ Airport list ----------------------------------------------------------
         self.frame4 = Frame(self.frame0, borderwidth=8)
@@ -1499,6 +1509,7 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
         self.config.rwy.trace('w', self.onRunwayUpdate)
         self.config.timeOfDay.trace('w', self.FGCommand.update)
         self.config.season.trace('w', self.FGCommand.update)
+        self.config.startFGFullScreen.trace('w', self.FGCommand.update)
 
     def reset(self, event=None, path=None, readCfgFile=True):
         """Reset data"""

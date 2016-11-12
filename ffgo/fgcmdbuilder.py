@@ -275,6 +275,10 @@ class FGCommandBuilder:
         if season:
             options.append("--season=" + season)
 
+        startFGFullScreen = self.app.config.startFGFullScreen.get()
+        if startFGFullScreen:
+            options.append("--enable-fullscreen")
+
         return options
 
     def checkForUnsupportedOptions(self, argList):
