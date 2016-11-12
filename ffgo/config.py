@@ -108,6 +108,8 @@ class Config:
         self.park = StringVar()
         self.rwy = StringVar()
         self.scenario = StringVar()
+        self.timeOfDay = StringVar()
+        self.season = StringVar()
         self.mainWindowGeometry = StringVar()
         self.saveWindowPosition = IntVar()
         self.baseFontSize = StringVar()
@@ -140,6 +142,8 @@ class Config:
                          '--carrier=': self.carrier,
                          '--parkpos=': self.park,
                          '--runway=': self.rwy,
+                         'TIME_OF_DAY=': self.timeOfDay,
+                         'SEASON=': self.season,
                          'AIRCRAFT_DIR=': self.aircraftDir,
                          'AI_SCENARIOS=': self.scenario,
                          'ALREADY_PROPOSED_CHANGES=':
@@ -494,6 +498,8 @@ class Config:
         self.fakeParkposOption.set('0')
         self.rwy.set('')
         self.scenario.set('')
+        self.timeOfDay.set('')
+        self.season.set('')
         self.filteredAptList.set(0)
         self.airportStatsShowPeriod.set('365')    # approx. one year
         self.airportStatsExpiryPeriod.set('3652') # approx. ten years

@@ -9,6 +9,7 @@ import subprocess
 import socket
 import re
 import abc
+import itertools
 import functools
 import collections
 import enum
@@ -17,6 +18,7 @@ from gettext import translation
 import threading
 import queue as queue_mod       # keep 'queue' available for variable bindings
 from tkinter import *
+import tkinter as tk
 from tkinter import ttk
 from tkinter import constants as tkc
 import tkinter.filedialog as fd
@@ -425,27 +427,119 @@ class App:
         # self.thumbnail and avoid severe layout problems.
         self.updateImage()
 
-#------ Airport list ----------------------------------------------------------
-        self.frame3 = Frame(self.frame0, borderwidth=8)
-        self.frame3.pack(side='left', fill='both', expand=True)
+#------ Time settings ---------------------------------------------------------
+        self.translatedTimeOfDay = tk.StringVar()
+        self.translatedSeason = tk.StringVar()
 
-        # Fill self.frame3 from bottom to top, because when vertical space is
+        timeOfDayChoices = [N_("current time"), N_("dawn"), N_("morning"),
+                            N_("noon"), N_("afternoon"), N_("dusk"),
+                            N_("evening"), N_("midnight")]
+        timeOfDayReverseMapping = collections.OrderedDict(
+            ( (_(s), s) for s in timeOfDayChoices ))
+
+        def _updateTimeOfDay(*args,
+                             timeOfDayReverseMapping=timeOfDayReverseMapping,
+                             **kwargs):
+            if self.translatedTimeOfDay.get() == _("current time"):
+                self.config.timeOfDay.set("")
+            else:
+                 self.config.timeOfDay.set(
+                    timeOfDayReverseMapping[self.translatedTimeOfDay.get()])
+
+        seasonChoices = [pgettext_noop("season", "default"),
+                         pgettext_noop("season", "summer"),
+                         pgettext_noop("season", "winter")]
+        seasonReverseMapping = collections.OrderedDict(
+           ( (pgettext("season", s), s) for s in seasonChoices ))
+
+        def _updateSeason(*args, seasonReverseMapping=seasonReverseMapping,
+                          **kwargs):
+            if self.translatedSeason.get() == pgettext("season", "default"):
+                self.config.season.set("")
+            else:
+                self.config.season.set(
+                    seasonReverseMapping[self.translatedSeason.get()])
+
+        self.translatedTimeOfDay.trace('w', _updateTimeOfDay)
+        self.translatedSeason.trace('w', _updateSeason)
+
+        # The “Time settings”-related widgets
+        self.frame3 = Frame(self.frame0, borderwidth=1, relief='sunken')
+        self.frame3.pack(side='left', fill='both')
+        titleLabel = ttk.Label(self.frame3, text=_("Time settings"),
+                               anchor="center", borderwidth=2, relief="groove",
+                               padding=3)
+        titleLabel.pack(side='top', fill='x')
+
+        self.frame30 = Frame(self.frame3, height=12) # vertical spacer
+        self.frame30.pack(side='top', fill='x')
+
+        self.frame31 = Frame(self.frame3, borderwidth=4)
+        self.frame31.pack(side='top', fill='x')
+
+        # First column
+        self.frame311 = Frame(self.frame31, borderwidth=4)
+        self.frame311.pack(side='left', fill='x')
+        timeOfDayLabel = ttk.Label(self.frame311, text=_("Time of day:"))
+        timeOfDayLabel.pack(side='top')
+
+        seasonLabel = ttk.Label(self.frame311, text=_("Season:"))
+        seasonLabel.pack(side='top')
+
+        # Second column
+        self.frame312 = Frame(self.frame31, borderwidth=4)
+        self.frame312.pack(side='top', fill='x')
+
+        if self.config.timeOfDay.get():
+            initTimeOfDay = _(self.config.timeOfDay.get())
+        else:
+            initTimeOfDay = _("current time")
+
+        timeOfDayMenu = ttk.OptionMenu(self.frame312, self.translatedTimeOfDay,
+                                       initTimeOfDay,
+                                       *timeOfDayReverseMapping.keys())
+        timeOfDayMenu.pack(side='top')
+
+        if self.config.season.get():
+            initSeason = pgettext("season", self.config.season.get())
+        else:
+            initSeason = pgettext("season", "default")
+
+        seasonMenu = ttk.OptionMenu(self.frame312, self.translatedSeason,
+                                    initSeason,
+                                    *seasonReverseMapping.keys())
+        seasonMenu.pack(side='top')
+
+        # font = tk.font.Font() # same as tk.font.nametofont("TkDefaultFont")
+        # maxWidth = max(( font.measure(text) for text in
+        #                  timeOfDayChoices + seasonChoices ))
+        maxLen = max(( len(text) for text in itertools.chain(
+            timeOfDayReverseMapping.keys(), seasonReverseMapping.keys()) ))
+        for widget in (timeOfDayMenu, seasonMenu):
+            # Stupid interface that seems to work with a number of characters!
+            widget.config(width=maxLen)
+
+#------ Airport list ----------------------------------------------------------
+        self.frame4 = Frame(self.frame0, borderwidth=8)
+        self.frame4.pack(side='left', fill='both', expand=True)
+
+        # Fill self.frame4 from bottom to top, because when vertical space is
         # scarce, the last elements added are the first to suffer from the lack
         # of space. Here, we want the airport list to be shrunk before the
         # search field and the 'Clear' button.
-        self.frame31 = Frame(self.frame3, borderwidth=1)
-        self.frame31.pack(side='bottom', fill='x')
+        self.frame41 = Frame(self.frame4, borderwidth=1)
+        self.frame41.pack(side='bottom', fill='x')
 
         # The link to a StringVar is done in the AirportChooser class
-        self.airportSearch = MyEntry(self, self.frame31, bg=TEXT_BG_COL)
+        self.airportSearch = MyEntry(self, self.frame41, bg=TEXT_BG_COL)
         self.airportSearch.pack(side='left', fill='x', expand=True)
-        self.airportSearchButton = Button(self.frame31, text=_('Clear'))
+        self.airportSearchButton = Button(self.frame41, text=_('Clear'))
         self.airportSearchButton.pack(side='left')
 
-        self.frame32 = Frame(self.frame3, borderwidth=1)
-        self.frame32.pack(side='bottom', fill='both', expand=True)
+        self.frame42 = Frame(self.frame4, borderwidth=1)
+        self.frame42.pack(side='bottom', fill='both', expand=True)
 
-        self.airportListScrollbar = Scrollbar(self.frame32, orient='vertical',
+        self.airportListScrollbar = Scrollbar(self.frame42, orient='vertical',
                                               takefocus=0)
 
         def onAirportListScrolled(*args, self=self):
@@ -459,7 +553,7 @@ class App:
         # Subclass of Ttk's Treeview. The TreeviewSelect event binding is done
         # in the AirportChooser class.
         self.airportList = widgets.MyTreeview(
-            self.frame32, columns=airportListDisplayColumns, # show all columns
+            self.frame42, columns=airportListDisplayColumns, # show all columns
             show="headings", selectmode="browse", height=14,
             yscrollcommand=onAirportListScrolled)
         self.airportList.pack(side='left', fill='both', expand=True)
@@ -1403,6 +1497,8 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
         self.config.park.trace('w', self.onParkingUpdate)
         self.config.rwy.trace('w', self.FGCommand.update)
         self.config.rwy.trace('w', self.onRunwayUpdate)
+        self.config.timeOfDay.trace('w', self.FGCommand.update)
+        self.config.season.trace('w', self.FGCommand.update)
 
     def reset(self, event=None, path=None, readCfgFile=True):
         """Reset data"""

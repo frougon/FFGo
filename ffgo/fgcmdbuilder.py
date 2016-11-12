@@ -267,6 +267,14 @@ class FGCommandBuilder:
             for scenario in self.app.config.scenario.get().split():
                 options.append('--ai-scenario=' + scenario)
 
+        timeOfDay = self.app.config.timeOfDay.get()
+        if timeOfDay:
+            options.append("--timeofday=" + timeOfDay)
+
+        season = self.app.config.season.get()
+        if season:
+            options.append("--season=" + season)
+
         return options
 
     def checkForUnsupportedOptions(self, argList):
