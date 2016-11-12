@@ -111,6 +111,7 @@ class Config:
         self.timeOfDay = StringVar()
         self.season = StringVar()
         self.startFGFullScreen = IntVar()
+        self.startFGPaused = IntVar()
         self.mainWindowGeometry = StringVar()
         self.saveWindowPosition = IntVar()
         self.baseFontSize = StringVar()
@@ -146,6 +147,7 @@ class Config:
                          'TIME_OF_DAY=': self.timeOfDay,
                          'SEASON=': self.season,
                          'START_FG_FULL_SCREEN=': self.startFGFullScreen,
+                         'START_FG_PAUSED=': self.startFGPaused,
                          'AIRCRAFT_DIR=': self.aircraftDir,
                          'AI_SCENARIOS=': self.scenario,
                          'ALREADY_PROPOSED_CHANGES=':
@@ -503,6 +505,7 @@ class Config:
         self.timeOfDay.set('')
         self.season.set('')
         self.startFGFullScreen.set('1')
+        self.startFGPaused.set('0')
         self.filteredAptList.set(0)
         self.airportStatsShowPeriod.set('365')    # approx. one year
         self.airportStatsExpiryPeriod.set('3652') # approx. ten years

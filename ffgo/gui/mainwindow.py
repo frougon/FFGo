@@ -522,12 +522,24 @@ class App:
         self.frame32 = Frame(self.frame3, borderwidth=4)
         self.frame32.pack(side='top', fill='x')
 
+        # Vertical spacer
+        ttk.Frame(self.frame32, height=8).pack(side='top', fill='x')
+
         # Back to one-column layout, “Start FlightGear full screen” checkbutton
         startFGFullScreenCb = ttk.Checkbutton(
             self.frame32,
             text=_('Start FlightGear in full screen'),
             variable=self.config.startFGFullScreen)
         startFGFullScreenCb.pack(side='top', fill='x', expand=True)
+
+        # Vertical spacer
+        ttk.Frame(self.frame32, height=8).pack(side='top', fill='x')
+
+        startFGPausedCb = ttk.Checkbutton(
+            self.frame32,
+            text=_('Start FlightGear paused'),
+            variable=self.config.startFGPaused)
+        startFGPausedCb.pack(side='top', fill='x', expand=True)
 
 #------ Airport list ----------------------------------------------------------
         self.frame4 = Frame(self.frame0, borderwidth=8)
@@ -1510,6 +1522,7 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
         self.config.timeOfDay.trace('w', self.FGCommand.update)
         self.config.season.trace('w', self.FGCommand.update)
         self.config.startFGFullScreen.trace('w', self.FGCommand.update)
+        self.config.startFGPaused.trace('w', self.FGCommand.update)
 
     def reset(self, event=None, path=None, readCfgFile=True):
         """Reset data"""

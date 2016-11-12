@@ -279,6 +279,10 @@ class FGCommandBuilder:
         if startFGFullScreen:
             options.append("--enable-fullscreen")
 
+        startFGPaused = self.app.config.startFGPaused.get()
+        if startFGPaused:
+            options.append("--enable-freeze")
+
         return options
 
     def checkForUnsupportedOptions(self, argList):
