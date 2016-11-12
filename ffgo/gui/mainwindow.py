@@ -464,30 +464,33 @@ class App:
         self.translatedSeason.trace('w', _updateSeason)
 
         # The “Misc settings”-related widgets
-        self.frame3 = Frame(self.frame0, borderwidth=1, relief='sunken')
+        self.frame3 = ttk.Frame(self.frame0, borderwidth=1, relief='sunken')
         self.frame3.pack(side='left', fill='both')
         titleLabel = ttk.Label(self.frame3, text=_("Misc settings"),
                                anchor="center", borderwidth=2, relief="groove",
                                padding=3)
         titleLabel.pack(side='top', fill='x')
 
-        self.frame30 = Frame(self.frame3, height=12) # vertical spacer
+        self.frame30 = ttk.Frame(self.frame3, height=12) # vertical spacer
         self.frame30.pack(side='top', fill='x')
 
-        self.frame31 = Frame(self.frame3, borderwidth=4)
+        self.frame31 = ttk.Frame(self.frame3, borderwidth=4)
         self.frame31.pack(side='top', fill='x')
 
         # First column
-        self.frame311 = Frame(self.frame31, borderwidth=4)
+        self.frame311 = ttk.Frame(self.frame31, borderwidth=4)
         self.frame311.pack(side='left', fill='x')
         timeOfDayLabel = ttk.Label(self.frame311, text=_("Time of day:"))
         timeOfDayLabel.pack(side='top')
+
+        # Vertical spacer
+        ttk.Frame(self.frame311, height=6).pack(side='top', fill='x')
 
         seasonLabel = ttk.Label(self.frame311, text=_("Season:"))
         seasonLabel.pack(side='top')
 
         # Second column
-        self.frame312 = Frame(self.frame31, borderwidth=4)
+        self.frame312 = ttk.Frame(self.frame31, borderwidth=4)
         self.frame312.pack(side='top', fill='x')
 
         if self.config.timeOfDay.get():
@@ -499,6 +502,9 @@ class App:
                                        initTimeOfDay,
                                        *timeOfDayReverseMapping.keys())
         timeOfDayMenu.pack(side='top')
+
+        # Vertical spacer
+        ttk.Frame(self.frame312, height=6).pack(side='top', fill='x')
 
         if self.config.season.get():
             initSeason = pgettext("season", self.config.season.get())
@@ -519,7 +525,7 @@ class App:
             # Stupid interface that seems to work with a number of characters!
             widget.config(width=maxLen)
 
-        self.frame32 = Frame(self.frame3, borderwidth=4)
+        self.frame32 = ttk.Frame(self.frame3, borderwidth=4)
         self.frame32.pack(side='top', fill='x')
 
         # Vertical spacer
