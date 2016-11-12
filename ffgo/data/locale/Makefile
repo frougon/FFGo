@@ -2,7 +2,7 @@
 # sources, the .po files from the .pot file and the .mo files from their .po
 # sources). Tested on Linux with GNU Make.
 #
-# Copyright (C) 2015  Florent Rougon
+# Copyright (C) 2015, 2016  Florent Rougon
 # License: DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE version 2, dated
 #          December 2004
 
@@ -49,6 +49,8 @@ REL_PY_FILES := ffgo-launcher.py \
 update-pot:
 	xgettext --directory=../../.. --language=Python --from-code=UTF-8 \
                  --keyword=pgettext:1c,2 --keyword=npgettext:1c,2,3 \
+                 --keyword=gettext_noop:1 --keyword=N_:1 \
+                 --keyword=pgettext_noop:1c,2 --keyword=npgettext_noop:1c,2,3 \
                  --msgid-bugs-address='$(MSGID_BUGS_ADDRESS)' \
                  --output=- $(REL_PY_FILES) | \
           $(PYTHON) -c "$$replace_pot_metadata" >$(PROGNAME).pot

@@ -294,6 +294,18 @@ class TranslationHelper:
 
         return transl
 
+    def gettext_noop(self, msgid):
+        return msgid
+
+    def N_(self, msgid):        # short synonym of gettext_noop()
+        return msgid
+
+    def pgettext_noop(self, context, msgid):
+        return msgid
+
+    def npgettext_noop(self, context, singular, plural, n):
+        return singular
+
 
 class Observable:
     """Class to which observers can be attached.

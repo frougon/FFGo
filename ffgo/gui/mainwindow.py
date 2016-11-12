@@ -60,10 +60,12 @@ except ImportError:
 
 
 def setupTranslationHelper(config):
-    global pgettext
+    global N_, pgettext_noop, pgettext
 
     translationHelper = misc.TranslationHelper(config)
     pgettext = translationHelper.pgettext
+    pgettext_noop = translationHelper.pgettext_noop
+    N_ = translationHelper.N_
 
 def setupTranslationHelperInOtherModules(config):
     from ..fgdata import airport as airport_mod
