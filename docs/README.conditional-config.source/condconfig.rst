@@ -50,18 +50,15 @@ Example::
 
   #--enable-auto-coordination
 
-  --enable-terrasync
-  --terrasync-dir=/path/to/scenery-terrasync
+  --disable-hud-3d
+  --callsign=H-ELLO
 
-  --timeofday=noon
-  --season=summer
-
-In this example, the ``--enable-auto-coordination`` option is not passed
-to the FlightGear executable because it is commented out with the ``#``
-character. The four remaining non-blank lines will be passed as four
-arguments to :program:`fgfs`. They will be added after the options
-automatically set by FFGo, such as :samp:`--aircraft={...}`,
-:samp:`--airport={...}`, :samp:`--fg-scenery={...}`, etc.
+In this example, the ``--enable-auto-coordination`` option is not passed to
+the FlightGear executable because it is commented out with the ``#``
+character. The two remaining non-blank lines will be passed as two arguments
+to :program:`fgfs`. They will be added after the options automatically set
+by FFGo, such as :samp:`--aircraft={...}`, :samp:`--airport={...}`,
+:samp:`--fg-scenery={...}`, etc.
 
 Comments don't necessary start at the beginning of a line. For instance,
 a configuration such as::
@@ -136,14 +133,16 @@ beginning of the next one (or at the end of the file, whichever comes first).
 A blank line does not end any section, conditional or not. Therefore, a
 complete configuration with two conditional sections could look like this::
 
-  --enable-terrasync
-  --terrasync-dir=/path/to/scenery-terrasync
-
-  --timeofday=noon
-  --season=summer
-
-  --enable-fullscreen
+  --callsign=H-ELLO
   --disable-hud-3d
+  #--enable-auto-coordination
+  #--log-class=input
+  #--log-level=info
+
+  # Uncomment these three lines to start at this specific location
+  #--lat=50.8938820754
+  #--lon=4.4689847385
+  #--heading=63
 
   [ airport == "EHAM" ]
   --com1=121.975
@@ -232,12 +231,12 @@ default FFGo behavior—the one obtained without any specific configuration).
 Note:
 
   These custom parking positions defined by latitude, longitude and heading
-  are not very useful in airports where the scenery has well-defined parking
-  lots that can be directly selected in the FFGo GUI. Now that FFGo can read
-  startup locations from ``apt.dat`` files, many airports offer startup
-  locations that can be directly selected from the FFGo GUI, which makes
-  this particular type of configuration less often needed than it used to
-  be.
+  are not very useful in airports where the scenery already has well-defined
+  parking lots that can be directly selected in the FFGo GUI. Now that FFGo
+  can read startup locations from ``apt.dat`` files, many airports offer
+  startup locations that can be directly selected from the FFGo GUI, which
+  makes this particular type of configuration less often needed than it used
+  to be.
 
 
 Advanced expressions
@@ -483,27 +482,38 @@ Another useful example to help fly helicopters as well as planes could
 be the following::
 
   { custom_start_pos = "parking"  # can be changed to "heli-H5" for instance
-    # Define a boolean variable ('using_heli') indicating whether the
+    # Define a boolean variable ('heli_class') indicating whether the
     # selected aircraft is a helicopter. The list of helicopters given here
     # is incomplete, of course.
-    using_heli = aircraft in \
+    heli_class = aircraft in \
       ["alouette2", "alouette2F", "Alouette-III_sc", "bo105",
        "ec130b4", "ec135p2", "M-XE", "s55", "s76c", "uh1", "uh60",
        "rah-66"] }
 
-  [ using_heli ]
+  [ heli_class ]
   # I need smaller throttle increments for helicopters than for planes
   # (this property is used by my mouse wheel binding, which controls the
   # throttle).
   --prop:/frougon/initial-mouse-wheel-throttle-step=0.004
+  # You can conditionally load a specific joystick file here if you
+  # wrap the contents like this:
+  #
+  #   <?xml version="1.0"?>
+  #   <PropertyList><input><joysticks><js-named>
+  #     <name>Logitech Attack 3</name>
+  #
+  #     [...]
+  #
+  #   </js-named></joysticks></input></PropertyList>
+  --config=/some/file/of/yours/with/this/structure.xml
 
-  [ not using_heli ]
+  [ not heli_class ]
   # Uncomment this if you want auto-coordination enabled for everything
   # but helicopters.
   # --enable-auto-coordination
 
   # Define a starting position for EBBR when using anything but a helicopter
-  [ custom_start_pos == "parking" and airport == "EBBR" and not using_heli ]
+  [ custom_start_pos == "parking" and airport == "EBBR" and not heli_class ]
   --lat=50.89939819021788
   --lon=4.487598394661401
   --heading=340
@@ -511,7 +521,7 @@ be the following::
   # Predefined starting position at helipad H1 of EBBR
   [ airport == "EBBR" and
     (custom_start_pos == "heli-H1" or
-     using_heli and custom_start_pos == "parking") ] # H1
+     heli_class and custom_start_pos == "parking") ] # H1
   --lat=50.8975296235
   --lon=4.4906784598
   --heading=115
@@ -602,8 +612,8 @@ For instance, let's consider the following configuration::
 
   #--enable-auto-coordination
 
-  --enable-terrasync
-  --terrasync-dir=/path/to/scenery-terrasync
+  --callsign=H-ELLO
+  --disable-hud-3d
 
   [ airport == "LFPO" ]
   --com1=118.700
@@ -626,8 +636,8 @@ Assuming the selected airport in the FFGo user interface is LFPG, then the
 :program:`fgfs` command issued by FFGo when the user clicks on the
 :guilabel:`Run FG` button will be::
 
-  fgfs <basic options> --enable-terrasync \
-                       --terrasync-dir=/path/to/scenery-terrasync \
+  fgfs <basic options> --callsign=H-ELLO \
+                       --disable-hud-3d \
                        --com1=119.250 \
                        --com2=121.800 \
                        --lat=49.0075192 \
