@@ -2,22 +2,8 @@
 ## FlightGear). Activez les options que vous souhaitez utiliser en supprimant
 ## le symbole # au début de chaque ligne concernée.
 
-## OPTIONS DE RENDU
-## Active le mode plein écran.
-#--enable-fullscreen
-
 ## Précise la géométrie de la fenêtre de FlightGear.
 #--geometry=800x600
-
-## Active l'anticrénelage (“anti-aliasing” en anglais). Ceci peut améliorer la
-## qualité des images produites par FlightGear, en particulier aux basses
-## résolutions, au prix d'une probable diminution de la vitesse de rendu
-## (nombre d'images par seconde). Voir
-## <http://wiki.flightgear.org/Fr/Anti-aliasing> (en français) ou
-## <http://wiki.flightgear.org/Anti-aliasing> (en anglais) pour plus de
-## détails.
-#--prop:/sim/rendering/multi-sample-buffers=true
-#--prop:/sim/rendering/multi-samples=4
 
 ## AUTRES
 ## Entrez votre indicatif. Notez qu'il est actuellement limité à sept
@@ -36,12 +22,6 @@
 ## les données de scènes téléchargées, n'utilisez PAS --terrasync-dir ni
 ## --download-dir, mais ajustez le répertoire de téléchargement dans la boîte
 ## de dialogue Préférences accessible depuis le menu Paramètres.
-
-## Heure initiale (dans le simulateur) après lancement de FlightGear.
-#--timeofday=noon
-
-## Saison pour la simulation (visuels assez différents: herbe ou neige, etc.).
-#--season=summer
 
 ## Par défaut, si vous êtes connecté à Internet, les informations météo
 ## (METAR) sont automatiquement téléchargées par FlightGear. Si vous souhaitez

@@ -1,19 +1,9 @@
 ## List of 'fgfs' command line options. Enable the options you want to use by
 ## removing the hash symbol at the beginning of the appropriate lines.
 
-## RENDERING OPTIONS
-## Enable fullscreen mode.
-#--enable-fullscreen
-
 ## Specify the geometry of FlightGear's window (no need to specify it if you
 ## use --enable-fullscreen).
 #--geometry=800x600
-
-## Enable anti-aliasing. This can improve the visual quality of FlightGear's
-## rendering, especially at low resolutions, but is also likely to reduce the
-## frame rate. See <http://wiki.flightgear.org/Anti-aliasing> for details.
-#--prop:/sim/rendering/multi-sample-buffers=true
-#--prop:/sim/rendering/multi-samples=4
 
 ## OTHER
 ## Enter your callsign. Note that it's currently limited to seven characters.
@@ -31,12 +21,6 @@
 ## If you want to choose the directory used for automatic scenery download,
 ## DO NOT use --terrasync-dir nor --download-dir, but change the download
 ## directory in the Preferences dialog accessible from the Settings menu.
-
-## You can choose the start time of day for your flight.
-#--timeofday=noon
-
-## Summer and winter use different textures.
-#--season=summer
 
 ## By default, if you are connected to the Internet, the current weather
 ## information (METAR) is automatically retrieved on FlightGear startup. If

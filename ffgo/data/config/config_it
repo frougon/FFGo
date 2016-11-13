@@ -10,13 +10,6 @@
 ## Specificare le dimensioni della finestra di FlightGear.
 #--geometry=800x600
 
-## Abilitare la modalità a schermo intero.
-#--enable-fullscreen
-
-## “Anti-aliasing” (cf. <http://wiki.flightgear.org/Anti-aliasing>).
-#--prop:/sim/rendering/multi-sample-buffers=true
-#--prop:/sim/rendering/multi-samples=4
-
 ## ALTRO
 ## Limitare la frequenza dei fotogrammi (fps) a uno specifico valore.
 #--max-fps=60

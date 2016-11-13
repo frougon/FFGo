@@ -127,6 +127,21 @@
 #                                 aircraft). However, dates older than r days
 #                                 for any given aircraft are automatically
 #                                 discarded.
+# TIME_OF_DAY=string              Same values as for --timeofday in
+#                                 FlightGear (default: the empty string,
+#                                 meaning "don't pass the --timeofday option").
+# SEASON=string                   Same values as for --season in FlightGear.
+#                                 (default: the empty string, meaning "don't
+#                                 pass the --season option").
+# START_FG_FULL_SCREEN=boolean    0 or 1 (defaults to 1). Whether to start
+#                                 FlightGear in full screen.
+# START_FG_PAUSED=boolean         0 or 1 (defaults to 0). Whether to start
+#                                 FlightGear paused.
+# ENABLE_MULTI_SAMPLE_ANTIALIASING=boolean
+#                                 0 or 1 (defaults to 0). Whether to enable
+#                                 multi-sample anti-aliasing.
+# ENABLE_REMBRANDT=boolean        0 or 1 (defaults to 0). Whether to enable
+#                                 deferred rendering (the Rembrandt renderer).
 #
 # Any number of options can be selected, but to get FFGo ready to work,
 # you only need:
