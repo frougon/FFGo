@@ -438,8 +438,7 @@ class App:
             ( (_(s), s) for s in timeOfDayChoices ))
 
         def _updateTimeOfDay(*args,
-                             timeOfDayReverseMapping=timeOfDayReverseMapping,
-                             **kwargs):
+                             timeOfDayReverseMapping=timeOfDayReverseMapping):
             if self.translatedTimeOfDay.get() == _("current time"):
                 self.config.timeOfDay.set("")
             else:
@@ -452,8 +451,7 @@ class App:
         seasonReverseMapping = collections.OrderedDict(
            ( (pgettext("season", s), s) for s in seasonChoices ))
 
-        def _updateSeason(*args, seasonReverseMapping=seasonReverseMapping,
-                          **kwargs):
+        def _updateSeason(*args, seasonReverseMapping=seasonReverseMapping):
             if self.translatedSeason.get() == pgettext("season", "default"):
                 self.config.season.set("")
             else:
@@ -471,7 +469,7 @@ class App:
                                padding=3)
         titleLabel.pack(side='top', fill='x')
 
-        self.frame30 = ttk.Frame(self.frame3, height=12) # vertical spacer
+        self.frame30 = ttk.Frame(self.frame3, height=20) # vertical spacer
         self.frame30.pack(side='top', fill='x')
 
         self.frame31 = ttk.Frame(self.frame3, borderwidth=4)
@@ -529,7 +527,7 @@ class App:
         self.frame32.pack(side='top', fill='x')
 
         # Vertical spacer
-        ttk.Frame(self.frame32, height=8).pack(side='top', fill='x')
+        ttk.Frame(self.frame32, height=22).pack(side='top', fill='x')
 
         # Back to one-column layout, “Start FlightGear full screen” checkbutton
         startFGFullScreenCb = ttk.Checkbutton(
