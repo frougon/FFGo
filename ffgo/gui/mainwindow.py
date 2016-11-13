@@ -461,10 +461,10 @@ class App:
         self.translatedTimeOfDay.trace('w', _updateTimeOfDay)
         self.translatedSeason.trace('w', _updateSeason)
 
-        # The “Misc settings”-related widgets
+        # The “Miscellaneous settings”-related widgets
         self.frame3 = ttk.Frame(self.frame0, borderwidth=1, relief='sunken')
         self.frame3.pack(side='left', fill='both')
-        titleLabel = ttk.Label(self.frame3, text=_("Misc settings"),
+        titleLabel = ttk.Label(self.frame3, text=_("Miscellaneous settings"),
                                anchor="center", borderwidth=2, relief="groove",
                                padding=3)
         titleLabel.pack(side='top', fill='x')
