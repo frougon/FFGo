@@ -877,7 +877,7 @@ Whenever FlightGear's apt.dat files are updated, {prg}
 must rebuild its own airport database for proper operation. This can be
 done manually with the “Rebuild Airport Database” button from the
 Preferences dialog, or automatically whenever {prg} detects a change in
-its apt.dat files.""")
+FlightGear's apt.dat files.""")
             .replace('\n', ' ') + "\n\n" + _("""\
 The default setting in {prg} for this option is now “Automatic”, because
 it is convenient, with no significant drawback in my opinion. Do you
