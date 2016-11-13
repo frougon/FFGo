@@ -12,14 +12,6 @@
 ## http://fgfs.i-net.hu/modules/fgtracker/
 #--callsign=
 
-## Automatischer Download von Szenerie, während des Fliegens:
-#--enable-terrasync
-## ... oder stellen Sie es ab, falls es Probleme bereitet, oder Sie es einfach
-## nicht benutzen können (z.Bsp. wenn Sie keinen Internetanschluß zur Verfügung
-## haben).
-#--disable-terrasync
-## Mehr Informationen unter <http://wiki.flightgear.org/TerraSync>.
-
 ## Wenn Sie Zugang zum Internet haben, wird automatisch die aktuelle
 ## Wetterinformation (METAR) beim Start von FlightGear abgerufen. Falls Sie
 ## sich selbst genaue Wetterkonditionen aussuchen wollen (um z.Bsp.

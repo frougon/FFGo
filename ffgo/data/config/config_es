@@ -11,13 +11,6 @@
 ## Por favor no uses uno que ya esté en uso en la red multijugador.
 #--callsign=
 
-## Activa la descarga automática de escenarios mientras vuelas:
-#--enable-terrassync
-## ... o desactívala si te da problemas o no puedes utilizarla
-## (por ejempo si no estás conectado a Internet).
-#--disable-terrasync
-## Más información en <http://wiki.flightgear.org/TerraSync>.
-
 ## Por defecto, si estás conectado a Internet, la información actual del
 ## tiempo (METAR) se descarga en el startup de FlightGear. Si quieres elegir
 ## condiciones particulares del tiempo (por ejemplo para practicar despegues o

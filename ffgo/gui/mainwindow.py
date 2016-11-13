@@ -529,7 +529,25 @@ class App:
         # Vertical spacer
         ttk.Frame(self.frame32, height=22).pack(side='top', fill='x')
 
-        # Back to one-column layout, “Start FlightGear full screen” checkbutton
+        # Back to one-column layout, “Enable automatic scenery download”
+        # checkbutton
+        self.enableTerraSyncCb = ttk.Checkbutton(
+            self.frame32,
+            text=_('Enable automatic scenery download'),
+            variable=self.config.enableTerraSync)
+        self.enableTerraSyncCb.pack(side='top', fill='x', expand=True)
+
+        ToolTip(self.enableTerraSyncCb,
+                _("Enabling this causes FlightGear to automatically download "
+                  "scenery as you fly (this FlightGear feature is called "
+                  "TerraSync). The location where these downloads take "
+                  "place can be chosen in the Preferences dialog.\n\nSee "
+                  "<http://wiki.flightgear.org/TerraSync> for more details."),
+                autowrap=True)
+
+        # Vertical spacer
+        ttk.Frame(self.frame32, height=8).pack(side='top', fill='x')
+
         startFGFullScreenCb = ttk.Checkbutton(
             self.frame32,
             text=_('Start FlightGear in full screen'),
@@ -1578,6 +1596,7 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
         self.config.rwy.trace('w', self.onRunwayUpdate)
         self.config.timeOfDay.trace('w', self.FGCommand.update)
         self.config.season.trace('w', self.FGCommand.update)
+        self.config.enableTerraSync.trace('w', self.FGCommand.update)
         self.config.startFGFullScreen.trace('w', self.FGCommand.update)
         self.config.startFGPaused.trace('w', self.FGCommand.update)
         self.config.enableMSAA.trace('w', self.onMSAAToggled)

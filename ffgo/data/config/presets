@@ -133,6 +133,8 @@
 # SEASON=string                   Same values as for --season in FlightGear.
 #                                 (default: the empty string, meaning "don't
 #                                 pass the --season option").
+# ENABLE_TERRASYNC=boolean        0 or 1 (defaults to 0). Whether to activate
+#                                 automatic scenery download (TerraSync).
 # START_FG_FULL_SCREEN=boolean    0 or 1 (defaults to 1). Whether to start
 #                                 FlightGear in full screen.
 # START_FG_PAUSED=boolean         0 or 1 (defaults to 0). Whether to start

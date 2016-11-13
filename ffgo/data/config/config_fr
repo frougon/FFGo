@@ -11,18 +11,6 @@
 ## quelqu'un d'autre sur le réseau multijoueurs.
 #--callsign=
 
-## Active le téléchargement automatique des scènes au fil du vol.
-#--enable-terrasync
-## En cas de problème (ou simplement pas d'accès à Internet), on peut le
-## désactiver avec cette option:
-#--disable-terrasync
-## Voir <http://wiki.flightgear.org/TerraSync> pour plus d'informations.
-##
-## Si vous souhaitez choisir le répertoire dans lequel TerraSync va stocker
-## les données de scènes téléchargées, n'utilisez PAS --terrasync-dir ni
-## --download-dir, mais ajustez le répertoire de téléchargement dans la boîte
-## de dialogue Préférences accessible depuis le menu Paramètres.
-
 ## Par défaut, si vous êtes connecté à Internet, les informations météo
 ## (METAR) sont automatiquement téléchargées par FlightGear. Si vous souhaitez
 ## choisir vous-même des conditions météo particulières (par exemple, pour

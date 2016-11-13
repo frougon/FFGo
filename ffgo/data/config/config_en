@@ -11,17 +11,6 @@
 ## multiplayer network.
 #--callsign=
 
-## Enable automatic scenery download as you fly:
-#--enable-terrasync
-## ... or disable it in case it causes problems, or you just can't use it
-## (for instance, if you are not connected to the Internet).
-#--disable-terrasync
-## See <http://wiki.flightgear.org/TerraSync> for more details.
-##
-## If you want to choose the directory used for automatic scenery download,
-## DO NOT use --terrasync-dir nor --download-dir, but change the download
-## directory in the Preferences dialog accessible from the Settings menu.
-
 ## By default, if you are connected to the Internet, the current weather
 ## information (METAR) is automatically retrieved on FlightGear startup. If
 ## you want to choose yourself precise weather conditions (for instance to
