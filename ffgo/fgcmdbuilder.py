@@ -283,6 +283,17 @@ class FGCommandBuilder:
         if startFGPaused:
             options.append("--enable-freeze")
 
+        enableMSAA = self.app.config.enableMSAA.get()
+        if enableMSAA:
+            options.append("--prop:int:/sim/rendering/multi-sample-buffers=1")
+            options.append("--prop:int:/sim/rendering/multi-samples=4")
+        # Intentionally don't set any property when MSAA is disabled: this is
+        # safer regarding compatibility with future FlightGear versions.
+
+        enableRembrandt = self.app.config.enableRembrandt.get()
+        if enableRembrandt:
+            options.append("--enable-rembrandt")
+
         return options
 
     def checkForUnsupportedOptions(self, argList):

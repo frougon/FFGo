@@ -112,6 +112,8 @@ class Config:
         self.season = StringVar()
         self.startFGFullScreen = IntVar()
         self.startFGPaused = IntVar()
+        self.enableMSAA = IntVar()
+        self.enableRembrandt = IntVar()
         self.mainWindowGeometry = StringVar()
         self.saveWindowPosition = IntVar()
         self.baseFontSize = StringVar()
@@ -148,6 +150,8 @@ class Config:
                          'SEASON=': self.season,
                          'START_FG_FULL_SCREEN=': self.startFGFullScreen,
                          'START_FG_PAUSED=': self.startFGPaused,
+                         'ENABLE_MULTI_SAMPLE_ANTIALIASING=': self.enableMSAA,
+                         'ENABLE_REMBRANDT=': self.enableRembrandt,
                          'AIRCRAFT_DIR=': self.aircraftDir,
                          'AI_SCENARIOS=': self.scenario,
                          'ALREADY_PROPOSED_CHANGES=':
@@ -506,6 +510,8 @@ class Config:
         self.season.set('')
         self.startFGFullScreen.set('1')
         self.startFGPaused.set('0')
+        self.enableMSAA.set('0')
+        self.enableRembrandt.set('0')
         self.filteredAptList.set(0)
         self.airportStatsShowPeriod.set('365')    # approx. one year
         self.airportStatsExpiryPeriod.set('3652') # approx. ten years

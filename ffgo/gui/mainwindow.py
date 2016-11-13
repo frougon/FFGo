@@ -547,6 +547,37 @@ class App:
             variable=self.config.startFGPaused)
         startFGPausedCb.pack(side='top', fill='x', expand=True)
 
+        # Vertical spacer
+        ttk.Frame(self.frame32, height=22).pack(side='top', fill='x')
+
+        self.enableMSAACb = ttk.Checkbutton(
+            self.frame32,
+            text=_('Enable multi-sample anti-aliasing'),
+            variable=self.config.enableMSAA)
+        self.enableMSAACb.pack(side='top', fill='x', expand=True)
+
+        ToolTip(self.enableMSAACb,
+                _("This makes any still image in FlightGear smoother (less "
+                  "pronounced pixelation effect), but is most likely to "
+                  "reduce the frame rate."),
+                autowrap=True)
+
+        # Vertical spacer
+        ttk.Frame(self.frame32, height=8).pack(side='top', fill='x')
+
+        self.enableRembrandtCb = ttk.Checkbutton(
+            self.frame32,
+            text=_('Enable deferred rendering (Rembrandt)'),
+            variable=self.config.enableRembrandt)
+        self.enableRembrandtCb.pack(side='top', fill='x', expand=True)
+
+        ToolTip(self.enableRembrandtCb,
+                _("Enables the Rembrandt renderer. Its strong point is light "
+                  "management (reflections, shadows, night scenes...), but "
+                  "it is much slower than both the default renderer and the "
+                  "ALS renderer (“Atmospheric Light Scattering”)."),
+                autowrap=True)
+
 #------ Airport list ----------------------------------------------------------
         self.frame4 = Frame(self.frame0, borderwidth=8)
         self.frame4.pack(side='left', fill='both', expand=True)
@@ -1508,6 +1539,28 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
         rstripped_text = '\n'.join(line.lstrip() for line in text.splitlines())
         return rstripped_text
 
+    # Accept any arguments to allow safe use as a Tkinter variable observer
+    def onMSAAToggled(self, *args):
+        # MSAA and Rembrandt are mutually exclusive
+        if self.config.enableMSAA.get():
+            self.config.enableRembrandt.set('0')
+            self.enableRembrandtCb.state(["disabled"])
+        else:
+            self.enableRembrandtCb.state(["!disabled"])
+
+        self.FGCommand.update()
+
+    # Accept any arguments to allow safe use as a Tkinter variable observer
+    def onRembrandtToggled(self, *args):
+        # MSAA and Rembrandt are mutually exclusive
+        if self.config.enableRembrandt.get():
+            self.config.enableMSAA.set('0')
+            self.enableMSAACb.state(["disabled"])
+        else:
+            self.enableMSAACb.state(["!disabled"])
+
+        self.FGCommand.update()
+
     def registerTracedVariables(self):
         self.options.trace('w', self.FGCommand.update)
         # There is also an observer of 'self.config.aircraftId' registered in
@@ -1529,6 +1582,8 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
         self.config.season.trace('w', self.FGCommand.update)
         self.config.startFGFullScreen.trace('w', self.FGCommand.update)
         self.config.startFGPaused.trace('w', self.FGCommand.update)
+        self.config.enableMSAA.trace('w', self.onMSAAToggled)
+        self.config.enableRembrandt.trace('w', self.onRembrandtToggled)
 
     def reset(self, event=None, path=None, readCfgFile=True):
         """Reset data"""
