@@ -198,12 +198,8 @@ FlightGear Dokumentation oder das Wiki heranziehen:
     http://wiki.flightgear.org/index.php/Command_Line_Options
 
 Eine komplette Liste der Optionen für die vorliegende FlightGear-Version kann
-mit folgendem Kommando aufgerufen werden:
-
-  fgfs --help --verbose
-
-('fgfs --help --verbose | less' erlaubt es, durch die lange Liste zu scrollen.
-Drücke 'q' um das Programm 'less' zu beenden.)
+in FFGo über “Hilfe → Zeige verfügbare fgfs Optionen” aufgerufen werden, oder
+ebenso mit dem Befehl “fgfs --help --verbose” in einem Terminal.
 
 FFGo bietet erweiterte Möglichkeiten basierend auf Variablen und Boolschen
 Ausdrücken, um die Parameterliste zu beschreiben, die an FlightGear weiter-
@@ -256,8 +252,8 @@ TIPS & TRICKS
 
 * Wenn die Flughafendatenquelle auf “Szenerie” gesetzt ist (jetzt der Standard)
   dann werden Informationen über die Parkplatzpositionen des Flughafens erst
-  verfügbar sein, wenndie entsprechende Szenerie tatsächlich installiert ist
-  (außer bei der apt.dat.gz Notlösung)
+  verfügbar sein, wenn die entsprechende Szenerie tatsächlich installiert ist
+  (außer bei der Notlösung mit FlightGears apt.dat-Dateien)
 
   In diesem Fall, wenn TerraSync aktiviert ist, braucht man nur FG einmalig am
   gewünschten Flughafen zu starten, damit wird automatisch die benötigte
