@@ -201,11 +201,15 @@ the following configuration::
 This type of configuration allows one to easily customize the start position
 (latitude, longitude, altitude and heading), as well as the initial speed of
 the aircraft, or anything else that can be set from the :program:`fgfs`
-command line (use ``fgfs --help --verbose`` to see the full option list).
-Which set of options is selected depends on the :index:`predicates <single:
-predicate>` (the conditions between square brackets), and therefore in this
-example on the selected airport and the value given to the
-``custom_start_pos`` variable at the beginning of the configuration.
+command line [#]_. Which set of options is selected depends on the
+:index:`predicates <single: predicate>` (the conditions between square
+brackets), and therefore in this example on the selected airport and the
+value given to the ``custom_start_pos`` variable at the beginning of the
+configuration.
+
+.. [#] Use :guilabel:`Help` → :guilabel:`Show available fgfs options` in
+       FFGo to see the full option list or, equivalently, run
+       ``fgfs --help --verbose`` from a terminal.
 
 So, if you want to start at the defined parking position at EDDK, select
 EDDK in the FFGo GUI and make sure you have::
@@ -227,11 +231,13 @@ default FFGo behavior—the one obtained without any specific configuration).
 
 Note:
 
-  These custom parking positions defined by latitude, longitude and
-  heading are not very useful in airports where the scenery has
-  well-defined parking lots that can be directly selected in the FFGo
-  GUI. Unfortunately, this case is relatively rare, especially for
-  “exotic” installations such as helipads.
+  These custom parking positions defined by latitude, longitude and heading
+  are not very useful in airports where the scenery has well-defined parking
+  lots that can be directly selected in the FFGo GUI. Now that FFGo can read
+  startup locations from ``apt.dat`` files, many airports offer startup
+  locations that can be directly selected from the FFGo GUI, which makes
+  this particular type of configuration less often needed than it used to
+  be.
 
 
 Advanced expressions

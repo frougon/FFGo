@@ -184,12 +184,8 @@ FlightGear documentation or check the Wiki at:
   http://wiki.flightgear.org/index.php/Command_Line_Options
 
 The complete list of options understood by your FlightGear version can
-be obtained with the following command:
-
-  fgfs --help --verbose
-
-('fgfs --help --verbose | less' should allow you to scroll through the
-multiple pages of output; type 'q' to quit the 'less' program)
+be obtained using “Help → Show available fgfs options” in FFGo or,
+equivalently, by running “fgfs --help --verbose” from a terminal.
 
 FFGo offers advanced possibilities based on variables and boolean
 expressions to describe the argument list to pass to FlightGear. You can
