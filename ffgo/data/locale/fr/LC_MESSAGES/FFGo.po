@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: FFGo 1.12.0\n"
 "Report-Msgid-Bugs-To: f.rougon@free.fr\n"
 "POT-Creation-Date: 2016-11-13 15:14+0100\n"
-"PO-Revision-Date: 2016-11-13 14:39+0100\n"
+"PO-Revision-Date: 2016-11-13 15:23+0100\n"
 "Last-Translator: Florent Rougon <f.rougon@free.fr>\n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -738,7 +738,7 @@ msgstr "Répertoire pour les aéronefs additionnels :"
 
 #: ffgo/gui/configwindow.py:202 ffgo/gui/configwindow.py:491
 msgid "Download directory (optional):"
-msgstr "Répertoire de télechargements (optionnel) :"
+msgstr "Répertoire de téléchargement (optionnel) :"
 
 #: ffgo/gui/configwindow.py:214 ffgo/gui/configwindow.py:493
 msgid "Working directory (optional):"
@@ -1880,7 +1880,7 @@ msgstr "Saison :"
 
 #: ffgo/gui/mainwindow.py:536
 msgid "Enable automatic scenery download"
-msgstr ""
+msgstr "Activer le téléchargement automatique des scènes"
 
 #: ffgo/gui/mainwindow.py:541
 msgid ""
@@ -1890,6 +1890,12 @@ msgid ""
 "\n"
 "See <http://wiki.flightgear.org/TerraSync> for more details."
 msgstr ""
+"Lorsque ceci est activé, FlightGear télécharge automatique les scènes au fil "
+"du vol (cette fonctionnalité de FlightGear est appelée TerraSync). Le "
+"répertoire utilisé pour ces téléchargements peut être choisi dans la boîte "
+"de dialogue Préférences.\n"
+"\n"
+"Voir <http://wiki.flightgear.org/TerraSync> pour de plus amples informations."
 
 #: ffgo/gui/mainwindow.py:553
 msgid "Start FlightGear in full screen"
