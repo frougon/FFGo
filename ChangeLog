@@ -1182,3 +1182,9 @@ you may want to consult the Git repository log.
 
           (Florent Rougon)
 [FEATURE] Update the German translation. (chris_blues)
+
+1.12.1
+[BUGFIX]  Update changed URL to retrieve METAR reports. The old URL
+          <http://weather.noaa.gov/> doesn't work anymore, use
+          <http://tgftp.nws.noaa.gov/> instead. I thought FFGo wasn't
+          affected, and since nobody reported the problem... (Florent Rougon)
