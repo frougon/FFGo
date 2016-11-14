@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FFGo 1.12.0\n"
 "Report-Msgid-Bugs-To: f.rougon@free.fr\n"
-"POT-Creation-Date: 2016-11-13 15:14+0100\n"
+"POT-Creation-Date: 2016-11-14 01:15+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -573,11 +573,10 @@ msgstr ""
 #: ffgo/gui/airport_finder.py:788 ffgo/gui/airport_finder.py:809
 #: ffgo/gui/airport_finder.py:891 ffgo/gui/airport_finder.py:1037
 #: ffgo/gui/mainwindow.py:878 ffgo/gui/mainwindow.py:907
-#: ffgo/gui/mainwindow.py:1339 ffgo/gui/mainwindow.py:1386
-#: ffgo/gui/mainwindow.py:1701 ffgo/gui/mainwindow.py:1734
-#: ffgo/gui/mainwindow.py:1762 ffgo/gui/mainwindow.py:1823
-#: ffgo/gui/mainwindow.py:2162 ffgo/gui/mainwindow.py:2475
-#: ffgo/gui/mainwindow.py:2624 ffgo/config.py:831
+#: ffgo/gui/mainwindow.py:1339 ffgo/gui/mainwindow.py:1706
+#: ffgo/gui/mainwindow.py:1739 ffgo/gui/mainwindow.py:1767
+#: ffgo/gui/mainwindow.py:1828 ffgo/gui/mainwindow.py:2167
+#: ffgo/gui/mainwindow.py:2480 ffgo/gui/mainwindow.py:2629 ffgo/config.py:831
 #, python-brace-format
 msgid "{prg}"
 msgstr ""
@@ -1589,7 +1588,7 @@ msgstr ""
 msgid "Rwy:"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:389 ffgo/gui/mainwindow.py:1651
+#: ffgo/gui/mainwindow.py:389 ffgo/gui/mainwindow.py:1656
 msgid "Airport:"
 msgstr ""
 
@@ -1643,7 +1642,7 @@ msgid "winter"
 msgstr ""
 
 #: ffgo/gui/mainwindow.py:467
-msgid "Misc settings"
+msgid "Miscellaneous settings"
 msgstr ""
 
 #: ffgo/gui/mainwindow.py:481
@@ -1938,7 +1937,7 @@ msgctxt "flight type"
 msgid "Unspecified"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1243 ffgo/gui/mainwindow.py:2221
+#: ffgo/gui/mainwindow.py:1243 ffgo/gui/mainwindow.py:2226
 msgctxt "parking position"
 msgid "None"
 msgstr ""
@@ -1977,42 +1976,30 @@ msgid ""
 "useless!). Thank you."
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1383
-msgid "Error parsing a groundnet file"
-msgstr ""
-
-#: ffgo/gui/mainwindow.py:1384
-#, python-brace-format
-msgid ""
-"In '{file}':\n"
-"\n"
-"{errors}"
-msgstr ""
-
-#: ffgo/gui/mainwindow.py:1453 ffgo/gui/mainwindow.py:2222
+#: ffgo/gui/mainwindow.py:1458 ffgo/gui/mainwindow.py:2227
 msgctxt "runway"
 msgid "Default"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1496
+#: ffgo/gui/mainwindow.py:1501
 msgid "OK"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1697
+#: ffgo/gui/mainwindow.py:1702
 msgid "FlightGear is already running"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1698
+#: ffgo/gui/mainwindow.py:1703
 msgid ""
 "Sorry, FlightGear is already running and we'd rather not run two instances "
 "simultaneously under the same account."
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1726
+#: ffgo/gui/mainwindow.py:1731
 msgid "FlightGear executable not properly set"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1728
+#: ffgo/gui/mainwindow.py:1733
 #, python-brace-format
 msgid ""
 "The name or path to the FlightGear executable is either empty or only "
@@ -2021,11 +2008,11 @@ msgid ""
 "on your platform."
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1739
+#: ffgo/gui/mainwindow.py:1744
 msgid "Cannot start FlightGear now."
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1741
+#: ffgo/gui/mainwindow.py:1746
 #, python-brace-format
 msgid ""
 "The configuration in the main text field has an invalid syntax:\n"
@@ -2036,11 +2023,11 @@ msgid ""
 "description of the syntax rules."
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1749
+#: ffgo/gui/mainwindow.py:1754
 msgid "Unsupported option in the Options Window."
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1750
+#: ffgo/gui/mainwindow.py:1755
 #, python-brace-format
 msgid ""
 "The configuration in the main text field uses the fgfs option {option}, "
@@ -2049,81 +2036,81 @@ msgid ""
 "directory” setting of the Preferences dialog for equivalent functionality."
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1766
+#: ffgo/gui/mainwindow.py:1771
 #, python-format
 msgid "Starting %s with following options:"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1801
+#: ffgo/gui/mainwindow.py:1806
 msgid "FlightGear is running..."
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1817
+#: ffgo/gui/mainwindow.py:1822
 msgid "Unable to run FlightGear!"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1819
+#: ffgo/gui/mainwindow.py:1824
 msgid ""
 "Please make sure that the “FlightGear executable”, “FG_ROOT” and “Working "
 "directory” parameters are correctly set in the Preferences dialog."
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1884
+#: ffgo/gui/mainwindow.py:1889
 #, python-brace-format
 msgid "FG's last exit status: {0}"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1885 ffgo/gui/mainwindow.py:2637
+#: ffgo/gui/mainwindow.py:1890 ffgo/gui/mainwindow.py:2642
 #, python-brace-format
 msgid "exit status: {0}"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1887
+#: ffgo/gui/mainwindow.py:1892
 #, python-brace-format
 msgid "FG last killed by signal {0}"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1888 ffgo/gui/mainwindow.py:2639
+#: ffgo/gui/mainwindow.py:1893 ffgo/gui/mainwindow.py:2644
 #, python-brace-format
 msgid "killed by signal {0}"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1890
+#: ffgo/gui/mainwindow.py:1895
 #, python-brace-format
 msgid "fgfs process terminated ({0})"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1893
+#: ffgo/gui/mainwindow.py:1898
 #, python-brace-format
 msgid "Ready ({0})"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1976
+#: ffgo/gui/mainwindow.py:1981
 msgid "Carrier:"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:2019
+#: ffgo/gui/mainwindow.py:2024
 #, python-brace-format
 msgid "{prg} Help"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:2038
+#: ffgo/gui/mainwindow.py:2043
 msgid "Unable to run 'fgfs --fg-root=... --help --verbose'"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:2041
+#: ffgo/gui/mainwindow.py:2046
 msgid "Error when running 'fgfs --fg-root=... --help --verbose'"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:2043
+#: ffgo/gui/mainwindow.py:2048
 msgid "Output of 'fgfs --help --verbose'"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:2157
+#: ffgo/gui/mainwindow.py:2162
 msgid "Impossible to copy the current FlightGear command"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:2158
+#: ffgo/gui/mainwindow.py:2163
 #, python-brace-format
 msgid ""
 "The current FlightGear command cannot be copied to the clipboard, because "
@@ -2132,16 +2119,16 @@ msgid ""
 "{exc}"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:2240
+#: ffgo/gui/mainwindow.py:2245
 msgctxt "parking position"
 msgid "Invalid"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:2467
+#: ffgo/gui/mainwindow.py:2472
 msgid "Invalid geometry specification"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:2468
+#: ffgo/gui/mainwindow.py:2473
 #, python-brace-format
 msgid ""
 "The following geometry specification read from the configuration file has an "
@@ -2151,43 +2138,43 @@ msgid ""
 "\n"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:2472
+#: ffgo/gui/mainwindow.py:2477
 #, python-brace-format
 msgid "You can consult <{url}> for a description of the allowed syntax."
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:2496
+#: ffgo/gui/mainwindow.py:2501
 msgid "FlightGear Command"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:2541
+#: ffgo/gui/mainwindow.py:2546
 msgid "FlightGear will be started with following arguments:"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:2621
+#: ffgo/gui/mainwindow.py:2626
 #, python-brace-format
 msgid "Unable to start the file manager with '{0}'."
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:2623
+#: ffgo/gui/mainwindow.py:2628
 #, python-brace-format
 msgid "Problem: {0}"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:2641
+#: ffgo/gui/mainwindow.py:2646
 #, python-brace-format
 msgid "File manager process terminated ({0})"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:2662
+#: ffgo/gui/mainwindow.py:2667
 msgid "FlightGear Output"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:2688
+#: ffgo/gui/mainwindow.py:2693
 msgid "Save Log"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:2693
+#: ffgo/gui/mainwindow.py:2698
 msgid "Open Log Directory"
 msgstr ""
 
