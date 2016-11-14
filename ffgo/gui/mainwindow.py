@@ -1379,11 +1379,16 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
     def _readGroundnetFile(self, groundnetPath):
         parkings, exceptions = fgdata.parking.readGroundnetFile(groundnetPath)
 
-        if exceptions:
-            message = _('Error parsing a groundnet file')
-            detail = _("In '{file}':\n\n{errors}").format(
-                file=groundnetPath, errors='\n'.join(map(str, exceptions)))
-            showerror(_('{prg}').format(prg=PROGNAME), message, detail=detail)
+        # Disable the error popup dialog for now: it is quite ugly and
+        # annoying, and didn't have the effect I hoped (i.e., people fixing the
+        # groundnet files---at least, not in many airports distributed via
+        # TerraSync).
+        #
+        # if exceptions:
+        #     message = _('Error parsing a groundnet file')
+        #     detail = _("In '{file}':\n\n{errors}").format(
+        #         file=groundnetPath, errors='\n'.join(map(str, exceptions)))
+        #     showerror(_('{prg}').format(prg=PROGNAME), message, detail=detail)
 
         return parkings
 
