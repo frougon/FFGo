@@ -149,7 +149,7 @@ Werkzeuge:
 
     METAR	-- zeige METAR Wetterbericht für den ausgewählten Flughafen,
 		   oder nächsten Flughafen, der METARdaten bereitstellt. Diese
-		   Wetterberichte werden von <http://weather.noaa.gov/>
+		   Wetterberichte werden von <http://tgftp.nws.noaa.gov/>
 		   heruntergeladen.
     Druck Umrechner
 		-- konvertiert einen Druck zwischen Zoll Quecksilber (inHg) und

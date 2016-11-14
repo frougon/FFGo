@@ -102,7 +102,7 @@ Impostazioni:
 Strumenti:
 
     METAR - mostra il rapporto METAR per l'aeroporto selezionato (o quello più
-        vicino). I rapporti vengono prelevati da http://weather.noaa.gov/.
+        vicino). I rapporti vengono prelevati da http://tgftp.nws.noaa.gov/.
 
 Aiuto:
 

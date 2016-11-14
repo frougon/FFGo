@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Simple widget to display METAR reports from weather.noaa.gov/."""
+"""Simple widget to display METAR reports from tgftp.nws.noaa.gov/."""
 
 
 import sys
@@ -32,10 +32,10 @@ class Metar:
         self.master = master
         self.background = background
 
-        self.fetchUrlBase = 'http://weather.noaa.gov/'
+        self.fetchUrlBase = 'http://tgftp.nws.noaa.gov/'
         self.fetchUrlTemplate = (
             self.fetchUrlBase +
-            'pub/data/observations/metar/{reportType}/{icao}.TXT')
+            'data/observations/metar/{reportType}/{icao}.TXT')
 
         self.config = config
         self.icao = config.airport

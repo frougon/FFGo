@@ -109,7 +109,7 @@ Outils:
 
     METAR - affiche le rapport METAR pour l'aéroport sélectionné (ou le plus
         proche). Ces rapports sont téléchargés de l'adresse:
-        http://weather.noaa.gov/
+        http://tgftp.nws.noaa.gov/
 
 Aide:
 

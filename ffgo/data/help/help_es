@@ -98,7 +98,7 @@ Herramientas:
 
     METAR - muestra el reporte METAR para el aeropuerto (o el mas cercano)
 	    seleccionado. Estos reportes se descargan desde
-	    http://weather.noaa.gov/
+	    http://tgftp.nws.noaa.gov/
 
 Ayuda:
 
