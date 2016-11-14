@@ -1084,3 +1084,101 @@ you may want to consult the Git repository log.
 [FEATURE] Update the German translation. (chris_blues)
 [FEATURE] Update the Spanish translation of ffgo/data/config/config_en.
           (carmen890)
+
+1.12.0
+[FEATURE] Support reading and merging of in-scenery-paths apt.dat files.
+
+          * Adapt to the new feature introduced in FlightGear commit 516a5cf0
+            that allows FlightGear to read and merge an arbitrary number of
+            uncompressed or gzip-compressed apt.dat files located in the
+            NavData/apt subdirectory of each scenery path (plus, at least for
+            now, the usual $FG_ROOT/Airports/apt.dat.gz considered with lowest
+            priority).
+
+          * Users of FlightGear 2016.4.0 must have their FlightGear more
+            recent than November 9, 2016 (FlightGear commit fb10f76e). For
+            FlightGear < 2016.4.0, only $FG_ROOT/Airports/apt.dat.gz is read
+            (old behavior).
+
+          (Florent Rougon)
+[FEATURE] Introduce a new “download directory” setting, tunable from the
+          Preferences dialog.
+
+          This is necessary, because the directory specified with the
+          --download-dir fgfs option contributes a scenery path when TerraSync
+          is enabled ($download_dir/TerraSync except when --terrasync-dir is
+          used, but this last option is not very useful, only kept as legacy
+          since --download-dir was added to FlightGear).
+
+          IMPORTANT:
+
+            Using --download-dir or --terrasync-dir inside the Options Window
+            is not supported anymore, as doing this correctly would
+            potentially require to rebuild the apt digest file every time a
+            character is added to, or removed from the corresponding line in
+            the Options Window. To compensate for this, users can set the
+            download directory in the Preferences dialog.
+
+          Print an explanatory message when trying to use --download-dir or
+          --terrasync-dir in the Options Window.
+          (Florent Rougon)
+[USABILITY] Add a progress bar to the window displayed when rebuilding the apt
+          digest file/airport database. (Florent Rougon)
+[FEATURE] Add config parameters and drop-down lists for the season
+          (summer or winter textures) and time of day. (Florent Rougon)
+[FEATURE] Add “Enable automatic scenery download” (i.e., TerraSync), “Start
+          FlightGear in full screen”, “Start FlightGear paused”, “Enable
+          multi-sample anti-aliasing” and “Enable deferred rendering
+          (Rembrandt)” config parameters and check buttons. (Florent Rougon)
+[MAINT]   Try to simplify and make more understandable the logic deciding when
+          to rebuild the apt digest file (especially in automatic mode).
+          (Florent Rougon)
+[BUGFIX]  Small fix in Config._findInstalledApt() (used for the “Show
+          installed airports only” feature, when choosing “Update list of
+          installed airports” in the Settings menu).
+
+          In the corner case where TerraSync is enabled and the TerraSync
+          directory isn't listed in Config.FG_scenery, then FlightGear *is*
+          going to use it as a scenery path, so visiting Config.FG_scenery
+          only is not quite right. This is fixed for FlightGear versions that
+          have --json-report (option which appeared in FlightGear 2016.4.0,
+          commit fb10f76e from November 9, 2016).
+
+          Anyway, I recommend to *always* explicitly list the TerraSync
+          directory in Config.FG_scenery: this is IMHO more logical, and the
+          resulting behavior is more predictable. Otherwise, the list of
+          scenery paths used by FlightGear can change whenever you enable or
+          disable TerraSync---eeek!
+          (Florent Rougon)
+[USABILITY] Disable the error popup dialog when parsing broken groundnet files.
+
+          This dialog box was quite ugly and annoying, and didn't have the
+          effect I hoped (i.e., people fixing the groundnet files---at least,
+          not in many airports distributed via TerraSync).
+
+          The errors are still logged to the terminal and to FFGo's log file
+          for those who care about providing sane groundnet files.
+          (Florent Rougon)
+[USABILITY] Print a helpful message when the fallback localization file
+          ffgo/data/locale/en/LC_MESSAGES/FFGo.mo can't be found. This happens
+          every time someone tries to run FFGo from the Git repository without
+          preparing it as per the instructions in docs/INSTALL/INSTALL_en. And
+          then people think it's a bug! This message should help prevent such
+          confusion. (Florent Rougon)
+[MAINT/FEATURE] Update the “FFGo conditional config documentation” (aka
+          README.conditional-config).
+
+          * Don't use options such as --timeofday, --season,
+            --enable-fullscreen, --enable-terrasync and --terrasync-dir in the
+            examples, since these are now specifically managed by FFGo, thus
+            using them in the Options Window is redundant and confusing (e.g.,
+            if a checkbox is unchecked but the corresponding option is added
+            from the Options Window).
+
+          * Give a hint about how to automatically load specific joystick
+            binding files depending on the aircraft (this is in an example
+            regarding helicopters, using the 'heli_class' CondConfigParser
+            variable).
+
+          (Florent Rougon)
+[FEATURE] Update the German translation. (chris_blues)
