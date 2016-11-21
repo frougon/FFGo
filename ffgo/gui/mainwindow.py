@@ -331,11 +331,11 @@ class App:
         aircraftListColumnsList = [
             widgets.Column("match key", "", 0, "w", True),
             widgets.Column("name", _("Aircraft"), 1, "w", True, "width",
-                           widthText="M"*15,
+                           widthText="M"*12,
                            sortFunc=lambda name: name.lower()),
             widgets.Column("directory", _("Directory"), 2, "w", True),
             widgets.Column("use count", _("Use count"), 3, "e", False, "width",
-                           widthText="M"*5,
+                           widthText="M"*4,
                            sortOrder=widgets.SortOrder.descending)]
         aircraftListColumns = { col.name: col
                                for col in aircraftListColumnsList }
@@ -661,9 +661,9 @@ class App:
             widgets.Column("icao", _("ICAO"), 0, "w", False, "width",
                            widthText="M"*4),
             widgets.Column("name", _("Airport name"), 1, "w", True, "width",
-                           widthText="M"*20),
+                           widthText="M"*17),
             widgets.Column("use count", _("Visit count"), 2, "e", False,
-                           "width", widthText="M"*5,
+                           "width", widthText="M"*4,
                            sortOrder=widgets.SortOrder.descending)]
         airportListColumns = { col.name: col
                                for col in airportListColumnsList }
