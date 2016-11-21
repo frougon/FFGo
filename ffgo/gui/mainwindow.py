@@ -533,7 +533,7 @@ class App:
         # checkbutton
         self.enableTerraSyncCb = ttk.Checkbutton(
             self.frame32,
-            text=_('Enable automatic scenery download'),
+            text=_('Automatic scenery download'),
             variable=self.config.enableTerraSync)
         self.enableTerraSyncCb.pack(side='top', fill='x', expand=True)
 
@@ -573,9 +573,9 @@ class App:
         self.enableMSAACb.pack(side='top', fill='x', expand=True)
 
         ToolTip(self.enableMSAACb,
-                _("This makes any still image in FlightGear smoother (less "
-                  "pronounced pixelation effect), but is most likely to "
-                  "reduce the frame rate."),
+                _("Enabling this makes any still image in FlightGear smoother "
+                  "(less pronounced pixelation effect), but is also most "
+                  "likely to reduce the frame rate."),
                 autowrap=True)
 
         # Vertical spacer
@@ -583,15 +583,17 @@ class App:
 
         self.enableRembrandtCb = ttk.Checkbutton(
             self.frame32,
-            text=_('Enable deferred rendering (Rembrandt)'),
+            text=_('Use the Rembrandt renderer'),
             variable=self.config.enableRembrandt)
         self.enableRembrandtCb.pack(side='top', fill='x', expand=True)
 
         ToolTip(self.enableRembrandtCb,
-                _("Enables the Rembrandt renderer. Its strong point is light "
-                  "management (reflections, shadows, night scenes...), but "
-                  "it is much slower than both the default renderer and the "
-                  "ALS renderer (“Atmospheric Light Scattering”)."),
+                _("Enable the Rembrandt renderer, which uses a technique "
+                  "known as deferred rendering. The most remarkable feature "
+                  "of this renderer is light management (reflections, "
+                  "shadows, night scenes...). Please note that it is "
+                  "significantly slower than both the default renderer "
+                  "and the ALS renderer (“Atmospheric Light Scattering”)."),
                 autowrap=True)
 
 #------ Airport list ----------------------------------------------------------
