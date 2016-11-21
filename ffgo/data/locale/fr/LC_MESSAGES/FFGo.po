@@ -7,10 +7,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: FFGo 1.12.2\n"
+"Project-Id-Version: FFGo 1.12.1\n"
 "Report-Msgid-Bugs-To: f.rougon@free.fr\n"
-"POT-Creation-Date: 2016-11-21 17:01+0100\n"
-"PO-Revision-Date: 2016-11-14 01:21+0100\n"
+"POT-Creation-Date: 2016-11-21 11:35+0100\n"
+"PO-Revision-Date: 2016-11-21 12:01+0100\n"
 "Last-Translator: Florent Rougon <f.rougon@free.fr>\n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -1798,7 +1798,7 @@ msgstr "Répertoire"
 
 #: ffgo/gui/mainwindow.py:337
 msgid "Use count"
-msgstr "Compteur util."
+msgstr "Nb util."
 
 #: ffgo/gui/mainwindow.py:371
 msgid "Select Scenario"
@@ -1878,9 +1878,8 @@ msgid "Season:"
 msgstr "Saison :"
 
 #: ffgo/gui/mainwindow.py:536
-#, fuzzy
 msgid "Automatic scenery download"
-msgstr "Activer le téléchargement automatique des scènes"
+msgstr "Téléchargement auto des scènes"
 
 #: ffgo/gui/mainwindow.py:541
 msgid ""
@@ -1910,21 +1909,19 @@ msgid "Enable multi-sample anti-aliasing"
 msgstr "Activer l'anti-crénelage"
 
 #: ffgo/gui/mainwindow.py:576
-#, fuzzy
 msgid ""
 "Enabling this makes any still image in FlightGear smoother (less pronounced "
 "pixelation effect), but is also most likely to reduce the frame rate."
 msgstr ""
-"Cela améliore l'aspect de chaque image fixe produite par FlightGear (en "
-"atténuant l'effet de pixellisation), au prix d'une très probable diminution "
-"du nombre d'images par seconde."
+"Cette option améliore l'aspect de chaque image fixe produite par FlightGear "
+"(en atténuant l'effet de pixellisation), au prix d'une très probable "
+"diminution du nombre d'images par seconde."
 
 #: ffgo/gui/mainwindow.py:586
 msgid "Use the Rembrandt renderer"
-msgstr ""
+msgstr "Activer Rembrandt"
 
 #: ffgo/gui/mainwindow.py:591
-#, fuzzy
 msgid ""
 "Enable the Rembrandt renderer, which uses a technique known as deferred "
 "rendering. The most remarkable feature of this renderer is light management "
@@ -1932,10 +1929,11 @@ msgid ""
 "significantly slower than both the default renderer and the ALS renderer "
 "(“Atmospheric Light Scattering”)."
 msgstr ""
-"Active le moteur de rendu différé Rembrandt. Son point fort est la gestion "
-"de la lumière (réflexions, ombres, scènes de nuit...), mais il est beaucoup "
-"plus lent que le moteur de rendu par défaut ainsi que le moteur de rendu ALS "
-"(“Atmospheric Light Scattering”)."
+"Active le moteur de rendu différé Rembrandt. Sa caractéristique la plus "
+"remarquable est la gestion de la lumière (réflexions, ombres, scènes de "
+"nuit...). Veuillez noter que Rembrandt est significativement plus lent que "
+"le moteur de rendu par défaut ainsi que le moteur de rendu ALS (“Atmospheric "
+"Light Scattering”)."
 
 #: ffgo/gui/mainwindow.py:650
 msgid ""
@@ -1952,7 +1950,7 @@ msgstr "Nom de l'aérodrome"
 
 #: ffgo/gui/mainwindow.py:665
 msgid "Visit count"
-msgstr "Compteur visite"
+msgstr "Nb visites"
 
 #: ffgo/gui/mainwindow.py:698
 msgid "Ready"
