@@ -238,27 +238,31 @@ class App:
         self.mainPanedWindow = ttk.PanedWindow(self.master, orient='vertical')
         self.mainPanedWindow.pack(side='top', fill='both', expand=True)
 
-        self.frame0 = Frame(self.mainPanedWindow, borderwidth=4)
-        self.mainPanedWindow.add(self.frame0, weight=100)
+        self.topPanedWindow = ttk.PanedWindow(self.mainPanedWindow,
+                                              orient="horizontal")
+        self.mainPanedWindow.add(self.topPanedWindow, weight=100)
 
 #------ Aircraft list ---------------------------------------------------------
-        self.frame1 = ttk.Frame(self.frame0, borderwidth=8)
-        self.frame1.pack(side='left', fill='both', expand=True)
+        self.frame1 = ttk.Frame(self.topPanedWindow, padding=8)
+        self.topPanedWindow.add(self.frame1, weight=100)
 
         # Fill self.frame1 from bottom to top, because when vertical space is
         # scarce, the last elements added are the first to suffer from the lack
         # of space. Here, we want the aircraft list to be shrunk before the
         # search field and the 'Clear' button.
-        self.frame11 = ttk.Frame(self.frame1, borderwidth=1)
+        self.frame11 = ttk.Frame(self.frame1, padding=(0, 5, 0, 0))
         self.frame11.pack(side='bottom', fill='x')
 
         # The link to a StringVar is done in the AircraftChooser class
         self.aircraftSearch = MyEntry(self, self.frame11, bg=TEXT_BG_COL)
         self.aircraftSearch.pack(side='left', fill='x', expand=True)
+        ttk.Frame(self.frame11, width=5).pack(side='left') # horizontal spacer
         self.aircraftSearchButton = Button(self.frame11, text=_('Clear'))
         self.aircraftSearchButton.pack(side='left')
 
-        self.frame12 = ttk.Frame(self.frame1, borderwidth=1)
+        ttk.Frame(self.frame1, height=3).pack(side='bottom') # vertical spacer
+
+        self.frame12 = ttk.Frame(self.frame1)
         self.frame12.pack(side='bottom', fill='both', expand=True)
 
         aircraftListScrollbar = ttk.Scrollbar(self.frame12, orient='vertical',
@@ -356,9 +360,9 @@ class App:
             # nullified via AircraftChooser.setNullOutputVar().
             clearSearchOnInit=False)
 
-#------ Middle panel ----------------------------------------------------------
-        self.frame2 = Frame(self.frame0, borderwidth=1, relief='sunken')
-        self.frame2.pack(side='left', fill='both')
+#------ Left middle panel (aircraft thumbnail, airport, runway, ...) ----------
+        self.frame2 = ttk.Frame(self.topPanedWindow, padding=8)
+        self.topPanedWindow.add(self.frame2, weight=50)
         # Fill self.frame2 from bottom to top, because when vertical space is
         # scarce, the last elements added are the first to suffer from the lack
         # of space. Here, we want the aircraft thumbnail to be shrunk before
@@ -373,11 +377,13 @@ class App:
         self.scenarios.pack(side='left', fill='both', expand=True)
         self.scenarios.bind('<Button-1>', self.popupScenarios)
 
+        ttk.Frame(self.frame2, height=20).pack(side='bottom') # vertical spacer
+
         # Airport, rwy and parking
-        self.frame22 = Frame(self.frame2, borderwidth=4)
+        self.frame22 = ttk.Frame(self.frame2)
         self.frame22.pack(side='bottom', fill='x')
         # First column
-        self.frame221 = Frame(self.frame22, borderwidth=4)
+        self.frame221 = ttk.Frame(self.frame22, padding=(0, 0, 4, 0))
         self.frame221.pack(side='left', fill='x')
 
         self.park_label = Label(self.frame221, text=_('Parking:'))
@@ -390,27 +396,27 @@ class App:
         self.airport_label.pack(side='bottom')
 
         # Second column
-        self.frame222 = Frame(self.frame22, borderwidth=4)
-        self.frame222.pack(side='left', fill='x')
+        self.frame222 = ttk.Frame(self.frame22)
+        self.frame222.pack(side='left', fill='x', expand=True)
 
         self.parkLabel = Label(self.frame222, width=12,
                                textvariable=self.translatedPark,
                                relief='groove', borderwidth=2)
-        self.parkLabel.pack(side='bottom')
+        self.parkLabel.pack(side='bottom', fill='x', expand=True)
 
         self.rwyLabel = Label(self.frame222, width=12,
                               textvariable=self.translatedRwy,
                               relief='groove', borderwidth=2)
-        self.rwyLabel.pack(side='bottom')
+        self.rwyLabel.pack(side='bottom', fill='x', expand=True)
 
         self.airportLabel = Label(self.frame222, width=12,
                                   textvariable=self.config.airport,
                                   relief='groove', borderwidth=2)
-        self.airportLabel.pack(side='bottom')
+        self.airportLabel.pack(side='bottom', fill='x', expand=True)
         self.airportLabel.bind('<Button-1>', self.popupCarrier)
 
         # Aircraft
-        self.frame23 = Frame(self.frame2, borderwidth=4)
+        self.frame23 = ttk.Frame(self.frame2)
         self.frame23.pack(side='bottom', expand=True)
 
         self.aircraftLabel = Label(self.frame23,
@@ -427,7 +433,7 @@ class App:
         # self.thumbnail and avoid severe layout problems.
         self.updateImage()
 
-#------ Misc FlightGear settings ----------------------------------------------
+#------ Right middle panel (Miscellaneous settings) ---------------------------
         self.translatedTimeOfDay = tk.StringVar()
         self.translatedSeason = tk.StringVar()
 
@@ -462,8 +468,8 @@ class App:
         self.translatedSeason.trace('w', _updateSeason)
 
         # The “Miscellaneous settings”-related widgets
-        self.frame3 = ttk.Frame(self.frame0, borderwidth=1, relief='sunken')
-        self.frame3.pack(side='left', fill='both')
+        self.frame3 = ttk.Frame(self.topPanedWindow, padding=8)
+        self.topPanedWindow.add(self.frame3, weight=30)
         titleLabel = ttk.Label(self.frame3, text=_("Miscellaneous settings"),
                                anchor="center", borderwidth=2, relief="groove",
                                padding=3)
@@ -472,11 +478,11 @@ class App:
         self.frame30 = ttk.Frame(self.frame3, height=20) # vertical spacer
         self.frame30.pack(side='top', fill='x')
 
-        self.frame31 = ttk.Frame(self.frame3, borderwidth=4)
+        self.frame31 = ttk.Frame(self.frame3)
         self.frame31.pack(side='top', fill='x')
 
         # First column
-        self.frame311 = ttk.Frame(self.frame31, borderwidth=4)
+        self.frame311 = ttk.Frame(self.frame31, padding=(0, 0, 4, 0))
         self.frame311.pack(side='left', fill='x')
         timeOfDayLabel = ttk.Label(self.frame311, text=_("Time of day:"))
         timeOfDayLabel.pack(side='top')
@@ -597,21 +603,24 @@ class App:
                 autowrap=True)
 
 #------ Airport list ----------------------------------------------------------
-        self.frame4 = Frame(self.frame0, borderwidth=8)
-        self.frame4.pack(side='left', fill='both', expand=True)
+        self.frame4 = Frame(self.topPanedWindow, borderwidth=8)
+        self.topPanedWindow.add(self.frame4, weight=100)
 
         # Fill self.frame4 from bottom to top, because when vertical space is
         # scarce, the last elements added are the first to suffer from the lack
         # of space. Here, we want the airport list to be shrunk before the
         # search field and the 'Clear' button.
-        self.frame41 = Frame(self.frame4, borderwidth=1)
+        self.frame41 = ttk.Frame(self.frame4, padding=(0, 5, 0, 0))
         self.frame41.pack(side='bottom', fill='x')
 
         # The link to a StringVar is done in the AirportChooser class
         self.airportSearch = MyEntry(self, self.frame41, bg=TEXT_BG_COL)
         self.airportSearch.pack(side='left', fill='x', expand=True)
+        ttk.Frame(self.frame41, width=5).pack(side='left') # horizontal spacer
         self.airportSearchButton = Button(self.frame41, text=_('Clear'))
         self.airportSearchButton.pack(side='left')
+
+        ttk.Frame(self.frame4, height=3).pack(side='bottom') # vertical spacer
 
         self.frame42 = Frame(self.frame4, borderwidth=1)
         self.frame42.pack(side='bottom', fill='both', expand=True)
@@ -700,7 +709,7 @@ class App:
                                    background="#88ff88")
         self.fgStatusLabel.pack(side='left', fill='both', expand=True)
 
-        self.frame42 = Frame(self.frame4, borderwidth=4)
+        self.frame42 = ttk.Frame(self.frame4, width=6)
         self.frame42.pack(side='right')
 
         # Buttons
