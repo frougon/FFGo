@@ -573,9 +573,9 @@ class Config:
         from .fgdata.fgversion import FlightGearVersion
         fgBin = self.FG_bin.get()
 
-        # The fgfs option --json-report appeared in FlightGear 2016.4.0
+        # The fgfs option --json-report appeared in FlightGear 2016.4.1
         if (fgBin and self.FG_version is not None and
-            self.FG_version >= FlightGearVersion([2016, 4])):
+            self.FG_version >= FlightGearVersion([2016, 4, 1])):
             # This may take a while!
             logger.info(_("Querying FlightGear's JSON report..."), end=' ')
             fgReport = json_report.getFlightGearJSONReport(
@@ -648,9 +648,9 @@ class Config:
         from .fgdata.fgversion import FlightGearVersion
         fgBin = self.FG_bin.get()
 
-        # The fgfs option --json-report appeared in FlightGear 2016.4.0
+        # The fgfs option --json-report appeared in FlightGear 2016.4.1
         if (fgBin and self.FG_version is not None and
-            self.FG_version >= FlightGearVersion([2016, 4])):
+            self.FG_version >= FlightGearVersion([2016, 4, 1])):
             # This may take a while!
             logger.info(_("Querying FlightGear's JSON report..."), end=' ')
             fgReport = json_report.getFlightGearJSONReport(
