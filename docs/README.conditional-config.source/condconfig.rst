@@ -60,7 +60,7 @@ to :program:`fgfs`. They will be added after the options automatically set
 by FFGo, such as :samp:`--aircraft={...}`, :samp:`--airport={...}`,
 :samp:`--fg-scenery={...}`, etc.
 
-Comments don't necessary start at the beginning of a line. For instance,
+Comments don't necessarily start at the beginning of a line. For instance,
 a configuration such as::
 
   --prop:/instrumentation/nav/frequencies/selected-mhz=109.70 # OEJ
@@ -164,9 +164,10 @@ time of this writing: ``aircraft``, ``aircraftDir``, ``airport``,
 ``parking``, ``runway``, ``carrier`` and ``scenarios``.
 
 While external variables get their values from user selections in the FFGo
-graphical user interface, other variables must be explicitely defined at the
-beginning of the configuration, that is, before the default, unconditional
-section. This is done in a special section delimited by braces, like this::
+graphical user interface (GUI), other variables must be explicitely defined
+at the beginning of the configuration, that is, before the default,
+unconditional section. This is done in a special section delimited by
+braces, like this::
 
   { var1 = value1
     var2 = value2
@@ -237,6 +238,22 @@ Note:
   startup locations that can be directly selected from the FFGo GUI, which
   makes this particular type of configuration less often needed than it used
   to be.
+
+Another example, assuming you have installed the `ATCChatter add-on
+<https://sourceforge.net/p/flightgear/fgaddon/HEAD/tree/trunk/Addons/ATCChatter/>`_,
+could be the following::
+
+  { enableATCChatter = True }
+
+  [ enableATCChatter ]
+  --config=/your/path/to/ATCChatter/config.xml
+  --prop:string:/addons/ATCChatter/path=/your/path/to/ATCChatter
+  --prop:float:/sim/sound/chatter/volume=0.6 # between 0.0 and 1.0
+
+By changing the ``enableATCChatter = True`` into
+``enableATCChatter = False``, you can easily decide whether to include
+these three lines (the ``--config=...`` line and the two ``--prop:...``
+lines) in your ``fgfs`` command line.
 
 
 Advanced expressions
