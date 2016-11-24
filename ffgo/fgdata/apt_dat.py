@@ -235,7 +235,8 @@ class AptDatReader:
             self.rawFileObj.close()
 
     def approxOffset(self):
-        """Return an offset inside self.rawFileObj suitable for progress indicators.
+        """
+        Return an offset inside self.rawFileObj suitable for progress indicators.
 
         The offset represents a position inside the compressed data if
         the file is compressed, and may be influenced by buffering
