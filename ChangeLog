@@ -1188,3 +1188,21 @@ you may want to consult the Git repository log.
           <http://weather.noaa.gov/> doesn't work anymore, use
           <http://tgftp.nws.noaa.gov/> instead. I thought FFGo wasn't
           affected, and since nobody reported the problem... (Florent Rougon)
+
+1.12.2
+[BUGFIX]  Layout improvements in the main window. The goal is to increase the
+          likelihood of the main window fitting on screens that are not very
+          wide (1280 pixels wide with font size 11 should now be OK in English
+          as well as in French—this of course depends on the particular fonts
+          used). (Florent Rougon)
+[FEATURE] Use a Ttk PanedWindow for the top part of the main window, thus
+          allowing users to choose how to distribute horizontal space in the
+          top “row” containing the aircraft list, the two middle panes and the
+          airport list (at run time, using the mouse). (Florent Rougon)
+[BUGFIX]  Stricter check for FlightGear versions having the --json-report
+          option. Now that FlightGear 2016.4.1 is out, check for this version
+          rather than 2016.4.0, because 2016.4.1 guarantees the availability
+          of --json-report while 2016.4.0 does not (only the very last FG
+          commits labelled 2016.4.0 have this option). (Florent Rougon)
+[FEATURE] Small addition to README.conditional-config (ATCChatter example).
+          (Florent Rougon)
