@@ -280,11 +280,14 @@ TIPS & TRICKS
 
 -------------------------------------------------------------------------------
 
-KNOWN BUGS AND LIMITATIONS
+KNOWN LIMITATION
 
-* Very long names for parking positions don't fit in the parking button.
-  Just click on the button that makes the parking popup menu appear to
-  see the full name of such parking positions.
+* Very long names for startup locations (often parking positions) don't
+  fit in the parking button in the default layout. Just click on the
+  button that makes the parking popup menu appear to see the full name
+  of such startup locations. An alternative is now to resize the frame
+  containing the “Parking” button (drag when you see the mouse pointer
+  change).
 
 -------------------------------------------------------------------------------
 
