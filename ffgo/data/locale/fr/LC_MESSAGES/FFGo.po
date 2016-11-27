@@ -7,10 +7,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: FFGo 1.13.0\n"
+"Project-Id-Version: FFGo 1.12.2\n"
 "Report-Msgid-Bugs-To: f.rougon@free.fr\n"
 "POT-Creation-Date: 2016-11-28 00:36+0100\n"
-"PO-Revision-Date: 2016-11-21 12:01+0100\n"
+"PO-Revision-Date: 2016-11-28 00:43+0100\n"
 "Last-Translator: Florent Rougon <f.rougon@free.fr>\n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -1885,17 +1885,16 @@ msgid ""
 "\n"
 "See <http://wiki.flightgear.org/TerraSync> for more details."
 msgstr ""
-"Lorsque ceci est activé, FlightGear télécharge automatique les scènes au fil "
-"du vol (cette fonctionnalité de FlightGear est appelée TerraSync). Le "
-"répertoire utilisé pour ces téléchargements peut être choisi dans la boîte "
-"de dialogue Préférences.\n"
+"Lorsque cette option est activée, FlightGear télécharge automatique les "
+"scènes au fil du vol (cette fonctionnalité de FlightGear est appelée "
+"TerraSync). Le répertoire utilisé pour ces téléchargements peut être choisi "
+"dans la boîte de dialogue Préférences.\n"
 "\n"
 "Voir <http://wiki.flightgear.org/TerraSync> pour de plus amples informations."
 
 #: ffgo/gui/mainwindow.py:556
-#, fuzzy
 msgid "Automatic download of weather data"
-msgstr "Téléchargement auto des scènes"
+msgstr "Téléchargement auto de la météo"
 
 #: ffgo/gui/mainwindow.py:561
 msgid ""
@@ -1904,6 +1903,10 @@ msgid ""
 "FlightGear to match the current real world weather at the location of your "
 "flight."
 msgstr ""
+"Lorsque cette option est activée, FlightGear télécharge automatiquement des "
+"données météorologiques au fil du vol, sous la forme de rapports METAR. On a "
+"alors essentiellement le même temps dans FlightGear que dans la réalité à "
+"l'endroit du vol."
 
 #: ffgo/gui/mainwindow.py:572
 msgid "Start FlightGear in full screen"
@@ -1918,15 +1921,15 @@ msgid "Enable multi-sample anti-aliasing"
 msgstr "Activer l'anti-crénelage"
 
 #: ffgo/gui/mainwindow.py:595
-#, fuzzy
 msgid ""
 "Enabling this makes any still image in FlightGear smoother (less pronounced "
 "pixelation effect). It is also likely to reduce the frame rate, though maybe "
 "in a negligible way—just try it."
 msgstr ""
 "Cette option améliore l'aspect de chaque image fixe produite par FlightGear "
-"(en atténuant l'effet de pixellisation), au prix d'une très probable "
-"diminution du nombre d'images par seconde."
+"en atténuant l'effet de pixellisation, au prix d'une probable diminution du "
+"nombre d'images par seconde. Ce coût en terme de performances est souvent "
+"très faible, aussi est-il conseillé d'essayer l'option avant de la condamner."
 
 #: ffgo/gui/mainwindow.py:606
 msgid "Use the Rembrandt renderer"
