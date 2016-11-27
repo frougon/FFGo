@@ -280,23 +280,19 @@ class FGCommandBuilder:
         else:
             options.append("--disable-terrasync")
 
-        startFGFullScreen = self.app.config.startFGFullScreen.get()
-        if startFGFullScreen:
+        if self.app.config.startFGFullScreen.get():
             options.append("--enable-fullscreen")
 
-        startFGPaused = self.app.config.startFGPaused.get()
-        if startFGPaused:
+        if self.app.config.startFGPaused.get():
             options.append("--enable-freeze")
 
-        enableMSAA = self.app.config.enableMSAA.get()
-        if enableMSAA:
+        if self.app.config.enableMSAA.get():
             options.append("--prop:int:/sim/rendering/multi-sample-buffers=1")
             options.append("--prop:int:/sim/rendering/multi-samples=4")
         # Intentionally don't set any property when MSAA is disabled: this is
         # safer regarding compatibility with future FlightGear versions.
 
-        enableRembrandt = self.app.config.enableRembrandt.get()
-        if enableRembrandt:
+        if self.app.config.enableRembrandt.get():
             options.append("--enable-rembrandt")
 
         return options
