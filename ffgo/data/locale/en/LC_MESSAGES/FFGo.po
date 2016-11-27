@@ -5,9 +5,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: FFGo 1.12.2\n"
+"Project-Id-Version: FFGo 1.13.0\n"
 "Report-Msgid-Bugs-To: f.rougon@free.fr\n"
-"POT-Creation-Date: 2016-11-22 17:34+0100\n"
+"POT-Creation-Date: 2016-11-28 00:36+0100\n"
 "PO-Revision-Date: 2014-11-07 16:48+0100\n"
 "Last-Translator: Robert 'erobo' Leda <erobo@wp.pl>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -368,180 +368,180 @@ msgstr ""
 msgid "Unable to recognize the format of the apt digest file"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:300
+#: ffgo/fgdata/apt_dat.py:301
 msgid "not a valid record: {!r}"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:311
+#: ffgo/fgdata/apt_dat.py:312
 msgid "EOF reached while looking for the first non-empty line"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:315
+#: ffgo/fgdata/apt_dat.py:316
 msgid "first non-empty line should contain exactly one character"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:321
+#: ffgo/fgdata/apt_dat.py:322
 msgid "EOF reached while looking for the version of the format"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:327
+#: ffgo/fgdata/apt_dat.py:328
 msgid "unexpected header line: {line!r}"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:332
+#: ffgo/fgdata/apt_dat.py:333
 #, python-brace-format
 msgid ""
 "'{aptDat}' reports a format version {ver}, which this version of {prg} "
 "doesn't know about. Things may not work correctly. Please report a bug."
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:384 ffgo/fgdata/apt_dat.py:444
-#: ffgo/fgdata/apt_dat.py:684 ffgo/fgdata/apt_dat.py:705
-#: ffgo/fgdata/apt_dat.py:744 ffgo/fgdata/apt_dat.py:1010
-#: ffgo/fgdata/apt_dat.py:1176 ffgo/fgdata/apt_dat.py:1209
-#: ffgo/fgdata/apt_dat.py:1237
+#: ffgo/fgdata/apt_dat.py:385 ffgo/fgdata/apt_dat.py:445
+#: ffgo/fgdata/apt_dat.py:685 ffgo/fgdata/apt_dat.py:706
+#: ffgo/fgdata/apt_dat.py:745 ffgo/fgdata/apt_dat.py:1011
+#: ffgo/fgdata/apt_dat.py:1177 ffgo/fgdata/apt_dat.py:1210
+#: ffgo/fgdata/apt_dat.py:1238
 msgid "not enough fields in record: {!r}"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:389
+#: ffgo/fgdata/apt_dat.py:390
 #, python-brace-format
 msgid "{aptDat}:{lineNb}: skipping airport {aptId} (already defined earlier)"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:400
+#: ffgo/fgdata/apt_dat.py:401
 #, python-brace-format
 msgid "{aptDat}:{lineNb}: row code 99 found (normally at end of file)"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:449
+#: ffgo/fgdata/apt_dat.py:450
 msgid "expected {aptId1!r}, but found {aptId2!r} instead"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:515
+#: ffgo/fgdata/apt_dat.py:516
 msgid "unable to parse as a latitude: {0!r} in line {1!r}"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:526
+#: ffgo/fgdata/apt_dat.py:527
 msgid "unable to parse as a longitude: {0!r} in line {1!r}"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:537
+#: ffgo/fgdata/apt_dat.py:538
 msgid "unable to parse as a heading: {0!r} in line {1!r}"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:548
+#: ffgo/fgdata/apt_dat.py:549
 msgid "unable to parse as a length: {0!r} in line {1!r}"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:559
+#: ffgo/fgdata/apt_dat.py:560
 msgid "unable to parse as an elevation: {0!r} in line {1!r}"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:570
+#: ffgo/fgdata/apt_dat.py:571
 msgid "unable to parse as a surface type code: {0!r} in line {1!r}"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:581
+#: ffgo/fgdata/apt_dat.py:582
 msgid "unable to parse as a v810 surface type code: {0!r} in line {1!r}"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:592
+#: ffgo/fgdata/apt_dat.py:593
 msgid "unable to parse as a shoulder surface type code: {0!r} in line {1!r}"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:602
+#: ffgo/fgdata/apt_dat.py:603
 msgid "invalid smoothness value: {0!r}"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:609
+#: ffgo/fgdata/apt_dat.py:610
 msgid ""
 "Error in {aptDat}: unable to parse as a smoothness value: {val!r} in line "
 "{lineNb} ({line!r})"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:622
+#: ffgo/fgdata/apt_dat.py:623
 msgid "unable to parse as a code for runway markings: {0!r} in line {1!r}"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:634
+#: ffgo/fgdata/apt_dat.py:635
 msgid "invalid v810 code for runway markings: {0!r}"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:638
+#: ffgo/fgdata/apt_dat.py:639
 msgid "unable to parse as a v810 code for runway markings: {0!r} in line {1!r}"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:649
+#: ffgo/fgdata/apt_dat.py:650
 msgid "unable to parse as a perimeter buoys flag: {0!r} in line {1!r}"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:660
+#: ffgo/fgdata/apt_dat.py:661
 msgid "unable to parse as an helipad edge lighting flag: {0!r} in line {1!r}"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:1107
+#: ffgo/fgdata/apt_dat.py:1108
 msgid "unexpected runway number: {num!r}"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:1117
+#: ffgo/fgdata/apt_dat.py:1118
 msgid "runway name not starting with digits: {rwy!r}"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:1351
+#: ffgo/fgdata/apt_dat.py:1352
 msgid "Reading apt.dat files..."
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:1367
+#: ffgo/fgdata/apt_dat.py:1368
 #, python-brace-format
 msgid "Loading data for {nbAirports} airports..."
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:1396
+#: ffgo/fgdata/apt_dat.py:1397
 #, python-brace-format
 msgid "Writing {prg}'s apt digest file..."
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:1507 ffgo/fgdata/apt_dat.py:1511
+#: ffgo/fgdata/apt_dat.py:1508 ffgo/fgdata/apt_dat.py:1512
 msgid "unable to find the magic number"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:1518
+#: ffgo/fgdata/apt_dat.py:1519
 msgid "end of file reached before finding the magic number"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:1524
+#: ffgo/fgdata/apt_dat.py:1525
 msgid "could not find a valid line specifying the format version"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:1527 ffgo/fgdata/apt_dat.py:1598
+#: ffgo/fgdata/apt_dat.py:1528 ffgo/fgdata/apt_dat.py:1599
 #, python-brace-format
 msgid "unsupported format version number {num}, current is {current}"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:1541
+#: ffgo/fgdata/apt_dat.py:1542
 #, python-brace-format
 msgid ""
 "illegal number of components in apt.dat line #{lineNum}: {num1} (expected "
 "{num2})"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:1547
+#: ffgo/fgdata/apt_dat.py:1548
 #, python-brace-format
 msgid "could not find a valid #{lineNum} apt.dat path specification"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:1553
+#: ffgo/fgdata/apt_dat.py:1554
 #, python-brace-format
 msgid "could not find a valid #{lineNum} apt.dat size specification"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:1559
+#: ffgo/fgdata/apt_dat.py:1560
 #, python-brace-format
 msgid ""
 "could not find a valid #{lineNum} apt.dat uncompressed size specification"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:1565
+#: ffgo/fgdata/apt_dat.py:1566
 #, python-brace-format
 msgid "could not find a valid #{lineNum} apt.dat timestamp specification"
 msgstr ""
@@ -571,11 +571,11 @@ msgstr ""
 #: ffgo/gui/infowindow.py:31 ffgo/gui/gps_tool.py:560
 #: ffgo/gui/airport_finder.py:788 ffgo/gui/airport_finder.py:809
 #: ffgo/gui/airport_finder.py:891 ffgo/gui/airport_finder.py:1037
-#: ffgo/gui/mainwindow.py:889 ffgo/gui/mainwindow.py:918
-#: ffgo/gui/mainwindow.py:1350 ffgo/gui/mainwindow.py:1717
-#: ffgo/gui/mainwindow.py:1750 ffgo/gui/mainwindow.py:1778
-#: ffgo/gui/mainwindow.py:1839 ffgo/gui/mainwindow.py:2178
-#: ffgo/gui/mainwindow.py:2491 ffgo/gui/mainwindow.py:2640 ffgo/config.py:831
+#: ffgo/gui/mainwindow.py:903 ffgo/gui/mainwindow.py:932
+#: ffgo/gui/mainwindow.py:1364 ffgo/gui/mainwindow.py:1732
+#: ffgo/gui/mainwindow.py:1765 ffgo/gui/mainwindow.py:1793
+#: ffgo/gui/mainwindow.py:1854 ffgo/gui/mainwindow.py:2193
+#: ffgo/gui/mainwindow.py:2506 ffgo/gui/mainwindow.py:2655 ffgo/config.py:835
 #, python-brace-format
 msgid "{prg}"
 msgstr ""
@@ -1073,12 +1073,12 @@ msgid "Search: "
 msgstr ""
 
 #: ffgo/gui/gps_tool.py:455 ffgo/gui/airport_finder.py:131
-#: ffgo/gui/mainwindow.py:260 ffgo/gui/mainwindow.py:620
+#: ffgo/gui/mainwindow.py:260 ffgo/gui/mainwindow.py:634
 msgid "Clear"
 msgstr ""
 
 #: ffgo/gui/gps_tool.py:492 ffgo/gui/airport_finder.py:182
-#: ffgo/gui/airport_finder.py:686 ffgo/gui/mainwindow.py:670
+#: ffgo/gui/airport_finder.py:686 ffgo/gui/mainwindow.py:684
 msgid "ICAO"
 msgstr ""
 
@@ -1201,7 +1201,7 @@ msgid ""
 "({std_hPa} hPa = {std_inHg} inHg)"
 msgstr ""
 
-#: ffgo/gui/pressure_converter.py:174 ffgo/gui/mainwindow.py:1025
+#: ffgo/gui/pressure_converter.py:174 ffgo/gui/mainwindow.py:1039
 msgid "Close"
 msgstr ""
 
@@ -1477,7 +1477,7 @@ msgstr ""
 msgid "Ctrl-F"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:151 ffgo/gui/mainwindow.py:716
+#: ffgo/gui/mainwindow.py:151 ffgo/gui/mainwindow.py:730
 msgid "Save & Quit"
 msgstr ""
 
@@ -1553,7 +1553,7 @@ msgstr ""
 msgid "Show available fgfs options"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:233 ffgo/gui/mainwindow.py:1004
+#: ffgo/gui/mainwindow.py:233 ffgo/gui/mainwindow.py:1018
 msgid "About"
 msgstr ""
 
@@ -1587,12 +1587,12 @@ msgstr ""
 msgid "Rwy:"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:395 ffgo/gui/mainwindow.py:1667
+#: ffgo/gui/mainwindow.py:395 ffgo/gui/mainwindow.py:1682
 msgid "Airport:"
 msgstr ""
 
 #: ffgo/gui/mainwindow.py:440 ffgo/gui/mainwindow.py:448
-#: ffgo/gui/mainwindow.py:503
+#: ffgo/gui/mainwindow.py:501
 msgid "current time"
 msgstr ""
 
@@ -1625,7 +1625,7 @@ msgid "midnight"
 msgstr ""
 
 #: ffgo/gui/mainwindow.py:454 ffgo/gui/mainwindow.py:461
-#: ffgo/gui/mainwindow.py:516
+#: ffgo/gui/mainwindow.py:514
 msgctxt "season"
 msgid "default"
 msgstr ""
@@ -1640,23 +1640,19 @@ msgctxt "season"
 msgid "winter"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:473
-msgid "Miscellaneous settings"
-msgstr ""
-
-#: ffgo/gui/mainwindow.py:487
+#: ffgo/gui/mainwindow.py:485
 msgid "Time of day:"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:493
+#: ffgo/gui/mainwindow.py:491
 msgid "Season:"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:542
+#: ffgo/gui/mainwindow.py:539
 msgid "Automatic scenery download"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:547
+#: ffgo/gui/mainwindow.py:544
 msgid ""
 "Enabling this causes FlightGear to automatically download scenery as you fly "
 "(this FlightGear feature is called TerraSync). The location where these "
@@ -1665,29 +1661,42 @@ msgid ""
 "See <http://wiki.flightgear.org/TerraSync> for more details."
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:559
+#: ffgo/gui/mainwindow.py:556
+msgid "Automatic download of weather data"
+msgstr ""
+
+#: ffgo/gui/mainwindow.py:561
+msgid ""
+"Enabling this causes FlightGear to automatically download weather data as "
+"you fly (in the form of METAR reports). This causes the weather in "
+"FlightGear to match the current real world weather at the location of your "
+"flight."
+msgstr ""
+
+#: ffgo/gui/mainwindow.py:572
 msgid "Start FlightGear in full screen"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:568
+#: ffgo/gui/mainwindow.py:581
 msgid "Start FlightGear paused"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:577
+#: ffgo/gui/mainwindow.py:590
 msgid "Enable multi-sample anti-aliasing"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:582
+#: ffgo/gui/mainwindow.py:595
 msgid ""
 "Enabling this makes any still image in FlightGear smoother (less pronounced "
-"pixelation effect), but is also most likely to reduce the frame rate."
+"pixelation effect). It is also likely to reduce the frame rate, though maybe "
+"in a negligible way—just try it."
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:592
+#: ffgo/gui/mainwindow.py:606
 msgid "Use the Rembrandt renderer"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:597
+#: ffgo/gui/mainwindow.py:611
 msgid ""
 "Enable the Rembrandt renderer, which uses a technique known as deferred "
 "rendering. The most remarkable feature of this renderer is light management "
@@ -1696,68 +1705,68 @@ msgid ""
 "(“Atmospheric Light Scattering”)."
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:659
+#: ffgo/gui/mainwindow.py:673
 msgid ""
 "Number of days the airport was visited during the selected period "
 "(cf. “Airports statistics show period” in the Preferences dialog)"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:672
+#: ffgo/gui/mainwindow.py:686
 msgid "Airport name"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:674
+#: ffgo/gui/mainwindow.py:688
 msgid "Visit count"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:707
+#: ffgo/gui/mainwindow.py:721
 msgid "Ready"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:720
+#: ffgo/gui/mainwindow.py:734
 msgid "Reload config"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:723
+#: ffgo/gui/mainwindow.py:737
 #, python-brace-format
 msgid "Reload the configuration file ({cfg_file})"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:727
+#: ffgo/gui/mainwindow.py:741
 msgid "Run FG"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:802
+#: ffgo/gui/mainwindow.py:816
 msgid "Python {}"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:803
+#: ffgo/gui/mainwindow.py:817
 msgid "CondConfigParser {}"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:806
+#: ffgo/gui/mainwindow.py:820
 msgid "GeographicLib's Python 3 implementation: version {}"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:813
+#: ffgo/gui/mainwindow.py:827
 msgid "Using:\n"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:815
+#: ffgo/gui/mainwindow.py:829
 #, python-brace-format
 msgid ""
 "{prgWithVer} started\n"
 "{using}\n"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:821
+#: ffgo/gui/mainwindow.py:835
 #, python-brace-format
 msgid ""
 "[{prg} warning] {libName} library not found. Aircraft thumbnails won't be "
 "displayed."
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:827
+#: ffgo/gui/mainwindow.py:841
 #, python-brace-format
 msgid ""
 "[{prg} notice] {libName}'s implementation for Python 3 not found. {prg} has "
@@ -1766,7 +1775,7 @@ msgid ""
 "{libName}. You will be notified when such a case is encountered."
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:836
+#: ffgo/gui/mainwindow.py:850
 #, python-brace-format
 msgid ""
 "[{prg} warning] {libName}'s MagneticField executable not found or not "
@@ -1775,11 +1784,11 @@ msgid ""
 "from a true heading)."
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:866
+#: ffgo/gui/mainwindow.py:880
 msgid "Change “Airport data source” to “Scenery”?"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:867
+#: ffgo/gui/mainwindow.py:881
 #, python-brace-format
 msgid ""
 "In old FlightGear versions (up to 2.4.0 according to\n"
@@ -1788,7 +1797,7 @@ msgid ""
 "for “Airport data source” used to match this behavior."
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:872
+#: ffgo/gui/mainwindow.py:886
 #, python-brace-format
 msgid ""
 "In contemporary versions of FlightGear, this parking data is read from\n"
@@ -1798,14 +1807,14 @@ msgid ""
 "source” in {prg} has been changed to “Scenery”."
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:878
+#: ffgo/gui/mainwindow.py:892
 msgid ""
 "Your “Airport data source” setting is currently set to the old default.\n"
 "Do you want to change it to “Scenery”? Unless you are using FlightGear\n"
 "2.4 or earlier, it is recommended to say “Yes”."
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:882
+#: ffgo/gui/mainwindow.py:896
 #, python-brace-format
 msgid ""
 "Note: you may need to go to an airport first, let TerraSync download\n"
@@ -1813,11 +1822,11 @@ msgid ""
 "available for this airport in $FG_SCENERY, allowing {prg} to use it."
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:903
+#: ffgo/gui/mainwindow.py:917
 msgid "Change “Airport database update” to “Automatic”?"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:904
+#: ffgo/gui/mainwindow.py:918
 #, python-brace-format
 msgid ""
 "Whenever FlightGear's apt.dat files are updated, {prg}\n"
@@ -1827,7 +1836,7 @@ msgid ""
 "FlightGear's apt.dat files."
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:910
+#: ffgo/gui/mainwindow.py:924
 #, python-brace-format
 msgid ""
 "The default setting in {prg} for this option is now “Automatic”, because\n"
@@ -1836,118 +1845,118 @@ msgid ""
 "“Automatic”?"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:963 ffgo/gui/mainwindow.py:966
+#: ffgo/gui/mainwindow.py:977 ffgo/gui/mainwindow.py:980
 msgid "Translation:"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:967
+#: ffgo/gui/mainwindow.py:981
 msgid "Authors: {}"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:977
+#: ffgo/gui/mainwindow.py:991
 #, python-brace-format
 msgid "Magnetic variation unavailable: {reason}."
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:988 ffgo/config.py:329
+#: ffgo/gui/mainwindow.py:1002 ffgo/config.py:332
 msgctxt "FlightGear version"
 msgid "none"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:990
+#: ffgo/gui/mainwindow.py:1004
 #, python-brace-format
 msgid ""
 "(you may want to check the '{fgfs}' executable and FG_ROOT paths, as well as "
 "the FlightGear working directory defined in Settings → Preferences)"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:994 ffgo/config.py:332
+#: ffgo/gui/mainwindow.py:1008 ffgo/config.py:335
 #, python-brace-format
 msgid "Detected FlightGear version: {ver}"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1022
+#: ffgo/gui/mainwindow.py:1036
 msgid "License"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1104 ffgo/gui/mainwindow.py:1112
+#: ffgo/gui/mainwindow.py:1118 ffgo/gui/mainwindow.py:1126
 #, python-brace-format
 msgid "{prg} Config Files"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1105
+#: ffgo/gui/mainwindow.py:1119
 msgid "FGo! Config Files"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1127
+#: ffgo/gui/mainwindow.py:1141
 msgid "Building the airport list (this may take a while)..."
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1214
+#: ffgo/gui/mainwindow.py:1228
 msgctxt "carrier"
 msgid "None"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1222
+#: ffgo/gui/mainwindow.py:1236
 msgctxt "flight type"
 msgid "Cargo"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1223
+#: ffgo/gui/mainwindow.py:1237
 msgctxt "flight type"
 msgid "General aviation"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1224
+#: ffgo/gui/mainwindow.py:1238
 msgctxt "flight type"
 msgid "Gate"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1225
+#: ffgo/gui/mainwindow.py:1239
 msgctxt "flight type"
 msgid "Mil. cargo"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1226
+#: ffgo/gui/mainwindow.py:1240
 msgctxt "flight type"
 msgid "Mil. fighter"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1228
+#: ffgo/gui/mainwindow.py:1242
 msgctxt "flight type"
 msgid "VTOL"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1230
+#: ffgo/gui/mainwindow.py:1244
 msgctxt "flight type"
 msgid "Hangar"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1231
+#: ffgo/gui/mainwindow.py:1245
 msgctxt "flight type"
 msgid "Misc"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1232 ffgo/gui/mainwindow.py:1235
+#: ffgo/gui/mainwindow.py:1246 ffgo/gui/mainwindow.py:1249
 msgctxt "flight type"
 msgid "Tie-down"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1237
+#: ffgo/gui/mainwindow.py:1251
 msgctxt "flight type"
 msgid "Unspecified"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1254 ffgo/gui/mainwindow.py:2237
+#: ffgo/gui/mainwindow.py:1268 ffgo/gui/mainwindow.py:2252
 msgctxt "parking position"
 msgid "None"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1322
+#: ffgo/gui/mainwindow.py:1336
 msgid "Unable to load airport data"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1325
+#: ffgo/gui/mainwindow.py:1339
 #, python-brace-format
 msgid ""
 "Attempt to load data for airport {icao} from apt digest file '{aptDigest}' "
@@ -1955,14 +1964,14 @@ msgid ""
 "uncompressed '{aptDat}' ({uncompSize} bytes) as recorded in '{aptDigest}'."
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1332
+#: ffgo/gui/mainwindow.py:1346
 #, python-brace-format
 msgid ""
 "Unable to find data for airport {icao} in apt digest file '{aptDigest}' at "
 "index {index}."
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1338
+#: ffgo/gui/mainwindow.py:1352
 #, python-brace-format
 msgid ""
 "{startOfMsg} This may be explained by '{aptDigest}' being out of date "
@@ -1977,30 +1986,30 @@ msgid ""
 "useless!). Thank you."
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1469 ffgo/gui/mainwindow.py:2238
+#: ffgo/gui/mainwindow.py:1483 ffgo/gui/mainwindow.py:2253
 msgctxt "runway"
 msgid "Default"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1512
+#: ffgo/gui/mainwindow.py:1526
 msgid "OK"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1713
+#: ffgo/gui/mainwindow.py:1728
 msgid "FlightGear is already running"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1714
+#: ffgo/gui/mainwindow.py:1729
 msgid ""
 "Sorry, FlightGear is already running and we'd rather not run two instances "
 "simultaneously under the same account."
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1742
+#: ffgo/gui/mainwindow.py:1757
 msgid "FlightGear executable not properly set"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1744
+#: ffgo/gui/mainwindow.py:1759
 #, python-brace-format
 msgid ""
 "The name or path to the FlightGear executable is either empty or only "
@@ -2009,11 +2018,11 @@ msgid ""
 "on your platform."
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1755
+#: ffgo/gui/mainwindow.py:1770
 msgid "Cannot start FlightGear now."
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1757
+#: ffgo/gui/mainwindow.py:1772
 #, python-brace-format
 msgid ""
 "The configuration in the main text field has an invalid syntax:\n"
@@ -2024,11 +2033,11 @@ msgid ""
 "description of the syntax rules."
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1765
+#: ffgo/gui/mainwindow.py:1780
 msgid "Unsupported option in the Options Window."
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1766
+#: ffgo/gui/mainwindow.py:1781
 #, python-brace-format
 msgid ""
 "The configuration in the main text field uses the fgfs option {option}, "
@@ -2037,81 +2046,81 @@ msgid ""
 "directory” setting of the Preferences dialog for equivalent functionality."
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1782
+#: ffgo/gui/mainwindow.py:1797
 #, python-format
 msgid "Starting %s with following options:"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1817
+#: ffgo/gui/mainwindow.py:1832
 msgid "FlightGear is running..."
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1833
+#: ffgo/gui/mainwindow.py:1848
 msgid "Unable to run FlightGear!"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1835
+#: ffgo/gui/mainwindow.py:1850
 msgid ""
 "Please make sure that the “FlightGear executable”, “FG_ROOT” and “Working "
 "directory” parameters are correctly set in the Preferences dialog."
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1900
+#: ffgo/gui/mainwindow.py:1915
 #, python-brace-format
 msgid "FG's last exit status: {0}"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1901 ffgo/gui/mainwindow.py:2653
+#: ffgo/gui/mainwindow.py:1916 ffgo/gui/mainwindow.py:2668
 #, python-brace-format
 msgid "exit status: {0}"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1903
+#: ffgo/gui/mainwindow.py:1918
 #, python-brace-format
 msgid "FG last killed by signal {0}"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1904 ffgo/gui/mainwindow.py:2655
+#: ffgo/gui/mainwindow.py:1919 ffgo/gui/mainwindow.py:2670
 #, python-brace-format
 msgid "killed by signal {0}"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1906
+#: ffgo/gui/mainwindow.py:1921
 #, python-brace-format
 msgid "fgfs process terminated ({0})"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1909
+#: ffgo/gui/mainwindow.py:1924
 #, python-brace-format
 msgid "Ready ({0})"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1992
+#: ffgo/gui/mainwindow.py:2007
 msgid "Carrier:"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:2035
+#: ffgo/gui/mainwindow.py:2050
 #, python-brace-format
 msgid "{prg} Help"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:2054
+#: ffgo/gui/mainwindow.py:2069
 msgid "Unable to run 'fgfs --fg-root=... --help --verbose'"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:2057
+#: ffgo/gui/mainwindow.py:2072
 msgid "Error when running 'fgfs --fg-root=... --help --verbose'"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:2059
+#: ffgo/gui/mainwindow.py:2074
 msgid "Output of 'fgfs --help --verbose'"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:2173
+#: ffgo/gui/mainwindow.py:2188
 msgid "Impossible to copy the current FlightGear command"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:2174
+#: ffgo/gui/mainwindow.py:2189
 #, python-brace-format
 msgid ""
 "The current FlightGear command cannot be copied to the clipboard, because "
@@ -2120,16 +2129,16 @@ msgid ""
 "{exc}"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:2256
+#: ffgo/gui/mainwindow.py:2271
 msgctxt "parking position"
 msgid "Invalid"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:2483
+#: ffgo/gui/mainwindow.py:2498
 msgid "Invalid geometry specification"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:2484
+#: ffgo/gui/mainwindow.py:2499
 #, python-brace-format
 msgid ""
 "The following geometry specification read from the configuration file has an "
@@ -2139,90 +2148,90 @@ msgid ""
 "\n"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:2488
+#: ffgo/gui/mainwindow.py:2503
 #, python-brace-format
 msgid "You can consult <{url}> for a description of the allowed syntax."
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:2512
+#: ffgo/gui/mainwindow.py:2527
 msgid "FlightGear Command"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:2557
+#: ffgo/gui/mainwindow.py:2572
 msgid "FlightGear will be started with following arguments:"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:2637
+#: ffgo/gui/mainwindow.py:2652
 #, python-brace-format
 msgid "Unable to start the file manager with '{0}'."
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:2639
+#: ffgo/gui/mainwindow.py:2654
 #, python-brace-format
 msgid "Problem: {0}"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:2657
+#: ffgo/gui/mainwindow.py:2672
 #, python-brace-format
 msgid "File manager process terminated ({0})"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:2678
+#: ffgo/gui/mainwindow.py:2693
 msgid "FlightGear Output"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:2704
+#: ffgo/gui/mainwindow.py:2719
 msgid "Save Log"
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:2709
+#: ffgo/gui/mainwindow.py:2724
 msgid "Open Log Directory"
 msgstr ""
 
-#: ffgo/config.py:289
+#: ffgo/config.py:292
 msgid "Building the list of installed airports (this may take some time)..."
 msgstr ""
 
-#: ffgo/config.py:415
+#: ffgo/config.py:418
 #, python-brace-format
 msgid ""
 "Could not find aircraft '{aircraft}' under '{dir}', taking it from "
 "'{fallback}' instead"
 msgstr ""
 
-#: ffgo/config.py:424
+#: ffgo/config.py:427
 #, python-brace-format
 msgid "Could not find the default aircraft: {aircraft}"
 msgstr ""
 
-#: ffgo/config.py:429
+#: ffgo/config.py:432
 #, python-brace-format
 msgid ""
 "Could not find aircraft '{aircraft}', using '{fallback}' from '{dir}' instead"
 msgstr ""
 
-#: ffgo/config.py:443
+#: ffgo/config.py:446
 msgid "Invalid syntax for the parking setting ({setting!r}), resetting it."
 msgstr ""
 
-#: ffgo/config.py:580 ffgo/config.py:655
+#: ffgo/config.py:584 ffgo/config.py:659
 msgid "Querying FlightGear's JSON report..."
 msgstr ""
 
-#: ffgo/config.py:584 ffgo/config.py:659
+#: ffgo/config.py:588 ffgo/config.py:663
 msgid "OK."
 msgstr ""
 
-#: ffgo/config.py:687
+#: ffgo/config.py:691
 msgid "Ignoring directory '{}' (unexpected name)"
 msgstr ""
 
-#: ffgo/config.py:716
+#: ffgo/config.py:720
 #, python-brace-format
 msgid "Initialize {prg}'s configuration from your existing FGo! configuration?"
 msgstr ""
 
-#: ffgo/config.py:718
+#: ffgo/config.py:722
 #, python-brace-format
 msgid ""
 "You have no {cfgfile} file but you do have a {fgo_cfgfile} file,\n"
@@ -2232,7 +2241,7 @@ msgid ""
 "FGo! 1.5.5 or earlier should be usable as is by {prg}."
 msgstr ""
 
-#: ffgo/config.py:724
+#: ffgo/config.py:728
 #, python-brace-format
 msgid ""
 "If {fgo_cfgfile} was written by FGo! 1.5.5 or earlier, you\n"
@@ -2241,19 +2250,19 @@ msgid ""
 "copy {fgo_cfgfile} to {cfgfile})."
 msgstr ""
 
-#: ffgo/config.py:729
+#: ffgo/config.py:733
 #, python-brace-format
 msgid ""
 "If {fgo_cfgfile} was written by a version of FGo! that is greater\n"
 "than 1.5.5, it is advised to say “No” here."
 msgstr ""
 
-#: ffgo/config.py:738
+#: ffgo/config.py:742
 #, python-brace-format
 msgid "Create a default {prg} configuration?"
 msgstr ""
 
-#: ffgo/config.py:740
+#: ffgo/config.py:744
 #, python-brace-format
 msgid ""
 "Choose “Yes” to create a basic {prg} configuration now. If you\n"
@@ -2261,18 +2270,18 @@ msgid ""
 "yourself, or restart {prg} to see the same questions again."
 msgstr ""
 
-#: ffgo/config.py:748
+#: ffgo/config.py:752
 #, python-brace-format
 msgid "Creating a default {prg} configuration."
 msgstr ""
 
-#: ffgo/config.py:750
+#: ffgo/config.py:754
 msgid ""
 "It is suggested that you go to the Settings menu and choose\n"
 "Preferences to review your newly-created configuration."
 msgstr ""
 
-#: ffgo/config.py:753
+#: ffgo/config.py:757
 #, python-brace-format
 msgid ""
 "You can also reuse most, if not all FlightGear options you\n"
@@ -2280,36 +2289,36 @@ msgid ""
 "them to the corresponding {prg} text box."
 msgstr ""
 
-#: ffgo/config.py:757
+#: ffgo/config.py:761
 #, python-brace-format
 msgid ""
 "Note: you may run both FGo! and {prg} simultaneously, as their\n"
 "configurations are kept separate."
 msgstr ""
 
-#: ffgo/config.py:830
+#: ffgo/config.py:834
 msgid "Error loading configuration"
 msgstr ""
 
-#: ffgo/config.py:1030
+#: ffgo/config.py:1034
 msgid "Modification of apt.dat files detected."
 msgstr ""
 
-#: ffgo/config.py:1234
+#: ffgo/config.py:1238
 msgid "Cannot find any apt.dat file."
 msgstr ""
 
-#: ffgo/config.py:1235
+#: ffgo/config.py:1239
 msgid "Error"
 msgstr ""
 
-#: ffgo/config.py:1238
+#: ffgo/config.py:1242
 msgid ""
 "Generating the airport database,\n"
 "this may take a while..."
 msgstr ""
 
-#: ffgo/config.py:1259
+#: ffgo/config.py:1263
 #, python-brace-format
 msgid ""
 "Generating {prg}'s apt digest file ('{aptDigest}') from:\n"
