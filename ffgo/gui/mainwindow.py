@@ -387,13 +387,13 @@ class App:
         self.frame221.pack(side='left', fill='x')
 
         self.park_label = Label(self.frame221, text=_('Parking:'))
-        self.park_label.pack(side='bottom')
+        self.park_label.pack(side='bottom', anchor='w')
 
         self.rwy_label = Label(self.frame221, text=_('Rwy:'))
-        self.rwy_label.pack(side='bottom')
+        self.rwy_label.pack(side='bottom', anchor='w')
 
         self.airport_label = Label(self.frame221, text=_('Airport:'))
-        self.airport_label.pack(side='bottom')
+        self.airport_label.pack(side='bottom', anchor='w')
 
         # Second column
         self.frame222 = ttk.Frame(self.frame22)
