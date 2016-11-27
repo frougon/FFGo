@@ -275,9 +275,10 @@ class FGCommandBuilder:
         if season:
             options.append("--season=" + season)
 
-        enableTerraSync = self.app.config.enableTerraSync.get()
-        if enableTerraSync:
+        if self.app.config.enableTerraSync.get():
             options.append("--enable-terrasync")
+        else:
+            options.append("--disable-terrasync")
 
         startFGFullScreen = self.app.config.startFGFullScreen.get()
         if startFGFullScreen:
