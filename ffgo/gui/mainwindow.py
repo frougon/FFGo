@@ -553,7 +553,7 @@ class App:
 
         self.enableRealWeatherFetchCb = ttk.Checkbutton(
             self.frame32,
-            text=_('Download real weather data'),
+            text=_('Automatic download of weather data'),
             variable=self.config.enableRealWeatherFetch)
         self.enableRealWeatherFetchCb.pack(side='top', anchor='w')
 
