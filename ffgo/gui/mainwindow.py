@@ -593,8 +593,9 @@ class App:
 
         ToolTip(self.enableMSAACb,
                 _("Enabling this makes any still image in FlightGear smoother "
-                  "(less pronounced pixelation effect), but is also most "
-                  "likely to reduce the frame rate."),
+                  "(less pronounced pixelation effect). It is also likely "
+                  "to reduce the frame rate, though maybe in a negligible "
+                  "way—just try it."),
                 autowrap=True)
 
         # Vertical spacer
