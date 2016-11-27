@@ -280,6 +280,11 @@ class FGCommandBuilder:
         else:
             options.append("--disable-terrasync")
 
+        if self.app.config.enableRealWeatherFetch.get():
+            options.append("--enable-real-weather-fetch")
+        else:
+            options.append("--disable-real-weather-fetch")
+
         if self.app.config.startFGFullScreen.get():
             options.append("--enable-fullscreen")
 

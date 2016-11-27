@@ -111,6 +111,7 @@ class Config:
         self.timeOfDay = StringVar()
         self.season = StringVar()
         self.enableTerraSync = IntVar()
+        self.enableRealWeatherFetch = IntVar()
         self.startFGFullScreen = IntVar()
         self.startFGPaused = IntVar()
         self.enableMSAA = IntVar()
@@ -150,6 +151,8 @@ class Config:
                          'TIME_OF_DAY=': self.timeOfDay,
                          'SEASON=': self.season,
                          'ENABLE_TERRASYNC=': self.enableTerraSync,
+                         'ENABLE_REAL_WEATHER_FETCH=':
+                                              self.enableRealWeatherFetch,
                          'START_FG_FULL_SCREEN=': self.startFGFullScreen,
                          'START_FG_PAUSED=': self.startFGPaused,
                          'ENABLE_MULTI_SAMPLE_ANTIALIASING=': self.enableMSAA,
@@ -511,6 +514,7 @@ class Config:
         self.timeOfDay.set('')
         self.season.set('')
         self.enableTerraSync.set('0')
+        self.enableRealWeatherFetch.set('0')
         self.startFGFullScreen.set('1')
         self.startFGPaused.set('0')
         self.enableMSAA.set('0')

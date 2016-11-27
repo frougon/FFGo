@@ -360,7 +360,7 @@ class App:
             # nullified via AircraftChooser.setNullOutputVar().
             clearSearchOnInit=False)
 
-#------ Left middle panel (aircraft thumbnail, airport, runway, ...) ----------
+#------ Left middle pane (aircraft thumbnail, airport, runway, ...) -----------
         self.frame2 = ttk.Frame(self.topPanedWindow, padding=8)
         self.topPanedWindow.add(self.frame2, weight=50)
         # Fill self.frame2 from bottom to top, because when vertical space is
@@ -433,7 +433,7 @@ class App:
         # self.thumbnail and avoid severe layout problems.
         self.updateImage()
 
-#------ Right middle panel (Miscellaneous settings) ---------------------------
+#------ Right middle pane (Miscellaneous settings) ----------------------------
         self.translatedTimeOfDay = tk.StringVar()
         self.translatedSeason = tk.StringVar()
 
@@ -467,35 +467,33 @@ class App:
         self.translatedTimeOfDay.trace('w', _updateTimeOfDay)
         self.translatedSeason.trace('w', _updateSeason)
 
-        # The “Miscellaneous settings”-related widgets
-        self.frame3 = ttk.Frame(self.topPanedWindow, padding=8)
-        self.topPanedWindow.add(self.frame3, weight=30)
-        titleLabel = ttk.Label(self.frame3, text=_("Miscellaneous settings"),
-                               anchor="center", borderwidth=2, relief="groove",
-                               padding=3)
-        titleLabel.pack(side='top', fill='x')
+        # Enclosing frame to obtain vertical centering
+        frame3ext = ttk.Frame(self.topPanedWindow, padding=8)
+        self.topPanedWindow.add(frame3ext, weight=30)
+        # Inside frame
+        self.frame3 = ttk.Frame(frame3ext)
+        # This 'expand=True' is the key for vertical centering inside frame3ext
+        self.frame3.pack(expand=True)
 
-        self.frame30 = ttk.Frame(self.frame3, height=20) # vertical spacer
-        self.frame30.pack(side='top', fill='x')
-
+        # One frame that will contain two columns (frames)
         self.frame31 = ttk.Frame(self.frame3)
-        self.frame31.pack(side='top', fill='x')
+        self.frame31.pack(side='top', anchor='w')
 
         # First column
-        self.frame311 = ttk.Frame(self.frame31, padding=(0, 0, 4, 0))
-        self.frame311.pack(side='left', fill='x')
+        self.frame311 = ttk.Frame(self.frame31, padding=(0, 0, 12, 0))
+        self.frame311.pack(side='left')
         timeOfDayLabel = ttk.Label(self.frame311, text=_("Time of day:"))
         timeOfDayLabel.pack(side='top')
 
         # Vertical spacer
-        ttk.Frame(self.frame311, height=6).pack(side='top', fill='x')
+        ttk.Frame(self.frame311, height=6).pack(side='top')
 
         seasonLabel = ttk.Label(self.frame311, text=_("Season:"))
-        seasonLabel.pack(side='top')
+        seasonLabel.pack(side='top', anchor='w')
 
         # Second column
-        self.frame312 = ttk.Frame(self.frame31, borderwidth=4)
-        self.frame312.pack(side='top', fill='x')
+        self.frame312 = ttk.Frame(self.frame31)
+        self.frame312.pack(side='left')
 
         if self.config.timeOfDay.get():
             initTimeOfDay = _(self.config.timeOfDay.get())
@@ -505,10 +503,10 @@ class App:
         timeOfDayMenu = ttk.OptionMenu(self.frame312, self.translatedTimeOfDay,
                                        initTimeOfDay,
                                        *timeOfDayReverseMapping.keys())
-        timeOfDayMenu.pack(side='top')
+        timeOfDayMenu.pack(side='top', anchor='w')
 
         # Vertical spacer
-        ttk.Frame(self.frame312, height=6).pack(side='top', fill='x')
+        ttk.Frame(self.frame312, height=6).pack(side='top')
 
         if self.config.season.get():
             initSeason = pgettext("season", self.config.season.get())
@@ -518,7 +516,7 @@ class App:
         seasonMenu = ttk.OptionMenu(self.frame312, self.translatedSeason,
                                     initSeason,
                                     *seasonReverseMapping.keys())
-        seasonMenu.pack(side='top')
+        seasonMenu.pack(side='top', anchor='w')
 
         # font = tk.font.Font() # same as tk.font.nametofont("TkDefaultFont")
         # maxWidth = max(( font.measure(text) for text in
@@ -529,19 +527,18 @@ class App:
             # Stupid interface that seems to work with a number of characters!
             widget.config(width=maxLen)
 
-        self.frame32 = ttk.Frame(self.frame3, borderwidth=4)
-        self.frame32.pack(side='top', fill='x')
+        # Back to one-column layout
+        self.frame32 = ttk.Frame(self.frame3)
+        self.frame32.pack(side='top', anchor='w')
 
         # Vertical spacer
-        ttk.Frame(self.frame32, height=22).pack(side='top', fill='x')
+        ttk.Frame(self.frame32, height=22).pack(side='top')
 
-        # Back to one-column layout, “Enable automatic scenery download”
-        # checkbutton
         self.enableTerraSyncCb = ttk.Checkbutton(
             self.frame32,
             text=_('Automatic scenery download'),
             variable=self.config.enableTerraSync)
-        self.enableTerraSyncCb.pack(side='top', fill='x', expand=True)
+        self.enableTerraSyncCb.pack(side='top', anchor='w')
 
         ToolTip(self.enableTerraSyncCb,
                 _("Enabling this causes FlightGear to automatically download "
@@ -552,31 +549,47 @@ class App:
                 autowrap=True)
 
         # Vertical spacer
-        ttk.Frame(self.frame32, height=8).pack(side='top', fill='x')
+        ttk.Frame(self.frame32, height=8).pack(side='top')
+
+        self.enableRealWeatherFetchCb = ttk.Checkbutton(
+            self.frame32,
+            text=_('Download real weather data'),
+            variable=self.config.enableRealWeatherFetch)
+        self.enableRealWeatherFetchCb.pack(side='top', anchor='w')
+
+        ToolTip(self.enableRealWeatherFetchCb,
+                _("Enabling this causes FlightGear to automatically download "
+                  "weather data as you fly (in the form of METAR reports). "
+                  "This causes the weather in FlightGear to match the current "
+                  "real world weather at the location of your flight."),
+                autowrap=True)
+
+        # Vertical spacer
+        ttk.Frame(self.frame32, height=22).pack(side='top')
 
         startFGFullScreenCb = ttk.Checkbutton(
             self.frame32,
             text=_('Start FlightGear in full screen'),
             variable=self.config.startFGFullScreen)
-        startFGFullScreenCb.pack(side='top', fill='x', expand=True)
+        startFGFullScreenCb.pack(side='top', anchor='w')
 
         # Vertical spacer
-        ttk.Frame(self.frame32, height=8).pack(side='top', fill='x')
+        ttk.Frame(self.frame32, height=8).pack(side='top')
 
         startFGPausedCb = ttk.Checkbutton(
             self.frame32,
             text=_('Start FlightGear paused'),
             variable=self.config.startFGPaused)
-        startFGPausedCb.pack(side='top', fill='x', expand=True)
+        startFGPausedCb.pack(side='top', anchor='w')
 
         # Vertical spacer
-        ttk.Frame(self.frame32, height=22).pack(side='top', fill='x')
+        ttk.Frame(self.frame32, height=22).pack(side='top')
 
         self.enableMSAACb = ttk.Checkbutton(
             self.frame32,
             text=_('Enable multi-sample anti-aliasing'),
             variable=self.config.enableMSAA)
-        self.enableMSAACb.pack(side='top', fill='x', expand=True)
+        self.enableMSAACb.pack(side='top', anchor='w')
 
         ToolTip(self.enableMSAACb,
                 _("Enabling this makes any still image in FlightGear smoother "
@@ -585,13 +598,13 @@ class App:
                 autowrap=True)
 
         # Vertical spacer
-        ttk.Frame(self.frame32, height=8).pack(side='top', fill='x')
+        ttk.Frame(self.frame32, height=8).pack(side='top')
 
         self.enableRembrandtCb = ttk.Checkbutton(
             self.frame32,
             text=_('Use the Rembrandt renderer'),
             variable=self.config.enableRembrandt)
-        self.enableRembrandtCb.pack(side='top', fill='x', expand=True)
+        self.enableRembrandtCb.pack(side='top', anchor='w')
 
         ToolTip(self.enableRembrandtCb,
                 _("Enable the Rembrandt renderer, which uses a technique "
@@ -1613,6 +1626,7 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
         self.config.timeOfDay.trace('w', self.FGCommand.update)
         self.config.season.trace('w', self.FGCommand.update)
         self.config.enableTerraSync.trace('w', self.FGCommand.update)
+        self.config.enableRealWeatherFetch.trace('w', self.FGCommand.update)
         self.config.startFGFullScreen.trace('w', self.FGCommand.update)
         self.config.startFGPaused.trace('w', self.FGCommand.update)
         self.config.enableMSAA.trace('w', self.onMSAAToggled)

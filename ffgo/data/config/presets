@@ -135,6 +135,9 @@
 #                                 pass the --season option").
 # ENABLE_TERRASYNC=boolean        0 or 1 (defaults to 0). Whether to activate
 #                                 automatic scenery download (TerraSync).
+# ENABLE_REAL_WEATHER_FETCH=boolean
+#                                 0 or 1 (defaults to 0). Whether to activate
+#                                 automatic download of weather data (METAR).
 # START_FG_FULL_SCREEN=boolean    0 or 1 (defaults to 1). Whether to start
 #                                 FlightGear in full screen.
 # START_FG_PAUSED=boolean         0 or 1 (defaults to 0). Whether to start
