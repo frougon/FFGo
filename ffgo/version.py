@@ -25,7 +25,7 @@ class VersionInfo(_VersionInfo):
     def __repr__(self):
         return "{0}.{1}".format(__name__, _VersionInfo.__repr__(self))
 
-version_info = VersionInfo(1, 12, 2, "")
+version_info = VersionInfo(1, 12, 3, "")
 __version__ = str(version_info)
 
 del collections

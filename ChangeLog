@@ -1206,3 +1206,16 @@ you may want to consult the Git repository log.
           commits labelled 2016.4.0 have this option). (Florent Rougon)
 [FEATURE] Small addition to README.conditional-config (ATCChatter example).
           (Florent Rougon)
+
+1.12.3
+[BUGFIX]  Pass --disable-terrasync when automatic scenery download is
+          disabled. Omitting --enable-terrasync is not enough, FlightGear
+          remembers the setting! (Florent Rougon)
+[FEATURE] Add a configuration parameter and check box in the main window to
+          enable or disable automatic download of weather data (also known as
+          “real weather fetch”). This is convenient when one repeatedly runs
+          FlightGear to debug something and wants it to start as quickly as
+          possible. (Florent Rougon)
+[USABILITY] Small layout adjustments in FFGo's main window. (Florent Rougon)
+[USABILITY] Rewording of the MSAA tooltip: it doesn't seem to impact frame
+          rate that badly. (Florent Rougon)
