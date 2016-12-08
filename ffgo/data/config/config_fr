@@ -17,10 +17,9 @@
 ## pratiquer les décollages ou atterrissages par vent de travers), vous pouvez
 ## utiliser l'option --metar.
 ##
-## Note : si votre version de FlightGear date d'avant le 20 mars 2016 (commit
-##        FlightGear 0cfa4ced9cd5e2ec26e753ddd5f61da7558221a6, qui appartient à
-##        FlightGear 2016.2.0), il vous faudra également passer l'option
-##        --disable-real-weather-fetch, sans quoi l'option --metar serait sans
+## Note : si votre version de FlightGear est plus ancienne que 2016.2.1, il
+##        vous faudra également désactiver le téléchargement automatique des
+##        données météorologiques ; sans quoi, l'option --metar serait sans
 ##        effet.
 #--metar=LOWI 212150Z 26004KT 9999 FEW035 BKN050 06/02 Q1014 NOSIG
 ##

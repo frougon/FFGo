@@ -16,11 +16,9 @@
 ## you want to choose yourself precise weather conditions (for instance to
 ## practice crosswind takeoffs or landings), you can use the --metar option.
 ##
-## Note: if your FlightGear version is older than March 20, 2016 (FlightGear
-##       commit 0cfa4ced9cd5e2ec26e753ddd5f61da7558221a6, which belongs to
-##       FlightGear 2016.2.0), then you have to also use
-##       --disable-real-weather-fetch; otherwise, the --metar option is
-##       ineffective.
+## Note: if your FlightGear version is older than 2016.2.1, then you also have
+##       to disable automatic fetching of weather data; otherwise, the --metar
+##       option is ineffective.
 #--metar=LOWI 212150Z 26004KT 9999 FEW035 BKN050 06/02 Q1014 NOSIG
 ##
 ## You may find more details at <http://wiki.flightgear.org/Weather_reports>.
