@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: FFGo 1.13.0\n"
 "Report-Msgid-Bugs-To: f.rougon@free.fr\n"
 "POT-Creation-Date: 2016-11-28 00:36+0100\n"
-"PO-Revision-Date: 2016-11-14 01:19+0100\n"
-"Last-Translator: Florent Rougon <f.rougon@free.fr>\n"
+"PO-Revision-Date: 2017-03-06 16:52+0100\n"
+"Last-Translator: chris_blues <chris@musicchris.de>\n"
 "Language-Team: \n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
@@ -1837,9 +1837,8 @@ msgid "Season:"
 msgstr "Jahreszeit:"
 
 #: ffgo/gui/mainwindow.py:539
-#, fuzzy
 msgid "Automatic scenery download"
-msgstr "Automatischen Szeneriedownload aktivieren"
+msgstr "Automatischer Szeneriedownload"
 
 #: ffgo/gui/mainwindow.py:544
 msgid ""
@@ -1857,9 +1856,8 @@ msgstr ""
 "Siehe <http://wiki.flightgear.org/TerraSync> für weitere Einzelheiten."
 
 #: ffgo/gui/mainwindow.py:556
-#, fuzzy
 msgid "Automatic download of weather data"
-msgstr "Automatischen Szeneriedownload aktivieren"
+msgstr "Automatischer Szeneriedownload"
 
 #: ffgo/gui/mainwindow.py:561
 msgid ""
@@ -1868,6 +1866,10 @@ msgid ""
 "FlightGear to match the current real world weather at the location of your "
 "flight."
 msgstr ""
+"Wird dies aktiviert, lädt FlightGear automatisch die nötigen Wetterdaten "
+"herunter, während man fliegt (in der Form von METAR Wetterberichten). Dies "
+"bewirkt, daß das Wetter in FlightGear dem echten Wetter, wo man sich gerade "
+"befindet auf der Welt, sehr ähnelt."
 
 #: ffgo/gui/mainwindow.py:572
 msgid "Start FlightGear in full screen"
@@ -1882,21 +1884,20 @@ msgid "Enable multi-sample anti-aliasing"
 msgstr "Multi-sample Anti-aliasing aktivieren"
 
 #: ffgo/gui/mainwindow.py:595
-#, fuzzy
 msgid ""
 "Enabling this makes any still image in FlightGear smoother (less pronounced "
 "pixelation effect). It is also likely to reduce the frame rate, though maybe "
 "in a negligible way—just try it."
 msgstr ""
 "Damit wird die Bildwiedergabe in FlightGear weicher (weniger verpixelt), "
-"aber das wird höchstwahrscheinlich die Bildwiederholrate verringern."
+"aber das kann eventuell die Bildwiederholrate verringern, vielleicht auch "
+"nicht - einfach ausprobieren."
 
 #: ffgo/gui/mainwindow.py:606
 msgid "Use the Rembrandt renderer"
-msgstr ""
+msgstr "Rembrandt Renderer benutzen"
 
 #: ffgo/gui/mainwindow.py:611
-#, fuzzy
 msgid ""
 "Enable the Rembrandt renderer, which uses a technique known as deferred "
 "rendering. The most remarkable feature of this renderer is light management "
