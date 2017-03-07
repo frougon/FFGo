@@ -125,7 +125,7 @@ Einstellungen:
 
 Werkzeuge:
 
-    Flughafensuche 
+    Flughafensuche
 		-- öffnet einen Dialog, um einfach Flughäfen zu finden nach
 		   verschiedenen Kriterien: Entfernung zu einem auswählbaren
 		   “Referenzflughafen”; Anzahl der Landstartbahnen,
@@ -297,11 +297,13 @@ TIPS & TRICKS
 
 -------------------------------------------------------------------------------
 
-BEKANNTE FEHLER UND EINSCHRÄNKUNGEN
+BEKANNTE EINSCHRÄNKUNGEN
 
-* Sehr lange Parkplatznamen passen nicht in den Parkplatzknopf. Klicken Sie
-  einfach auf den Knopf, der das Parkplatzaufklappmenü erscheinen läßt um den
-  vollen Namen des Parkplatzes zu sehen.
+* Sehr lange Parkplatznamen (oftmals Parkpositionen) passen nicht in den
+  Parkplatzknopf. Klicken Sie einfach auf den Knopf, der das Parkplatz-
+  aufklappmenü erscheinen läßt um den vollen Namen des Parkplatzes zu sehen.
+  Alternativ kann man auch den Rahmen um den “Parkplatz” Knopf in der Größe
+  ändern (ziehen, wenn sich der Mauszeiger ändert).
 
 -------------------------------------------------------------------------------
 
