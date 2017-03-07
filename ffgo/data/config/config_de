@@ -18,8 +18,8 @@
 ## Seitenwindlandungen zu üben), können Sie die --metar option nutzen.
 ##
 ## Hinweis: falls Ihre FlightGearversion älter als 2016.2.1 ist, dann müssen
-##          Sie außerdem --disable-real-weather-fetch angeben, damit die
-##          --metar Option in Kraft tritt.
+##          Sie außerdem das automatische Herunterladen von Wetterberichten
+##          deaktivieren, damit die --metar Option in Kraft tritt.
 #--metar=LOWI 212150Z 26004KT 9999 FEW035 BKN050 06/02 Q1014 NOSIG
 ##
 ## Mehr Informationen unter <http://wiki.flightgear.org/Weather_reports>.
