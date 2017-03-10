@@ -6,7 +6,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: FFGo 1.13.0\n"
+"Project-Id-Version: FFGo 1.12.4\n"
 "Report-Msgid-Bugs-To: f.rougon@free.fr\n"
 "POT-Creation-Date: 2016-11-28 00:36+0100\n"
 "PO-Revision-Date: 2010-05-23 23:35+0200\n"
