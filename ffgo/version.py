@@ -2,7 +2,7 @@
 
 # version.py --- Version information for FFGo
 #
-# Copyright (c) 2015-2016  Florent Rougon
+# Copyright (c) 2015-2017  Florent Rougon
 #
 # This file is distributed under the terms of the DO WHAT THE FUCK YOU WANT TO
 # PUBLIC LICENSE version 2, dated December 2004, by Sam Hocevar. You should
@@ -25,7 +25,7 @@ class VersionInfo(_VersionInfo):
     def __repr__(self):
         return "{0}.{1}".format(__name__, _VersionInfo.__repr__(self))
 
-version_info = VersionInfo(1, 12, 3, "")
+version_info = VersionInfo(1, 12, 4, "")
 __version__ = str(version_info)
 
 del collections

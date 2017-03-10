@@ -1219,3 +1219,8 @@ you may want to consult the Git repository log.
 [USABILITY] Small layout adjustments in FFGo's main window. (Florent Rougon)
 [USABILITY] Rewording of the MSAA tooltip: it doesn't seem to impact frame
           rate that badly. (Florent Rougon)
+
+1.12.4
+[USABILITY] Minor update to the default config regarding real weather fetching
+          (only the comment is changed). (Florent Rougon)
+[USABILITY] Update the German translation. (chris_blues)
