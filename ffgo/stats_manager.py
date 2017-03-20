@@ -66,7 +66,7 @@ class StatsManagerBase(metaclass=abc.ABCMeta):
     customizable integer.
 
     When stored in json.gz format (cf. self.saveFile) as well as in
-    memory ('item.datesOfUse' where 'item' is can be for instance an
+    memory ('item.datesOfUse' where 'item' can be for instance an
     AirportStub or Aircraft instance), dates are stored in the form of
     their proleptic Gregorian ordinal. For any given date, this is an
     integer defined this way: January 1 of year 1 is mapped to the
