@@ -1224,3 +1224,6 @@ you may want to consult the Git repository log.
 [USABILITY] Minor update to the default config regarding real weather fetching
           (only the comment is changed). (Florent Rougon)
 [USABILITY] Update the German translation. (chris_blues)
+
+1.12.5
+[USABILITY] Fix a mistake in the German translation. (chris_blues)
