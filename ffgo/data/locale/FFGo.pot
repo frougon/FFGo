@@ -1,4 +1,4 @@
-# LANGUAGE translations for FFGo version 1.12.4.
+# LANGUAGE translations for FFGo version 1.12.5.
 # Copyright (C) 2010-2015  Robert Leda
 # Copyright (C) 2014-2015  Florent Rougon
 # Copyright (C) YEARS  TRANSLATOR <EMAIL@ADDRESS>
@@ -7,9 +7,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: FFGo 1.12.4\n"
+"Project-Id-Version: FFGo 1.12.5\n"
 "Report-Msgid-Bugs-To: f.rougon@free.fr\n"
-"POT-Creation-Date: 2017-03-10 17:03+0100\n"
+"POT-Creation-Date: 2017-03-29 10:42+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
