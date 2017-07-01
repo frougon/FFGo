@@ -133,7 +133,7 @@ need to:
       deb-src http://frougon.net/debian-ffgo unstable main
 
     Packages for Debian *stable* are also available. If this is what you
-    need, just replace *unstable* with *jessie*, or whatever is the
+    need, just replace *unstable* with *buster*, or whatever is the
     codename of the current Debian *stable* release, in these
     ``sources.list`` lines.
 
