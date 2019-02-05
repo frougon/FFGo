@@ -32,7 +32,7 @@ class Metar:
         self.master = master
         self.background = background
 
-        self.fetchUrlBase = 'http://tgftp.nws.noaa.gov/'
+        self.fetchUrlBase = 'https://tgftp.nws.noaa.gov/'
         self.fetchUrlTemplate = (
             self.fetchUrlBase +
             'data/observations/metar/{reportType}/{icao}.TXT')
