@@ -525,7 +525,7 @@ class IncrementalChooser(metaclass=abc.ABCMeta):
 
         l = [ (treeData[i][dataIndex], i) for i in unsortedMatches ]
         if col.sortFunc is not None:
-            keyFunc = lambda t, col=col: col.sortFunc(t[0])
+            keyFunc = lambda t, f=col.sortFunc: f(t[0])
         else:
             keyFunc = lambda t: t[0]
 
@@ -556,7 +556,7 @@ class IncrementalChooser(metaclass=abc.ABCMeta):
 
             formatter = []
             identity = lambda x: x
-            for dataIndex in range(len(self.columns)):
+            for dataIndex in range(len(columns)):
                 f = columns[dataIndex].formatFunc
                 formatter.append(identity if f is None else f)
 
