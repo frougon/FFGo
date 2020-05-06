@@ -110,7 +110,10 @@ class MyTreeview(ttk.Treeview):
             self.FFGoGotoItemWithIndex(targetIdx, treeItems=treeItems)
 
     def FFGoGotoItem(self, item):
-        self.selection(selop="set", items=(item,))
+        try:
+            self.selection(selop="set", items=(item,)) # for Python <= 3.7
+        except TypeError:
+            self.selection_set((item,))                # for Python >= 3.8
         self.see(item)
 
     def FFGoGotoItemWithIndex(self, index, treeItems=None):
@@ -118,7 +121,10 @@ class MyTreeview(ttk.Treeview):
             treeItems = self.get_children()
 
         targetItem = treeItems[index]
-        self.selection(selop="set", items=(targetItem,))
+        try:
+            self.selection(selop="set", items=(targetItem,)) # for Python <= 3.7
+        except TypeError:
+            self.selection_set((targetItem,))                # for Python >= 3.8
         self.see(targetItem)
 
     def FFGoGotoItemWithValue(self, column, value):
@@ -663,7 +669,6 @@ class IncrementalChooser(metaclass=abc.ABCMeta):
     def onTreeviewSelect(self, event=None):
         tree = self.treeWidget
         currentSel = tree.selection()
-        assert currentSel, "Unexpected empty selection in TreeviewSelect event"
 
         if tree._FFGoRepeatableNavKeyHit:
             # We are presumably here because of a repeatable navigation
@@ -680,7 +685,8 @@ class IncrementalChooser(metaclass=abc.ABCMeta):
 
         # Set self.outputVar based on the first (and normally only) item of the
         # selection.
-        self.setOutputVarForItem(currentSel[0])
+        if currentSel:
+            self.setOutputVarForItem(currentSel[0])
 
     def applySelection(self):
         """Set 'self.outputVar' according to the currently selected item."""
