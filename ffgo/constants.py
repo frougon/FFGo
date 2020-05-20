@@ -24,7 +24,7 @@ COPYRIGHT = "Copyright © 2009-2015  Robert 'erobo' Leda <erobo@wp.pl>\n" \
 # Format more suitable for --help output:
 COPYRIGHT_HELP = textwrap.dedent("""\
   Copyright (c) 2009-2015  Robert 'erobo' Leda <erobo@wp.pl>
-  Copyright (c) 2014-2015  Florent Rougon <f.rougon@free.fr>""")
+  Copyright (c) 2014-2020  Florent Rougon <f.rougon@free.fr>""")
 AUTHORS = 'Robert Leda, Florent Rougon'
 LICENSE = \
     """This program is free software. It comes without any warranty, to
@@ -96,7 +96,7 @@ CUT_LINE = ' INTERNAL OPTIONS ABOVE. EDIT CAREFULLY! '.center(80, 'x')
 # Default aircraft.
 DEFAULT_AIRCRAFT = 'c172p'
 # Default airport.
-DEFAULT_AIRPORT = 'KSFO'
+DEFAULT_AIRPORT = 'BIKF'
 # Tooltip delay in milliseconds.
 TOOLTIP_DELAY = '600'
 # Standard width for automatically-wrapped tooltips.

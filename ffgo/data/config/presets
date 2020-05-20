@@ -6,7 +6,7 @@
 #
 # Options shared with FlightGear:
 # --aircraft=name               - Defaults to c172p if not set.
-# --airport=ID                  - Defaults to KSFO if not set.
+# --airport=ID                  - Defaults to BIKF if not set.
 # --carrier=[name|ID]           - Works the same as in FG.
 # --fg-root=path                - Works the same as in FG.
 # --fg-scenery=path             - Works the same as in FG.
