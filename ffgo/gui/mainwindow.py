@@ -1764,6 +1764,16 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
                     execProgName=misc.executableFileName("fgfs"))
             showerror(_('{prg}').format(prg=PROGNAME), message, detail=detail)
             return False
+        elif not self.config.aircraft.get():
+            message = _("No aircraft selected")
+            detail = _("No valid aircraft was selected in the aircraft list.")
+            showerror(_('{prg}').format(prg=PROGNAME), message, detail=detail)
+            return False
+        elif not self.config.airport.get():
+            message = _("No airport selected")
+            detail = _("No valid airport was selected in the airport list.")
+            showerror(_('{prg}').format(prg=PROGNAME), message, detail=detail)
+            return False
         elif self.FGCommand.argList is None:
             if isinstance(self.FGCommand.lastConfigParsingExc,
                           fgcmdbuilder.InvalidEscapeSequenceInOptionLine):
