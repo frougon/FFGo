@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: FFGo 1.12.5\n"
 "Report-Msgid-Bugs-To: f.rougon@free.fr\n"
 "POT-Creation-Date: 2020-05-21 00:51+0200\n"
-"PO-Revision-Date: 2016-11-28 00:43+0100\n"
+"PO-Revision-Date: 2020-05-21 08:40+0200\n"
 "Last-Translator: Florent Rougon <f.rougon@free.fr>\n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 1.8.11\n"
+"X-Generator: Poedit 2.3.1\n"
 
 #: ffgo/exceptions.py:52 ffgo/fgdata/apt_dat.py:73
 #, python-brace-format
@@ -663,7 +663,7 @@ msgstr "Décodé"
 
 #: ffgo/gui/metar.py:107
 msgid "No airport is selected."
-msgstr "Aucun aéroport n'est sélectionné."
+msgstr "Aucun aérodrome n'est sélectionné."
 
 #: ffgo/gui/metar.py:115
 msgid "No nearby station found."
@@ -1690,7 +1690,7 @@ msgstr "Ctrl-R"
 
 #: ffgo/gui/mainwindow.py:145
 msgid "Save as..."
-msgstr "Enregistrer sous"
+msgstr "Enregistrer sous..."
 
 #: ffgo/gui/mainwindow.py:148
 msgid "Run FlightGear"
@@ -2347,23 +2347,21 @@ msgstr ""
 "s'appelle en principe '{execProgName}' sur votre système."
 
 #: ffgo/gui/mainwindow.py:1768
-#, fuzzy
 msgid "No aircraft selected"
-msgstr "Aucun aéroport n'est sélectionné."
+msgstr "Aucun aéronef n'est sélectionné"
 
 #: ffgo/gui/mainwindow.py:1769
 msgid "No valid aircraft was selected in the aircraft list."
-msgstr ""
+msgstr "Aucun aéronef valide n'a été sélectionné dans la liste des aéronefs."
 
 #: ffgo/gui/mainwindow.py:1773
-#, fuzzy
 msgid "No airport selected"
-msgstr "Aucun aéroport n'est sélectionné."
+msgstr "Aucun aérodrome n'est sélectionné"
 
 #: ffgo/gui/mainwindow.py:1774
-#, fuzzy
 msgid "No valid airport was selected in the airport list."
-msgstr "Aucun aéroport n'est sélectionné."
+msgstr ""
+"Aucun aérodrome valide n'a été sélectionné dans la liste des aérodromes."
 
 #: ffgo/gui/mainwindow.py:1780
 msgid "Cannot start FlightGear now."
