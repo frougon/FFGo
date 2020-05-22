@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: FFGo 1.12.5\n"
 "Report-Msgid-Bugs-To: f.rougon@free.fr\n"
 "POT-Creation-Date: 2020-05-21 00:51+0200\n"
-"PO-Revision-Date: 2017-03-14 12:28+0100\n"
+"PO-Revision-Date: 2020-05-23 00:40+0200\n"
 "Last-Translator: chris_blues <chris@musicchris.de>\n"
 "Language-Team: \n"
 "Language: de\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.11\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: ffgo/exceptions.py:52 ffgo/fgdata/apt_dat.py:73
 #, python-brace-format
@@ -2293,23 +2293,20 @@ msgstr ""
 "'{execProgName}' auf ihrem Betriebssystem."
 
 #: ffgo/gui/mainwindow.py:1768
-#, fuzzy
 msgid "No aircraft selected"
 msgstr "Kein Flughafen ausgewählt."
 
 #: ffgo/gui/mainwindow.py:1769
 msgid "No valid aircraft was selected in the aircraft list."
-msgstr ""
+msgstr "Es wurde kein Flugzeug aus der Liste gewählt."
 
 #: ffgo/gui/mainwindow.py:1773
-#, fuzzy
 msgid "No airport selected"
 msgstr "Kein Flughafen ausgewählt."
 
 #: ffgo/gui/mainwindow.py:1774
-#, fuzzy
 msgid "No valid airport was selected in the airport list."
-msgstr "Kein Flughafen ausgewählt."
+msgstr "Es wurde kein Flughafen aus der Liste ausgewählt."
 
 #: ffgo/gui/mainwindow.py:1780
 msgid "Cannot start FlightGear now."
