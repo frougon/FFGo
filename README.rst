@@ -93,9 +93,17 @@ Note:
 Download
 --------
 
-Release tarballs or zip files can be downloaded from:
+The best place to download FFGo from is the `FFGo page on PyPI`_.
+Specifically, tarballs for any version are available in the `download
+area`_ (also packages in `wheel format`_ since FFGo 1.12.6).
+Alternatively, FFGo tarballs and wheel files can be downloaded `from
+Florent Rougon's home page <http://frougon.net/projects/FFGo/dist/>`_,
+but since that site is served over plain http (not https), you should
+get them from PyPI unless you know what you are doing.
 
-  http://frougon.net/projects/FFGo/dist/
+.. _FFGo page on PyPI: https://pypi.org/project/FFGo/
+.. _download area: https://pypi.org/project/FFGo/#files
+.. _wheel format: https://www.python.org/dev/peps/pep-0427/
 
 
 Git repository
@@ -137,10 +145,13 @@ need to:
     codename of the current Debian *stable* release, in these
     ``sources.list`` lines.
 
-  - install `Florent Rougon's OpenPGP key`_ into the ``apt`` keyring.
-    This is necessary to allow ``apt`` to authenticate the packages (if
-    you don't do this, the installation should still be possible, but
-    with warnings and, of course, reduced security).
+  - install `Florent Rougon's OpenPGP key`_ into the ``apt`` keyring (be
+    sure to verify that this is the same key as served `by Github
+    <https://github.com/frougon.gpg>`_ over https, after adding a
+    trailing newline to the latter). This is necessary to allow ``apt``
+    to authenticate the packages (if you don't do this, the installation
+    should still be possible, but with warnings and, of course, reduced
+    security).
 
     .. _Florent Rougon's OpenPGP key: http://frougon.net/keys.html
 
