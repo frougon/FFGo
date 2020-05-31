@@ -355,7 +355,8 @@ or
 
   pip install http://url/to/FFGo-a.b.c.tar.gz
 
-Note: old versions of pip don't support https.
+Note: very old versions of pip don't support https. If you have such an old
+      version, I'd advise you to update it before going further.
 
 The above commands automatically pull in the required dependencies (i.e.,
 CondConfigParser, but not Pillow nor GeographicLib's implementation for
