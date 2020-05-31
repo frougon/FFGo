@@ -10,7 +10,7 @@ from tkinter import ttk
 from ..constants import PROGNAME
 
 
-# <http://effbot.org/tkinterbook/tkinter-dialog-windows.htm> can be
+# <https://effbot.org/tkinterbook/tkinter-dialog-windows.htm> can be
 # useful to study.
 class InfoWindow(Toplevel):
 

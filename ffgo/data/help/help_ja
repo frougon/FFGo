@@ -37,7 +37,7 @@ python3, python3-tk, tcl8.x and tk8.x; オプションで python3-imaging-tk も
 
 Slackware とその互換システムでは、 FFGo のSlackBuild スクリプトが利用可能です。
 プログラムをシステムワイドでクリーンにインストールするためにパッケージを生成するためのスクリプトが含まれています。
-SlackBuild公式webサイト: http://www.slackbuilds.org からダウンロードできます。
+SlackBuild公式webサイト: https://www.slackbuilds.org からダウンロードできます。
 デフォルトのSlackwareシステム(フルインストール)上では、追加で必要になるパッケージはありません。
 
 
@@ -85,7 +85,7 @@ Tip: オプション欄にマウスカーソルを重ねると、詳細が表示
 ツール:
 
     METAR - 選択した(あるいは至近の)空港の気象通報を表示します。
-        この気象通報は http://tgftp.nws.noaa.gov/ からダウンロードします。
+        この気象通報は https://tgftp.nws.noaa.gov/ からダウンロードします。
 
 ヘルプ:
 

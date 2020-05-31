@@ -219,7 +219,7 @@ one, no problem, go ahead.
 
 If you want to install GeographicLib's MagneticField program:
 
-  1. Go to <http://geographiclib.sourceforge.net/html/install.html#binaryinst>
+  1. Go to <https://geographiclib.sourceforge.io/html/install.html#binaryinst>
      (“Using a binary installer”) and run the appropriate installer for your
      system. This will install the MagneticField.exe executable. Take note of
      the directory it is installed to, because you'll have to tell the full
@@ -228,14 +228,14 @@ If you want to install GeographicLib's MagneticField program:
 
   2. MagneticField.exe needs one or more datasets to be installed, otherwise
      it can't work properly. To get such a dataset, go to
-     <http://geographiclib.sourceforge.net/html/magnetic.html> and install the
+     <https://geographiclib.sourceforge.io/html/magnetic.html> and install the
      magnetic model data of your choice. 'wmm2015' should be fine until 2020.
      You may also install the 'emm2015' dataset, however I can't say whether
      this will bring any visible change for typical aviation usage.
 
      When asked for the installation folder for the dataset(s), you should
      probably choose 'C:\ProgramData\GeographicLib' as per the above link
-     (<http://geographiclib.sourceforge.net/html/magnetic.html>). Otherwise,
+     (<https://geographiclib.sourceforge.io/html/magnetic.html>). Otherwise,
      it is likely that MagneticField won't work at all.
 
   3. If you let the GeographicLib installer modify your PATH in step 1, there
@@ -264,7 +264,7 @@ In case pip doesn't work for you when following the “Standard procedure”:
   1. Write down exactly what you did, copy the error messages, take
      screenshots to make sure you won't miss anything, and report your problem
      in FFGo's thread on the FlightGear forum (at the time of this writing:
-     <http://forum.flightgear.org/viewtopic.php?f=18&t=27054>).
+     <https://forum.flightgear.org/viewtopic.php?f=18&t=27054>).
 
   2. If you feel adventurous and want to solve the problem all by yourself,
      you may try running 'py -3 -m ensurepip' from a Command Prompt, or using
@@ -459,7 +459,7 @@ Hints concerning installation of the dependencies
     Note: on some platforms (e.g., Windows), Pillow can be installed with
           'pip install Pillow' even if the system doesn't have the compiler
           and headers necessary to compile Pillow. This is because
-          <https://pypi.python.org/pypi/Pillow> ships binary Pillow
+          <https://pypi.org/project/Pillow/> ships binary Pillow
           distributions for some combinations of platform and Python version.
 
 * GeographicLib's implementation for Python 3
@@ -662,7 +662,7 @@ one thing that requires paying attention to before doing so:
       % foo-venv/bin/pip list
 
     And to obtain the list of packages for which a newer version is available
-    on the Python Package Index (PyPI, <https://pypi.python.org/pypi>):
+    on the Python Package Index (PyPI, <https://pypi.org/>):
 
       % foo-venv/bin/pip list --outdated
 

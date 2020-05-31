@@ -48,7 +48,7 @@ automaticamente.
 Per Slackware e i sistemi compatibili è disponibile uno SlackBuild, con cui è
 possibile generare, a partire dall'archivio originale di FFGo, un pacchetto che
 permette un'installazione del programma integrata nel sistema. Lo SlackBuild è
-scaricabile dal sito http://www.slackbuilds.org. Sui sistemi Slackware standard
+scaricabile dal sito https://www.slackbuilds.org. Sui sistemi Slackware standard
 (full) non è necessario installare del software supplementare.
 
 -------------------------------------------------------------------------------
@@ -102,7 +102,7 @@ Impostazioni:
 Strumenti:
 
     METAR - mostra il rapporto METAR per l'aeroporto selezionato (o quello più
-        vicino). I rapporti vengono prelevati da http://tgftp.nws.noaa.gov/.
+        vicino). I rapporti vengono prelevati da https://tgftp.nws.noaa.gov/.
 
 Aiuto:
 

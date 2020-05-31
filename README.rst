@@ -11,7 +11,7 @@ program whose purpose is to allow easy assembling and running of an
 ``fgfs`` command line.
 
 .. _FGo!: https://sites.google.com/site/erobosprojects/flightgear/add-ons/fgo
-.. _FlightGear: http://www.flightgear.org/
+.. _FlightGear: https://www.flightgear.org/
 .. _Python: https://www.python.org/
 .. _CondConfigParser: http://frougon.net/projects/CondConfigParser/
 
@@ -81,8 +81,8 @@ the Pillow library isn't installed for the Python interpreter used to
 run FFGo.
 
 .. _Tkinter: https://docs.python.org/3/library/tkinter.html
-.. _Pillow: http://python-pillow.github.io/
-.. _GeographicLib: http://geographiclib.sourceforge.net/
+.. _Pillow: https://python-pillow.org/
+.. _GeographicLib: https://geographiclib.sourceforge.io/
 
 Note:
 
@@ -213,7 +213,7 @@ directory in any release tarball or zip file. In short:
     distance and bearings for the shortest path between nearly antipodal
     points).
 
-.. _pip: https://pypi.python.org/pypi/pip
+.. _pip: https://pypi.org/project/pip/
 
 You may also find the installation instructions from `FFGo's page on the
 FlightGear wiki`_ helpful. If you have a problem, you can always ask in
@@ -285,7 +285,7 @@ Documentation
   documentation (for the latest FFGo release) is always `available online
   <http://frougon.net/projects/FFGo/doc/README-conditional-config/>`_.
 
-  .. _Sphinx: http://sphinx-doc.org/
+  .. _Sphinx: https://www.sphinx-doc.org/
 
   .. [#] Basically, it boils down to installing a recent enough `Sphinx`_
          and running ``make doc`` from the top-level directory.
@@ -304,9 +304,9 @@ Getting help, discussing
 At the time of this writing, there is a thread dedicated to FFGo on the
 `FlightGear forum`_ at the following address:
 
-  http://forum.flightgear.org/viewtopic.php?f=18&t=27054
+  https://forum.flightgear.org/viewtopic.php?f=18&t=27054
 
-.. _FlightGear forum: http://forum.flightgear.org/
+.. _FlightGear forum: https://forum.flightgear.org/
 
 This is where most discussions about FFGo take place. If you have a
 question or a problem related to FFGo, this is a good place to ask.
@@ -342,7 +342,7 @@ in the `FFGo forum thread`_. In either case, be very precise telling:
       `<http://www.blogtechnika.com/what-is-application-data-folder-in-windows-7/>`_,
       `<https://www.youtube.com/watch?v=Xa0H8lND9Qs>`_
       and
-      `<http://windows.microsoft.com/en-us/windows-8/what-appdata-folder>`_
+      `<https://docs.microsoft.com/en-us/windows/uwp/design/app-settings/store-and-retrieve-app-data>`_
       can be helpful);
 
   - step-by-step instructions describing what you did to trigger the bug.
@@ -352,7 +352,7 @@ dependencies of FFGo, therefore the second instruction above should be a
 no-brainer if you carried out the fourth one correctly. These versions
 should also be available using Help → About in FFGo.
 
-.. _FFGo forum thread: http://forum.flightgear.org/viewtopic.php?f=18&t=27054
+.. _FFGo forum thread: https://forum.flightgear.org/viewtopic.php?f=18&t=27054
 
 
 License

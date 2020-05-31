@@ -16,7 +16,7 @@
   thumbnail-no-Pillow.svg. This work is published from France.
 
   You should have received a copy of the CC0 1.0 Universal license along with
-  FFGo, otherwise see <http://creativecommons.org/publicdomain/zero/1.0/>.
+  FFGo, otherwise see <https://creativecommons.org/publicdomain/zero/1.0/>.
 
 * thumnail-no-Pillow.gif is derived from thumbnail-no-Pillow.svg by simple,
   automated conversion. It is distributed under the same terms as

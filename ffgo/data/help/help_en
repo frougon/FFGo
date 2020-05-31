@@ -136,7 +136,7 @@ Tools:
 
     METAR       -- show METAR report for the selected airport, or the
                    nearest airport providing METAR data. These reports
-                   are downloaded from <http://tgftp.nws.noaa.gov/>.
+                   are downloaded from <https://tgftp.nws.noaa.gov/>.
 
     Pressure converter
                 -- convert a pressure between inches of mercury (inHg)

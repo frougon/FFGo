@@ -44,7 +44,7 @@ zależności powinna zostać zainstalowana automatycznie razem z nim.
 
 Dla Slackware i kompatybilnych systemów dostępny jest SlackBuild dla FFGo.
 Skrypt ten generuje pakiet, który pozwala na instalację programu dla całego
-systemu. Można go pobrać na oficjalnej stronie: http://www.slackbuilds.org.
+systemu. Można go pobrać na oficjalnej stronie: https://www.slackbuilds.org.
 W standardowym systemie Slackware (full) nie ma potrzeby instalowania
 dodatkowych paczek.
 
@@ -99,7 +99,7 @@ Ustawienia:
 Narzędzia:
 
     METAR - pokaż raport pogodowy dla wybranego (lub pobliskiego) lotniska.
-        Raporty te są pobierana ze strony http://tgftp.nws.noaa.gov/
+        Raporty te są pobierana ze strony https://tgftp.nws.noaa.gov/
 
 Pomoc:
 

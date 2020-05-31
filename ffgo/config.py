@@ -226,7 +226,7 @@ class Config:
         configured.
 
         """
-        # According to <http://www.tcl.tk/man/tcl8.4/TkCmd/font.htm>, font
+        # According to <https://www.tcl.tk/man/tcl8.4/TkCmd/font.htm>, font
         # sizes are interpreted this way:
         #   - for positive values, the unit is points;
         #   - for negative values, the unit is pixels;

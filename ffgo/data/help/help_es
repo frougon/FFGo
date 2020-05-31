@@ -43,7 +43,7 @@ requeridas.
 Un SlackBuild para FFGo está disponible para Slackware GNU/Linux y los sistemas
 compatibles. El script incluido en el Slackbuild puede generar un paquete que
 permite una instalación del programa integrada en el sistema. El SlackBuild se
-puede descargar desde el sitio http://www.slackbuilds.org. Las instalaciones
+puede descargar desde el sitio https://www.slackbuilds.org. Las instalaciones
 estándar de Slackware (full) no requieren paquetes adicionales.
 
 -------------------------------------------------------------------------------
@@ -98,7 +98,7 @@ Herramientas:
 
     METAR - muestra el reporte METAR para el aeropuerto (o el mas cercano)
 	    seleccionado. Estos reportes se descargan desde
-	    http://tgftp.nws.noaa.gov/
+	    https://tgftp.nws.noaa.gov/
 
 Ayuda:
 

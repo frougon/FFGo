@@ -74,7 +74,7 @@ hope) tips:
   directory. The name of this new folder should be the ISO 639-1 code
   for your language. Some common language codes according to this
   standard can be found here:
-  <http://www.gnu.org/software/hello/manual/gettext/Usual-Language-Codes.html>.
+  <https://www.gnu.org/savannah-checkouts/gnu/gettext/manual/html_node/Usual-Language-Codes.html>.
   Then, navigate to this newly created directory and create an
   "LC_MESSAGES" folder. The rest of the translation process is the same
   as described in section 2, with one exception: you should edit the

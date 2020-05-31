@@ -45,7 +45,7 @@ def do_setup():
         maintainer="Florent Rougon (fork author)",
         maintainer_email='f.rougon@free.fr',
 
-        # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
+        # See <https://pypi.org/pypi?%3Aaction=list_classifiers>
         classifiers=[
             'Development Status :: 5 - Production/Stable',
             'Intended Audience :: End Users/Desktop',

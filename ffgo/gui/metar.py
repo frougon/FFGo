@@ -175,7 +175,7 @@ class Metar:
         try:
             # This particular method, when passed 'when="tail"', is supposed to
             # be safe to call from other threads than the Tk GUI thread
-            # (cf. <http://stackoverflow.com/questions/7141509/tkinter-wait-for-item-in-queue#comment34432041_14809246>
+            # (cf. <https://stackoverflow.com/questions/7141509/tkinter-wait-for-item-in-queue#comment34432041_14809246>
             # and
             # <https://mail.python.org/pipermail/tkinter-discuss/2013-November/003519.html>).
             # Other Tk functions are usually considered unsafe to call from

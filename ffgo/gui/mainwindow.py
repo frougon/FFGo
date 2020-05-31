@@ -1867,7 +1867,7 @@ useless!). Thank you.""").format(prg=PROGNAME, startOfMsg=startOfMsg,
         # We are using Tk.event_generate() to notify the main thread. This
         # particular method, when passed 'when="tail"', is supposed to be safe
         # to call from other threads than the Tk GUI thread
-        # (cf. <http://stackoverflow.com/questions/7141509/tkinter-wait-for-item-in-queue#comment34432041_14809246>
+        # (cf. <https://stackoverflow.com/questions/7141509/tkinter-wait-for-item-in-queue#comment34432041_14809246>
         # and
         # <https://mail.python.org/pipermail/tkinter-discuss/2013-November/003519.html>).
         # Other Tk functions are usually considered unsafe to call from these
@@ -2665,7 +2665,7 @@ class LogManager:
             showerror(_('{prg}').format(prg=PROGNAME), msg, detail=detail)
         else:
             # xdg-open normally doesn't return immediately (cf.
-            # <http://unix.stackexchange.com/a/74631>). The thread will wait()
+            # <https://unix.stackexchange.com/a/74631>). The thread will wait()
             # for it in order to avoid leaving a zombie.
             threading.Thread(name="FileManager_monitor",
                              target=self._monitorFileManagerProcessThreadFunc,

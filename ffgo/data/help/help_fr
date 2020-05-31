@@ -50,7 +50,7 @@ devraient être installées automatiquement.
 Pour Slackware et systèmes compatibles, un SlackBuild pour FFGo est disponible.
 Ceci va générer un paquet qui permet une installation de FFGo intégrée dans
 le système. Le SlackBuild peut être téléchargé sur le site officiel du projet:
-http://www.slackbuilds.org. Pour les systèmes Slackware standard (full) aucun
+https://www.slackbuilds.org. Pour les systèmes Slackware standard (full) aucun
 paquet supplémentaire n'est nécessaire.
 
 -------------------------------------------------------------------------------
@@ -109,7 +109,7 @@ Outils:
 
     METAR - affiche le rapport METAR pour l'aéroport sélectionné (ou le plus
         proche). Ces rapports sont téléchargés de l'adresse:
-        http://tgftp.nws.noaa.gov/
+        https://tgftp.nws.noaa.gov/
 
 Aide:
 
