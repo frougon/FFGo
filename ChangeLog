@@ -1227,3 +1227,35 @@ you may want to consult the Git repository log.
 
 1.12.5
 [USABILITY] Fix a mistake in the German translation. (chris_blues)
+
+1.12.6
+[MAINT]   Change protocol from HTTP to HTTPS for METAR reports retrieval.
+          tgftp.nws.noaa.gov doesn't offer METAR reports over HTTP anymore.
+          This was still working for FFGo because the connection was
+          automatically upgraded to https. Now, we connect directly using
+          https when retrieving METAR info. (Florent Rougon)
+[MAINT]   Cheap optimizations in the generic code for aircraft and airport
+          lists. (Florent Rougon)
+[BUGFIX]  Fix crash due to incompatible changes in Ttk from Python 3.8. See
+          <https://github.com/frougon/FFGo/issues/2> for details. Thanks to
+          pav-rez for reporting this issue and providing patches.
+          (Florent Rougon)
+[BUGFIX]  Fix ugly 'Run FG' behavior when the selected airport or aircraft is
+          invalid (this used to print a half-baked error message that wasn't
+          designed for end-users). Thanks to pav-rez for reporting it (in the
+          same issue as above: <https://github.com/frougon/FFGo/issues/2>).
+          (Florent Rougon)
+[MAINT]   Change the default airport to BIKF. Keflavík International Airport
+          (BIKF) is currently the default airport in FlightGear. It is not
+          important for us to follow it, but doesn't hurt. (Florent Rougon)
+[FEATURE] Update the French and German translations. (Florent Rougon and
+          chris_blues)
+[MAINT]   Update old URLs (mainly, change http ones to https when possible).
+          (Florent Rougon)
+[MAINT/FEATURE] Refresh the setup.py script (Python packaging). FFGo is now
+          available in wheel format
+          (see <https://www.python.org/dev/peps/pep-0427/> for the
+          specification of this Python packaging format). (Florent Rougon)
+[SECURITY] In README.rst, which yields <https://pypi.org/project/FFGo/>,
+          explain how to fetch my OpenPGP key over https and where to find
+          FFGo official tarballs available over https too. (Florent Rougon)
