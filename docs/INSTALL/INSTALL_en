@@ -13,7 +13,7 @@ Contents
 
   Appendices
 
-    A. What is a "working pip setup"?
+    A. What is a “working pip setup”?
     B. Maintenance of a virtual environment
 
 -------------------------------------------------------------------------------
@@ -106,10 +106,10 @@ Let's examine them one by one:
   'pip install CondConfigParser'. Otherwise, it is available as a Debian
   package, see its home page for details.
 
-- Pillow can be installed similarly ('pip install Pillow'), but this will only
-  work if you have already installed the software required to compile Pillow.
-  An alternative is to use a Pillow package from your distribution (for
-  instance, Pillow is shipped as python3-pil.imagetk in Debian).
+- Pillow can be installed similarly ('pip install Pillow'), but this might not
+  work unless you have already installed the software required to compile
+  Pillow. An alternative is to use a Pillow package from your distribution
+  (for instance, Pillow is shipped as python3-pil.imagetk in Debian).
 
   The potentially tricky part in the latter case is to make sure *all*
   dependencies are available to the *same* Python interpreter. For Debian, it
@@ -128,7 +128,7 @@ Let's examine them one by one:
   (cf. Appendix A), all that is needed is to run 'pip install geographiclib'.
   This does not require any compilation.
 
-- GeographicLib's MagneticField  program: it comes with the GeographicLib C++
+- GeographicLib's MagneticField program: it comes with the GeographicLib C++
   library. Note that this program requires a particular dataset to be
   installed in order to work properly.
 
@@ -229,8 +229,8 @@ If you want to install GeographicLib's MagneticField program:
   2. MagneticField.exe needs one or more datasets to be installed, otherwise
      it can't work properly. To get such a dataset, go to
      <https://geographiclib.sourceforge.io/html/magnetic.html> and install the
-     magnetic model data of your choice. 'wmm2015' should be fine until 2020.
-     You may also install the 'emm2015' dataset, however I can't say whether
+     magnetic model data of your choice. 'wmm2020' should be fine until 2025.
+     You may also install the 'emm2017' dataset, however I can't say whether
      this will bring any visible change for typical aviation usage.
 
      When asked for the installation folder for the dataset(s), you should
@@ -297,10 +297,10 @@ symbolic links):
      user account:
 
        cd ~/src
-       tar -xjf CondConfigParser-x.y.z.tar.bz2
+       tar -xzf CondConfigParser-x.y.z.tar.gz
 
      (assuming you downloaded the tarball as
-     ~/src/CondConfigParser-x.y.z.tar.bz2)
+     ~/src/CondConfigParser-x.y.z.tar.gz)
 
   2. Do the same with the FFGo archive:
 
@@ -317,7 +317,7 @@ symbolic links):
      ~/src/FFGo-a.b.c/ffgo-launcher.py)
 
 That's all! You should be able to run the ffgo-launcher.py executable
-mentioned in step 3. In case you need to explicitely specify the Python
+mentioned in step 3. In case you need to explicitly specify the Python
 interpreter to use, you can do so with a command such as:
 
   python3.4 ~/src/FFGo-a.b.c/ffgo-launcher.py
@@ -326,7 +326,7 @@ interpreter to use, you can do so with a command such as:
 Standard procedure
 ~~~~~~~~~~~~~~~~~~
 
-The "standard procedure" is what Python users generally expect to have to do
+The “standard procedure” is what Python users generally expect to have to do
 in order to install a Python package. In short, if you have Internet access
 and your pip is properly setup, all you have to do is 'pip install FFGo'.
 Optionally, you can also install Pillow with 'pip install Pillow', but this
@@ -335,13 +335,17 @@ may also want to install GeographicLib's implementation for Python 3 with
 'pip install geographiclib', and more importantly GeographicLib's
 MagneticField program using instructions from GeographicLib's home page.
 
-Besides being cleaner in concept, the "standard procedure" makes upgrades and
+Besides being cleaner in concept, the “standard procedure” makes upgrades and
 removals easier than the "easiest procedure" described above, and makes it
 very easy to see when a given dependency is out of date. For this method, you
-need to have a "working pip setup", as described in Appendix A, and the
+need to have a “working pip setup” as described in Appendix A, and the
 dependencies installed *in that environment*. Then, all you have to do is:
 
   pip install FFGo       (which normally installs from PyPI)
+
+or
+
+  pip install /path/to/FFGo-a.b.c-py3-none-any.whl
 
 or
 
@@ -351,9 +355,7 @@ or
 
   pip install https://url/to/FFGo-a.b.c.tar.gz
 
-or
-
-  pip install http://url/to/FFGo-a.b.c.tar.gz
+etc.
 
 Note: very old versions of pip don't support https. If you have such an old
       version, I'd advise you to update it before going further.
@@ -406,8 +408,8 @@ Hints concerning installation of the dependencies
 
     pip install FFGo
 
-  Therefore, you only need to explicitely install it in particular cases such
-  as when on a machine without Internet access.
+  Therefore, you only need to explicitly install it in particular cases such
+  as when using a machine without Internet access.
 
   You may get it as a package from your distribution if it's available (for
   Debian, there is a package called python3-condconfigparser, cf. the
@@ -418,20 +420,20 @@ Hints concerning installation of the dependencies
 
   This normally requires Internet access, downloading packages from PyPI. If
   you are installing on a machine without Internet access, you need to have
-  somehow obtained a tarball or zip file of CondConfigParser's source code
-  first, then you can do something like:
+  somehow obtained a wheel package, a tarball or a zip file of
+  CondConfigParser first; then you can do something like:
 
-    pip install /path/to/CondConfigParser-x.y.z.tar.gz
+    pip install /path/to/CondConfigParser-x.y.z-py3-none-any.whl
 
-  (or something like 'pip install C:\path\to\CondConfigParser-x.y.z.tar.gz'
-  on Windows)
+  (or something like
+  'pip install C:\path\to\CondConfigParser-x.y.z-py3-none-any.whl' on Windows)
 
 * Pillow
 
   Pillow is optional for FFGo, only used to display aircraft thumbnails. You
   can either get it as a package from your distribution or install it yourself
   with pip (the package name is python3-pil.imagetk in Debian, sometimes
-  python3-imaging-tk, this depends on the distribution).
+  python3-imaging-tk or something similar---this depends on the distribution).
 
   a) In the first case (getting Pillow as a system package), if you are
      working in a virtual environment, you'll probably have to (re-)create
@@ -443,7 +445,7 @@ Hints concerning installation of the dependencies
      have a working pip setup (see appendix), all you need to do is:
 
     * Install the programs and/or libraries necessary for Pillow's
-      compilation. On Debian unstable (July 2015), the following is likely to
+      compilation. On Debian unstable (June 2020), the following is likely to
       be sufficent:
 
         # apt-get install gcc libpython3-dev tcl-dev tk-dev
@@ -526,11 +528,11 @@ Optional:
 
 APPENDICES
 
-What is a "working pip setup"?
+What is a “working pip setup”?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In the previous paragraphs, a few instructions have been given assuming you
-had a "working pip setup". In the last 15 years, the Python ecosystem has
+had a “working pip setup”. In the last 20 years, the Python ecosystem has
 grown several frameworks for packaging Python software in a distribution and
 OS-agnostic way, each of which offers a different way of installing said
 software for the users. With distutils, the user had to run "setup.py
@@ -671,15 +673,17 @@ one thing that requires paying attention to before doing so:
 
       % foo-venv/bin/pip install Pillow
 
-    except you have to make sure you have the required libraries installed on
-    your OS before, because this command compiles Pillow in the 'foo-venv'
-    virtual environment (something like
+    except you may need to make sure you have the required libraries
+    installed on your OS before, because this command may compile Pillow in
+    the 'foo-venv' virtual environment (something like
     'apt-get install libpython3-dev tcl-dev tk-dev' is likely to to the trick
-    on Debian).
+    on Debian). On some (OS, Python version) combinations, Pillow is available
+    in binary format at <https://pypi.org/project/Pillow/>; therefore,
+    'foo-venv/bin/pip install Pillow' would install it without compiling it.
 
     Notes:
 
-      - if you have many commands to run using the same venv, 'foo-venv' in
+      - If you have many commands to run using the same venv, 'foo-venv' in
         our case, and you don't want to type the 'foo-venv/bin/' prefix every
         time, you can run 'source foo-venv/bin/activate' in your shell. Then,
         the commands from 'foo-venv/bin' will take precedence in this shell
@@ -687,11 +691,11 @@ one thing that requires paying attention to before doing so:
         the PATH environment variable and may need to be done differently on
         exotic shells.
 
-      - if you have a 'pip', or 'pip3', or 'pip3.4'... in your PATH and want
+      - If you have a 'pip', or 'pip3', or 'pip3.4'... in your PATH and want
         to know which Python installation it is bound to, simply run it with
         the '--version' option, as in 'pip --version'.
 
-      - by default, a newly created venv has access to the Python standard
+      - By default, a newly created venv has access to the Python standard
         library only. It is possible, however, to create venvs that have
         access to all packages of the base Python installation used to create
         the venv. In order to do this, you have to pass the
