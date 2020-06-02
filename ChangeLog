@@ -1259,3 +1259,6 @@ you may want to consult the Git repository log.
 [SECURITY] In README.rst, which yields <https://pypi.org/project/FFGo/>,
           explain how to fetch my OpenPGP key over https and where to find
           FFGo official tarballs available over https too. (Florent Rougon)
+
+1.12.7
+[USABILITY] Update and improve docs/INSTALL/INSTALL_en. (Florent Rougon)
