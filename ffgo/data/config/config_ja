@@ -1,4 +1,4 @@
-## コマンドラインのオプションの一覧です。 
+## コマンドラインのオプションの一覧です。
 ## 使用したいオプションが書いてある行の先頭の#を削除し、有効化してください。
 
 ## コールサインを記入してください。
@@ -16,4 +16,4 @@
 #--max-fps=60
 
 ## 更に詳しいコマンドラインオプションの情報は FlightGear のドキュメントと、
-## http://wiki.flightgear.org/index.php/Command_Line_Options にあります。
+## https://wiki.flightgear.org/Command_line_options にあります。

@@ -181,7 +181,7 @@ docs/README.conditional-config for details.
 Few options are provided by default, for more examples consult the
 FlightGear documentation or check the Wiki at:
 
-  http://wiki.flightgear.org/index.php/Command_Line_Options
+  https://wiki.flightgear.org/Command_line_options
 
 The complete list of options understood by your FlightGear version can
 be obtained using “Help → Show available fgfs options” in FFGo or,
