@@ -1,19 +1,78 @@
-## Lista przykładowych opcji wiersza poleceń. Aby aktywować wybraną opcję,
-## usuń "płotek" (znak hash) na początku odpowiedniej linii.
+## List opcji wiersza poleceń dla 'fgfs'. Włącz opcje, których chcesz użyć,
+## usuwając symbol # na początku odpowiednich wierszy.
 
-## Twój znak wywoławczy. Uwaga! Callsign nie powinien mieć więcej niż
-## siedmiu znaków. Zajrzyj na tę stronie: http://fgfs.i-net.hu/modules/fgtracker/
-## aby sprawdzić czy twój callsign nie jest już używany przez kogoś innego.
-#--callsign=
-
-## OPCJE WYŚWIETLANIA
-## Podaj rozmiar okna symulatora FlightGear.
+## Określ rozmiar okna FlightGeara (nie trzeba jej określać, jeśli użyjesz
+## opcji --enable-fullscreen).
 #--geometry=800x600
 
 ## INNE
-## Ogranicz maksymalną prędkość odświeżania (fps) do podanej wartości.
+## Wprowadź swój znak wywoławczy. Zauważ, że obecnie jest on ograniczony do
+## siedmiu znaków. Nie wybieraj znaku wywoławczego, który jest już używany
+## przez kogoś innego w sieci multiplayer.
+#--callsign=
+
+## Domyślnie, jeśli jesteś podłączony do Internetu, aktualne informacje o
+## pogodzie (METAR) są automatycznie pobierane podczas uruchamiania FlightGear.
+## Jeśli chcesz wybrać sobie dokładne warunki pogodowe (na przykład, aby
+## ćwiczyć starty lub lądowania z bocznym wiatrem), możesz użyć opcji --metar.
+##
+## Uwaga: jeśli Twoja wersja FlightGear jest starsza niż 2016.2.1, to musisz
+##        również wyłączyć automatyczne pobieranie danych pogodowych; w
+##        przeciwnym razie opcja --metar nie zadziała.
+#--metar=LOWI 212150Z 26004KT 9999 FEW035 BKN050 06/02 Q1014 NOSIG
+##
+## Więcej szczegółów na stronie <http://wiki.flightgear.org/Weather_reports>.
+
+## Może się okazać, że wyświetlacz przezierny 2D jest bardziej czytelny niż 3D.
+## Zobacz <https://wiki.flightgear.org/Head-up_display>.
+#--disable-hud-3d
+
+## Włącz interfejs sieciowy Phi we FlightGear. Aby z niego skorzystać, uruchom
+## FlightGear i w przeglądarce internetowej użyj adresu <http://127.0.0.1:8080/>.
+## Firefox jest dobrze obsługiwany; w przypadku innych przeglądarek może być
+## różnie---w momencie pisania tego tekstu.
+## Uwaga: powoduje to, że FlightGear działa jako serwer HTTP.
+##
+#--httpd=127.0.0.1:8080      # dostęp tylko lokalny (maksymalne bezpieczeństwo)
+#--httpd=8080                # dostęp do interfejsu internetowego z innych
+##                           komputerów
+##
+## 127.0.0.1 to adres, który jest dostępny tylko z Twojego komputera (loopback).
+## Jeśli zamierzasz uruchomić przeglądarkę internetową z tego samego komputera,
+## na którym działa FlightGear, użyj pierwszej formy (--httpd=127.0.0.1:8080).
+## W przeciwnym razie, jeśli chcesz uruchomić Phi na innym komputerze (lub
+## smartfonie, czy czymkolwiek innym), musisz użyć drugiej formy lub wariantu
+## pierwszej formy z 127.0.0.1 zastąpionym odpowiednim adresem (serwer HTTP w
+## FlightGear powiąże swoje gniazdo nasłuchujące z tym adresem; musi to być
+## więc adres lokalnego interfejsu komputera, na którym działa FlightGear).
+## Więcej szczegółów znajdziesz na stronie <http://wiki.flightgear.org/Phi>.
+
+## Ograniczenie liczby klatek na sekundę do określonej wartości.
 #--max-fps=60
 
-## Więcej informacji na temat opcji wiersza poleceń
-## można znaleźć w dokumentacji FlightGeara lub też na stronie:
-## http://wiki.flightgear.org/index.php/Command_Line_Options
+## DLA TWÓRCÓW STATKÓW POWIETRZNYCH
+## Możesz przetestować funkcjonalność samolotu w trybie multiplayer używając
+## tylko jednego komputera i bez dostępu do Internetu---nie jest nawet
+## potrzebne połączenie z serwerem multiplayer. W tym celu musisz uruchomić
+## FlightGear pod dwoma różnymi kontami użytkownika w tym samym czasie. Dla
+## pierwszej instancji FlightGear możesz użyć tego:
+##
+#--callsign=test1
+#--multiplay=out,10,127.0.0.1,5001
+#--multiplay=in,10,127.0.0.1,5000
+##
+## Na drugiej instancji (uruchomionej przez innego użytkownika!), użyj tego:
+##
+#--callsign=test2
+#--multiplay=out,10,127.0.0.1,5000
+#--multiplay=in,10,127.0.0.1,5001
+##
+## Zobacz <https://wiki.flightgear.org/Howto:Multiplayer> po więcej szczegółów.
+
+## ABY UZYSKAĆ WIĘCEJ INFORMACJI O OPCJACH WIERSZA POLECEŃ
+## Więcej informacji o opcjach wiersza poleceń 'fgfs' (FlightGear) można
+## znaleźć:
+##   - za pomocą polecenia "fgfs --help --verbose", które FFGo może uruchomić
+##     za Ciebie (Menu Pomoc, następnie wybierz "Pokaż dostępne opcje fgfs");
+##   - w dokumentacji FlightGear;
+##   - lub pod adresem <https://wiki.flightgear.org/Pl/Opcje_wiersza_poleceń>.

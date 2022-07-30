@@ -1,154 +1,331 @@
-!!! WARNING !!!
-
-  This translation dates from FGo! 1.5.5. Please refer to the English version
-  for up-to-date information. If you wish to update this file, please read the
-  'docs/INFORMATION_FOR_TRANSLATORS' file (with many thanks in advance!).
-
-!!! WARNING !!!
-
-
-FFGo - Prosty program do uruchamiania symulatora FlightGear.
+FFGo -- Potężny graficzny program uruchamiający dla FlightGear
 
 -------------------------------------------------------------------------------
 
-WYMAGANIA
+To oprogramowanie jest rozwidleniem doskonałego programu FGo![1] napisanego
+przez Roberta 'erobo' Leda, zobacz HISTORIA poniżej, aby uzyskać szczegółowe
+informacje.
 
-- System operacyjny GNU/Linux
-- FlightGear
-- Python 3.4.2 *
-- TKinter
-- Python Imaging Library (PIL) 1.1.7 lub Pillow (fork PIL'a) 2.5.1
-  z modułem ImageTk **
-- Tcl/Tk 8.6
+  [1] https://sites.google.com/site/erobosprojects/flightgear/add-ons/fgo
 
-*  FFGo jest kompatybilne tylko z Pythonem 3.x.
-** Biblioteka ta nie jest wymagana do uruchomienia programu, jednak bez niej
-   nie będą wyświetlane miniatury samolotów.
 
-Podane tutaj numery wersji oprogramowania odpowiadają wersjom użytym przy
-tworzeniu programu, jest możliwe, że FFGo będzie działał ze starszymi
-(lub nowszymi) wydaniami, nie został jednak z nimi przetestowany.
+Zawartość
 
--------------------------------------------------------------------------------
+  Uwagi dla użytkownków FGo!
+  Konfiguracja
+  Pozycje menu głównego
+  Okno opcj wiersza poleceń
+  Okno poleceń
+  Okno danych wyjściowych
+  Wskazówki i porady
+  Znane błędy i ograniczenia
+  Historia
 
-INSTALACJA
-
-Program nie wymaga instalacji, przed pierwszym uruchomieniem należy się jednak
-upewnić się, że wszystkie wymagane zależności zostały zainstalowane.
-
-W Debianie, oraz dystrybucjach na nim opartych wymagane są następujące pakiety:
-python3, python3-tk, tcl8.x i tk8.x; oraz opcjonalnie (w zależności od
-dystrybucji): python3-pil.imagetk lub python3-imaging-tk. W menadżerze pakietów
-wystarczy wybrać pakiet python3-pil.imagetk lub python3-imaging-tk, reszta
-zależności powinna zostać zainstalowana automatycznie razem z nim.
-
-Dla Slackware i kompatybilnych systemów dostępny jest SlackBuild dla FFGo.
-Skrypt ten generuje pakiet, który pozwala na instalację programu dla całego
-systemu. Można go pobrać na oficjalnej stronie: https://www.slackbuilds.org.
-W standardowym systemie Slackware (full) nie ma potrzeby instalowania
-dodatkowych paczek.
 
 -------------------------------------------------------------------------------
 
-URUCHAMIANIE
+UWAGI DLA UŻYTKOWNKÓW FGO!
 
-Kliknij plik "ffgo" w katalogu głównym programu, lub uruchom w konsoli
-poleceniem "./ffgo" lub "python3 ffgo".
+Z wyjątkiem raczej mało prawdopodobnych przypadków[1], plik konfiguracyjny
+(zwykle ~/.fgo/config) napisany dla FGo! 1.5.5 lub wcześniejszych, powinien być
+używany przez FFGo, z wyjątkiem tego, że FFGo oczekuje swojego pliku
+konfiguracyjnego w ~/.ffgo/config (%APPDATA%/FFGo/config w Windows). Jeśli FFGo
+znajdzie na starcie plik ~/.fgo/config, ale nie ma ~/.ffgo/config, zaproponuje
+skopiowanie tego pierwszego do tego drugiego, efektywnie opierając nową
+konfigurację FFGo na istniejącej konfiguracji FGo!
+
+  [1] Na przykład posiadanie rzeczy takich jak '\#' lub '\[' w oknie opcji
+      wiersza poleceń; lub linie zaczynające się od '['; lub '{' na samym
+      początku tekstu zawartego w tym oknie.
+
+FFGo oferuje zaawansowane możliwości oparte na zmiennych i wyrażeniach boolean
+do opisania listy argumentów do przekazania do FlightGear. Możesz o nich
+przeczytać w docs/README.conditional-config.
 
 -------------------------------------------------------------------------------
 
 KONFIGURACJA
 
-Zanim będziesz mógł korzystać z programu, powinieneś go skonfigurować. Otwórz
-okno preferencji (Menu Ustawienia => Preferencje) i wypełnij puste pola.
-Do poprawnego działania programu potrzebne jest wypełnienie pierwszych trzech
-pól w zakładce "Ustawienia FlightGear", reszta ustawień jest opcjonalna.
+Aby móc korzystać z FFGo, należy go najpierw skonfigurować. Otwórz okno
+preferencji (w menu wybierz: Ustawienia => Preferencje) i wypełnij puste pola
+wpisami. Wypełnienie pierwszych trzech pól w zakładce "Ustawienia FlightGear"
+jest niezbędne do prawidłowego działania programu---reszta jest opcjonalna.
 
-Podpowiedź: Umieść kursor myszy nad elementem aby zobaczyć jego opis.
+Wskazówka: Najedź kursorem myszy na dowolną opcję, aby zobaczyć jej opis.
 
-Zmiany ustawień w zakładce "Ustawienia FlightGear" są uwzględniane przez FFGo
-natychmiast po kliknięciu przycisku "Zapisz ustawienia", zmiany w pozostałych
-zakładkach mogą jednak wymagać ponownego uruchomienia programu.
+Uwaga: jeśli zainstalowałeś program MagneticField z biblioteki GeographicLib
+i nie ma go w PATH, możesz wskazać jego lokalizację w zakładce "Różne" w oknie
+dialogowym Preferencje.
 
+Zmiany w zakładkach "Ustawienia FlightGear" i "Statystyki" są natychmiast
+stosowane po kliknięciu przycisku "Zapisz ustawienia", jednak zmiany w zakładce
+"Różne" mogą wymagać ponownego uruchomienia FFGo, aby zostały zastosowane.
+Przede wszystkim zmiana języka interfejsu lub rozmiaru czcionki wymaga ponownego
+uruchomienia FFGo, aby była w pełni skuteczna---oczywiście o ile wybrane
+tłumaczenie jest kompletne.
 -------------------------------------------------------------------------------
 
-ELEMENTY GŁÓWNEGO MENU
+POZYCJE MENU GŁÓWNEGO
 
 Plik:
 
-    Wczytaj - wczytaj zapisany wcześniej plik konfiguracyjny.
+    Wczytaj...         -- wczytaj określony plik konfiguracyjny
 
-    Zapisz jako... - zapisz aktualne ustawienia do pliku.
+    Przeładuj plik konfiguracyjny -- przeładuj plik konfiguracyjny FFGo
+                          (~/.ffgo/config w systemach uniksowych,
+                          %APPDATA%/FFGo/config w Windows)
 
-    Zapisz i Wyjdź - zapisz ustawienia i zamknij program.
+    Zapisz jako...     -- zapisać ustawienia do określonego pliku
+                          konfiguracyjnego
 
-    Zakończ - zamknij program.
+    Uruchom FlightGear -- nie wymaga wyjaśnienia, działa tak samo jak przycisk
+                          "Uruchom FG".
+
+    Zapisz i wyjdź     -- zapisz ustawienia i zamknij aplikację
+
+    Zakończ            -- zamknij aplikację
 
 Ustawienia:
 
-    Pokaż tylko zainstalowane lotniska - na liście lotnisk będą pokazywane
-        tylko lotniska zainstalowane na twardym dysku.
+    Pokaż tylko zainstalowane lotniska -- tylko lotniska obecne w scenerii
+                   zainstalowanej na dysku twardym będą widoczne na liście
+                   lotnisk.
 
-    Odśwież listę zainstalowanych lotnisk - przeskanuj twardy dysk w
-        poszukiwaniu zainstalowanej scenerii i odśwież listę lotnisk.
-        Opcja ta działa tylko w przypadku, gdy opcja "Pokaż tylko zainstalowane
-        lotniska" jest aktywna.
+    Odśwież listę zainstalowanych lotnisk -- skanuje dysk twardy w poszukiwaniu
+                   zainstalowanych scenerii i aktualizuje listę lotnisk. Działa
+                   to tylko wtedy, gdy wybrana jest opcja "Pokaż tylko
+                   zainstalowane lotniska".
 
-    Preferencje - otwórz okno preferencji.
+    ======================== Cztery przyciski opcji ========================
+
+    Pokaż argumenty FlightGear -- pokaż lub ukryj okno poleceń (patrz poniżej)
+
+    Pokaż argumenty FlightGear w osobnym oknie -- odłączenie lub ponowne
+                   dołączenie do okna głównego, okna poleceń
+
+    Pokaż dane wyjściowe FlightGeara -- pokaż lub ukryj okno gromadzące dane
+                   wyjściowe FlightGeara stdout i stderr (dla "okno danych
+                   wyjsciowych", patrz poniżej)
+
+    Pokaż dane wyjściowe FlightGeara w osobnym oknie -- odłączenie lub ponowne
+                   dołączenie do głównego okna, okno danych wyjściowych
+
+    ========================================================================
+
+    Preferencje -- otwórz okno preferencji
 
 Narzędzia:
 
-    METAR - pokaż raport pogodowy dla wybranego (lub pobliskiego) lotniska.
-        Raporty te są pobierana ze strony https://tgftp.nws.noaa.gov/
+    Wyszukiwarka lotnisk -- otwiera okno dialogowe pozwalające na łatwe
+                   wyszukiwanie lotnisk według różnych kryteriów: odległość do
+                   wybranego "lotniska odniesienia"; liczba pasów lądowych,
+                   wodnych lub lądowisk dla helikopterów; długość najdłuższego
+                   lub najkrótszego pasa na danym lotnisku, itp. Wyniki są
+                   zestawione w tabeli podającej te kryteria dla każdego
+                   lotniska, jak również początkowe i końcowe namiary dla
+                   najkrótszej ścieżki z lub do lotniska odniesienia. Tabela
+                   wyników może być sortowana według kodu ICAO lotniska, nazwy
+                   lub dowolnego z wyżej wymienionych kryteriów.
+
+    Narzędzia GPS -- podobne pod pewnymi względami do okna dialogowego
+                   "wyszukiwarka lotnisk", ale bardziej wygodne w przypadkach,
+                   gdy znasz już interesujące Cię lotniska początkowe i docelowe
+                   i chcesz po prostu uzyskać wyniki dla tych lotnisk. Lub
+                   chcesz znaleźć odległość i namiary dla kilku konkretnych par
+                   lotnisk. To okno dialogowe pozwala również zobaczyć czas
+                   trwania lotu dla danej prędkości względem ziemi i odwrotnie.
+
+    METAR       -- pokaż depeszę METAR dla wybranego lotniska, lub najbliższego
+                   lotniska dostarczającego dane METAR. Depesze te są pobierane
+                   z <https://tgftp.nws.noaa.gov/>.
+
+    Konwerter ciśnienia
+                -- przelicza ciśnienie pomiędzy calami słupa rtęci (inHg) a
+                   hektopaskalami (hPa). Może to być przydatne do ustawienia
+                   wysokościomierza, gdy wartość QNH uzyskana np. z METAR-u nie
+                   jest wyrażona w jednostce, którą można bezpośrednio
+                   wykorzystać w instrumentach samolotu.
+
+    Skokpiuj polecenia FG równoważne powłoce -- skopiuj do schowka polecenie
+                   powłoki, które powinno być odpowiednikiem wywołania
+                   FlightGear przez FFGo, gdybyś kliknął na przycisk
+                   "Uruchom FG".
 
 Pomoc:
 
-    Pomoc - otwórz okno pomocy.
+    Pomoc       -- otwórz okno pomocy
 
-    O programie - otwórz okno z informacjami o programie.
+    Pokaż dostępne opcje fgfs
+                -- wyświetla dane wyjściowe 'fgfs --help --verbose' w
+                   dedykowanym oknie; jest to przydatne do zobaczenia, które
+                   opcje fgfs są dostępne do użycia w oknie opcji (właściwie
+                   --fg-root=... jest również przekazywane w powyższym poleceniu
+                   w celu uniknięcia możliwego niechcianego wyskakującego okna
+                   dialogowego FlightGear, ale jest to szczegół implementacji).
 
--------------------------------------------------------------------------------
-
-OKNO LINII POLECEŃ
-
-W oknie tekstowym umieszczonym na dole głównego okna aplikacji można wpisywać
-opcje, z którymi zostanie uruchomiony FlightGear.
-
-Parę opcji jest tam umieszczonych już przy pierwszym starcie programu. Więcej
-przykładów można znaleźć w dokumentacji FlightGear, lub na wiki, pod adresem:
-http://wiki.flightgear.org/index.php/Command_Line_Options
+    O programie -- otwiera okno o programie
 
 -------------------------------------------------------------------------------
 
-TIPS&TRICKS
+OKNO OPCJ WIERSZA POLECEŃ
 
-* Jeżeli źródłem danych o lotniskach jest sceneria, to informacje o pozycjach
-  parkingowych mogą być niedostępne dla wybranego lotniska do czasu
-  zainstalowania odpowiedniej scenerii.
+W oknie tekstowym po lewej stronie okna głównego, tuż pod wskaźnikiem statusu
+fgfs[1], możesz wpisać dowolne argumenty dla FlightGeara ("opcje wiersza
+poleceń"), które zostaną przekazane do "fgfs" (programu wykonywalnego
+FlightGeara). Każdy argument powinieneś napisać w osobnej linii. Puste linie są
+ignorowane, komentarze rozpoczynają się znakiem '#', zobacz
+docs/README.conditional-config po więcej szczegółów.
 
-* Możesz wystartować na pokładzie lotniskowca. Kliknij na kodzie lotniska
-  znajdującym się na środkowym panelu (zaraz pod obrazkiem przedstawiającym
-  wybrany samolot) i wybierz któryś z dostępnych okrętów. Kod lotniska
-  zostanie zastąpiony nazwą wybranej jednostki i zmieni kolor na niebieski,
-  by zaznaczyć, że program znajduje się teraz w trybie wyboru lotniskowca.
-  Dodatkowo, FFGo automatycznie wybierze odpowiedni dla danego okrętu
-  scenariusz.
-  Aby móc z powrotem startować z lotnisk, należy kliknąć nazwę lotniskowca
-  i z listy która się ukaże, wybrać opcję "Żaden".
+  [1] Jest on zielony i wskazuje "Gotowy", gdy FlightGear nie jest uruchomiony.
 
-* Na liście scenariuszy można kliknąć prawym przyciskiem myszki na
-  każdym z nich, aby zobaczyć jego opis (o ile opis ten jest dostępny).
+Niewiele opcji jest dostępnych domyślnie, więcej przykładów można znaleźć w
+dokumentacji FlightGear lub na Wiki pod adresem:
 
-* Gdy zostanie użyta opcja "Zapisz i Wyjdź", FFGo zapamięta rozmiar swojego
-  okna.
+  https://wiki.flightgear.org/Pl/Opcje_wiersza_poleceń
+
+Pełną listę opcji rozumianych przez Twoją wersję FlightGeara możesz uzyskać
+używając "Pomoc → Pokaż dostępne opcje fgfs" w FFGo lub, równoważnie,
+uruchamiając "fgfs --help --verbose" z terminala.
+
+FFGo oferuje zaawansowane możliwości oparte na zmiennych i wyrażeniach
+boolowskich do opisania listy argumentów do przekazania do FlightGear. Możesz o
+nich przeczytać w docs/README.conditional-config.
+
+-------------------------------------------------------------------------------
+
+OKNO POLECEŃ
+
+To okno zwykle znajdujące się w dolnej części głównego okna FFGo, wskazuje w
+czasie rzeczywistym, jakie dokładnie argumenty zostaną przekazane do 'fgfs',
+jeśli zostanie naciśnięty przycisk "Uruchom FG" (tj. po ocenie warunków
+dozwolonych przez CondConfigParser, które mogłeś zawrzeć w oknie "Opcji wiersza
+poleceń"). Zawartość tego okna jest aktualizowana przy każdej zmianie samolotu,
+lotniska, pozycji postojowej itp. oraz po każdej zmianie w oknie "Opcji wiersza
+poleceń".
+
+Okno poleceń może być odłączone od okna głównego, ponownie do niego dołączone
+lub całkowicie ukryte. Można to zrobić w menu Ustawienia. Aktualne ustawienie,
+jak również geometria okna w przypadku jego odłączenia, są zapisywane po
+wybraniu opcji "Zapisz i wyjdź".
+
+-------------------------------------------------------------------------------
+
+OKNO DANYCH WYJŚCIOWYCH
+
+Główne pole tekstowe w tym oknie zawiera dane wyjściowe FlightGear z strumieni
+stdout i stderr. Jest ono aktualizowane w czasie rzeczywistym i może być
+przydatne do zgłaszania błędów we FlightGear.
+
+Przycisk "Zapisz dziennik" pozwala zapisać cały wynik ostatniego uruchomienia
+FlightGear do wybranego pliku.
+
+Przycisk "Otwórz katalog dzienników" jest tylko skrótem do otwarcia domyślnego
+katalogu dziennika w menedżerze plików. W systemach innych niż Windows i
+MacOS X odbywa się to za pomocą programu "xdg-open", który umożliwia
+skonfigurowanie wybranego przez użytkownika menedżera plików. W systemach
+Windows i MacOS X katalog otwierany jest za pomocą standardowego mechanizmu.
+
+Okno danych wyjściowych może być odłączone od okna głównego, ponownie do niego
+dołączone lub całkowicie ukryte. Można to zrobić w menu Ustawienia. Aktualne
+ustawienie, jak również geometria okna w przypadku jego odłączenia, są
+zapisywane po wybraniu opcji "Zapisz i zakończ".
+
+-------------------------------------------------------------------------------
+
+WSKAZÓWKI I PORADY
+
+* Jeśli źródło danych o lotniskach jest ustawione na "Sceneria" (obecnie tak
+  jest domyślne), to informacje o pozycjach parkingowych lotnisk nie będą
+  dostępne, dopóki nie zostanie zainstalowana odpowiednia sceneria (z wyjątkiem
+  metody awaryjnej wykorzystującej pliki apt.dat programu FlightGear).
+
+  W takim przypadku, jeśli używasz TerraSync, po prostu uruchom FlightGear raz
+  na wybranym lotnisku; to automatycznie pobierze scenerię dla tego lotniska.
+  I upewnij się, że twój katalog TerraSync jest wymieniony (może razem z innymi)
+  w oknie dialogowym Preferencje w polu FG_SCENERY.
+
+* Do poważnej edycji konfiguracji, wbudowany widget tekstowy w interfejsie FFGo
+  może nie być tak wygodny jak prawdziwy edytor tekstu (Emacs, Vim itp.). Ale
+  możesz doskonale użyć swojego ulubionego edytora tekstu w pliku
+  konfiguracyjnym (~/.ffgo/config w systemach uniksowych, %APPDATA%/FFGo/config
+  w Windows)! Jedyną rzeczą, o której należy pamiętać w tym przypadku, jest
+  wybranie opcji "Przeładuj plik konfiguracyjny" (Ctrl-R) w FFGo przed
+  wykonaniem jakiejkolwiek innej akcji (takiej jak "Uruchom FG" lub "Zapisz i
+  zakończ"), która zapisuje konfigurację z pamięci do pliku konfiguracyjnego.
+  W przeciwnym razie możesz stracić zmiany w pliku konfiguracyjnym dokonane w
+  międzyczasie poza FFGo.
+
+* Możesz rozpocząć lot z lotniskowca. W środkowym panelu kliknij na aktualny
+  kod ICAO lotniska (tuż pod obrazkiem samolotu) i wybierz jeden z dostępnych
+  statków. Kod ICAO zmieni się wtedy na nazwę wybranego statku i zostanie
+  podświetlony na niebiesko, aby wskazać, że jesteś teraz w "trybie
+  lotniskowca". Odpowiedni scenariusz zostanie automatycznie wybrany. Aby móc
+  ponownie wybrać lotnisko, musisz kliknąć na nazwę lotniskowca, a następnie z
+  wyskakującej listy wybrać "Bez lotniskowca".
+
+* Na liście "Wybierz scenariusz" możesz kliknąć prawym przyciskiem myszy na
+  dowolnym scenariuszu, aby zobaczyć jego opis (jeśli jest dostępny).
+
+* Wymiary okien są zapisywane po kliknięciu przycisku "Zapisz i zakończ".
+
+  Dokładniej, dla okna poleceń i danych wyjściowych zawsze zapisywana jest cała
+  geometria, czyli: rozmiar i przesunięcia od granic ekranu każdego z tych
+  okien. W przypadku okna głównego, w oknie dialogowym Preferencje, można
+  wybrać, czy ma być zapisywany tylko rozmiar, czy cała geometria ("Zapamiętaj
+  pozycję okna głównego"). Pierwsza opcja odpowiada zachowaniu FGo! 1.5.5, może
+  jest odpowiednia dla kafelkowych menedżerów okien? Druga opcja jest domyślnym
+  ustawieniem w FFGo.
 
 -------------------------------------------------------------------------------
 
 ZNANE BŁĘDY I OGRANICZENIA
 
-* Długie nazwy pozycji parkingowych nie mieszczą się w przycisku Parking.
+* Bardzo długie nazwy lokalizacji startowych (często pozycji parkingowych) nie
+  mieszczą się w przycisku parkingowym w domyślnym układzie. Wystarczy kliknąć
+  na przycisk, który powoduje pojawienie się menu podręcznego parkingu, aby
+  zobaczyć pełne nazwy takich lokalizacji startowych. Alternatywnie zmień
+  rozmiar okna zawierającego przycisk "Parking" (poszukaj myszką obszarów na
+  obrzeżasz, gdy kursor myszy zmieni się na strzałki, oznacza to że możesz
+  przeciągać).
 
 -------------------------------------------------------------------------------
 
-                                            Dziękuję za używanie tego programu,
-                                             Robert 'erobo' Leda  <erobo@wp.pl>
+HISTORIA
+
+To oprogramowanie jest rozwidleniem programu FGo![1] napisanego przez Roberta
+'erobo' Leda <erobo@wp.pl>. Pierwotnym zamiarem nie było rozwidlenie, ale
+ulepszenie FGo!, jednak minęło wystarczająco dużo czasu z nowymi interesującymi
+funkcjami i brakiem publicznego wydania, że ja (Florent Rougon) w końcu
+zdecydowałem się opublikować ulepszoną wersję, aby umożliwić innym osobom
+skorzystanie z tej pracy. Po wysłaniu wielu łatek napisanych dla FGo!, zmieniłem
+nazwę programu na FFGo, aby uniknąć zamieszania wśród użytkowników i wypuściłem
+kod.
+
+  [1] https://sites.google.com/site/erobosprojects/flightgear/add-ons/fgo
+
+U źródeł tej pracy znajduje się port Roberta FGo! 1.5.5 do Pythona 3.
+Zaproponowałem zrobienie tego w 2014 roku jako podstawę do mojego projektu
+parsowania konfiguracji warunkowej dla FGo!, ale Robert był na tyle uprzejmy,
+że sam wykonał przeportowanie i wysłał mi je na prywatny e-mail. To pozwoliło
+mi zintegrować moje rozwiązania, zaczynając od dodania obsługi CondConfigParser.
+Założyłem prywatne repozytorium Git, aby ułatwić współpracę z Robertem,
+opracowałem w nim nowe funkcje, zintegrowałem weryfikację koncepcji Roberta dla
+okien poleceń i danych wyjściowych, ulepszyłem je itd., a teraz to repozytorium
+jest publiczne i używane do rozwoju FFGo.
+
+-------------------------------------------------------------------------------
+
+
+Dziękujemy za korzystanie z tego oprogramowania,
+Florent Rougon <f.rougon@free.fr>
+
+I bardzo dziękuję moim rodzicom, którzy okazali mi tak fantastyczną pomoc,
+że mimo problemów zdrowotnych umożliwili mi wykonywanie tej pracy.
+
+
+(oryginalny tekst autora FGo!, Roberta 'erobo' Leda)
+
+Zmienne lokalne:
+kodowanie: utf-8
+znaków na wiersz: 72
+End:
