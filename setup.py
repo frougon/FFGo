@@ -42,7 +42,7 @@ def do_setup():
         project_urls={
           "Screenshots": "http://frougon.net/projects/FFGo/gallery/",
           "FFGo doc. on the FlightGear wiki":
-            "http://wiki.flightgear.org/FFGo",
+            "https://wiki.flightgear.org/FFGo",
           "FFGo conditional config doc.":
             "http://frougon.net/projects/FFGo/doc/README-conditional-config/",
           "Git repository": "https://github.com/frougon/FFGo",

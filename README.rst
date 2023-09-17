@@ -24,7 +24,7 @@ which allows many interesting things as shown at:
 Screenshots
 -----------
 
-Screenshots are available from the `FFGo screenshots gallery page
+Screenshots are available at the `FFGo screenshots gallery page
 <http://frougon.net/projects/FFGo/gallery/>`_.
 
 .. _end-of-intro:
@@ -35,8 +35,6 @@ Home page
 FFGo's home page is located at:
 
   http://frougon.net/projects/FFGo/
-
-(it was on people.via.ecp.fr before April 30, 2016)
 
 
 Requirements
@@ -87,7 +85,7 @@ run FFGo.
 Note:
 
   The home pages of FFGo's dependencies indicated here are current at
-  the time of this writing (January 2016), but might change over time.
+  the time of this writing (September 2023), but might change over time.
 
 
 Download
@@ -141,7 +139,7 @@ need to:
       deb-src http://frougon.net/debian-ffgo unstable main
 
     Packages for Debian *stable* are also available. If this is what you
-    need, just replace *unstable* with *buster*, or whatever is the
+    need, just replace *unstable* with *bookworm*, or whatever is the
     codename of the current Debian *stable* release, in these
     ``sources.list`` lines.
 
@@ -155,15 +153,9 @@ need to:
 
     .. _Florent Rougon's OpenPGP key: http://frougon.net/keys.html
 
-    In order to do this, you should first get the key using the above
-    link, and save it to a file. Let's assume you have the key in file
-    ``/tmp/OpenPGP-key.asc``. To add it to the ``apt`` keyring, you can
-    run the following command as root::
-
-      apt-key add /tmp/OpenPGP-key.asc
-
-    Once this is done, there is no need to keep the ``OpenPGP-key.asc``
-    file around anymore.
+    In order to do this, you should get the key using the above link,
+    and save it for instance as
+    ``/etc/apt/trusted.gpg.d/Florent_Rougon.asc``.
 
 After these two steps, don't forget to run::
 
@@ -231,7 +223,7 @@ FlightGear wiki`_ helpful. If you have a problem, you can always ask in
 FFGo's thread on the FlightGear forum (see below in `Getting help,
 discussing`_).
 
-.. _FFGo's page on the FlightGear wiki: http://wiki.flightgear.org/FFGo
+.. _FFGo's page on the FlightGear wiki: https://wiki.flightgear.org/FFGo
 
 
 Running
@@ -306,7 +298,7 @@ Documentation
   practically-oriented installation instructions than those from
   ``docs/INSTALL/INSTALL_en`` (at the time of this writing).
 
-  .. _FFGo documentation on the FlightGear wiki: http://wiki.flightgear.org/FFGo
+  .. _FFGo documentation on the FlightGear wiki: https://wiki.flightgear.org/FFGo
 
 
 Getting help, discussing
@@ -349,9 +341,7 @@ in the `FFGo forum thread`_. In either case, be very precise telling:
       Since Windows seems to hide the ``%APPDATA%`` folder nowadays,
       Windows users may have to use their favorite search engine in
       order to find how to access this folder on their computer (hint:
-      maybe
-      `<http://www.blogtechnika.com/what-is-application-data-folder-in-windows-7/>`_,
-      `<https://www.youtube.com/watch?v=Xa0H8lND9Qs>`_
+      maybe `<https://www.youtube.com/watch?v=Xa0H8lND9Qs>`_
       and
       `<https://docs.microsoft.com/en-us/windows/uwp/design/app-settings/store-and-retrieve-app-data>`_
       can be helpful);

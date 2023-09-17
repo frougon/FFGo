@@ -990,7 +990,7 @@ you may want to consult the Git repository log.
           Help menu, or when doing Help → Show available fgfs options).
           (Florent Rougon)
 [USABILITY] Improve the documentation concerning FFGo installation
-          (docs/INSTALL/INSTALL_en and <http://wiki.flightgear.org/FFGo>).
+          (docs/INSTALL/INSTALL_en and <https://wiki.flightgear.org/FFGo>).
           Among other changes, there is now a precise description of how to
           install MagneticField on Windows. Thanks to jaxsin on the FlightGear
           forum for testing things on Windows and reporting. (Florent Rougon)
@@ -1072,7 +1072,7 @@ you may want to consult the Git repository log.
           complexity with useless ones... (Florent Rougon)
 [USABILITY] Improve the installation instructions. Actually, most of the
           recent improvements in this area went to
-          <http://wiki.flightgear.org/FFGo>, but some of these have been
+          <https://wiki.flightgear.org/FFGo>, but some of these have been
           “backported” to docs/INSTALL/INSTALL_en in this release. Moreover,
           this file now clearly suggests users to start with the installation
           instructions from the FFGo wiki page first, then to consult
