@@ -8,7 +8,7 @@
 # have received a copy of this license along with this file. You can also find
 # it at <http://www.wtfpl.net/>.
 
-from setuptools import setup, find_packages
+from setuptools import setup, find_namespace_packages
 import sys
 import os
 import subprocess
@@ -70,14 +70,15 @@ def do_setup():
         ],
         keywords=\
             'FlightGear,flightgear,flight,simulator,launcher,FFGo,FGo!',
-        packages=[pypkg_name],
+        # This would be a bit easier with the “src-layout”
+        packages=[pypkg_name] + [ "{}.{}".format(pypkg_name, p) for p in
+                                  find_namespace_packages(where=pypkg_name) ],
         include_package_data=True,
         # Files to exclude from installation
         exclude_package_data = { '':
-                                 ['*/COPYING.txt', '*.po', '*.pot',
-                                  '*.xcf', '*/thumbnail-no-Pillow.svg',
-                                  '*/Makefile', '*/Makefile.py-functions'] },
-
+                                 ['COPYING.txt', '*.po', '*.pot',
+                                  '*.xcf', 'thumbnail-no-Pillow.svg',
+                                  'Makefile', 'Makefile.py-functions'] },
         python_requires='~=3.4',
         install_requires=['CondConfigParser'],
         extras_require = {'images':  ['Pillow'], 'geo': ['geographiclib']},

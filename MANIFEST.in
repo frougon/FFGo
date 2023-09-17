@@ -17,4 +17,4 @@ recursive-include share *.svg *.png *.desktop Makefile
 exclude setup.cfg
 prune README.Sphinx-build
 prune tmp
-global-exclude *.pyc __pycache__ .gitignore .gitattributes
+global-exclude *.pyc .gitignore .gitattributes
