@@ -1262,3 +1262,9 @@ you may want to consult the Git repository log.
 
 1.12.7
 [USABILITY] Update and improve docs/INSTALL/INSTALL_en. (Florent Rougon)
+
+1.12.8
+[FEATURE] Update the Polish translation. (PlayeRom Roman Ludwicki)
+[MAINT]   Update documentation and config_* files (oldish info, links).
+          (PlayeRom Roman Ludwicki and Florent Rougon)
+[MAINT]   Packaging fixes. (Florent Rougon)
