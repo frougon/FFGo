@@ -20,11 +20,11 @@ USER_AGENT = \
      prg=PROGNAME, version=PROGVERSION)
 # See also COPYRIGHT_HELP below.
 COPYRIGHT = "Copyright © 2009-2015  Robert 'erobo' Leda <erobo@wp.pl>\n" \
-            "Copyright © 2014-2016  Florent Rougon <f.rougon@free.fr>"
+            "Copyright © 2014-2023  Florent Rougon <f.rougon@free.fr>"
 # Format more suitable for --help output:
 COPYRIGHT_HELP = textwrap.dedent("""\
   Copyright (c) 2009-2015  Robert 'erobo' Leda <erobo@wp.pl>
-  Copyright (c) 2014-2020  Florent Rougon <f.rougon@free.fr>""")
+  Copyright (c) 2014-2023  Florent Rougon <f.rougon@free.fr>""")
 AUTHORS = 'Robert Leda, Florent Rougon'
 LICENSE = \
     """This program is free software. It comes without any warranty, to

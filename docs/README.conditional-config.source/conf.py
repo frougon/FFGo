@@ -53,7 +53,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'FFGo.condconfig'
-copyright = '2015-2016, Florent Rougon'
+copyright = '2015-2023, Florent Rougon'
 author = 'Florent Rougon'
 
 # The version info for the project you're documenting, acts as replacement for
