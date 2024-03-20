@@ -7,7 +7,7 @@ import textwrap
 from os.path import expanduser, join, pardir, normpath
 
 PROGNAME = 'FFGo'               # may be needed for some of these imports
-from .version import __version__ as PROGVERSION
+from . import __version__ as PROGVERSION
 from . import misc
 from .misc import resourceFilename
 
@@ -20,11 +20,11 @@ USER_AGENT = \
      prg=PROGNAME, version=PROGVERSION)
 # See also COPYRIGHT_HELP below.
 COPYRIGHT = "Copyright © 2009-2015  Robert 'erobo' Leda <erobo@wp.pl>\n" \
-            "Copyright © 2014-2023  Florent Rougon <f.rougon@free.fr>"
+            "Copyright © 2014-2025  Florent Rougon"
 # Format more suitable for --help output:
 COPYRIGHT_HELP = textwrap.dedent("""\
   Copyright (c) 2009-2015  Robert 'erobo' Leda <erobo@wp.pl>
-  Copyright (c) 2014-2023  Florent Rougon <f.rougon@free.fr>""")
+  Copyright (c) 2014-2025  Florent Rougon""")
 AUTHORS = 'Robert Leda, Florent Rougon'
 LICENSE = \
     """This program is free software. It comes without any warranty, to

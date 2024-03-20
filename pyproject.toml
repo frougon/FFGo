@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools >= 61.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "FFGo"
+dynamic = ["version"]
+authors = [
+  { name="Florent Rougon", email="f.rougon@frougon.net" },
+]
+description = "A graphical launcher for the FlightGear flight simulator"
+readme = "README.rst"
+license = "WTFPL"
+requires-python = ">=3.4"
+keywords = [
+  "FlightGear", "flightgear", "flight", "simulator", "launcher", "FFGo", "FGo!",
+]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: End Users/Desktop",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Topic :: Games/Entertainment :: Simulation",
+]
+dependencies = ["CondConfigParser"]
+
+[project.optional-dependencies]
+images = ["Pillow"]
+geo = ["geographiclib"]
+
+[project.scripts]
+ffgo = "ffgo.main:main"
+
+[project.gui-scripts]
+ffgo-noconsole = "ffgo.main:main"
+
+[project.urls]
+Homepage = "https://frougon.net/projects/FFGo/"
+Screenshots = "https://frougon.net/projects/FFGo/gallery/"
+"FFGo doc. on the FlightGear wiki" = "https://wiki.flightgear.org/FFGo"
+"FFGo conditional config doc." = "https://frougon.net/projects/FFGo/doc/README-conditional-config/"
+Repository = "https://github.com/frougon/FFGo"
+Issues = "https://github.com/frougon/FFGo/issues"
+Changelog = "https://raw.githubusercontent.com/frougon/FFGo/master/ChangeLog"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.exclude-package-data]
+"*" = ["Makefile*", "*.pot", "*.po", "*.svg", "*.xcf"]
+"ffgo.data.pics" = ["COPYING.txt"]
+
+[tool.setuptools.dynamic]
+version = {attr = "ffgo.__version__"}

@@ -11,10 +11,7 @@ graft docs/README.conditional-config
 exclude docs/README.conditional-config/_static/README.txt
 prune docs/README.conditional-config.source/_build
 
-graft ffgo
+graft src
 recursive-include share *.svg *.png *.desktop Makefile
 
-exclude setup.cfg
-prune README.Sphinx-build
-prune tmp
 global-exclude *.pyc .gitignore .gitattributes

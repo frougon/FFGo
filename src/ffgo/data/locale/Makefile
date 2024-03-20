@@ -2,17 +2,17 @@
 # sources, the .po files from the .pot file and the .mo files from their .po
 # sources). Tested on Linux with GNU Make.
 #
-# Copyright (C) 2015, 2016  Florent Rougon
+# Copyright (C) 2015-2025  Florent Rougon
 # License: DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE version 2, dated
 #          December 2004
 
 define POT_COPYRIGHT
 Copyright (C) 2010-2015  Robert Leda
-Copyright (C) 2014-2015  Florent Rougon
+Copyright (C) 2014-2025  Florent Rougon
 endef
-MSGID_BUGS_ADDRESS := f.rougon@free.fr
+MSGID_BUGS_ADDRESS := f.rougon@frougon.net
 
-include ../../../shared.mk # Define PROGNAME and LANGUAGES
+include ../../../../shared.mk # Define PROGNAME and LANGUAGES
 include Makefile.py-functions # Define variables containing Python 3 code
 PYTHON := python3
 MO_FILES := $(foreach lang,$(LANGUAGES),$(lang)/LC_MESSAGES/$(PROGNAME).mo)
@@ -39,7 +39,7 @@ export replace_pot_metadata
 # File paths relative to the package root directory (containing the
 # ffgo-launcher.py script)
 REL_PY_FILES := ffgo-launcher.py \
-                $(shell cd ../../.. && find ffgo -type f -name '*.py')
+                $(shell cd ../../../.. && find src/ffgo -type f -name '*.py')
 
 # The target could be $(PROGNAME).pot, with dependencies on the source files
 # (similar to REL_PY_FILES, but with ../../ prepended). However, this would
@@ -47,7 +47,7 @@ REL_PY_FILES := ffgo-launcher.py \
 # repo and ran 'make', the PO files would be updated if there were new
 # translatable strings, and he would end up with locally-modified files).
 update-pot:
-	xgettext --directory=../../.. --language=Python --from-code=UTF-8 \
+	xgettext --directory=../../../.. --language=Python --from-code=UTF-8 \
                  --keyword=pgettext:1c,2 --keyword=npgettext:1c,2,3 \
                  --keyword=gettext_noop:1 --keyword=N_:1 \
                  --keyword=pgettext_noop:1c,2 --keyword=npgettext_noop:1c,2,3 \
