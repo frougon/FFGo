@@ -161,8 +161,8 @@ class PressureConverterDialog:
         ToolTip(stdButton,
                 _("Set the standard pressure\n"
                   "({std_hPa} hPa = {std_inHg} inHg)").format(
-                      std_hPa=locale.format("%.02f", 1013.25),
-                      std_inHg=locale.format("%.02f", 29.92)))
+                      std_hPa=locale.format_string("%.02f", 1013.25),
+                      std_inHg=locale.format_string("%.02f", 29.92)))
 
 # ----- Close button ----------------------------------------------------------
         self.buttonFrame = self._newWidget(
@@ -220,7 +220,7 @@ class PressureConverterDialog:
         if not inHg.strip():
             self.hPa.set('')
         else:
-            self.hPa.set(locale.format("%.02f", locale.atof(inHg)*33.8639))
+            self.hPa.set(locale.format_string("%.02f", locale.atof(inHg)*33.8639))
 
     # Accept any arguments to allow safe use as a Tkinter variable observer
     def updateRoundedHPa(self, *args):
@@ -247,12 +247,12 @@ class PressureConverterDialog:
         if not hPa.strip():
             self.inHg.set('')
         else:
-            self.inHg.set(locale.format("%.02f", locale.atof(hPa)*0.02953))
+            self.inHg.set(locale.format_string("%.02f", locale.atof(hPa)*0.02953))
 
     def setStandardValues(self):
         # This will cause the value in inHg as well as the rounded hPa
         # value to be updated.
-        self.hPa.set(locale.format("%.02f", 1013.25))
+        self.hPa.set(locale.format_string("%.02f", 1013.25))
 
     def show(self):
         """Make sure the Pressure Converter dialog is visible."""

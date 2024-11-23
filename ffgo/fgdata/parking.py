@@ -154,9 +154,9 @@ class Parking:
         l = []
 
         if abs(self.radius - round(self.radius)) < 0.01:
-            radiusStr = locale.format("%d", round(self.radius))
+            radiusStr = locale.format_string("%d", round(self.radius))
         else:
-            radiusStr = locale.format("%.02f", self.radius)
+            radiusStr = locale.format_string("%.02f", self.radius)
         l.append(
             pgettext('parking position', 'Radius: {} m').format(radiusStr))
 

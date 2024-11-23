@@ -105,7 +105,7 @@ class DecimalCoord(float):
     def __str__(self):
         # 8 decimal places, as recommended for latitudes and longitudes in
         # the apt.dat v1000 spec
-        return locale.format("%.08f", self)
+        return locale.format_string("%.08f", self)
 
     def __repr__(self):
         return "{}.{}({!r})".format(__name__, type(self).__name__, float(self))

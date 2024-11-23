@@ -106,11 +106,11 @@ class Airport:
               _("Latitude: {latitude}").format(latitude=self.lat),
               _("Longitude: {longitude}").format(longitude=self.lon),
               _("Elevation: {elev_feet} ft ({elev_meters} m)").format(
-                  elev_feet=locale.format("%d", round(self.elevation)),
-                  elev_meters=locale.format("%.01f", self.elevation*0.3048))]
+                  elev_feet=locale.format_string("%d", round(self.elevation)),
+                  elev_meters=locale.format_string("%.01f", self.elevation*0.3048))]
 
         if magField is not None:
-            magVar = locale.format("%.01f", magField.decl(self.lat, self.lon))
+            magVar = locale.format_string("%.01f", magField.decl(self.lat, self.lon))
             l.append(_("Magnetic variation: {}°").format(magVar))
 
         return '\n'.join(l + rl)
@@ -370,7 +370,7 @@ class RunwayBase:
         return "{} ({})".format(self.name, self.type)
 
     def formatLength(self, val):
-        return locale.format("%d", round(val))
+        return locale.format_string("%d", round(val))
 
     def _addLatitude(self, l):
         if self.lat is not None:
@@ -428,7 +428,7 @@ class RunwayBase:
     def _addSmoothness(self, l):
         if self.smoothness is not None:
             l.append(_("Smoothness: {}").format(
-                locale.format("%.02f", self.smoothness)))
+                locale.format_string("%.02f", self.smoothness)))
 
 
 class LandRunway(RunwayBase):
