@@ -6,9 +6,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: FFGo 1.12.5\n"
+"Project-Id-Version: FFGo 1.12.8\n"
 "Report-Msgid-Bugs-To: f.rougon@free.fr\n"
-"POT-Creation-Date: 2020-05-21 00:51+0200\n"
+"POT-Creation-Date: 2025-03-28 09:56+0100\n"
 "PO-Revision-Date: 2014-11-11 18:30+0200\n"
 "Last-Translator: Philip Lacroix <philnx AT posteo DOT de>\n"
 "Language-Team: \n"
@@ -19,642 +19,174 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Lokalize 1.4\n"
 
-#: ffgo/exceptions.py:52 ffgo/fgdata/apt_dat.py:73
-#, python-brace-format
-msgid "{shortDesc}: {detail}"
+#: ffgo/config.py:292
+msgid "Building the list of installed airports (this may take some time)..."
 msgstr ""
 
-#: ffgo/exceptions.py:58
-#, python-brace-format
-msgid "{prg} generic exception"
-msgstr ""
-
-#: ffgo/fgdata/parking.py:85
-msgid "invalid value for the {attr!r} attribute: {val!r}"
-msgstr ""
-
-#: ffgo/fgdata/parking.py:161
-msgctxt "parking position"
-msgid "Radius: {} m"
-msgstr ""
-
-#: ffgo/fgdata/parking.py:164
-msgctxt "parking position"
-msgid "Airlines: {}"
-msgstr ""
-
-#: ffgo/fgdata/parking.py:168
-msgctxt "parking position"
-msgid "Latitude: {}"
-msgstr ""
-
-#: ffgo/fgdata/parking.py:169
-msgctxt "parking position"
-msgid "Longitude: {}"
-msgstr ""
-
-#: ffgo/fgdata/parking.py:177
-#, python-brace-format
-msgctxt "parking position"
-msgid "Magnetic heading: {mag} (true: {true})"
-msgstr ""
-
-#: ffgo/fgdata/parking.py:180
-msgctxt "parking position"
-msgid "True heading: {}"
-msgstr ""
-
-#: ffgo/fgdata/parking.py:209
-#, python-brace-format
-msgid "while parsing '{file}': {errmsg}"
-msgstr ""
-
-#: ffgo/fgdata/parking.py:215
-#, python-brace-format
-msgid "'{file}': empty parking name (index='{idx}')"
-msgstr ""
-
-#: ffgo/fgdata/parking.py:219
-#, python-brace-format
-msgid ""
-"'{file}': duplicate parking name '{parkName}' (index='{idxDup}'); keeping "
-"the first found only (index='{idx1}')"
-msgstr ""
-
-#: ffgo/fgdata/fgversion.py:22
-msgid "Error caught in the fgversion module"
-msgstr ""
-
-#: ffgo/fgdata/fgversion.py:27
-msgid "Invalid use of the fgversion module"
-msgstr ""
-
-#: ffgo/fgdata/fgversion.py:33
-#, fuzzy
-msgid "Unable to parse as a FlightGear version string"
-msgstr "Impossibile avviare FlightGear!"
-
-#: ffgo/fgdata/fgversion.py:39
-msgid "Unable to parse the output of 'fgfs --version'"
-msgstr ""
-
-#: ffgo/fgdata/fgversion.py:43
-#, fuzzy
-msgid "Unable to run 'fgfs --version'"
-msgstr "Impossibile avviare FlightGear!"
-
-#: ffgo/fgdata/fgversion.py:47
-msgid "Error when running 'fgfs --version'"
-msgstr ""
-
-#: ffgo/fgdata/json_report.py:22
-msgid "Error caught in the json_report module"
-msgstr ""
-
-#: ffgo/fgdata/json_report.py:26
-#, fuzzy
-msgid "Unable to run 'fgfs --json-report'"
-msgstr "Impossibile avviare FlightGear!"
-
-#: ffgo/fgdata/json_report.py:30
-msgid "Error when running 'fgfs --json-report'"
-msgstr ""
-
-#: ffgo/fgdata/json_report.py:36
-msgid "Error trying to process the output of 'fgfs --json-report'"
-msgstr ""
-
-#: ffgo/fgdata/airport.py:46
-#, fuzzy
-msgid "Land airport"
-msgstr "Aeroporto:"
-
-#: ffgo/fgdata/airport.py:47
-msgid "Seaplane base"
-msgstr ""
-
-#: ffgo/fgdata/airport.py:48
-#, fuzzy
-msgid "Heliport"
-msgstr "Aeroporto:"
-
-#: ffgo/fgdata/airport.py:99
-#, python-brace-format
-msgid "{rwyType}: {runways}"
-msgstr ""
-
-#: ffgo/fgdata/airport.py:106
-#, python-brace-format
-msgid "Latitude: {latitude}"
-msgstr ""
-
-#: ffgo/fgdata/airport.py:107
-#, python-brace-format
-msgid "Longitude: {longitude}"
-msgstr ""
-
-#: ffgo/fgdata/airport.py:108
-#, python-brace-format
-msgid "Elevation: {elev_feet} ft ({elev_meters} m)"
-msgstr ""
-
-#: ffgo/fgdata/airport.py:114
-msgid "Magnetic variation: {}°"
-msgstr ""
-
-#: ffgo/fgdata/airport.py:206
-msgctxt "surface type"
-msgid "asphalt"
-msgstr ""
-
-#: ffgo/fgdata/airport.py:207
-msgctxt "surface type"
-msgid "concrete"
-msgstr ""
-
-#: ffgo/fgdata/airport.py:209
-msgctxt "surface type"
-msgid "turf or grass"
-msgstr ""
-
-#: ffgo/fgdata/airport.py:210
-msgctxt "surface type"
-msgid "dirt"
-msgstr ""
-
-#: ffgo/fgdata/airport.py:211
-msgctxt "surface type"
-msgid "gravel"
-msgstr ""
-
-#: ffgo/fgdata/airport.py:212
-msgctxt "surface type"
-msgid "dry lake bed"
-msgstr ""
-
-#: ffgo/fgdata/airport.py:213
-msgctxt "surface type"
-msgid "water"
-msgstr ""
-
-#: ffgo/fgdata/airport.py:214
-msgctxt "surface type"
-msgid "snow or ice"
-msgstr ""
-
-#: ffgo/fgdata/airport.py:215
-msgctxt "surface type"
-msgid "transparent"
-msgstr ""
-
-#: ffgo/fgdata/airport.py:285
-msgid "invalid v810 surface code: {0!r}"
-msgstr ""
-
-#: ffgo/fgdata/airport.py:300
-msgctxt "runway/helipad shoulder surface type"
+#: ffgo/config.py:332 ffgo/gui/mainwindow.py:1002
+msgctxt "FlightGear version"
 msgid "none"
 msgstr ""
 
-#: ffgo/fgdata/airport.py:302
-msgctxt "runway/helipad shoulder surface type"
-msgid "asphalt"
-msgstr ""
-
-#: ffgo/fgdata/airport.py:304
-msgctxt "runway/helipad shoulder surface type"
-msgid "concrete"
-msgstr ""
-
-#: ffgo/fgdata/airport.py:318
-msgid "Land runway"
-msgid_plural "Land runways"
-msgstr[0] ""
-msgstr[1] ""
-
-#: ffgo/fgdata/airport.py:320
-msgid "Water runway"
-msgid_plural "Water runways"
-msgstr[0] ""
-msgstr[1] ""
-
-#: ffgo/fgdata/airport.py:322
-msgid "Helipad"
-msgid_plural "Helipads"
-msgstr[0] ""
-msgstr[1] ""
-
-#: ffgo/fgdata/airport.py:340
-msgctxt "runway markings"
-msgid "none"
-msgstr ""
-
-#: ffgo/fgdata/airport.py:342
-msgctxt "runway markings"
-msgid "visual"
-msgstr ""
-
-#: ffgo/fgdata/airport.py:344
-msgctxt "runway markings"
-msgid "non-precision approach"
-msgstr ""
-
-#: ffgo/fgdata/airport.py:346
-msgctxt "runway markings"
-msgid "precision approach"
-msgstr ""
-
-#: ffgo/fgdata/airport.py:348
-msgctxt "runway markings"
-msgid "UK-style non-precision approach"
-msgstr ""
-
-#: ffgo/fgdata/airport.py:350
-msgctxt "runway markings"
-msgid "UK-style precision approach"
-msgstr ""
-
-#: ffgo/fgdata/airport.py:377
-msgid "Latitude: {}"
-msgstr ""
-
-#: ffgo/fgdata/airport.py:381
-msgid "Longitude: {}"
-msgstr ""
-
-#: ffgo/fgdata/airport.py:393
+#: ffgo/config.py:335 ffgo/gui/mainwindow.py:1008
 #, python-brace-format
-msgctxt "runway/helipad"
-msgid "Magnetic heading: {mag} (true: {true})"
+msgid "Detected FlightGear version: {ver}"
 msgstr ""
 
-#: ffgo/fgdata/airport.py:397
-msgctxt "runway/helipad"
-msgid "True heading: {}"
-msgstr ""
-
-#: ffgo/fgdata/airport.py:404
-#, python-brace-format
-msgid "Length: {0} m ({1} ft)"
-msgstr ""
-
-#: ffgo/fgdata/airport.py:411
-#, python-brace-format
-msgid "Width: {0} m ({1} ft)"
-msgstr ""
-
-#: ffgo/fgdata/airport.py:417
-msgid "Surface type: {}"
-msgstr ""
-
-#: ffgo/fgdata/airport.py:421
-msgid "Shoulder surface type: {}"
-msgstr ""
-
-#: ffgo/fgdata/airport.py:426
-msgid "Runway markings: {}"
-msgstr ""
-
-#: ffgo/fgdata/airport.py:430
-msgid "Smoothness: {}"
-msgstr ""
-
-#: ffgo/fgdata/airport.py:471 ffgo/fgdata/airport.py:512
-msgid "no"
-msgstr ""
-
-#: ffgo/fgdata/airport.py:472 ffgo/fgdata/airport.py:513
-msgid "yes"
-msgstr ""
-
-#: ffgo/fgdata/airport.py:499
-msgid "Perimeter buoys: {}"
-msgstr ""
-
-#: ffgo/fgdata/airport.py:547
-msgid "Edge lighting: {}"
-msgstr ""
-
-#: ffgo/fgdata/apt_dat.py:46
-msgid "Error caught in the apt_dat module"
-msgstr ""
-
-#: ffgo/fgdata/apt_dat.py:51
-msgid "Error parsing an apt.dat file"
-msgstr ""
-
-#: ffgo/fgdata/apt_dat.py:65
-#, python-brace-format
-msgid "in '{file}', line {line}: {msg}"
-msgstr ""
-
-#: ffgo/fgdata/apt_dat.py:68
-#, python-brace-format
-msgid "in '{file}', line {line}"
-msgstr ""
-
-#: ffgo/fgdata/apt_dat.py:77
-#, python-brace-format
-msgid "{shortDesc} ({detail})"
-msgstr ""
-
-#: ffgo/fgdata/apt_dat.py:84
-#, fuzzy
-msgid "Unable to parse an apt.dat header"
-msgstr "Impossibile avviare FlightGear!"
-
-#: ffgo/fgdata/apt_dat.py:88
-#, fuzzy
-msgid "Unable to parse the apt digest file"
-msgstr "Impossibile avviare FlightGear!"
-
-#: ffgo/fgdata/apt_dat.py:92
-msgid "Index mismatch"
-msgstr ""
-
-#: ffgo/fgdata/apt_dat.py:98
-msgid "Unable to recognize the format of the apt digest file"
-msgstr ""
-
-#: ffgo/fgdata/apt_dat.py:301
-msgid "not a valid record: {!r}"
-msgstr ""
-
-#: ffgo/fgdata/apt_dat.py:312
-msgid "EOF reached while looking for the first non-empty line"
-msgstr ""
-
-#: ffgo/fgdata/apt_dat.py:316
-msgid "first non-empty line should contain exactly one character"
-msgstr ""
-
-#: ffgo/fgdata/apt_dat.py:322
-msgid "EOF reached while looking for the version of the format"
-msgstr ""
-
-#: ffgo/fgdata/apt_dat.py:328
-msgid "unexpected header line: {line!r}"
-msgstr ""
-
-#: ffgo/fgdata/apt_dat.py:333
+#: ffgo/config.py:418
 #, python-brace-format
 msgid ""
-"'{aptDat}' reports a format version {ver}, which this version of {prg} "
-"doesn't know about. Things may not work correctly. Please report a bug."
+"Could not find aircraft '{aircraft}' under '{dir}', taking it from "
+"'{fallback}' instead"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:385 ffgo/fgdata/apt_dat.py:445
-#: ffgo/fgdata/apt_dat.py:685 ffgo/fgdata/apt_dat.py:706
-#: ffgo/fgdata/apt_dat.py:745 ffgo/fgdata/apt_dat.py:1011
-#: ffgo/fgdata/apt_dat.py:1177 ffgo/fgdata/apt_dat.py:1210
-#: ffgo/fgdata/apt_dat.py:1238
-msgid "not enough fields in record: {!r}"
-msgstr ""
-
-#: ffgo/fgdata/apt_dat.py:390
+#: ffgo/config.py:427
 #, python-brace-format
-msgid "{aptDat}:{lineNb}: skipping airport {aptId} (already defined earlier)"
+msgid "Could not find the default aircraft: {aircraft}"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:401
-#, python-brace-format
-msgid "{aptDat}:{lineNb}: row code 99 found (normally at end of file)"
-msgstr ""
-
-#: ffgo/fgdata/apt_dat.py:450
-msgid "expected {aptId1!r}, but found {aptId2!r} instead"
-msgstr ""
-
-#: ffgo/fgdata/apt_dat.py:516
-#, fuzzy
-msgid "unable to parse as a latitude: {0!r} in line {1!r}"
-msgstr "Impossibile avviare FlightGear!"
-
-#: ffgo/fgdata/apt_dat.py:527
-#, fuzzy
-msgid "unable to parse as a longitude: {0!r} in line {1!r}"
-msgstr "Impossibile avviare FlightGear!"
-
-#: ffgo/fgdata/apt_dat.py:538
-#, fuzzy
-msgid "unable to parse as a heading: {0!r} in line {1!r}"
-msgstr "Impossibile avviare FlightGear!"
-
-#: ffgo/fgdata/apt_dat.py:549
-#, fuzzy
-msgid "unable to parse as a length: {0!r} in line {1!r}"
-msgstr "Impossibile avviare FlightGear!"
-
-#: ffgo/fgdata/apt_dat.py:560
-#, fuzzy
-msgid "unable to parse as an elevation: {0!r} in line {1!r}"
-msgstr "Impossibile avviare FlightGear!"
-
-#: ffgo/fgdata/apt_dat.py:571
-#, fuzzy
-msgid "unable to parse as a surface type code: {0!r} in line {1!r}"
-msgstr "Impossibile avviare FlightGear!"
-
-#: ffgo/fgdata/apt_dat.py:582
-#, fuzzy
-msgid "unable to parse as a v810 surface type code: {0!r} in line {1!r}"
-msgstr "Impossibile avviare FlightGear!"
-
-#: ffgo/fgdata/apt_dat.py:593
-#, fuzzy
-msgid "unable to parse as a shoulder surface type code: {0!r} in line {1!r}"
-msgstr "Impossibile avviare FlightGear!"
-
-#: ffgo/fgdata/apt_dat.py:603
-msgid "invalid smoothness value: {0!r}"
-msgstr ""
-
-#: ffgo/fgdata/apt_dat.py:610
-#, fuzzy
-msgid ""
-"Error in {aptDat}: unable to parse as a smoothness value: {val!r} in line "
-"{lineNb} ({line!r})"
-msgstr "Impossibile avviare FlightGear!"
-
-#: ffgo/fgdata/apt_dat.py:623
-#, fuzzy
-msgid "unable to parse as a code for runway markings: {0!r} in line {1!r}"
-msgstr "Impossibile avviare FlightGear!"
-
-#: ffgo/fgdata/apt_dat.py:635
-msgid "invalid v810 code for runway markings: {0!r}"
-msgstr ""
-
-#: ffgo/fgdata/apt_dat.py:639
-#, fuzzy
-msgid "unable to parse as a v810 code for runway markings: {0!r} in line {1!r}"
-msgstr "Impossibile avviare FlightGear!"
-
-#: ffgo/fgdata/apt_dat.py:650
-#, fuzzy
-msgid "unable to parse as a perimeter buoys flag: {0!r} in line {1!r}"
-msgstr "Impossibile avviare FlightGear!"
-
-#: ffgo/fgdata/apt_dat.py:661
-#, fuzzy
-msgid "unable to parse as an helipad edge lighting flag: {0!r} in line {1!r}"
-msgstr "Impossibile avviare FlightGear!"
-
-#: ffgo/fgdata/apt_dat.py:1108
-msgid "unexpected runway number: {num!r}"
-msgstr ""
-
-#: ffgo/fgdata/apt_dat.py:1118
-msgid "runway name not starting with digits: {rwy!r}"
-msgstr ""
-
-#: ffgo/fgdata/apt_dat.py:1352
-msgid "Reading apt.dat files..."
-msgstr ""
-
-#: ffgo/fgdata/apt_dat.py:1368
-#, python-brace-format
-msgid "Loading data for {nbAirports} airports..."
-msgstr ""
-
-#: ffgo/fgdata/apt_dat.py:1397
-#, fuzzy, python-brace-format
-msgid "Writing {prg}'s apt digest file..."
-msgstr "Impossibile avviare FlightGear!"
-
-#: ffgo/fgdata/apt_dat.py:1508 ffgo/fgdata/apt_dat.py:1512
-msgid "unable to find the magic number"
-msgstr ""
-
-#: ffgo/fgdata/apt_dat.py:1519
-msgid "end of file reached before finding the magic number"
-msgstr ""
-
-#: ffgo/fgdata/apt_dat.py:1525
-msgid "could not find a valid line specifying the format version"
-msgstr ""
-
-#: ffgo/fgdata/apt_dat.py:1528 ffgo/fgdata/apt_dat.py:1599
-#, python-brace-format
-msgid "unsupported format version number {num}, current is {current}"
-msgstr ""
-
-#: ffgo/fgdata/apt_dat.py:1542
+#: ffgo/config.py:432
 #, python-brace-format
 msgid ""
-"illegal number of components in apt.dat line #{lineNum}: {num1} (expected "
-"{num2})"
+"Could not find aircraft '{aircraft}', using '{fallback}' from '{dir}' instead"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:1548
+#: ffgo/config.py:446
+msgid "Invalid syntax for the parking setting ({setting!r}), resetting it."
+msgstr ""
+
+#: ffgo/config.py:584 ffgo/config.py:659
+msgid "Querying FlightGear's JSON report..."
+msgstr ""
+
+#: ffgo/config.py:588 ffgo/config.py:663
+#, fuzzy
+msgid "OK."
+msgstr "OK"
+
+#: ffgo/config.py:691
+#, fuzzy
+msgid "Ignoring directory '{}' (unexpected name)"
+msgstr "Directory di lavoro (facoltativa):"
+
+#: ffgo/config.py:720
 #, python-brace-format
-msgid "could not find a valid #{lineNum} apt.dat path specification"
+msgid "Initialize {prg}'s configuration from your existing FGo! configuration?"
 msgstr ""
 
-#: ffgo/fgdata/apt_dat.py:1554
-#, python-brace-format
-msgid "could not find a valid #{lineNum} apt.dat size specification"
-msgstr ""
-
-#: ffgo/fgdata/apt_dat.py:1560
-#, python-brace-format
-msgid ""
-"could not find a valid #{lineNum} apt.dat uncompressed size specification"
-msgstr ""
-
-#: ffgo/fgdata/apt_dat.py:1566
-#, python-brace-format
-msgid "could not find a valid #{lineNum} apt.dat timestamp specification"
-msgstr ""
-
-#: ffgo/misc.py:161
-msgid "empty coordinate string"
-msgstr ""
-
-#: ffgo/misc.py:168
-msgid "unexpected first character in mixed-style coordinate string: {char!r}"
-msgstr ""
-
-#: ffgo/main.py:109
-#, python-brace-format
-msgid "{prg}: initialization of the configuration aborted. Exiting."
-msgstr ""
-
-#: ffgo/main.py:154
+#: ffgo/config.py:722
 #, python-brace-format
 msgid ""
-"\n"
-"{msg}:\n"
-"{details}"
+"You have no {cfgfile} file but you do have a {fgo_cfgfile} file,\n"
+"which normally belongs to FGo!. Except in rare circumstances\n"
+"(such as using braces or backslashes, or opening brackets at the\n"
+"beginning of a config line), a configuration file from\n"
+"FGo! 1.5.5 or earlier should be usable as is by {prg}."
 msgstr ""
 
-#: ffgo/main.py:156 ffgo/gui/configwindow.py:429 ffgo/gui/configwindow.py:599
-#: ffgo/gui/infowindow.py:31 ffgo/gui/gps_tool.py:560
+#: ffgo/config.py:728
+#, python-brace-format
+msgid ""
+"If {fgo_cfgfile} was written by FGo! 1.5.5 or earlier, you\n"
+"should probably say “Yes” here in order to initialize {prg}'s\n"
+"configuration based on your FGo! config file (precisely:\n"
+"copy {fgo_cfgfile} to {cfgfile})."
+msgstr ""
+
+#: ffgo/config.py:733
+#, python-brace-format
+msgid ""
+"If {fgo_cfgfile} was written by a version of FGo! that is greater\n"
+"than 1.5.5, it is advised to say “No” here."
+msgstr ""
+
+#: ffgo/config.py:742
+#, python-brace-format
+msgid "Create a default {prg} configuration?"
+msgstr ""
+
+#: ffgo/config.py:744
+#, python-brace-format
+msgid ""
+"Choose “Yes” to create a basic {prg} configuration now. If you\n"
+"choose “No”, {prg} will exit and you'll have to create {cfgfile}\n"
+"yourself, or restart {prg} to see the same questions again."
+msgstr ""
+
+#: ffgo/config.py:752
+#, python-brace-format
+msgid "Creating a default {prg} configuration."
+msgstr ""
+
+#: ffgo/config.py:754
+msgid ""
+"It is suggested that you go to the Settings menu and choose\n"
+"Preferences to review your newly-created configuration."
+msgstr ""
+
+#: ffgo/config.py:757
+#, python-brace-format
+msgid ""
+"You can also reuse most, if not all FlightGear options you\n"
+"had in FGo!'s main text box (the “options window”). Just copy\n"
+"them to the corresponding {prg} text box."
+msgstr ""
+
+#: ffgo/config.py:761
+#, python-brace-format
+msgid ""
+"Note: you may run both FGo! and {prg} simultaneously, as their\n"
+"configurations are kept separate."
+msgstr ""
+
+#: ffgo/config.py:834
+msgid "Error loading configuration"
+msgstr ""
+
+#: ffgo/config.py:835 ffgo/gui/configwindow.py:429 ffgo/gui/configwindow.py:599
 #: ffgo/gui/airport_finder.py:788 ffgo/gui/airport_finder.py:809
 #: ffgo/gui/airport_finder.py:891 ffgo/gui/airport_finder.py:1037
-#: ffgo/gui/mainwindow.py:903 ffgo/gui/mainwindow.py:932
-#: ffgo/gui/mainwindow.py:1364 ffgo/gui/mainwindow.py:1732
-#: ffgo/gui/mainwindow.py:1765 ffgo/gui/mainwindow.py:1770
-#: ffgo/gui/mainwindow.py:1775 ffgo/gui/mainwindow.py:1803
-#: ffgo/gui/mainwindow.py:1864 ffgo/gui/mainwindow.py:2203
-#: ffgo/gui/mainwindow.py:2516 ffgo/gui/mainwindow.py:2665 ffgo/config.py:835
+#: ffgo/gui/infowindow.py:31 ffgo/gui/mainwindow.py:903
+#: ffgo/gui/mainwindow.py:932 ffgo/gui/mainwindow.py:1364
+#: ffgo/gui/mainwindow.py:1732 ffgo/gui/mainwindow.py:1765
+#: ffgo/gui/mainwindow.py:1770 ffgo/gui/mainwindow.py:1775
+#: ffgo/gui/mainwindow.py:1803 ffgo/gui/mainwindow.py:1864
+#: ffgo/gui/mainwindow.py:2203 ffgo/gui/mainwindow.py:2516
+#: ffgo/gui/mainwindow.py:2665 ffgo/gui/gps_tool.py:560 ffgo/main.py:156
 #, python-brace-format
 msgid "{prg}"
 msgstr ""
 
-#: ffgo/common_transl.py:25
-#, python-brace-format
-msgid ""
-"In order to be able to use it here, you need to have installed "
-"GeographicLib's implementation for the Python installation you are using to "
-"run {prg}."
-msgstr ""
+#: ffgo/config.py:1034
+#, fuzzy
+msgid "Modification of apt.dat files detected."
+msgstr "Sono state rilevate delle modifiche a apt.dat.gz."
 
-#: ffgo/common_transl.py:30
-#, python-brace-format
-msgid ""
-"Method used to compute distance, initial and final bearings for the shortest "
-"path between two airports (“inverse geodetic problem”). Vincenty's method is "
-"faster than Karney's one, but there are some particular cases in which "
-"Vincenty's algorithm can't do the computation. Karney's method should handle "
-"all possible cases.{complement}"
-msgstr ""
+#: ffgo/config.py:1238
+#, fuzzy
+msgid "Cannot find any apt.dat file."
+msgstr "Impossibile trovare il database apt.dat."
 
-#: ffgo/common_transl.py:42
-msgid ""
-"You may want to install GeographicLib's MagneticField program in order to "
-"see magnetic bearings."
-msgstr ""
+#: ffgo/config.py:1239
+msgid "Error"
+msgstr "Errore"
 
-#: ffgo/gui/metar.py:80
-msgid "Decoded"
-msgstr "Decodificato"
-
-#: ffgo/gui/metar.py:107
-msgid "No airport is selected."
-msgstr ""
-
-#: ffgo/gui/metar.py:115
-msgid "No nearby station found."
-msgstr ""
-
-#: ffgo/gui/metar.py:138
-#, fuzzy, python-brace-format
-msgid "Fetching report from {site}..."
-msgstr "Scaricamento del rapporto..."
-
-#: ffgo/gui/metar.py:157
-msgid "Unable to download data."
-msgstr "Impossibile scaricare i dati."
-
-#: ffgo/gui/metar.py:263
+#: ffgo/config.py:1242
 #, fuzzy
 msgid ""
-"Click here to download the METAR report\n"
-"for the selected (or nearest) airport."
+"Generating the airport database,\n"
+"this may take a while..."
 msgstr ""
-"Fare clic qui per scaricare il rapporto METAR per\n"
-"l'aeroporto selezionato (o per quello più vicino)."
+"Generazione del database degli aeroporti in corso:\n"
+"ciò potrebbe richiedere un po' di tempo..."
+
+#: ffgo/config.py:1263
+#, python-brace-format
+msgid ""
+"Generating {prg}'s apt digest file ('{aptDigest}') from:\n"
+"\n"
+"{aptDatFiles}"
+msgstr ""
 
 #: ffgo/gui/configwindow.py:64 ffgo/gui/configwindow.py:387
 #: ffgo/gui/configwindow.py:708
@@ -1025,247 +557,6 @@ msgstr ""
 msgid "Fake the --parkpos option"
 msgstr ""
 
-#: ffgo/gui/gps_tool.py:60 ffgo/gui/mainwindow.py:214
-#, fuzzy
-msgid "GPS Tool"
-msgstr "Strumenti"
-
-#: ffgo/gui/gps_tool.py:100
-#, fuzzy
-msgid "Airport A"
-msgstr "Aeroporto:"
-
-#: ffgo/gui/gps_tool.py:112
-#, fuzzy
-msgid "Airport B"
-msgstr "Aeroporto:"
-
-#: ffgo/gui/gps_tool.py:121
-msgid "Calculations"
-msgstr ""
-
-#: ffgo/gui/gps_tool.py:139
-msgid "Distance in"
-msgstr ""
-
-#: ffgo/gui/gps_tool.py:147 ffgo/gui/airport_finder.py:645
-msgid "nautical miles"
-msgstr ""
-
-#: ffgo/gui/gps_tool.py:153 ffgo/gui/airport_finder.py:651
-msgid "kilometers"
-msgstr ""
-
-#: ffgo/gui/gps_tool.py:167 ffgo/gui/airport_finder.py:600
-#, fuzzy
-msgid "Bearings"
-msgstr "Impostazioni"
-
-#: ffgo/gui/gps_tool.py:174 ffgo/gui/airport_finder.py:608
-msgctxt "Bearings"
-msgid "magnetic"
-msgstr ""
-
-#: ffgo/gui/gps_tool.py:180 ffgo/gui/airport_finder.py:614
-msgctxt "Bearings"
-msgid "true"
-msgstr ""
-
-#: ffgo/gui/gps_tool.py:201
-msgid "Speed in"
-msgstr ""
-
-#: ffgo/gui/gps_tool.py:209
-msgid "knots"
-msgstr ""
-
-#: ffgo/gui/gps_tool.py:215
-msgid "km/h"
-msgstr ""
-
-#: ffgo/gui/gps_tool.py:229 ffgo/gui/airport_finder.py:485
-msgid "Calculation method"
-msgstr ""
-
-#: ffgo/gui/gps_tool.py:235 ffgo/gui/airport_finder.py:497
-msgid "Karney"
-msgstr ""
-
-#: ffgo/gui/gps_tool.py:240 ffgo/gui/airport_finder.py:502
-msgid "Vincenty et al."
-msgstr ""
-
-#: ffgo/gui/gps_tool.py:270
-msgid "Distance between A and B: "
-msgstr ""
-
-#: ffgo/gui/gps_tool.py:296
-msgid "Bearings from A to B:"
-msgstr ""
-
-#: ffgo/gui/gps_tool.py:303 ffgo/gui/gps_tool.py:333
-msgctxt "bearings for a path between two points"
-msgid "init: "
-msgstr ""
-
-#: ffgo/gui/gps_tool.py:318 ffgo/gui/gps_tool.py:345
-msgctxt "bearings for a path between two points"
-msgid "final: "
-msgstr ""
-
-#: ffgo/gui/gps_tool.py:327
-msgid "Bearings from B to A: "
-msgstr ""
-
-#: ffgo/gui/gps_tool.py:364
-msgid "Ground speed: "
-msgstr ""
-
-#: ffgo/gui/gps_tool.py:407
-#, python-brace-format
-msgid ""
-"Decomposition using Julian years\n"
-"(1 Julian year = {days} days)"
-msgstr ""
-
-#: ffgo/gui/gps_tool.py:442 ffgo/gui/airport_finder.py:120
-#, fuzzy
-msgid "Search: "
-msgstr "Cerca"
-
-#: ffgo/gui/gps_tool.py:455 ffgo/gui/airport_finder.py:131
-#: ffgo/gui/mainwindow.py:260 ffgo/gui/mainwindow.py:634
-msgid "Clear"
-msgstr "Cancella"
-
-#: ffgo/gui/gps_tool.py:492 ffgo/gui/airport_finder.py:182
-#: ffgo/gui/airport_finder.py:686 ffgo/gui/mainwindow.py:684
-msgid "ICAO"
-msgstr ""
-
-#: ffgo/gui/gps_tool.py:494 ffgo/gui/airport_finder.py:184
-#: ffgo/gui/airport_finder.py:688
-msgid "Name"
-msgstr ""
-
-#: ffgo/gui/gps_tool.py:548
-msgid "Unable to perform this calculation"
-msgstr ""
-
-#: ffgo/gui/gps_tool.py:550
-#, python-brace-format
-msgid ""
-"Could not compute the distance and bearings between {icaoA} ({nameA}) and "
-"{icaoB} ({nameB}).\n"
-"\n"
-"Vincenty's algorithm for the geodetic inverse problem is known not to handle "
-"all possible cases (most notably, it can't handle the case of two antipodal "
-"or nearly antipodal points). Use Karney's calculation method if you want to "
-"see the results for these two airports."
-msgstr ""
-
-#: ffgo/gui/gps_tool.py:582
-msgctxt "length unit"
-msgid " nm"
-msgstr ""
-
-#: ffgo/gui/gps_tool.py:587
-msgctxt "length unit"
-msgid " km"
-msgstr ""
-
-#: ffgo/gui/gps_tool.py:709
-msgctxt "unit of time"
-msgid "min"
-msgstr ""
-
-#: ffgo/gui/gps_tool.py:741
-#, python-brace-format
-msgid "{nYears} {years}"
-msgstr ""
-
-#: ffgo/gui/gps_tool.py:743
-msgid "year"
-msgid_plural "years"
-msgstr[0] ""
-msgstr[1] ""
-
-#: ffgo/gui/gps_tool.py:746
-#, python-brace-format
-msgid "{nDays} {days}"
-msgstr ""
-
-#: ffgo/gui/gps_tool.py:748
-msgid "day"
-msgid_plural "days"
-msgstr[0] ""
-msgstr[1] ""
-
-#: ffgo/gui/gps_tool.py:751
-#, python-brace-format
-msgid "{nHours} {hours}"
-msgstr ""
-
-#: ffgo/gui/gps_tool.py:753
-msgid "hour"
-msgid_plural "hours"
-msgstr[0] ""
-msgstr[1] ""
-
-#: ffgo/gui/gps_tool.py:756 ffgo/gui/gps_tool.py:768
-#, python-brace-format
-msgid "{nMinutes} {minutes}"
-msgstr ""
-
-#: ffgo/gui/gps_tool.py:758 ffgo/gui/gps_tool.py:770
-msgid "minute"
-msgid_plural "minutes"
-msgstr[0] ""
-msgstr[1] ""
-
-#: ffgo/gui/gps_tool.py:762
-msgctxt "duration expression"
-msgid " and "
-msgstr ""
-
-#: ffgo/gui/gps_tool.py:800
-msgctxt "speed unit"
-msgid " kn"
-msgstr ""
-
-#: ffgo/gui/gps_tool.py:802
-msgctxt "speed unit"
-msgid " km/h"
-msgstr ""
-
-#: ffgo/gui/pressure_converter.py:62
-msgid "Pressure Converter"
-msgstr ""
-
-#: ffgo/gui/pressure_converter.py:106
-msgid "Inches of mercury (inHg):"
-msgstr ""
-
-#: ffgo/gui/pressure_converter.py:129
-msgid "Hectopascals (hPa):"
-msgstr ""
-
-#: ffgo/gui/pressure_converter.py:157
-msgctxt "pressure"
-msgid "Standard"
-msgstr ""
-
-#: ffgo/gui/pressure_converter.py:162
-#, python-brace-format
-msgid ""
-"Set the standard pressure\n"
-"({std_hPa} hPa = {std_inHg} inHg)"
-msgstr ""
-
-#: ffgo/gui/pressure_converter.py:174 ffgo/gui/mainwindow.py:1039
-msgid "Close"
-msgstr "Chiudi"
-
 #: ffgo/gui/airport_finder.py:67
 #, fuzzy
 msgid "Airport finder"
@@ -1275,6 +566,26 @@ msgstr "Aeroporto:"
 #, fuzzy
 msgid "Reference airport"
 msgstr "Aeroporto:"
+
+#: ffgo/gui/airport_finder.py:120 ffgo/gui/gps_tool.py:442
+#, fuzzy
+msgid "Search: "
+msgstr "Cerca"
+
+#: ffgo/gui/airport_finder.py:131 ffgo/gui/mainwindow.py:260
+#: ffgo/gui/mainwindow.py:634 ffgo/gui/gps_tool.py:455
+msgid "Clear"
+msgstr "Cancella"
+
+#: ffgo/gui/airport_finder.py:182 ffgo/gui/airport_finder.py:686
+#: ffgo/gui/mainwindow.py:684 ffgo/gui/gps_tool.py:492
+msgid "ICAO"
+msgstr ""
+
+#: ffgo/gui/airport_finder.py:184 ffgo/gui/airport_finder.py:688
+#: ffgo/gui/gps_tool.py:494
+msgid "Name"
+msgstr ""
 
 #: ffgo/gui/airport_finder.py:186 ffgo/gui/airport_finder.py:698
 msgid "Land rwys"
@@ -1369,6 +680,18 @@ msgctxt "runway length"
 msgid "at most"
 msgstr ""
 
+#: ffgo/gui/airport_finder.py:485 ffgo/gui/gps_tool.py:229
+msgid "Calculation method"
+msgstr ""
+
+#: ffgo/gui/airport_finder.py:497 ffgo/gui/gps_tool.py:235
+msgid "Karney"
+msgstr ""
+
+#: ffgo/gui/airport_finder.py:502 ffgo/gui/gps_tool.py:240
+msgid "Vincenty et al."
+msgstr ""
+
 #: ffgo/gui/airport_finder.py:520
 msgid "Search"
 msgstr "Cerca"
@@ -1396,8 +719,31 @@ msgstr ""
 msgid "from reference airport"
 msgstr ""
 
+#: ffgo/gui/airport_finder.py:600 ffgo/gui/gps_tool.py:167
+#, fuzzy
+msgid "Bearings"
+msgstr "Impostazioni"
+
+#: ffgo/gui/airport_finder.py:608 ffgo/gui/gps_tool.py:174
+msgctxt "Bearings"
+msgid "magnetic"
+msgstr ""
+
+#: ffgo/gui/airport_finder.py:614 ffgo/gui/gps_tool.py:180
+msgctxt "Bearings"
+msgid "true"
+msgstr ""
+
 #: ffgo/gui/airport_finder.py:636
 msgid "Distances in"
+msgstr ""
+
+#: ffgo/gui/airport_finder.py:645 ffgo/gui/gps_tool.py:147
+msgid "nautical miles"
+msgstr ""
+
+#: ffgo/gui/airport_finder.py:651 ffgo/gui/gps_tool.py:153
+msgid "kilometers"
 msgstr ""
 
 #: ffgo/gui/airport_finder.py:662
@@ -1521,6 +867,64 @@ msgid ""
 "scenery for this airport."
 msgstr ""
 
+#: ffgo/gui/metar.py:80
+msgid "Decoded"
+msgstr "Decodificato"
+
+#: ffgo/gui/metar.py:107
+msgid "No airport is selected."
+msgstr ""
+
+#: ffgo/gui/metar.py:115
+msgid "No nearby station found."
+msgstr ""
+
+#: ffgo/gui/metar.py:138
+#, fuzzy, python-brace-format
+msgid "Fetching report from {site}..."
+msgstr "Scaricamento del rapporto..."
+
+#: ffgo/gui/metar.py:157
+msgid "Unable to download data."
+msgstr "Impossibile scaricare i dati."
+
+#: ffgo/gui/metar.py:263
+#, fuzzy
+msgid ""
+"Click here to download the METAR report\n"
+"for the selected (or nearest) airport."
+msgstr ""
+"Fare clic qui per scaricare il rapporto METAR per\n"
+"l'aeroporto selezionato (o per quello più vicino)."
+
+#: ffgo/gui/pressure_converter.py:62
+msgid "Pressure Converter"
+msgstr ""
+
+#: ffgo/gui/pressure_converter.py:106
+msgid "Inches of mercury (inHg):"
+msgstr ""
+
+#: ffgo/gui/pressure_converter.py:129
+msgid "Hectopascals (hPa):"
+msgstr ""
+
+#: ffgo/gui/pressure_converter.py:157
+msgctxt "pressure"
+msgid "Standard"
+msgstr ""
+
+#: ffgo/gui/pressure_converter.py:162
+#, python-brace-format
+msgid ""
+"Set the standard pressure\n"
+"({std_hPa} hPa = {std_inHg} inHg)"
+msgstr ""
+
+#: ffgo/gui/pressure_converter.py:174 ffgo/gui/mainwindow.py:1039
+msgid "Close"
+msgstr "Chiudi"
+
 #: ffgo/gui/mainwindow.py:142
 #, fuzzy
 msgid "Load..."
@@ -1598,6 +1002,11 @@ msgstr "Impostazioni"
 #, fuzzy
 msgid "Airport Finder"
 msgstr "Aeroporto:"
+
+#: ffgo/gui/mainwindow.py:214 ffgo/gui/gps_tool.py:60
+#, fuzzy
+msgid "GPS Tool"
+msgstr "Strumenti"
 
 #: ffgo/gui/mainwindow.py:218
 msgid "Pressure converter"
@@ -1936,21 +1345,11 @@ msgstr "Autori:"
 msgid "Magnetic variation unavailable: {reason}."
 msgstr ""
 
-#: ffgo/gui/mainwindow.py:1002 ffgo/config.py:332
-msgctxt "FlightGear version"
-msgid "none"
-msgstr ""
-
 #: ffgo/gui/mainwindow.py:1004
 #, python-brace-format
 msgid ""
 "(you may want to check the '{fgfs}' executable and FG_ROOT paths, as well as "
 "the FlightGear working directory defined in Settings → Preferences)"
-msgstr ""
-
-#: ffgo/gui/mainwindow.py:1008 ffgo/config.py:335
-#, python-brace-format
-msgid "Detected FlightGear version: {ver}"
 msgstr ""
 
 #: ffgo/gui/mainwindow.py:1036
@@ -2294,173 +1693,157 @@ msgstr ""
 msgid "Open Log Directory"
 msgstr ""
 
-#: ffgo/config.py:292
-msgid "Building the list of installed airports (this may take some time)..."
-msgstr ""
-
-#: ffgo/config.py:418
-#, python-brace-format
-msgid ""
-"Could not find aircraft '{aircraft}' under '{dir}', taking it from "
-"'{fallback}' instead"
-msgstr ""
-
-#: ffgo/config.py:427
-#, python-brace-format
-msgid "Could not find the default aircraft: {aircraft}"
-msgstr ""
-
-#: ffgo/config.py:432
-#, python-brace-format
-msgid ""
-"Could not find aircraft '{aircraft}', using '{fallback}' from '{dir}' instead"
-msgstr ""
-
-#: ffgo/config.py:446
-msgid "Invalid syntax for the parking setting ({setting!r}), resetting it."
-msgstr ""
-
-#: ffgo/config.py:584 ffgo/config.py:659
-msgid "Querying FlightGear's JSON report..."
-msgstr ""
-
-#: ffgo/config.py:588 ffgo/config.py:663
+#: ffgo/gui/gps_tool.py:100
 #, fuzzy
-msgid "OK."
-msgstr "OK"
+msgid "Airport A"
+msgstr "Aeroporto:"
 
-#: ffgo/config.py:691
+#: ffgo/gui/gps_tool.py:112
 #, fuzzy
-msgid "Ignoring directory '{}' (unexpected name)"
-msgstr "Directory di lavoro (facoltativa):"
+msgid "Airport B"
+msgstr "Aeroporto:"
 
-#: ffgo/config.py:720
-#, python-brace-format
-msgid "Initialize {prg}'s configuration from your existing FGo! configuration?"
+#: ffgo/gui/gps_tool.py:121
+msgid "Calculations"
 msgstr ""
 
-#: ffgo/config.py:722
-#, python-brace-format
-msgid ""
-"You have no {cfgfile} file but you do have a {fgo_cfgfile} file,\n"
-"which normally belongs to FGo!. Except in rare circumstances\n"
-"(such as using braces or backslashes, or opening brackets at the\n"
-"beginning of a config line), a configuration file from\n"
-"FGo! 1.5.5 or earlier should be usable as is by {prg}."
+#: ffgo/gui/gps_tool.py:139
+msgid "Distance in"
 msgstr ""
 
-#: ffgo/config.py:728
-#, python-brace-format
-msgid ""
-"If {fgo_cfgfile} was written by FGo! 1.5.5 or earlier, you\n"
-"should probably say “Yes” here in order to initialize {prg}'s\n"
-"configuration based on your FGo! config file (precisely:\n"
-"copy {fgo_cfgfile} to {cfgfile})."
+#: ffgo/gui/gps_tool.py:201
+msgid "Speed in"
 msgstr ""
 
-#: ffgo/config.py:733
-#, python-brace-format
-msgid ""
-"If {fgo_cfgfile} was written by a version of FGo! that is greater\n"
-"than 1.5.5, it is advised to say “No” here."
+#: ffgo/gui/gps_tool.py:209
+msgid "knots"
 msgstr ""
 
-#: ffgo/config.py:742
-#, python-brace-format
-msgid "Create a default {prg} configuration?"
+#: ffgo/gui/gps_tool.py:215
+msgid "km/h"
 msgstr ""
 
-#: ffgo/config.py:744
-#, python-brace-format
-msgid ""
-"Choose “Yes” to create a basic {prg} configuration now. If you\n"
-"choose “No”, {prg} will exit and you'll have to create {cfgfile}\n"
-"yourself, or restart {prg} to see the same questions again."
+#: ffgo/gui/gps_tool.py:270
+msgid "Distance between A and B: "
 msgstr ""
 
-#: ffgo/config.py:752
-#, python-brace-format
-msgid "Creating a default {prg} configuration."
+#: ffgo/gui/gps_tool.py:296
+msgid "Bearings from A to B:"
 msgstr ""
 
-#: ffgo/config.py:754
-msgid ""
-"It is suggested that you go to the Settings menu and choose\n"
-"Preferences to review your newly-created configuration."
+#: ffgo/gui/gps_tool.py:303 ffgo/gui/gps_tool.py:333
+msgctxt "bearings for a path between two points"
+msgid "init: "
 msgstr ""
 
-#: ffgo/config.py:757
+#: ffgo/gui/gps_tool.py:318 ffgo/gui/gps_tool.py:345
+msgctxt "bearings for a path between two points"
+msgid "final: "
+msgstr ""
+
+#: ffgo/gui/gps_tool.py:327
+msgid "Bearings from B to A: "
+msgstr ""
+
+#: ffgo/gui/gps_tool.py:364
+msgid "Ground speed: "
+msgstr ""
+
+#: ffgo/gui/gps_tool.py:407
 #, python-brace-format
 msgid ""
-"You can also reuse most, if not all FlightGear options you\n"
-"had in FGo!'s main text box (the “options window”). Just copy\n"
-"them to the corresponding {prg} text box."
+"Decomposition using Julian years\n"
+"(1 Julian year = {days} days)"
 msgstr ""
 
-#: ffgo/config.py:761
+#: ffgo/gui/gps_tool.py:548
+msgid "Unable to perform this calculation"
+msgstr ""
+
+#: ffgo/gui/gps_tool.py:550
 #, python-brace-format
 msgid ""
-"Note: you may run both FGo! and {prg} simultaneously, as their\n"
-"configurations are kept separate."
-msgstr ""
-
-#: ffgo/config.py:834
-msgid "Error loading configuration"
-msgstr ""
-
-#: ffgo/config.py:1034
-#, fuzzy
-msgid "Modification of apt.dat files detected."
-msgstr "Sono state rilevate delle modifiche a apt.dat.gz."
-
-#: ffgo/config.py:1238
-#, fuzzy
-msgid "Cannot find any apt.dat file."
-msgstr "Impossibile trovare il database apt.dat."
-
-#: ffgo/config.py:1239
-msgid "Error"
-msgstr "Errore"
-
-#: ffgo/config.py:1242
-#, fuzzy
-msgid ""
-"Generating the airport database,\n"
-"this may take a while..."
-msgstr ""
-"Generazione del database degli aeroporti in corso:\n"
-"ciò potrebbe richiedere un po' di tempo..."
-
-#: ffgo/config.py:1263
-#, python-brace-format
-msgid ""
-"Generating {prg}'s apt digest file ('{aptDigest}') from:\n"
+"Could not compute the distance and bearings between {icaoA} ({nameA}) and "
+"{icaoB} ({nameB}).\n"
 "\n"
-"{aptDatFiles}"
+"Vincenty's algorithm for the geodetic inverse problem is known not to handle "
+"all possible cases (most notably, it can't handle the case of two antipodal "
+"or nearly antipodal points). Use Karney's calculation method if you want to "
+"see the results for these two airports."
 msgstr ""
 
-#: ffgo/fgcmdbuilder.py:25
-msgid "Error caught in the fgcmdbuilder module"
+#: ffgo/gui/gps_tool.py:582
+msgctxt "length unit"
+msgid " nm"
 msgstr ""
 
-#: ffgo/fgcmdbuilder.py:33
-msgid "Invalid escape sequence in an option line"
+#: ffgo/gui/gps_tool.py:587
+msgctxt "length unit"
+msgid " km"
 msgstr ""
 
-#: ffgo/fgcmdbuilder.py:37
+#: ffgo/gui/gps_tool.py:709
+msgctxt "unit of time"
+msgid "min"
+msgstr ""
+
+#: ffgo/gui/gps_tool.py:741
 #, python-brace-format
-msgid ""
-"the \\{char} escape sequence is not recognized by {prg} in the Options Window"
+msgid "{nYears} {years}"
 msgstr ""
 
-#: ffgo/fgcmdbuilder.py:49
-msgid "Unsupported option"
-msgstr ""
+#: ffgo/gui/gps_tool.py:743
+msgid "year"
+msgid_plural "years"
+msgstr[0] ""
+msgstr[1] ""
 
-#: ffgo/fgcmdbuilder.py:53
+#: ffgo/gui/gps_tool.py:746
 #, python-brace-format
-msgid ""
-"the \\{option} fgfs option is not supported by {prg} in the Options Window"
+msgid "{nDays} {days}"
+msgstr ""
+
+#: ffgo/gui/gps_tool.py:748
+msgid "day"
+msgid_plural "days"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ffgo/gui/gps_tool.py:751
+#, python-brace-format
+msgid "{nHours} {hours}"
+msgstr ""
+
+#: ffgo/gui/gps_tool.py:753
+msgid "hour"
+msgid_plural "hours"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ffgo/gui/gps_tool.py:756 ffgo/gui/gps_tool.py:768
+#, python-brace-format
+msgid "{nMinutes} {minutes}"
+msgstr ""
+
+#: ffgo/gui/gps_tool.py:758 ffgo/gui/gps_tool.py:770
+msgid "minute"
+msgid_plural "minutes"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ffgo/gui/gps_tool.py:762
+msgctxt "duration expression"
+msgid " and "
+msgstr ""
+
+#: ffgo/gui/gps_tool.py:800
+msgctxt "speed unit"
+msgid " kn"
+msgstr ""
+
+#: ffgo/gui/gps_tool.py:802
+msgctxt "speed unit"
+msgid " km/h"
 msgstr ""
 
 #: ffgo/geo/geodesy.py:32
@@ -2476,8 +1859,8 @@ msgstr ""
 msgid ""
 "          your latest interactions with {prg} required to perform a "
 "geodetic\n"
-"          calculation. {prg} tried to do it with Vincenty's "
-"“formula” (rather,\n"
+"          calculation. {prg} tried to do it with Vincenty's “formula” "
+"(rather,\n"
 "          algorithm) and a few others, but this is not possible because the "
 "two\n"
 "          points are antipodal or nearly so, which is the main difficult "
@@ -2537,6 +1920,85 @@ msgstr ""
 msgid "'{exec}' doesn't seem to work properly ({pb})"
 msgstr ""
 
+#: ffgo/fgcmdbuilder.py:25
+msgid "Error caught in the fgcmdbuilder module"
+msgstr ""
+
+#: ffgo/fgcmdbuilder.py:33
+msgid "Invalid escape sequence in an option line"
+msgstr ""
+
+#: ffgo/fgcmdbuilder.py:37
+#, python-brace-format
+msgid ""
+"the \\{char} escape sequence is not recognized by {prg} in the Options Window"
+msgstr ""
+
+#: ffgo/fgcmdbuilder.py:49
+msgid "Unsupported option"
+msgstr ""
+
+#: ffgo/fgcmdbuilder.py:53
+#, python-brace-format
+msgid ""
+"the \\{option} fgfs option is not supported by {prg} in the Options Window"
+msgstr ""
+
+#: ffgo/misc.py:161
+msgid "empty coordinate string"
+msgstr ""
+
+#: ffgo/misc.py:168
+msgid "unexpected first character in mixed-style coordinate string: {char!r}"
+msgstr ""
+
+#: ffgo/exceptions.py:52 ffgo/fgdata/apt_dat.py:73
+#, python-brace-format
+msgid "{shortDesc}: {detail}"
+msgstr ""
+
+#: ffgo/exceptions.py:58
+#, python-brace-format
+msgid "{prg} generic exception"
+msgstr ""
+
+#: ffgo/main.py:109
+#, python-brace-format
+msgid "{prg}: initialization of the configuration aborted. Exiting."
+msgstr ""
+
+#: ffgo/main.py:154
+#, python-brace-format
+msgid ""
+"\n"
+"{msg}:\n"
+"{details}"
+msgstr ""
+
+#: ffgo/common_transl.py:25
+#, python-brace-format
+msgid ""
+"In order to be able to use it here, you need to have installed "
+"GeographicLib's implementation for the Python installation you are using to "
+"run {prg}."
+msgstr ""
+
+#: ffgo/common_transl.py:30
+#, python-brace-format
+msgid ""
+"Method used to compute distance, initial and final bearings for the shortest "
+"path between two airports (“inverse geodetic problem”). Vincenty's method is "
+"faster than Karney's one, but there are some particular cases in which "
+"Vincenty's algorithm can't do the computation. Karney's method should handle "
+"all possible cases.{complement}"
+msgstr ""
+
+#: ffgo/common_transl.py:42
+msgid ""
+"You may want to install GeographicLib's MagneticField program in order to "
+"see magnetic bearings."
+msgstr ""
+
 #: ffgo/stats_manager.py:27
 msgid "Error caught in the stats_manager module"
 msgstr ""
@@ -2569,6 +2031,549 @@ msgstr ""
 msgid "no top-level pair with name '{subject}'"
 msgstr ""
 
+#: ffgo/fgdata/json_report.py:23
+msgid "Error caught in the json_report module"
+msgstr ""
+
+#: ffgo/fgdata/json_report.py:27
+#, fuzzy
+msgid "Unable to run 'fgfs --json-report'"
+msgstr "Impossibile avviare FlightGear!"
+
+#: ffgo/fgdata/json_report.py:31
+msgid "Error when running 'fgfs --json-report'"
+msgstr ""
+
+#: ffgo/fgdata/json_report.py:37
+msgid "Error trying to process the output of 'fgfs --json-report'"
+msgstr ""
+
+#: ffgo/fgdata/json_report.py:43
+#, fuzzy
+msgid "Unable to parse the output of 'fgfs --json-report'"
+msgstr "Impossibile avviare FlightGear!"
+
+#: ffgo/fgdata/apt_dat.py:46
+msgid "Error caught in the apt_dat module"
+msgstr ""
+
+#: ffgo/fgdata/apt_dat.py:51
+msgid "Error parsing an apt.dat file"
+msgstr ""
+
+#: ffgo/fgdata/apt_dat.py:65
+#, python-brace-format
+msgid "in '{file}', line {line}: {msg}"
+msgstr ""
+
+#: ffgo/fgdata/apt_dat.py:68
+#, python-brace-format
+msgid "in '{file}', line {line}"
+msgstr ""
+
+#: ffgo/fgdata/apt_dat.py:77
+#, python-brace-format
+msgid "{shortDesc} ({detail})"
+msgstr ""
+
+#: ffgo/fgdata/apt_dat.py:84
+#, fuzzy
+msgid "Unable to parse an apt.dat header"
+msgstr "Impossibile avviare FlightGear!"
+
+#: ffgo/fgdata/apt_dat.py:88
+#, fuzzy
+msgid "Unable to parse the apt digest file"
+msgstr "Impossibile avviare FlightGear!"
+
+#: ffgo/fgdata/apt_dat.py:92
+msgid "Index mismatch"
+msgstr ""
+
+#: ffgo/fgdata/apt_dat.py:98
+msgid "Unable to recognize the format of the apt digest file"
+msgstr ""
+
+#: ffgo/fgdata/apt_dat.py:301
+msgid "not a valid record: {!r}"
+msgstr ""
+
+#: ffgo/fgdata/apt_dat.py:312
+msgid "EOF reached while looking for the first non-empty line"
+msgstr ""
+
+#: ffgo/fgdata/apt_dat.py:316
+msgid "first non-empty line should contain exactly one character"
+msgstr ""
+
+#: ffgo/fgdata/apt_dat.py:322
+msgid "EOF reached while looking for the version of the format"
+msgstr ""
+
+#: ffgo/fgdata/apt_dat.py:328
+msgid "unexpected header line: {line!r}"
+msgstr ""
+
+#: ffgo/fgdata/apt_dat.py:333
+#, python-brace-format
+msgid ""
+"'{aptDat}' reports a format version {ver}, which this version of {prg} "
+"doesn't know about. Things may not work correctly. Please report a bug."
+msgstr ""
+
+#: ffgo/fgdata/apt_dat.py:385 ffgo/fgdata/apt_dat.py:445
+#: ffgo/fgdata/apt_dat.py:685 ffgo/fgdata/apt_dat.py:706
+#: ffgo/fgdata/apt_dat.py:745 ffgo/fgdata/apt_dat.py:1011
+#: ffgo/fgdata/apt_dat.py:1177 ffgo/fgdata/apt_dat.py:1210
+#: ffgo/fgdata/apt_dat.py:1238
+msgid "not enough fields in record: {!r}"
+msgstr ""
+
+#: ffgo/fgdata/apt_dat.py:390
+#, python-brace-format
+msgid "{aptDat}:{lineNb}: skipping airport {aptId} (already defined earlier)"
+msgstr ""
+
+#: ffgo/fgdata/apt_dat.py:401
+#, python-brace-format
+msgid "{aptDat}:{lineNb}: row code 99 found (normally at end of file)"
+msgstr ""
+
+#: ffgo/fgdata/apt_dat.py:450
+msgid "expected {aptId1!r}, but found {aptId2!r} instead"
+msgstr ""
+
+#: ffgo/fgdata/apt_dat.py:516
+#, fuzzy
+msgid "unable to parse as a latitude: {0!r} in line {1!r}"
+msgstr "Impossibile avviare FlightGear!"
+
+#: ffgo/fgdata/apt_dat.py:527
+#, fuzzy
+msgid "unable to parse as a longitude: {0!r} in line {1!r}"
+msgstr "Impossibile avviare FlightGear!"
+
+#: ffgo/fgdata/apt_dat.py:538
+#, fuzzy
+msgid "unable to parse as a heading: {0!r} in line {1!r}"
+msgstr "Impossibile avviare FlightGear!"
+
+#: ffgo/fgdata/apt_dat.py:549
+#, fuzzy
+msgid "unable to parse as a length: {0!r} in line {1!r}"
+msgstr "Impossibile avviare FlightGear!"
+
+#: ffgo/fgdata/apt_dat.py:560
+#, fuzzy
+msgid "unable to parse as an elevation: {0!r} in line {1!r}"
+msgstr "Impossibile avviare FlightGear!"
+
+#: ffgo/fgdata/apt_dat.py:571
+#, fuzzy
+msgid "unable to parse as a surface type code: {0!r} in line {1!r}"
+msgstr "Impossibile avviare FlightGear!"
+
+#: ffgo/fgdata/apt_dat.py:582
+#, fuzzy
+msgid "unable to parse as a v810 surface type code: {0!r} in line {1!r}"
+msgstr "Impossibile avviare FlightGear!"
+
+#: ffgo/fgdata/apt_dat.py:593
+#, fuzzy
+msgid "unable to parse as a shoulder surface type code: {0!r} in line {1!r}"
+msgstr "Impossibile avviare FlightGear!"
+
+#: ffgo/fgdata/apt_dat.py:603
+msgid "invalid smoothness value: {0!r}"
+msgstr ""
+
+#: ffgo/fgdata/apt_dat.py:610
+#, fuzzy
+msgid ""
+"Error in {aptDat}: unable to parse as a smoothness value: {val!r} in line "
+"{lineNb} ({line!r})"
+msgstr "Impossibile avviare FlightGear!"
+
+#: ffgo/fgdata/apt_dat.py:623
+#, fuzzy
+msgid "unable to parse as a code for runway markings: {0!r} in line {1!r}"
+msgstr "Impossibile avviare FlightGear!"
+
+#: ffgo/fgdata/apt_dat.py:635
+msgid "invalid v810 code for runway markings: {0!r}"
+msgstr ""
+
+#: ffgo/fgdata/apt_dat.py:639
+#, fuzzy
+msgid "unable to parse as a v810 code for runway markings: {0!r} in line {1!r}"
+msgstr "Impossibile avviare FlightGear!"
+
+#: ffgo/fgdata/apt_dat.py:650
+#, fuzzy
+msgid "unable to parse as a perimeter buoys flag: {0!r} in line {1!r}"
+msgstr "Impossibile avviare FlightGear!"
+
+#: ffgo/fgdata/apt_dat.py:661
+#, fuzzy
+msgid "unable to parse as an helipad edge lighting flag: {0!r} in line {1!r}"
+msgstr "Impossibile avviare FlightGear!"
+
+#: ffgo/fgdata/apt_dat.py:1108
+msgid "unexpected runway number: {num!r}"
+msgstr ""
+
+#: ffgo/fgdata/apt_dat.py:1118
+msgid "runway name not starting with digits: {rwy!r}"
+msgstr ""
+
+#: ffgo/fgdata/apt_dat.py:1352
+msgid "Reading apt.dat files..."
+msgstr ""
+
+#: ffgo/fgdata/apt_dat.py:1368
+#, python-brace-format
+msgid "Loading data for {nbAirports} airports..."
+msgstr ""
+
+#: ffgo/fgdata/apt_dat.py:1397
+#, fuzzy, python-brace-format
+msgid "Writing {prg}'s apt digest file..."
+msgstr "Impossibile avviare FlightGear!"
+
+#: ffgo/fgdata/apt_dat.py:1508 ffgo/fgdata/apt_dat.py:1512
+msgid "unable to find the magic number"
+msgstr ""
+
+#: ffgo/fgdata/apt_dat.py:1519
+msgid "end of file reached before finding the magic number"
+msgstr ""
+
+#: ffgo/fgdata/apt_dat.py:1525
+msgid "could not find a valid line specifying the format version"
+msgstr ""
+
+#: ffgo/fgdata/apt_dat.py:1528 ffgo/fgdata/apt_dat.py:1599
+#, python-brace-format
+msgid "unsupported format version number {num}, current is {current}"
+msgstr ""
+
+#: ffgo/fgdata/apt_dat.py:1542
+#, python-brace-format
+msgid ""
+"illegal number of components in apt.dat line #{lineNum}: {num1} (expected "
+"{num2})"
+msgstr ""
+
+#: ffgo/fgdata/apt_dat.py:1548
+#, python-brace-format
+msgid "could not find a valid #{lineNum} apt.dat path specification"
+msgstr ""
+
+#: ffgo/fgdata/apt_dat.py:1554
+#, python-brace-format
+msgid "could not find a valid #{lineNum} apt.dat size specification"
+msgstr ""
+
+#: ffgo/fgdata/apt_dat.py:1560
+#, python-brace-format
+msgid ""
+"could not find a valid #{lineNum} apt.dat uncompressed size specification"
+msgstr ""
+
+#: ffgo/fgdata/apt_dat.py:1566
+#, python-brace-format
+msgid "could not find a valid #{lineNum} apt.dat timestamp specification"
+msgstr ""
+
+#: ffgo/fgdata/parking.py:85
+msgid "invalid value for the {attr!r} attribute: {val!r}"
+msgstr ""
+
+#: ffgo/fgdata/parking.py:161
+msgctxt "parking position"
+msgid "Radius: {} m"
+msgstr ""
+
+#: ffgo/fgdata/parking.py:164
+msgctxt "parking position"
+msgid "Airlines: {}"
+msgstr ""
+
+#: ffgo/fgdata/parking.py:168
+msgctxt "parking position"
+msgid "Latitude: {}"
+msgstr ""
+
+#: ffgo/fgdata/parking.py:169
+msgctxt "parking position"
+msgid "Longitude: {}"
+msgstr ""
+
+#: ffgo/fgdata/parking.py:177
+#, python-brace-format
+msgctxt "parking position"
+msgid "Magnetic heading: {mag} (true: {true})"
+msgstr ""
+
+#: ffgo/fgdata/parking.py:180
+msgctxt "parking position"
+msgid "True heading: {}"
+msgstr ""
+
+#: ffgo/fgdata/parking.py:209
+#, python-brace-format
+msgid "while parsing '{file}': {errmsg}"
+msgstr ""
+
+#: ffgo/fgdata/parking.py:215
+#, python-brace-format
+msgid "'{file}': empty parking name (index='{idx}')"
+msgstr ""
+
+#: ffgo/fgdata/parking.py:219
+#, python-brace-format
+msgid ""
+"'{file}': duplicate parking name '{parkName}' (index='{idxDup}'); keeping "
+"the first found only (index='{idx1}')"
+msgstr ""
+
+#: ffgo/fgdata/fgversion.py:22
+msgid "Error caught in the fgversion module"
+msgstr ""
+
+#: ffgo/fgdata/fgversion.py:27
+msgid "Invalid use of the fgversion module"
+msgstr ""
+
+#: ffgo/fgdata/fgversion.py:33
+#, fuzzy
+msgid "Unable to parse as a FlightGear version string"
+msgstr "Impossibile avviare FlightGear!"
+
+#: ffgo/fgdata/fgversion.py:39
+msgid "Unable to parse the output of 'fgfs --version'"
+msgstr ""
+
+#: ffgo/fgdata/fgversion.py:43
+#, fuzzy
+msgid "Unable to run 'fgfs --version'"
+msgstr "Impossibile avviare FlightGear!"
+
+#: ffgo/fgdata/fgversion.py:47
+msgid "Error when running 'fgfs --version'"
+msgstr ""
+
+#: ffgo/fgdata/airport.py:46
+#, fuzzy
+msgid "Land airport"
+msgstr "Aeroporto:"
+
+#: ffgo/fgdata/airport.py:47
+msgid "Seaplane base"
+msgstr ""
+
+#: ffgo/fgdata/airport.py:48
+#, fuzzy
+msgid "Heliport"
+msgstr "Aeroporto:"
+
+#: ffgo/fgdata/airport.py:99
+#, python-brace-format
+msgid "{rwyType}: {runways}"
+msgstr ""
+
+#: ffgo/fgdata/airport.py:106
+#, python-brace-format
+msgid "Latitude: {latitude}"
+msgstr ""
+
+#: ffgo/fgdata/airport.py:107
+#, python-brace-format
+msgid "Longitude: {longitude}"
+msgstr ""
+
+#: ffgo/fgdata/airport.py:108
+#, python-brace-format
+msgid "Elevation: {elev_feet} ft ({elev_meters} m)"
+msgstr ""
+
+#: ffgo/fgdata/airport.py:114
+msgid "Magnetic variation: {}°"
+msgstr ""
+
+#: ffgo/fgdata/airport.py:206
+msgctxt "surface type"
+msgid "asphalt"
+msgstr ""
+
+#: ffgo/fgdata/airport.py:207
+msgctxt "surface type"
+msgid "concrete"
+msgstr ""
+
+#: ffgo/fgdata/airport.py:209
+msgctxt "surface type"
+msgid "turf or grass"
+msgstr ""
+
+#: ffgo/fgdata/airport.py:210
+msgctxt "surface type"
+msgid "dirt"
+msgstr ""
+
+#: ffgo/fgdata/airport.py:211
+msgctxt "surface type"
+msgid "gravel"
+msgstr ""
+
+#: ffgo/fgdata/airport.py:212
+msgctxt "surface type"
+msgid "dry lake bed"
+msgstr ""
+
+#: ffgo/fgdata/airport.py:213
+msgctxt "surface type"
+msgid "water"
+msgstr ""
+
+#: ffgo/fgdata/airport.py:214
+msgctxt "surface type"
+msgid "snow or ice"
+msgstr ""
+
+#: ffgo/fgdata/airport.py:215
+msgctxt "surface type"
+msgid "transparent"
+msgstr ""
+
+#: ffgo/fgdata/airport.py:285
+msgid "invalid v810 surface code: {0!r}"
+msgstr ""
+
+#: ffgo/fgdata/airport.py:300
+msgctxt "runway/helipad shoulder surface type"
+msgid "none"
+msgstr ""
+
+#: ffgo/fgdata/airport.py:302
+msgctxt "runway/helipad shoulder surface type"
+msgid "asphalt"
+msgstr ""
+
+#: ffgo/fgdata/airport.py:304
+msgctxt "runway/helipad shoulder surface type"
+msgid "concrete"
+msgstr ""
+
+#: ffgo/fgdata/airport.py:318
+msgid "Land runway"
+msgid_plural "Land runways"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ffgo/fgdata/airport.py:320
+msgid "Water runway"
+msgid_plural "Water runways"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ffgo/fgdata/airport.py:322
+msgid "Helipad"
+msgid_plural "Helipads"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ffgo/fgdata/airport.py:340
+msgctxt "runway markings"
+msgid "none"
+msgstr ""
+
+#: ffgo/fgdata/airport.py:342
+msgctxt "runway markings"
+msgid "visual"
+msgstr ""
+
+#: ffgo/fgdata/airport.py:344
+msgctxt "runway markings"
+msgid "non-precision approach"
+msgstr ""
+
+#: ffgo/fgdata/airport.py:346
+msgctxt "runway markings"
+msgid "precision approach"
+msgstr ""
+
+#: ffgo/fgdata/airport.py:348
+msgctxt "runway markings"
+msgid "UK-style non-precision approach"
+msgstr ""
+
+#: ffgo/fgdata/airport.py:350
+msgctxt "runway markings"
+msgid "UK-style precision approach"
+msgstr ""
+
+#: ffgo/fgdata/airport.py:377
+msgid "Latitude: {}"
+msgstr ""
+
+#: ffgo/fgdata/airport.py:381
+msgid "Longitude: {}"
+msgstr ""
+
+#: ffgo/fgdata/airport.py:393
+#, python-brace-format
+msgctxt "runway/helipad"
+msgid "Magnetic heading: {mag} (true: {true})"
+msgstr ""
+
+#: ffgo/fgdata/airport.py:397
+msgctxt "runway/helipad"
+msgid "True heading: {}"
+msgstr ""
+
+#: ffgo/fgdata/airport.py:404
+#, python-brace-format
+msgid "Length: {0} m ({1} ft)"
+msgstr ""
+
+#: ffgo/fgdata/airport.py:411
+#, python-brace-format
+msgid "Width: {0} m ({1} ft)"
+msgstr ""
+
+#: ffgo/fgdata/airport.py:417
+msgid "Surface type: {}"
+msgstr ""
+
+#: ffgo/fgdata/airport.py:421
+msgid "Shoulder surface type: {}"
+msgstr ""
+
+#: ffgo/fgdata/airport.py:426
+msgid "Runway markings: {}"
+msgstr ""
+
+#: ffgo/fgdata/airport.py:430
+msgid "Smoothness: {}"
+msgstr ""
+
+#: ffgo/fgdata/airport.py:471 ffgo/fgdata/airport.py:512
+msgid "no"
+msgstr ""
+
+#: ffgo/fgdata/airport.py:472 ffgo/fgdata/airport.py:513
+msgid "yes"
+msgstr ""
+
+#: ffgo/fgdata/airport.py:499
+msgid "Perimeter buoys: {}"
+msgstr ""
+
+#: ffgo/fgdata/airport.py:547
+msgid "Edge lighting: {}"
+msgstr ""
+
 #, fuzzy
 #~ msgid "Miscellaneous settings"
 #~ msgstr "Altre impostazioni"
@@ -2598,14 +2603,14 @@ msgstr ""
 #~ "Cannot read version number of apt.dat database.\n"
 #~ "\n"
 #~ "{prg} expects a proper header information at the beginning of apt.dat. "
-#~ "For details about data format see http://data.x-plane.com/designers."
-#~ "html#Formats"
+#~ "For details about data format see http://data.x-plane.com/"
+#~ "designers.html#Formats"
 #~ msgstr ""
 #~ "Impossibile leggere il numero di versione del database apt.dat.\n"
 #~ "\n"
-#~ "FGo! si aspetta di trovare un'intestazione corretta all'inizio di apt.dat."
-#~ "Per dettagli sui formati vedi http://data.x-plane.com/designers."
-#~ "html#Formats"
+#~ "FGo! si aspetta di trovare un'intestazione corretta all'inizio di "
+#~ "apt.dat.Per dettagli sui formati vedi http://data.x-plane.com/"
+#~ "designers.html#Formats"
 
 #~ msgid "Cannot read apt.dat database."
 #~ msgstr "Impossibile leggere il database apt.dat."
@@ -2699,8 +2704,8 @@ msgstr ""
 #~ "using\n"
 #~ "download_and_compile.sh scripts."
 #~ msgstr ""
-#~ "Inserire il percorso del file \"terrasync\", oppure di \"run_terrasync.sh"
-#~ "\"\n"
+#~ "Inserire il percorso del file \"terrasync\", oppure di "
+#~ "\"run_terrasync.sh\"\n"
 #~ "se si stanno utilizzando gli script \"download_and_compile.sh\"."
 
 #~ msgid "Directory where TerraSync saves downloaded scenery."
