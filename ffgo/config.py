@@ -588,7 +588,7 @@ class Config:
             logger.info(_("OK."))
             # The FlightGear code for --json-report ensures that every element
             # of this list is an existing file.
-            aptDatList = fgReport["navigation data"]["apt.dat files"]
+            aptDatList = fgReport["navData"]["aptDatPaths"]
         elif os.path.isfile(self.defaultAptDatFile):
             aptDatList = [self.defaultAptDatFile]
         else:
@@ -661,7 +661,7 @@ class Config:
                 fgBin, self.FG_working_dir.get(),
                 FGCommandBuilder.sceneryPathsArgs(self))
             logger.info(_("OK."))
-            sceneryPaths = fgReport["config"]["scenery paths"]
+            sceneryPaths = fgReport["config"]["sceneryPaths"]
         else:
             # Fallback method when --json-report isn't available. It is
             # imperfect in case TerraSync is enabled and the TerraSync
