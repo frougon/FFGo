@@ -156,7 +156,7 @@ def convertFromFormatMajorVersion1(oldReport):
         for oldSubName, newSubName in subsectionRenamings[oldSectionName]:
             try:
                 newSection[newSubName] = oldSection[oldSubName]
-            except KeyError as e:
+            except KeyError:
                 logger.notice("This FlightGear version doesn't have "
                               "'{sec}/{subsec}' in its --json-report output."
                               .format(sec=oldSectionName, subsec=oldSubName))
