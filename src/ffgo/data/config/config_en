@@ -21,10 +21,10 @@
 ##       option is ineffective.
 #--metar=LOWI 212150Z 26004KT 9999 FEW035 BKN050 06/02 Q1014 NOSIG
 ##
-## You may find more details at <http://wiki.flightgear.org/Weather_reports>.
+## You may find more details at <https://wiki.flightgear.org/Weather_reports>.
 
 ## You may find the 2D Head-Up Display more readable than the 3D one.
-## cf. <http://wiki.flightgear.org/Head-up_display>.
+## cf. <https://wiki.flightgear.org/Head-up_display>.
 #--disable-hud-3d
 
 ## Enable the Phi web interface to FlightGear. To use it, start FlightGear and
@@ -44,7 +44,7 @@
 ## first form with 127.0.0.1 replaced with a suitable address (the HTTP server
 ## in FlightGear will bind its listening socket to that address; thus, it has
 ## to be the address of a local interface of the computer running FlightGear).
-## See <http://wiki.flightgear.org/Phi> for more details.
+## See <https://wiki.flightgear.org/Phi> for more details.
 
 ## Limit the number of frames per second to the specified value.
 #--max-fps=60
@@ -66,7 +66,7 @@
 #--multiplay=out,10,127.0.0.1,5000
 #--multiplay=in,10,127.0.0.1,5001
 ##
-## See <http://wiki.flightgear.org/Howto:Multiplayer> for more details.
+## See <https://wiki.flightgear.org/Howto:Multiplayer> for more details.
 
 ## FOR MORE INFORMATION ABOUT COMMAND LINE OPTIONS
 ## More information about 'fgfs' (FlightGear) command line options

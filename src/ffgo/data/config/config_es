@@ -22,10 +22,10 @@
 ##       efectiva también tienes que usar --disable-real-weather-fetch
 #--metar=LOWI 212150Z 26004KT 9999 FEW035 BKN050 06/02 Q1014 NOSIG
 ##
-## Más información en <http://wiki.flightgear.org/Weather_reports>.
+## Más información en <https://wiki.flightgear.org/Weather_reports>.
 
 ## Puede ser que se lea mejor el HUD (visualización Head-Up) 2D que el 3D.
-## cf. <http://wiki.flightgear.org/Head-up_display>.
+## cf. <https://wiki.flightgear.org/Head-up_display>.
 #--disable-hud-3d
 
 ## Activa la interfaz web Phi con FlightGear. Para usarla, enciende FlightGear
@@ -47,7 +47,7 @@
 ## servidor HTTP en FlightGear dirige su listening socket (puerto de
 ## escucha/entrada) a esa dirección, por lo que tiene que ser la dirección de
 ## una interfaz local del ordenador en el que está funcionando FlightGear).
-## Más información en <http://wiki.flightgear.org/Phi>.
+## Más información en <https://wiki.flightgear.org/Phi>.
 
 ## Limita los fps a un número específico.
 #--max-fps=60
@@ -69,7 +69,7 @@
 #--multiplay=out,10,127.0.0.1,5000
 #--multiplay=in,10,127.0.0.1,5001
 ##
-## Más información en: <http://wiki.flightgear.org/Howto:Multiplayer>
+## Más información en: <https://wiki.flightgear.org/Howto:Multiplayer>
 
 ## PARA MÁS INFORMACIÓN SOBRE OPCIONES DE LA LÍNEA DE COMANDOS
 ## Más información sobre opciones de la línea de comandos se puede encontrar:

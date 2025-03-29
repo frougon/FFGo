@@ -259,7 +259,7 @@ On Linux, this directory is likely to be something like
 /usr/share/games/flightgear if FlightGear was installed using your
 distribution package manager. This will be passed to '{fgfs}' (the
 FlightGear executable) as the value for the --fg-root option. You may
-consult <http://wiki.flightgear.org/$FG_ROOT> for details.""").format(
+consult <https://wiki.flightgear.org/$FG_ROOT> for details.""").format(
     fgfs=FG_EXECUTABLE)
         self.tooltip_scenery = _("""\
 Path(s) to scenery directories.
@@ -270,7 +270,7 @@ relatively to any custom scenery directories you may have installed.
 
 This setting will be passed to '{fgfs}' (the FlightGear executable) as
 the value for the --fg-scenery option. It is documented at
-<http://wiki.flightgear.org/$FG_SCENERY>.
+<https://wiki.flightgear.org/$FG_SCENERY>.
 
 Note:
 
@@ -280,8 +280,8 @@ Note:
       C:\\Users\\<username>\\Documents\\FlightGear\\TerraSync
       on Windows.
 
-  You may consult <http://wiki.flightgear.org/TerraSync> and
-  <http://wiki.flightgear.org/$FG_HOME> for more information.""").format(
+  You may consult <https://wiki.flightgear.org/TerraSync> and
+  <https://wiki.flightgear.org/$FG_HOME> for more information.""").format(
       prg=PROGNAME, separator=os.pathsep, fgfs=FG_EXECUTABLE)
         self.tooltip_aircraft = _("""\
 Path(s) to additional aircraft directories.
@@ -332,7 +332,7 @@ is now the default in {prg}.
 
 For more information, you may consult:
 
-  http://wiki.flightgear.org/About_Scenery/Airports""").format(prg=PROGNAME)
+  https://wiki.flightgear.org/About_Scenery/Airports""").format(prg=PROGNAME)
         self.tooltip_autoAptMenu = _("""\
 Automatic - {prg} will try to keep track of changes to the apt.dat
     files, and will automatically rebuild its own airport database

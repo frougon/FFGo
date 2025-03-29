@@ -605,7 +605,7 @@ you may want to consult the Git repository log.
 
           The Airport Finder dialog uses a new widget set for airport
           selection, that is mainly based on Ttk's Treeview widget. See
-          <http://forum.flightgear.org/viewtopic.php?f=18&t=27054&p=269261#p268159>
+          <https://forum.flightgear.org/viewtopic.php?f=18&t=27054&p=269261#p268159>
           and the following message for more details. (Florent Rougon)
 [FEATURE] Add the number of land runways, water runways, helipads, plus the
           minimum and maximum runway lengths for each airport to the apt
@@ -621,7 +621,7 @@ you may want to consult the Git repository log.
           with the mouse (this uses a Ttk PanedWindow). (Florent Rougon)
 [BUGFIX]  More tolerant parsing of apt.dat, in order to make it possible to
           use current apt.dat files distributed at
-          <http://gateway.x-plane.com/NOTAMs>. (Florent Rougon)
+          <https://gateway.x-plane.com/NOTAMs>. (Florent Rougon)
 [MAINT]   Tolerate invalid smoothness values in apt.dat. This is not really
           needed, since invalid values only cause an error when looking up
           buggy runway metadata, but this will allow users to access the rest
@@ -885,7 +885,7 @@ you may want to consult the Git repository log.
           * This feature was presented in this message on the FlightGear
             forum (maybe it has better/different explanations...):
 
-              http://forum.flightgear.org/viewtopic.php?f=18&t=27054&p=275923#p275774
+              https://forum.flightgear.org/viewtopic.php?f=18&t=27054&p=275923#p275774
           (Florent Rougon)
 [FEATURE] Change the initial sorting of the aircraft and airport lists. These
           two lists in FFGo's main window are now initially sorted:
@@ -1009,7 +1009,7 @@ you may want to consult the Git repository log.
               --prop:/sim/rendering/multi-samples=4
 
             as mentioned on the Anti-aliasing page of the FlightGear wiki
-            (<http://wiki.flightgear.org/Anti-aliasing>).
+            (<https://wiki.flightgear.org/Anti-aliasing>).
             Thanks to jaxsin on the FlightGear forum for the suggestion.
             (Florent Rougon)
 [USABILITY] Update other comments in the default FlightGear options:
@@ -1042,12 +1042,12 @@ you may want to consult the Git repository log.
           for non-Windows systems, but for Windows it wasn't. This is because
           Windows uses a different code path in FlightGear to determine
           FlightGear's download directory, and the FlightGear wiki page for
-          TerraSync (<http://wiki.flightgear.org/TerraSync>) was incorrect.
+          TerraSync (<https://wiki.flightgear.org/TerraSync>) was incorrect.
           Both FFGo's tooltip and the TerraSync wiki page are now fixed.
           (Florent Rougon)
 [BUGFIX]  There was a similar problem in config_en, config_de and config_fr
           (default config options). Don't mention $FG_HOME/TerraSync anymore,
-          point to <http://wiki.flightgear.org/TerraSync> instead.
+          point to <https://wiki.flightgear.org/TerraSync> instead.
           (Florent Rougon)
 [BUGFIX]  Make the file and directory selectors more robust in case the HOME
           environment variable points to a non-existent file or directory.

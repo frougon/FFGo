@@ -22,10 +22,10 @@
 ##          deaktivieren, damit die --metar Option in Kraft tritt.
 #--metar=LOWI 212150Z 26004KT 9999 FEW035 BKN050 06/02 Q1014 NOSIG
 ##
-## Mehr Informationen unter <http://wiki.flightgear.org/Weather_reports>.
+## Mehr Informationen unter <https://wiki.flightgear.org/Weather_reports>.
 
 ## Eventuell finden Sie die 2D Head-Up Anzeige lesbarer als die 3D Variante:
-## vgl. <http://wiki.flightgear.org/Head-up_display>.
+## vgl. <https://wiki.flightgear.org/Head-up_display>.
 #--disable-hud-3d
 
 ## Aktiviere das Phi Webinterface für FlightGear. Um es zu nutzen, starten Sie
@@ -48,7 +48,7 @@
 ## ersetzt werden muß (der HTTP Server wird seinen listening socket an diese
 ## Adresse binden; daher muß es die Adresse der lokalen Schnittstelle des
 ## Computers sein, auf dem FlightGear läuft).
-## Für weitere Details siehe <http://wiki.flightgear.org/Phi>
+## Für weitere Details siehe <https://wiki.flightgear.org/Phi>
 
 ## Begrenze fps auf angegebene Anzahl.
 #--max-fps=60
@@ -70,7 +70,7 @@
 #--multiplay=out,10,127.0.0.1,5000
 #--multiplay=in,10,127.0.0.1,5001
 ##
-## Für weitere Details siehe <http://wiki.flightgear.org/Howto:Multiplayer>
+## Für weitere Details siehe <https://wiki.flightgear.org/Howto:Multiplayer>
 
 ## WEITERFÜHRENDE INFORMATIONEN ZU DEN KOMMANDOZEILENOPTIONEN
 ## Mehr Informationen über die Kommandozeilen-Optionen

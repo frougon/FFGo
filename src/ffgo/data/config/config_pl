@@ -21,7 +21,7 @@
 ##        przeciwnym razie opcja --metar nie zadziała.
 #--metar=LOWI 212150Z 26004KT 9999 FEW035 BKN050 06/02 Q1014 NOSIG
 ##
-## Więcej szczegółów na stronie <http://wiki.flightgear.org/Weather_reports>.
+## Więcej szczegółów na stronie <https://wiki.flightgear.org/Weather_reports>.
 
 ## Może się okazać, że wyświetlacz przezierny 2D jest bardziej czytelny niż 3D.
 ## Zobacz <https://wiki.flightgear.org/Head-up_display>.
@@ -45,7 +45,7 @@
 ## pierwszej formy z 127.0.0.1 zastąpionym odpowiednim adresem (serwer HTTP we
 ## FlightGear powiąże swoje gniazdo nasłuchujące z tym adresem; musi to być
 ## więc adres lokalnego interfejsu komputera, na którym działa FlightGear).
-## Więcej szczegółów znajdziesz na stronie <http://wiki.flightgear.org/Phi>.
+## Więcej szczegółów znajdziesz na stronie <https://wiki.flightgear.org/Phi>.
 
 ## Ograniczenie liczby klatek na sekundę do określonej wartości.
 #--max-fps=60

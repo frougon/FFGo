@@ -13,19 +13,19 @@ program whose purpose is to allow easy assembling and running of an
 .. _FGo!: https://sites.google.com/site/erobosprojects/flightgear/add-ons/fgo
 .. _FlightGear: https://www.flightgear.org/
 .. _Python: https://www.python.org/
-.. _CondConfigParser: http://frougon.net/projects/CondConfigParser/
+.. _CondConfigParser: https://frougon.net/projects/CondConfigParser/
 
 FFGo is written in `Python`_ 3 and is based on `CondConfigParser`_,
 which allows many interesting things as shown at:
 
-  http://frougon.net/projects/FFGo/doc/README-conditional-config/
+  https://frougon.net/projects/FFGo/doc/README-conditional-config/
 
 
 Screenshots
 -----------
 
 Screenshots are available at the `FFGo screenshots gallery page
-<http://frougon.net/projects/FFGo/gallery/>`_.
+<https://frougon.net/projects/FFGo/gallery/>`_.
 
 .. _end-of-intro:
 
@@ -34,7 +34,7 @@ Home page
 
 FFGo's home page is located at:
 
-  http://frougon.net/projects/FFGo/
+  https://frougon.net/projects/FFGo/
 
 
 Requirements
@@ -95,7 +95,7 @@ The best place to download FFGo from is the `FFGo page on PyPI`_.
 Specifically, tarballs for any version are available in the `download
 area`_ (also packages in `wheel format`_ since FFGo 1.12.6).
 Alternatively, FFGo tarballs and wheel files can be downloaded `from
-Florent Rougon's home page <http://frougon.net/projects/FFGo/dist/>`_,
+Florent Rougon's home page <https://frougon.net/projects/FFGo/dist/>`_,
 but since that site is served over plain http (not https), you should
 get them from PyPI unless you know what you are doing.
 
@@ -135,8 +135,8 @@ need to:
   - add the following lines to your ``/etc/apt/sources.list`` (given for
     Debian *unstable* here)::
 
-      deb http://frougon.net/debian-ffgo unstable main
-      deb-src http://frougon.net/debian-ffgo unstable main
+      deb https://frougon.net/debian-ffgo unstable main
+      deb-src https://frougon.net/debian-ffgo unstable main
 
     Packages for Debian *stable* are also available. If this is what you
     need, just replace *unstable* with *bookworm*, or whatever is the
@@ -151,7 +151,7 @@ need to:
     should still be possible, but with warnings and, of course, reduced
     security).
 
-    .. _Florent Rougon's OpenPGP key: http://frougon.net/keys.html
+    .. _Florent Rougon's OpenPGP key: https://frougon.net/keys.html
 
     In order to do this, you should get the key using the above link,
     and save it for instance as
@@ -277,7 +277,7 @@ Documentation
   ``docs/README/README_<language code>`` (the language code is ``en``
   for English; this text is also accessible from FFGo's *Help* menu). In
   a second time, ``docs/README.conditional-config`` (`available online
-  <http://frougon.net/projects/FFGo/doc/README-conditional-config/>`_)
+  <https://frougon.net/projects/FFGo/doc/README-conditional-config/>`_)
   explains how to use the full power of the configuration system used by
   FFGo.
 
@@ -286,7 +286,7 @@ Documentation
   `Sphinx`_). There is a special section in ``docs/INSTALL`` which
   explains how to build it in this situation [#]_. In any case, this
   documentation (for the latest FFGo release) is always `available online
-  <http://frougon.net/projects/FFGo/doc/README-conditional-config/>`_.
+  <https://frougon.net/projects/FFGo/doc/README-conditional-config/>`_.
 
   .. _Sphinx: https://www.sphinx-doc.org/
 
@@ -362,7 +362,7 @@ License
 FFGo is distributed under the terms of the `WTFPL`_ version 2, dated
 December 2004.
 
-.. _WTFPL: http://wtfpl.net/
+.. _WTFPL: https://www.wtfpl.net/
 
 
 .. 

@@ -23,10 +23,10 @@
 ##        effet.
 #--metar=LOWI 212150Z 26004KT 9999 FEW035 BKN050 06/02 Q1014 NOSIG
 ##
-## cf. <http://wiki.flightgear.org/Weather_reports> pour plus d'informations.
+## cf. <https://wiki.flightgear.org/Weather_reports> pour plus d'informations.
 
 ## Il se peut que vous trouviez le HUD 2D (2D Head-Up Display) plus lisible
-## que le HUD 3D (cf. <http://wiki.flightgear.org/Head-up_display>).
+## que le HUD 3D (cf. <https://wiki.flightgear.org/Head-up_display>).
 #--disable-hud-3d
 
 ## Active l'interface web Phi de FlightGear. Pour l'utiliser, démarrez
@@ -49,7 +49,7 @@
 ## d'écoute [bind its listening socket] à cette adresse ; par conséquent,
 ## celle-ci doit être l'adresse d'une interface locale de la machine qui
 ## fait tourner FlightGear).
-## cf. <http://wiki.flightgear.org/Phi> pour de plus amples informations.
+## cf. <https://wiki.flightgear.org/Phi> pour de plus amples informations.
 
 ## Limite le nombre d'images par seconde à la valeur spécifiée.
 #--max-fps=60
@@ -73,7 +73,7 @@
 #--multiplay=out,10,127.0.0.1,5000
 #--multiplay=in,10,127.0.0.1,5001
 ##
-## Voir <http://wiki.flightgear.org/Howto:Multiplayer> pour de plus amples
+## Voir <https://wiki.flightgear.org/Howto:Multiplayer> pour de plus amples
 ## informations.
 
 ## POUR PLUS D'INFORMATIONS SUR LES OPTIONS EN LIGNE DE COMMANDE

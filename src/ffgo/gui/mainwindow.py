@@ -545,7 +545,7 @@ class App:
                   "scenery as you fly (this FlightGear feature is called "
                   "TerraSync). The location where these downloads take "
                   "place can be chosen in the Preferences dialog.\n\nSee "
-                  "<http://wiki.flightgear.org/TerraSync> for more details."),
+                  "<https://wiki.flightgear.org/TerraSync> for more details."),
                 autowrap=True)
 
         # Vertical spacer
@@ -880,7 +880,7 @@ class App:
             message = _('Change “Airport data source” to “Scenery”?')
             detail = (_("""\
 In old FlightGear versions (up to 2.4.0 according to
-<http://wiki.flightgear.org/About_Scenery/Airports>), parking data was read
+<https://wiki.flightgear.org/About_Scenery/Airports>), parking data was read
 from $FG_ROOT/AI/Airports/. Up to version 1.2.1, the default {prg} setting
 for “Airport data source” used to match this behavior.""")
             .replace('\n', ' ') + "\n\n" + _("""\

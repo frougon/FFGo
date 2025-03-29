@@ -16,7 +16,7 @@ from .misc import resourceFilename
 NAME_WITH_VERSION = '{prg} {version}'.format(prg=PROGNAME, version=PROGVERSION)
 USER_AGENT = \
  '{prg}/{version} ' \
- '(+http://frougon.net/projects/FFGo/)'.format(
+ '(+https://frougon.net/projects/FFGo/)'.format(
      prg=PROGNAME, version=PROGVERSION)
 # See also COPYRIGHT_HELP below.
 COPYRIGHT = "Copyright © 2009-2015  Robert 'erobo' Leda <erobo@wp.pl>\n" \
@@ -31,7 +31,7 @@ LICENSE = \
 the extent permitted by applicable law. You can redistribute it
 and/or modify it under the terms of the Do What The Fuck You Want
 To Public License, Version 2, as published by Sam Hocevar. See
-http://www.wtfpl.net/ for more details.
+https://www.wtfpl.net/ for more details.
 """
 # User's home directory.
 HOME_DIR = expanduser('~')
