@@ -9,6 +9,7 @@ graft docs
 graft docs/README.conditional-config
 # Carried over from docs/README.conditional-config.source, undesirable here.
 exclude docs/README.conditional-config/_static/README.txt
+exclude docs/README.conditional-config/.buildinfo.bak
 prune docs/README.conditional-config.source/_build
 
 graft src
