@@ -46,7 +46,7 @@ FFGo requires the following software:
 
       * works on Unix-like systems (including GNU/Linux);
       * works on Windows;
-      * should also work on MacOS X, but no one has reported about this
+      * should also work on macOS, but no one has reported about this
         so far.
 
   - `FlightGear`_;
@@ -79,13 +79,13 @@ the Pillow library isn't installed for the Python interpreter used to
 run FFGo.
 
 .. _Tkinter: https://docs.python.org/3/library/tkinter.html
-.. _Pillow: https://python-pillow.org/
+.. _Pillow: https://python-pillow.github.io/
 .. _GeographicLib: https://geographiclib.sourceforge.io/
 
 Note:
 
   The home pages of FFGo's dependencies indicated here are current at
-  the time of this writing (September 2023), but might change over time.
+  the time of this writing (March 2025), but might change over time.
 
 
 Download
@@ -95,9 +95,7 @@ The best place to download FFGo from is the `FFGo page on PyPI`_.
 Specifically, tarballs for any version are available in the `download
 area`_ (also packages in `wheel format`_ since FFGo 1.12.6).
 Alternatively, FFGo tarballs and wheel files can be downloaded `from
-Florent Rougon's home page <https://frougon.net/projects/FFGo/dist/>`_,
-but since that site is served over plain http (not https), you should
-get them from PyPI unless you know what you are doing.
+Florent Rougon's home page <https://frougon.net/projects/FFGo/dist/>`_.
 
 .. _FFGo page on PyPI: https://pypi.org/project/FFGo/
 .. _download area: https://pypi.org/project/FFGo/#files
@@ -143,19 +141,18 @@ need to:
     codename of the current Debian *stable* release, in these
     ``sources.list`` lines.
 
-  - install `Florent Rougon's OpenPGP key`_ into the ``apt`` keyring (be
-    sure to verify that this is the same key as served `by Github
-    <https://github.com/frougon.gpg>`_ over https, after adding a
-    trailing newline to the latter). This is necessary to allow ``apt``
-    to authenticate the packages (if you don't do this, the installation
-    should still be possible, but with warnings and, of course, reduced
-    security).
+  - install `Florent Rougon's OpenPGP key`_ into the ``apt`` keyring (you
+    can verify that this is the same key as served `by Github
+    <https://github.com/frougon.gpg>`_; you may need to add a trailing
+    newline to the latter to ensure a byte-for-byte match).
 
     .. _Florent Rougon's OpenPGP key: https://frougon.net/keys.html
 
-    In order to do this, you should get the key using the above link,
-    and save it for instance as
-    ``/etc/apt/trusted.gpg.d/Florent_Rougon.asc``.
+    In order to tell ``apt`` to trust the key, you can save it for
+    instance as ``/etc/apt/trusted.gpg.d/Florent_Rougon.asc``. This
+    allows ``apt`` to authenticate the packages. If you don't do this,
+    the installation should still be possible but with warnings and, of
+    course, reduced security.
 
 After these two steps, don't forget to run::
 
@@ -173,7 +170,7 @@ Notes:
   - The ``deb-src`` line in ``/etc/apt/sources.list`` is useful if you
     want to be able to run::
 
-      apt-get source ffgo
+      apt source ffgo
 
     or similar for its dependencies available from the repository given
     above (currently and for the foreseeable future, only
@@ -278,8 +275,7 @@ Documentation
   for English; this text is also accessible from FFGo's *Help* menu). In
   a second time, ``docs/README.conditional-config`` (`available online
   <https://frougon.net/projects/FFGo/doc/README-conditional-config/>`_)
-  explains how to use the full power of the configuration system used by
-  FFGo.
+  explains how to use the full power of FFGo's configuration system.
 
   If you got FFGo from the `Git repository`_ instead of a release tarball,
   part of the documentation is in source form only (written for
@@ -312,7 +308,7 @@ At the time of this writing, there is a thread dedicated to FFGo on the
 .. _FlightGear forum: https://forum.flightgear.org/
 
 This is where most discussions about FFGo take place. If you have a
-question or a problem related to FFGo, this is a good place to ask.
+question or a problem related to FFGo, this is a good place for asking.
 
 
 Bugs

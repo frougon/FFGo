@@ -235,9 +235,9 @@ Der Knopf “Log speichern” erlaubt es, die gesamte Ausgabe des letzten Laufs 
 einer Datei Ihrer Wahl zu speichern.
 
 “Öffne Logverzeichnis” ist eine Verknüpfung um das Standard-Logverzeichnis im
-Dateimanager zu öffnen. Auf anderen Systemen als Windows oder MacOS X wird dies
+Dateimanager zu öffnen. Auf anderen Systemen als Windows oder macOS wird dies
 durch das Kommando 'xdg-open' erreicht, um eine Möglichkeit zur Konfiguration
-des Dateimanagers Ihrer Wahl zu ermöglichen. Auf Windows und MacOS X wird das
+des Dateimanagers Ihrer Wahl zu ermöglichen. Auf Windows und macOS wird das
 Verzeichnis mit den Standardmechanismen geöffnet.
 
 Das Terminalausgabenfenster kann vom Hauptfenster abgetrennt, wieder angefügt

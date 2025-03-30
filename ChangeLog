@@ -772,7 +772,7 @@ you may want to consult the Git repository log.
           button of the Airport Finder dialog could fail to find the chosen
           airport. (Florent Rougon)
 [BUGFIX]  Fix the “Open Log Directory” feature to hopefully work on Windows
-          and MacOS X (in addition to Unix-like systems, of course).
+          and macOS (in addition to Unix-like systems, of course).
           (Florent Rougon)
 [FEATURE] Update the German translation. (chris_blues)
 

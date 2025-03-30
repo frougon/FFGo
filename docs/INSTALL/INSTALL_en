@@ -64,11 +64,11 @@ FFGo's dependencies are:
   - GeographicLib's MagneticField program (optional; used to display the
     magnetic variation at a particular place and to compute magnetic headings
     from true headings);
-  - GeographicLib's implementation for Python 3 (optional; used for geodesic
+  - GeographicLib's implementation for Python 3 (optional; used for geodetic
     calculations, e.g., to compute the distance and azimuths between two
     airports, or a runway length and heading based on the latitude and
     longitude of the two runway ends as found in apt.dat files). FFGo includes
-    algorithms for “basic” geodesic calculations (Vincenty's formula and a few
+    algorithms for “basic” geodetic calculations (Vincenty's formula and a few
     others); these should be sufficient in most cases. However, there are rare
     cases (calculation of the shortest path between nearly antipodal points)
     in which these algorithms don't work, whereas Karney's algorithm,
@@ -307,17 +307,22 @@ symbolic links):
        cd ~/src
        tar -xzf FFGo-a.b.c.tar.gz
 
-  3. Create a symbolic link to allow FFGo to find CondConfigParser:
+  3. Check where you have a 'condconfigparser' directory: either at
+     ~/src/CondConfigParser-x.y.z/condconfigparser (“old” versions) or at
+     ~/src/CondConfigParser-x.y.z/src/condconfigparser (newer ones). Adapt the
+     command in the next step accordingly.
 
-       ln -s ~/src/CondConfigParser-x.y.z/condconfigparser \
-             ~/src/FFGo-a.b.c/condconfigparser
+  4. Create a symbolic link to allow FFGo to find CondConfigParser:
 
-     (assuming the previous step created the ~/src/FFGo-a.b.c directory,
+       ln -s ~/src/CondConfigParser-x.y.z/src/condconfigparser \
+             ~/src/FFGo-a.b.c/src/condconfigparser
+
+     (this assumes step 2 created the ~/src/FFGo-a.b.c directory,
      leaving an ffgo-launcher.py executable script at
      ~/src/FFGo-a.b.c/ffgo-launcher.py)
 
 That's all! You should be able to run the ffgo-launcher.py executable
-mentioned in step 3. In case you need to explicitly specify the Python
+mentioned in step 4. In case you need to explicitly specify the Python
 interpreter to use, you can do so with a command such as:
 
   python3.4 ~/src/FFGo-a.b.c/ffgo-launcher.py
@@ -369,6 +374,15 @@ runs in a venv, something such as C:\PythonXY\Scripts on Windows if you ran
 pip outside a venv, where “XY” is for instance “34” for a Python 3.4
 installation).
 
+With current versions of 'pip', a single command can be used to
+install FFGo, its mandatory dependencies and its optional ones:
+
+  pip install "FFGo[images,geo]"
+
+(The 'images' extra dependency corresponds to Pillow and 'geo' to
+GeographicLib. Build dependencies may still be needed for successful Pillow
+installation, though—see below.)
+
 Note for Windows users:
 
   If you chose “Add python.exe to Path” in the Python installer and ran pip
@@ -396,7 +410,6 @@ Uninstallation should be as easy as:
 
 For more information about pip and venv.py/pyvenv, see "References" at the end
 of this document.
-
 
 Hints concerning installation of the dependencies
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -448,12 +461,12 @@ Hints concerning installation of the dependencies
       compilation. On Debian unstable (June 2020), the following is likely to
       be sufficent:
 
-        # apt-get install gcc libpython3-dev tcl-dev tk-dev
+        # apt install gcc libpython3-dev tcl-dev tk-dev
         (tcl8.6-dev and tk8.6-dev can do as well)
 
       or, installing more packages:
 
-        # apt-get build-dep python3-pil.imagetk
+        # apt build-dep python3-pil.imagetk
 
     * Then, you should be able to run:
 
@@ -498,14 +511,14 @@ code of your choice):
 Then download the source code:
 
   cd /some/directory
-  git clone https://github.com/frougon/FFGo.git
+  git clone https://github.com/frougon/FFGo.git ffgo.git
 
 (alternatively, you may download a Zip-compressed snapshot of the repository
 by clicking on "Download ZIP" at <https://github.com/frougon/FFGo>)
 
 Then prepare the source (icons and translation files) with:
 
-  cd FFGo
+  cd ffgo.git
   make
 
 This 'make' run in the top-level directory must be done after each 'git clone'
@@ -537,22 +550,15 @@ grown several frameworks for packaging Python software in a distribution and
 OS-agnostic way, each of which offers a different way of installing said
 software for the users. With distutils, the user had to run "setup.py
 install"; later, with setuptools, one had to install and use a program named
-easy_install. Today, the winning framework seems to be a combination of
-setuptools and pip, the latter offering the end-user interface for installing,
-upgrading and removing Python-made software (setuptools being used internally,
-in a way that is not directly visible to the user).
+easy_install. Today, the winning framework seems to be a combination of a
+build frontend, a build backend and pip, the latter offering the end-user
+interface for installing, upgrading and removing software written in Python.
 
-All this to say that there are many ways to install Python-made software, even
-on the same operating system. Each way having its own upsides and downsides,
-this makes it difficult to give simple and clear installation instructions
-understandable by non-Pythonistas.
-
-The method I am giving hints about here is the one relying on the
-setuptools + pip combination, because:
-  - it is basically officially endorsed by the Python project, since the
-    inclusion of ensurepip in Python 3.4;
-  - once properly setup, it allows easy installation, upgrade and removal of
-    packages into or from a particular Python installation.
+We're going to talk about pip here because aside from OS-level packages such
+as .deb, .rpm, etc., it has become the main installation tool for software
+written in Python. Once properly setup, this technique allows easy
+installation, upgrade and removal of packages into or from a particular Python
+installation.
 
 Before diving into details, you may want to consult the official Python
 end-user documentation concerning installation of Python modules:
@@ -584,7 +590,7 @@ one thing that requires paying attention to before doing so:
 
   - If this Python installation was installed all by yourself, i.e., *not*
     through a package manager such as dpkg/apt-get, rpm/yum, etc., then all is
-    fine. pip is probably already installed; and if for some reason, it is
+    well. pip is probably already installed; and if for some reason, it is
     not, you can make it available with:
 
       % python3 -m ensurepip
@@ -641,10 +647,10 @@ one thing that requires paying attention to before doing so:
       % python3 -m venv foo-venv
 
     Once this is done, you'll have a few executables in the 'foo-venv/bin'
-    directory, in particular 'python' and probably also 'pip' (if 'pip' is not
-    present, run 'foo-venv/bin/python -m ensurepip'). Whenever you run one of
-    these programs, it will use the 'foo-venv' virtual environment. Therefore,
-    if you want to install FFGo inside 'foo-venv', you can do:
+    directory, in particular 'python' and most probably also 'pip' (if 'pip'
+    is not present, run 'foo-venv/bin/python -m ensurepip'). Whenever you run
+    one of these programs, it will use the 'foo-venv' virtual environment.
+    Therefore, if you want to install FFGo inside 'foo-venv', you can do:
 
       % foo-venv/bin/pip install FFGo
 

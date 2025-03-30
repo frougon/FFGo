@@ -221,9 +221,9 @@ FlightGear do wybranego pliku.
 
 Przycisk "Otwórz katalog dzienników" jest tylko skrótem do otwarcia domyślnego
 katalogu dziennika w menedżerze plików. W systemach innych niż Windows i
-MacOS X odbywa się to za pomocą programu "xdg-open", który umożliwia
+macOS odbywa się to za pomocą programu "xdg-open", który umożliwia
 skonfigurowanie wybranego przez użytkownika menedżera plików. W systemach
-Windows i MacOS X katalog otwierany jest za pomocą standardowego mechanizmu.
+Windows i macOS katalog otwierany jest za pomocą standardowego mechanizmu.
 
 Okno danych wyjściowych może być odłączone od okna głównego, ponownie do niego
 dołączone lub całkowicie ukryte. Można to zrobić w menu Ustawienia. Aktualne

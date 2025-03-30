@@ -221,8 +221,8 @@ FlightGear run to a file of your choice.
 
 The “Open Log Directory” button is just a shortcut to open the default
 log directory in a file manager. On systems different from Windows and
-MacOS X, this is done with the 'xdg-open' program to allow you to
-configure the file manager of your choice. On Windows and MacOS X, the
+macOS, this is done with the 'xdg-open' program to allow you to
+configure the file manager of your choice. On Windows and macOS, the
 directory is opened using the standard mechanism.
 
 The Output Window can be detached from the main window, reattached to it
