@@ -1268,3 +1268,20 @@ you may want to consult the Git repository log.
 [MAINT]   Update documentation and config_* files (oldish info, links).
           (PlayeRom Roman Ludwicki and Florent Rougon)
 [MAINT]   Packaging fixes. (Florent Rougon)
+
+1.12.9
+[MAINT]   More modern packaging using the “src layout”, a pyproject.toml file
+          and no setup.py anymore. The build backend used is setuptools.
+          (Florent Rougon)
+[MAINT]   Replace locale.format() with locale.format_string(), as the former
+          was removed in Python 3.12. (Florent Rougon)
+[MAINT]   Handle changes in the output format of 'fgfs --json-report'
+          (FlightGear commit f282911a0d292 [2024.2] modified key names in this
+          output to remove spaces; this is incompatible with the previous
+          format and required special handling). (Florent Rougon)
+[MAINT]   Remove duplicate assignment to 'intersphinx_mapping' in conf.py of
+          README.conditional-config (this caused an error when building with
+          Sphinx 8, thanks to dreirund for the report). (Florent Rougon)
+[MAINT]   Update documentation files for stale information; change http links
+          to https except for those that don't exist anymore; update email
+          address. (Florent Rougon)
